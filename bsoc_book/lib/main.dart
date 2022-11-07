@@ -1,5 +1,5 @@
 import 'package:bsoc_book/view/login_page.dart';
-import 'package:bsoc_book/view/user/home/home_page.dart';
+import 'package:bsoc_book/view/index_page.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:flutter/material.dart';
 
@@ -24,17 +24,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// class MyHomePage extends StatelessWidget {
-//   const MyHomePage({Key? key}) : super(key: key);
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key}) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       drawer: const MenuAside(),
-//       appBar: AppBar(
-//         title: const Text('Demo App'),
-//       ),
-//       body: HomePage(),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: const MenuAside(),
+      appBar: AppBar(
+        title: const Text('Demo App'),
+      ),
+      body: IndexPage(),
+    );
+  }
+}

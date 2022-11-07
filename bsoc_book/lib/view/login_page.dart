@@ -1,4 +1,5 @@
 import 'package:bsoc_book/view/register.dart';
+import 'package:bsoc_book/view/index_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -94,7 +95,12 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => IndexPage()));
+                          },
                           style: ElevatedButton.styleFrom(
                               primary: Colors.indigo,
                               shape: RoundedRectangleBorder(
