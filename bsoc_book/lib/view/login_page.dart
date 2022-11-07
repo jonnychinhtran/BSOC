@@ -1,3 +1,4 @@
+import 'package:bsoc_book/view/register.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -33,14 +34,28 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   const Center(
                     child: Text(
-                      "Login",
+                      "ĐĂNG NHẬP",
                       style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 26,
+                        fontWeight: FontWeight.normal,
                       ),
                     ),
                   ),
                   SizedBox(height: size.height * 0.04),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 0, bottom: 4),
+                      child: Text(
+                        'Tên đăng nhập',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
                   TextFormField(
                     decoration: InputDecoration(
                         hintText: "Email",
@@ -49,7 +64,21 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10),
                         )),
                   ),
-                  SizedBox(height: size.height * 0.03),
+                  SizedBox(height: size.height * 0.02),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 0, bottom: 4),
+                      child: Text(
+                        'Mật khẩu',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
                   TextFormField(
                     obscureText: true,
                     decoration: InputDecoration(
@@ -73,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 40, vertical: 15)),
                           child: const Text(
-                            "Login",
+                            "Đăng nhập",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -83,6 +112,21 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   ),
+                  SizedBox(height: size.height * 0.02),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const RegisterPage()));
+                        },
+                        child: const Text("Tạo tài khoản mới"),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
