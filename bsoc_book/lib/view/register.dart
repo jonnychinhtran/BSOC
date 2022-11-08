@@ -1,12 +1,20 @@
-import 'package:bsoc_book/view/login_page.dart';
+import 'package:bsoc_book/controller/auth_controller/get_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../routes/app_routes.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
   @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  var register = Get.put(GetAuth());
+
+  @override
   Widget build(BuildContext context) {
-    bool isChecked = false;
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -54,6 +62,7 @@ class RegisterPage extends StatelessWidget {
                     ),
                   ),
                   TextFormField(
+                    controller: register.username,
                     decoration: InputDecoration(
                         hintText: "Username",
                         isDense: true,
@@ -62,29 +71,29 @@ class RegisterPage extends StatelessWidget {
                         )),
                   ),
                   SizedBox(height: size.height * 0.02),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 0, bottom: 4),
-                      child: Text(
-                        'Tên đăng nhập (*)',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                        hintText: "Email",
-                        isDense: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        )),
-                  ),
-                  SizedBox(height: size.height * 0.02),
+                  // const Align(
+                  //   alignment: Alignment.centerLeft,
+                  //   child: Padding(
+                  //     padding: EdgeInsets.only(left: 0, bottom: 4),
+                  //     child: Text(
+                  //       'Tên đăng nhập (*)',
+                  //       textAlign: TextAlign.left,
+                  //       style: TextStyle(
+                  //         fontSize: 16,
+                  //         fontWeight: FontWeight.bold,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // TextFormField(
+                  //   decoration: InputDecoration(
+                  //       hintText: "Email",
+                  //       isDense: true,
+                  //       border: OutlineInputBorder(
+                  //         borderRadius: BorderRadius.circular(10),
+                  //       )),
+                  // ),
+                  // SizedBox(height: size.height * 0.02),
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
@@ -101,6 +110,7 @@ class RegisterPage extends StatelessWidget {
                   ),
                   TextFormField(
                     obscureText: true,
+                    controller: register.password,
                     decoration: InputDecoration(
                         hintText: "Password",
                         isDense: true,
@@ -108,49 +118,58 @@ class RegisterPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                         )),
                   ),
-                  SizedBox(height: size.height * 0.02),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 0, bottom: 4),
-                      child: Text(
-                        'Nhập lại mật khẩu (*)',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  TextFormField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        hintText: "Password",
-                        isDense: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        )),
-                  ),
-                  SizedBox(height: size.height * 0),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: isChecked,
-                        onChanged: (bool? value) {
-                          isChecked = value!;
-                        },
-                      ),
-                      const Text("Terms"),
-                    ],
-                  ),
+                  // SizedBox(height: size.height * 0.02),
+                  // const Align(
+                  //   alignment: Alignment.centerLeft,
+                  //   child: Padding(
+                  //     padding: EdgeInsets.only(left: 0, bottom: 4),
+                  //     child: Text(
+                  //       'Nhập lại mật khẩu (*)',
+                  //       textAlign: TextAlign.left,
+                  //       style: TextStyle(
+                  //         fontSize: 16,
+                  //         fontWeight: FontWeight.bold,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // TextFormField(
+                  //   obscureText: true,
+                  //   decoration: InputDecoration(
+                  //       hintText: "Password",
+                  //       isDense: true,
+                  //       border: OutlineInputBorder(
+                  //         borderRadius: BorderRadius.circular(10),
+                  //       )),
+                  // ),
+                  // SizedBox(height: size.height * 0),
+                  // Row(
+                  //   children: [
+                  //     Checkbox(
+                  //       value: isChecked,
+                  //       onChanged: (bool? value) {
+                  //         isChecked = value!;
+                  //       },
+                  //     ),
+                  //     const Text("Terms"),
+                  //   ],
+                  // ),
                   SizedBox(height: size.height * 0.02),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            register.registerUser();
+                            // ignore: unnecessary_null_comparison
+                            if (register.registerModel.value != null) {
+                              Get.offAllNamed(Routes.home);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('error')));
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                               primary: Colors.indigo,
                               shape: RoundedRectangleBorder(
@@ -174,10 +193,7 @@ class RegisterPage extends StatelessWidget {
                     children: [
                       TextButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginPage()));
+                          Get.toNamed(Routes.login);
                         },
                         child: const Text("Đăng nhập"),
                       ),

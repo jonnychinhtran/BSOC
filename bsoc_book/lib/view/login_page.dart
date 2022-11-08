@@ -1,6 +1,7 @@
+import 'package:bsoc_book/routes/app_routes.dart';
 import 'package:bsoc_book/view/register.dart';
-import 'package:bsoc_book/view/main_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -96,10 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => IndexPage()));
+                            Get.offAllNamed(Routes.home);
                           },
                           style: ElevatedButton.styleFrom(
                               primary: Colors.indigo,

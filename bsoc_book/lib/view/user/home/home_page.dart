@@ -91,16 +91,16 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: size.height * 0.02),
-            Container(
+            SizedBox(
               height: 210,
               child: ListView.builder(
-                padding: EdgeInsets.only(left: 15),
+                padding: const EdgeInsets.only(left: 15),
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemCount: 6,
                 itemBuilder: (BuildContext context, int index) {
                   Book books = book[index + 2];
-                  return Container(
+                  return SizedBox(
                     width: 150,
                     height: 210,
                     child: Column(
@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                                       builder: (context) =>
                                           DetailBookPage(books: book[index])));
                             },
-                            child: Container(
+                            child: SizedBox(
                               height: 130,
                               width: 100,
                               child: Image.network(
@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             books.title,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(height: size.height * 0.02),
                           Text(
                             'by ${books.author}',
-                            style: TextStyle(fontSize: 12),
+                            style: const TextStyle(fontSize: 12),
                           )
                         ]),
                   );
@@ -159,23 +159,23 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: size.height * 0.02),
-            Container(
+            SizedBox(
               height: 210,
               child: ListView.builder(
-                padding: EdgeInsets.only(left: 15),
+                padding: const EdgeInsets.only(left: 15),
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemCount: 6,
                 itemBuilder: (BuildContext context, int index) {
                   Book books = book[index + 2];
-                  return Container(
+                  return SizedBox(
                     width: 150,
                     height: 210,
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
+                          SizedBox(
                             height: 130,
                             width: 100,
                             child: Image.network(
@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             books.title,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
@@ -195,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(height: size.height * 0.02),
                           Text(
                             'by ${books.author}',
-                            style: TextStyle(fontSize: 12),
+                            style: const TextStyle(fontSize: 12),
                           )
                         ]),
                   );

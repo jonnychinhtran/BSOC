@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'user/home/home_page.dart';
 import 'widgets/menu_aside.dart';
 
-class IndexPage extends StatefulWidget {
-  IndexPage({Key? key}) : super(key: key);
+class MainIndexPage extends StatefulWidget {
+  const MainIndexPage({Key? key}) : super(key: key);
 
   @override
-  State<IndexPage> createState() => _IndexPageState();
+  State<MainIndexPage> createState() => _MainIndexPageState();
 }
 
-class _IndexPageState extends State<IndexPage> {
+class _MainIndexPageState extends State<MainIndexPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +18,7 @@ class _IndexPageState extends State<IndexPage> {
       appBar: AppBar(
         title: const Text('Demo App'),
       ),
-      body: HomePage(),
+      body: const HomePage(),
     );
   }
 }
