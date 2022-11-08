@@ -1,3 +1,4 @@
+import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 
@@ -106,12 +107,21 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            height: 130,
-                            width: 100,
-                            child: Image.network(
-                              books.imageUrl,
-                              fit: BoxFit.fill,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          DetailBookPage(books: book[index])));
+                            },
+                            child: Container(
+                              height: 130,
+                              width: 100,
+                              child: Image.network(
+                                books.imageUrl,
+                                fit: BoxFit.fill,
+                              ),
                             ),
                           ),
                           SizedBox(height: size.height * 0.02),
