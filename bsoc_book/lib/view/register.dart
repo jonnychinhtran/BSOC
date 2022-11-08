@@ -164,7 +164,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             register.registerUser();
                             // ignore: unnecessary_null_comparison
                             if (register.registerModel.value != null) {
-                              Get.offAllNamed(Routes.home);
+                              Get.offAllNamed(Routes.main);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('error')));

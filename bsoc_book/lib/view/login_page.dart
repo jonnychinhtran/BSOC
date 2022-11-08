@@ -122,10 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       TextButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const RegisterPage()));
+                          Get.offAllNamed(Routes.register);
                         },
                         child: const Text("Tạo tài khoản mới"),
                       ),
