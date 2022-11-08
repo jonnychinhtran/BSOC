@@ -1,19 +1,19 @@
-import 'package:bsoc_book/routes/app_routes.dart';
-import 'package:bsoc_book/view/register.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../routes/app_routes.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Colors.blueGrey[200],
       body: Form(
@@ -36,9 +36,9 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   const Center(
                     child: Text(
-                      "ĐĂNG NHẬP",
+                      "ĐĂNG KÝ TÀI KHOẢN",
                       style: TextStyle(
-                        fontSize: 26,
+                        fontSize: 19,
                         fontWeight: FontWeight.normal,
                       ),
                     ),
@@ -49,7 +49,30 @@ class _LoginPageState extends State<LoginPage> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 0, bottom: 4),
                       child: Text(
-                        'Tên đăng nhập',
+                        'Username (*)',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        hintText: "Username",
+                        isDense: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        )),
+                  ),
+                  SizedBox(height: size.height * 0.02),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 0, bottom: 4),
+                      child: Text(
+                        'Tên đăng nhập (*)',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 16,
@@ -72,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 0, bottom: 4),
                       child: Text(
-                        'Mật khẩu',
+                        'Mật khẩu (*)',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 16,
@@ -90,14 +113,50 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10),
                         )),
                   ),
-                  SizedBox(height: size.height * 0.04),
+                  // SizedBox(height: size.height * 0.02),
+                  // const Align(
+                  //   alignment: Alignment.centerLeft,
+                  //   child: Padding(
+                  //     padding: EdgeInsets.only(left: 0, bottom: 4),
+                  //     child: Text(
+                  //       'Nhập lại mật khẩu (*)',
+                  //       textAlign: TextAlign.left,
+                  //       style: TextStyle(
+                  //         fontSize: 16,
+                  //         fontWeight: FontWeight.bold,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // TextFormField(
+                  //   obscureText: true,
+                  //   decoration: InputDecoration(
+                  //       hintText: "Password",
+                  //       isDense: true,
+                  //       border: OutlineInputBorder(
+                  //         borderRadius: BorderRadius.circular(10),
+                  //       )),
+                  // ),
+                  // SizedBox(height: size.height * 0),
+                  // Row(
+                  //   children: [
+                  //     Checkbox(
+                  //       value: isChecked,
+                  //       onChanged: (bool? value) {
+                  //         isChecked = value!;
+                  //       },
+                  //     ),
+                  //     const Text("Terms"),
+                  //   ],
+                  // ),
+                  SizedBox(height: size.height * 0.02),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.offAllNamed(Routes.home);
+                            Get.offAllNamed(Routes.main);
                           },
                           style: ElevatedButton.styleFrom(
                               primary: Colors.indigo,
@@ -106,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 40, vertical: 15)),
                           child: const Text(
-                            "Đăng nhập",
+                            "Đăng ký",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -122,9 +181,9 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       TextButton(
                         onPressed: () {
-                          Get.offAllNamed(Routes.register);
+                          Get.toNamed(Routes.login);
                         },
-                        child: const Text("Tạo tài khoản mới"),
+                        child: const Text("Đăng nhập"),
                       ),
                     ],
                   )

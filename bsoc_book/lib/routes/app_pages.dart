@@ -1,6 +1,6 @@
-import 'package:bsoc_book/view/login_page.dart';
+import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/main_page.dart';
-import 'package:bsoc_book/view/register.dart';
+import 'package:bsoc_book/view/register/register_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';

@@ -1,22 +1,19 @@
-import 'package:bsoc_book/controller/auth_controller/get_auth.dart';
+import 'package:bsoc_book/routes/app_routes.dart';
+import 'package:bsoc_book/view/register/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../routes/app_routes.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-  var register = Get.put(GetAuth());
-
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: Colors.blueGrey[200],
       body: Form(
@@ -39,9 +36,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: <Widget>[
                   const Center(
                     child: Text(
-                      "ĐĂNG KÝ TÀI KHOẢN",
+                      "ĐĂNG NHẬP",
                       style: TextStyle(
-                        fontSize: 19,
+                        fontSize: 26,
                         fontWeight: FontWeight.normal,
                       ),
                     ),
@@ -52,7 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 0, bottom: 4),
                       child: Text(
-                        'Username (*)',
+                        'Tên đăng nhập',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 16,
@@ -62,44 +59,20 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   TextFormField(
-                    controller: register.username,
                     decoration: InputDecoration(
-                        hintText: "Username",
+                        hintText: "Email",
                         isDense: true,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         )),
                   ),
                   SizedBox(height: size.height * 0.02),
-                  // const Align(
-                  //   alignment: Alignment.centerLeft,
-                  //   child: Padding(
-                  //     padding: EdgeInsets.only(left: 0, bottom: 4),
-                  //     child: Text(
-                  //       'Tên đăng nhập (*)',
-                  //       textAlign: TextAlign.left,
-                  //       style: TextStyle(
-                  //         fontSize: 16,
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // TextFormField(
-                  //   decoration: InputDecoration(
-                  //       hintText: "Email",
-                  //       isDense: true,
-                  //       border: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.circular(10),
-                  //       )),
-                  // ),
-                  // SizedBox(height: size.height * 0.02),
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: EdgeInsets.only(left: 0, bottom: 4),
                       child: Text(
-                        'Mật khẩu (*)',
+                        'Mật khẩu',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 16,
@@ -110,7 +83,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   TextFormField(
                     obscureText: true,
-                    controller: register.password,
                     decoration: InputDecoration(
                         hintText: "Password",
                         isDense: true,
@@ -118,57 +90,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           borderRadius: BorderRadius.circular(10),
                         )),
                   ),
-                  // SizedBox(height: size.height * 0.02),
-                  // const Align(
-                  //   alignment: Alignment.centerLeft,
-                  //   child: Padding(
-                  //     padding: EdgeInsets.only(left: 0, bottom: 4),
-                  //     child: Text(
-                  //       'Nhập lại mật khẩu (*)',
-                  //       textAlign: TextAlign.left,
-                  //       style: TextStyle(
-                  //         fontSize: 16,
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // TextFormField(
-                  //   obscureText: true,
-                  //   decoration: InputDecoration(
-                  //       hintText: "Password",
-                  //       isDense: true,
-                  //       border: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.circular(10),
-                  //       )),
-                  // ),
-                  // SizedBox(height: size.height * 0),
-                  // Row(
-                  //   children: [
-                  //     Checkbox(
-                  //       value: isChecked,
-                  //       onChanged: (bool? value) {
-                  //         isChecked = value!;
-                  //       },
-                  //     ),
-                  //     const Text("Terms"),
-                  //   ],
-                  // ),
-                  SizedBox(height: size.height * 0.02),
+                  SizedBox(height: size.height * 0.04),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            register.registerUser();
-                            // ignore: unnecessary_null_comparison
-                            if (register.registerModel.value != null) {
-                              Get.offAllNamed(Routes.main);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('error')));
-                            }
+                            Get.offAllNamed(Routes.home);
                           },
                           style: ElevatedButton.styleFrom(
                               primary: Colors.indigo,
@@ -177,7 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 40, vertical: 15)),
                           child: const Text(
-                            "Đăng ký",
+                            "Đăng nhập",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -193,9 +122,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     children: [
                       TextButton(
                         onPressed: () {
-                          Get.toNamed(Routes.login);
+                          Get.offAllNamed(Routes.register);
                         },
-                        child: const Text("Đăng nhập"),
+                        child: const Text("Tạo tài khoản mới"),
                       ),
                     ],
                   )
