@@ -1,5 +1,5 @@
 import 'package:bsoc_book/view/register.dart';
-import 'package:bsoc_book/view/index_page.dart';
+import 'package:bsoc_book/view/main_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {

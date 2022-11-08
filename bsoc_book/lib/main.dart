@@ -1,5 +1,5 @@
 import 'package:bsoc_book/view/login_page.dart';
-import 'package:bsoc_book/view/index_page.dart';
+import 'package:bsoc_book/view/main_page.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:flutter/material.dart';
 
