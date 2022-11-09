@@ -1,8 +1,9 @@
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../model/book_model.dart';
+import '../../../data/model/book_model.dart';
 
 final List<String> imgList = [
   'https://bucket.nhanh.vn/store/12365/bn/277780380_150038747477147_3183770388341905537_n.jpg',
@@ -53,6 +54,7 @@ final List<Widget> imageSliders = imgList
     .toList();
 
 class _HomePageState extends State<HomePage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;

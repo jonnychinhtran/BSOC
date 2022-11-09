@@ -1,3 +1,4 @@
+import 'package:bsoc_book/controller/register/register_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../routes/app_routes.dart';
@@ -10,10 +11,11 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  RegisterationController registerController =
+      Get.put(RegisterationController());
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: Colors.blueGrey[200],
       body: Form(
@@ -59,6 +61,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   TextFormField(
+                    controller: registerController.usernameController,
+                    validator: (value) {
+                      return (value == null || value.isEmpty)
+                          ? 'Please Enter Username'
+                          : null;
+                    },
                     decoration: InputDecoration(
                         hintText: "Username",
                         isDense: true,
@@ -82,6 +90,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   TextFormField(
+                    controller: registerController.emailController,
+                    validator: (value) {
+                      return (value == null || value.isEmpty)
+                          ? 'Please Enter Email'
+                          : null;
+                    },
                     decoration: InputDecoration(
                         hintText: "Email",
                         isDense: true,
@@ -106,6 +120,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   TextFormField(
                     obscureText: true,
+                    controller: registerController.passwordController,
+                    validator: (value) {
+                      return (value == null || value.isEmpty)
+                          ? 'Please Enter Password'
+                          : null;
+                    },
                     decoration: InputDecoration(
                         hintText: "Password",
                         isDense: true,
@@ -155,9 +175,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
-                            Get.offAllNamed(Routes.main);
-                          },
+                          onPressed: () =>
+                              registerController.registerWithUser(),
                           style: ElevatedButton.styleFrom(
                               primary: Colors.indigo,
                               shape: RoundedRectangleBorder(

@@ -40,7 +40,10 @@ dependencies:
   equatable: ^2.0.5
   http: ^0.13.5
   json_annotation: ^4.7.0
-  shared_preferences: ^0.5.5
+  shared_preferences: ^2.0.15
+  get_it: ^7.2.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
   
 dev_dependencies:
   flutter_test:

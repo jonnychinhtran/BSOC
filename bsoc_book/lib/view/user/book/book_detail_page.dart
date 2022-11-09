@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../model/book_model.dart';
+import '../../../data/model/book_model.dart';
 
 class DetailBookPage extends StatelessWidget {
   const DetailBookPage({Key? key, required this.books}) : super(key: key);

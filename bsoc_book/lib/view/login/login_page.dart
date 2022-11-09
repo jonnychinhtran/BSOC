@@ -1,16 +1,18 @@
+import 'package:bsoc_book/controller/login/login_controller.dart';
 import 'package:bsoc_book/routes/app_routes.dart';
-import 'package:bsoc_book/view/register/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  LoginController loginController = Get.put(LoginController());
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -59,8 +61,14 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   TextFormField(
+                    controller: loginController.usernameController,
+                    validator: (value) {
+                      return (value == null || value.isEmpty)
+                          ? 'Please Enter Username'
+                          : null;
+                    },
                     decoration: InputDecoration(
-                        hintText: "Email",
+                        hintText: "Username",
                         isDense: true,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -83,6 +91,12 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   TextFormField(
                     obscureText: true,
+                    controller: loginController.passwordController,
+                    validator: (value) {
+                      return (value == null || value.isEmpty)
+                          ? 'Please Enter Password'
+                          : null;
+                    },
                     decoration: InputDecoration(
                         hintText: "Password",
                         isDense: true,
@@ -96,9 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
-                            Get.offAllNamed(Routes.home);
-                          },
+                          onPressed: () => loginController.loginWithUsername(),
                           style: ElevatedButton.styleFrom(
                               primary: Colors.indigo,
                               shape: RoundedRectangleBorder(
