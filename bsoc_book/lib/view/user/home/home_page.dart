@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../data/model/book_model.dart';
+import '../../../data/model/books/book_model.dart';
 
 final List<String> imgList = [
   'https://bucket.nhanh.vn/store/12365/bn/277780380_150038747477147_3183770388341905537_n.jpg',
@@ -78,6 +78,12 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               SizedBox(height: size.height * 0.04),
+              TextButton(
+                  onPressed: () async {
+                    final SharedPreferences? prefs = await _prefs;
+                    print(prefs?.get('accessToken'));
+                  },
+                  child: Text('print token')),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(

@@ -2,11 +2,12 @@ import 'dart:convert';
 
 import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:bsoc_book/view/main_page.dart';
-import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../routes/app_routes.dart';
 
 class LoginController extends GetxController {
   TextEditingController usernameController = TextEditingController();
@@ -14,12 +15,12 @@ class LoginController extends GetxController {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Future<void> loginWithUsername() async {
-    var headers = {'accept': '*/*'};
+    var headers = {'content-type': 'application/json'};
     try {
       var url = Uri.parse(
           ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.loginUser);
       Map body = {
-        'email': usernameController.text,
+        'username': usernameController.text,
         'password': passwordController.text
       };
       http.Response response =
@@ -27,19 +28,17 @@ class LoginController extends GetxController {
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        if (json['code'] == 0) {
-          var token = json['data']['Token'];
-          final SharedPreferences? prefs = await _prefs;
-          await prefs?.setString('token', token);
-
-          usernameController.clear();
-          passwordController.clear();
-          Get.off(const MainIndexPage());
-        } else if (json['code'] == 1) {
-          throw jsonDecode(response.body)['message'];
-        }
+        var token = json['data']['accessToken'];
+        print(response.body);
+        print(token);
+        final SharedPreferences? prefs = await _prefs;
+        await prefs?.setString('accessToken', token);
+        usernameController.clear();
+        passwordController.clear();
+        Get.offNamed(Routes.main);
       } else {
-        throw jsonDecode(response.body)["Message"] ?? "Unknown Error Occured";
+        throw jsonDecode(response.body)["Message"] ??
+            "Liên kết API không chính xác";
       }
     } catch (error) {
       Get.back();

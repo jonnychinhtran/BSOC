@@ -83,7 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 0, bottom: 4),
                       child: Text(
-                        'Tên đăng nhập (*)',
+                        'Email (*)',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 16,
@@ -101,6 +101,35 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     decoration: InputDecoration(
                         hintText: "Email",
+                        isDense: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        )),
+                  ),
+                  SizedBox(height: size.height * 0.02),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 0, bottom: 4),
+                      child: Text(
+                        'Số điện thoại (*)',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  TextFormField(
+                    controller: registerController.phoneController,
+                    validator: (value) {
+                      return (value == null || value.isEmpty)
+                          ? 'Please Enter Phone (10 Numbers)'
+                          : null;
+                    },
+                    decoration: InputDecoration(
+                        hintText: "Phone",
                         isDense: true,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -136,30 +165,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           borderRadius: BorderRadius.circular(10),
                         )),
                   ),
-                  // SizedBox(height: size.height * 0.02),
-                  // const Align(
-                  //   alignment: Alignment.centerLeft,
-                  //   child: Padding(
-                  //     padding: EdgeInsets.only(left: 0, bottom: 4),
-                  //     child: Text(
-                  //       'Nhập lại mật khẩu (*)',
-                  //       textAlign: TextAlign.left,
-                  //       style: TextStyle(
-                  //         fontSize: 16,
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // TextFormField(
-                  //   obscureText: true,
-                  //   decoration: InputDecoration(
-                  //       hintText: "Password",
-                  //       isDense: true,
-                  //       border: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.circular(10),
-                  //       )),
-                  // ),
                   // SizedBox(height: size.height * 0),
                   // Row(
                   //   children: [
