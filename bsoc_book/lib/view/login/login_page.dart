@@ -36,6 +36,9 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Center(
+                      child: Image.asset('assets/images/logo-b4usolution.png')),
+                  SizedBox(height: size.height * 0.02),
                   const Center(
                     child: Text(
                       "ĐĂNG NHẬP",
