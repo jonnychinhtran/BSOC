@@ -11,6 +11,7 @@ class _AuthEndPoints {
 
   //USER INFOR
   final String getUsers = '/api/user/{id}';
+  final String inforUser = '/api/user/infor';
   final String upateUser = '/api/user/update';
   final String resetPass = '/api/user/resetpass';
   final String updateStatus = '/api/user/update-status';

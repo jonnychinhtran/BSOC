@@ -15,7 +15,6 @@ class RegisterationController extends GetxController {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Future<void> registerWithUser() async {
-    // try {
     var headers = {'content-type': 'application/json'};
     var url = Uri.parse(
         ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.registerUser);
@@ -25,30 +24,14 @@ class RegisterationController extends GetxController {
       "password": passwordController.text,
       "phone": phoneController.text,
     };
-
     http.Response response =
         await http.post(url, body: jsonEncode(body), headers: headers);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      // var token = int.parse(json['data']['accessToken']).toString();
-      // final SharedPreferences prefs = await _prefs;
-      // await prefs.setString('accessToken', token);
       Get.offAndToNamed(Routes.login);
     } else {
       throw jsonDecode(response.body)["Message"] ??
           "Liên kết API không chính xác";
     }
-    // } catch (e) {
-    // Get.back();
-    // showDialog(
-    //     context: Get.context!,
-    //     builder: (context) {
-    //       return SimpleDialog(
-    //         title: const Text('Error'),
-    //         contentPadding: const EdgeInsets.all(20),
-    //         children: [Text(e.toString())],
-    //       );
-    //     });
-    // }
   }
 }
