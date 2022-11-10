@@ -24,13 +24,13 @@ class RegisterModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['username'] = this.username;
-    data['email'] = this.email;
-    data['role'] = this.role;
-    data['password'] = this.password;
-    data['phone'] = this.phone;
-    data['id'] = this.id;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['username'] = username;
+    data['email'] = email;
+    data['role'] = role;
+    data['password'] = password;
+    data['phone'] = phone;
+    data['id'] = id;
     return data;
   }
 }
