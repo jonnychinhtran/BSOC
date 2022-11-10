@@ -1,28 +1,31 @@
-class Infor {
+class InforUser {
   int? id;
   String? username;
   String? email;
   String? phone;
+  String? password;
   List<Roles>? roles;
   List<Books>? books;
   List<Chapters>? chapters;
   bool? active;
 
-  Infor(
+  InforUser(
       {this.id,
       this.username,
       this.email,
       this.phone,
+      this.password,
       this.roles,
       this.books,
       this.chapters,
       this.active});
 
-  Infor.fromJson(Map<String, dynamic> json) {
+  InforUser.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     username = json['username'];
     email = json['email'];
     phone = json['phone'];
+    password = json['password'];
     if (json['roles'] != null) {
       roles = <Roles>[];
       json['roles'].forEach((v) {
@@ -50,6 +53,7 @@ class Infor {
     data['username'] = this.username;
     data['email'] = this.email;
     data['phone'] = this.phone;
+    data['password'] = this.password;
     if (this.roles != null) {
       data['roles'] = this.roles!.map((v) => v.toJson()).toList();
     }
@@ -88,21 +92,14 @@ class Books {
   String? bookName;
   String? author;
   String? description;
-  List<Chapters>? chapters;
 
-  Books({this.id, this.bookName, this.author, this.description, this.chapters});
+  Books({this.id, this.bookName, this.author, this.description});
 
   Books.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     bookName = json['bookName'];
     author = json['author'];
     description = json['description'];
-    if (json['chapters'] != null) {
-      chapters = <Chapters>[];
-      json['chapters'].forEach((v) {
-        chapters!.add(new Chapters.fromJson(v));
-      });
-    }
   }
 
   Map<String, dynamic> toJson() {
@@ -111,9 +108,6 @@ class Books {
     data['bookName'] = this.bookName;
     data['author'] = this.author;
     data['description'] = this.description;
-    if (this.chapters != null) {
-      data['chapters'] = this.chapters!.map((v) => v.toJson()).toList();
-    }
     return data;
   }
 }
@@ -122,7 +116,7 @@ class Chapters {
   int? id;
   String? chapterTitle;
   String? filePath;
-  String? book;
+  Books? book;
 
   Chapters({this.id, this.chapterTitle, this.filePath, this.book});
 
@@ -130,7 +124,7 @@ class Chapters {
     id = json['id'];
     chapterTitle = json['chapterTitle'];
     filePath = json['filePath'];
-    book = json['book'];
+    book = json['book'] != null ? new Books.fromJson(json['book']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -138,7 +132,9 @@ class Chapters {
     data['id'] = this.id;
     data['chapterTitle'] = this.chapterTitle;
     data['filePath'] = this.filePath;
-    data['book'] = this.book;
+    if (this.book != null) {
+      data['book'] = this.book!.toJson();
+    }
     return data;
   }
 }

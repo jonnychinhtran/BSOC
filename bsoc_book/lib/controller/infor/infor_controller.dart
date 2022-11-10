@@ -1,23 +1,27 @@
 import 'dart:convert';
-
 import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import '../../data/model/infor/infor_model.dart';
 
 class InforUserController extends GetxController {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  var inforUser = <Infor>[].obs;
-  Future<void> getInforuser() async {
+  Future<void> getInforUser() async {
+    String? token;
+    final prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('accessToken');
+
     var url =
         Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.inforUser);
-    http.Response response = await http.get(url);
+    http.Response response = await http.get(url, headers: {
+      'Authorization': 'Bearer $token',
+    });
 
     if (response.statusCode == 200) {
+      final json = jsonDecode(response.body)['results'];
+
       print(response.body);
     } else {
-      return;
+      throw Exception('Failed to load Infor');
     }
   }
 }

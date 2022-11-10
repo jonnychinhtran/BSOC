@@ -55,17 +55,17 @@ class LoginController extends GetxController {
   }
 
   //save token
-  Future<void> saveToken(String token) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('accessToken');
-    prefs.setString('accessToken', token);
-  }
+  // Future<void> saveToken(String token) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.remove('accessToken');
+  //   prefs.setString('accessToken', token);
+  // }
 
-  //get token
-  Future<String> getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('accessToken') ?? '';
-  }
+  // //get token
+  // Future<String> getToken() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   return prefs.getString('accessToken') ?? '';
+  // }
 
   // Future<void> saveUserId(int id) async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -73,8 +73,8 @@ class LoginController extends GetxController {
   //   prefs.setInt('userId', id);
   // }
 
-  Future<bool> logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return await prefs.remove('accessToken');
-  }
+  // Future<bool> logout() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   return await prefs.remove('accessToken');
+  // }
 }

@@ -62,6 +62,8 @@ class Infor {
     data['active'] = this.active;
     return data;
   }
+
+  void add(Infor infor) {}
 }
 
 class Roles {
