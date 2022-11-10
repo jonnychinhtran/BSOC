@@ -78,12 +78,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               SizedBox(height: size.height * 0.04),
-              TextButton(
-                  onPressed: () async {
-                    final SharedPreferences? prefs = await _prefs;
-                    print(prefs?.get('accessToken'));
-                  },
-                  child: Text('print token')),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
