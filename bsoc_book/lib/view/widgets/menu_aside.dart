@@ -58,11 +58,11 @@ class _MenuAsideState extends State<MenuAside> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.green,
               ),
               child: UserAccountsDrawerHeader(
-                decoration: BoxDecoration(color: Colors.green),
+                decoration: const BoxDecoration(color: Colors.green),
                 accountName: demoReponse == null
                     ? Text('Data is loading')
                     : Text(demoReponse!['username'].toString()),
@@ -71,19 +71,19 @@ class _MenuAsideState extends State<MenuAside> {
                     : Text(demoReponse!['email'].toString()),
               )),
           ListTile(
-            leading: Icon(Icons.bookmark_added_outlined),
-            title: Text('Thư viện sách'),
+            leading: const Icon(Icons.bookmark_added_outlined),
+            title: const Text('Thư viện sách'),
             onTap: () {
               Get.toNamed(Routes.home);
             },
           ),
           ListTile(
-            leading: Icon(Icons.assessment_outlined),
-            title: Text('Rao vặt'),
+            leading: const Icon(Icons.assessment_outlined),
+            title: const Text('Rao vặt'),
           ),
           ListTile(
-            leading: Icon(Icons.contacts_outlined),
-            title: Text('Liên hệ'),
+            leading: const Icon(Icons.contacts_outlined),
+            title: const Text('Liên hệ'),
           ),
           TextButton(
               onPressed: () async {
@@ -93,7 +93,7 @@ class _MenuAsideState extends State<MenuAside> {
               },
               style: ButtonStyle(
                   padding: MaterialStateProperty.all<EdgeInsets>(
-                      EdgeInsets.only(left: -10))),
+                      const EdgeInsets.only(left: -10))),
               child: const ListTile(
                 leading: Icon(Icons.logout_outlined),
                 title: Text('Đăng xuất'),
