@@ -65,29 +65,35 @@ final List<Widget> imageSliders = imgList
 class _HomePageState extends State<HomePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  Future<void> getInforUser() async {
+  Future<void> getAllBooks() async {
     String? token;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
 
     var url =
-        Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.inforUser);
-    http.Response response = await http.get(url, headers: {
-      'Authorization': 'Bearer $token',
-    });
+        Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.getAllBook);
+    http.Response response = await http
+        .get(url, headers: {'Authorization': 'Bearer $token', 'accept': '*/*'});
 
     if (response.statusCode == 200) {
       // var Data = jsonDecode(response.body);
-      setState(() {
-        // demo = response.body;
-        mapDemo = json.decode(response.body);
-        demoReponse = mapDemo;
-      });
-
-      // print(Data);
+      mapDemo = jsonDecode(response.body);
+      listReponse = mapDemo?['content'];
+      // print('home: {listReponse}');
+      // setState(() {
+      //   // demo = response.body;
+      //   mapDemo = jsonDecode(response.body);
+      //   listReponse = mapDemo?['content'];
+      // });
     } else {
       throw Exception('Failed to load Infor');
     }
+  }
+
+  @override
+  void initState() {
+    getAllBooks();
+    super.initState();
   }
 
   @override
@@ -118,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                 child: Padding(
                   padding: EdgeInsets.only(left: 10, bottom: 4),
                   child: Text(
-                    'SÁCH E-COMMERCE',
+                    'EDUCATION BOOKS',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 18,
@@ -129,116 +135,122 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: size.height * 0.02),
               Container(
-                height: 210,
-                child: ListView.builder(
-                  padding: const EdgeInsets.only(left: 15),
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 6,
+                height: 500,
+                child: GridView.builder(
+                  padding: EdgeInsets.all(15),
+                  // shrinkWrap: true,
+                  // scrollDirection: Axis.horizontal,
+                  itemCount: listReponse == null ? 0 : listReponse?.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.8,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20),
                   itemBuilder: (BuildContext context, int index) {
-                    Book books = book[index + 2];
-                    return SizedBox(
-                      width: 150,
-                      height: 210,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => DetailBookPage(
-                                            books: book[index])));
-                              },
-                              child: SizedBox(
-                                height: 130,
-                                width: 100,
-                                child: Image.network(
-                                  books.imageUrl,
-                                  fit: BoxFit.fill,
+                    return InkWell(
+                      child: Hero(
+                        tag: listReponse?[index]['bookName'],
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => DetailBookPage(
+                                  //             books: listReponse?[index])));
+                                },
+                                child: SizedBox(
+                                  height: 120,
+                                  width: 100,
+                                  child: Image.network(
+                                    'http://ec2-54-172-194-31.compute-1.amazonaws.com' +
+                                        listReponse?[index]['image'],
+                                    fit: BoxFit.fill,
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: size.height * 0.02),
-                            Text(
-                              books.title,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                              SizedBox(height: size.height * 0.02),
+                              Text(
+                                listReponse?[index]['bookName'],
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: size.height * 0.02),
-                            Text(
-                              'by ${books.author}',
-                              style: const TextStyle(fontSize: 12),
-                            )
-                          ]),
+                              SizedBox(height: size.height * 0.02),
+                              Text(
+                                'by ${listReponse?[index]['author']}',
+                                style: const TextStyle(fontSize: 12),
+                              )
+                            ]),
+                      ),
                     );
                   },
                 ),
               ),
               SizedBox(height: size.height * 0.04),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 10, bottom: 4),
-                  child: Text(
-                    'SÁCH START-UP',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: size.height * 0.02),
-              Container(
-                height: 210,
-                child: ListView.builder(
-                  padding: const EdgeInsets.only(left: 15),
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 6,
-                  itemBuilder: (BuildContext context, int index) {
-                    Book books = book[index + 2];
-                    return SizedBox(
-                      width: 150,
-                      height: 210,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 130,
-                              width: 100,
-                              child: Image.network(
-                                books.imageUrl,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                            SizedBox(height: size.height * 0.02),
-                            Text(
-                              books.title,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(height: size.height * 0.02),
-                            Text(
-                              'by ${books.author}',
-                              style: const TextStyle(fontSize: 12),
-                            )
-                          ]),
-                    );
-                  },
-                ),
-              ),
+              // const Align(
+              //   alignment: Alignment.centerLeft,
+              //   child: Padding(
+              //     padding: EdgeInsets.only(left: 10, bottom: 4),
+              //     child: Text(
+              //       'SÁCH START-UP',
+              //       textAlign: TextAlign.left,
+              //       style: TextStyle(
+              //         fontSize: 18,
+              //         fontWeight: FontWeight.bold,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(height: size.height * 0.02),
+              // Container(
+              //   height: 210,
+              //   child: ListView.builder(
+              //     padding: const EdgeInsets.only(left: 15),
+              //     shrinkWrap: true,
+              //     scrollDirection: Axis.horizontal,
+              //     itemCount: 6,
+              //     itemBuilder: (BuildContext context, int index) {
+              //       Book books = book[index + 2];
+              //       return SizedBox(
+              //         width: 150,
+              //         height: 210,
+              //         child: Column(
+              //             mainAxisAlignment: MainAxisAlignment.start,
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: [
+              //               SizedBox(
+              //                 height: 130,
+              //                 width: 100,
+              //                 child: Image.network(
+              //                   books.imageUrl,
+              //                   fit: BoxFit.fill,
+              //                 ),
+              //               ),
+              //               SizedBox(height: size.height * 0.02),
+              //               Text(
+              //                 books.title,
+              //                 overflow: TextOverflow.ellipsis,
+              //                 style: const TextStyle(
+              //                   fontWeight: FontWeight.bold,
+              //                   fontSize: 16,
+              //                 ),
+              //               ),
+              //               SizedBox(height: size.height * 0.02),
+              //               Text(
+              //                 'by ${books.author}',
+              //                 style: const TextStyle(fontSize: 12),
+              //               )
+              //             ]),
+              //       );
+              //     },
+              //   ),
+              // ),
             ],
           ),
         ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:bsoc_book/routes/app_routes.dart';
+import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,9 +45,15 @@ class _MenuAsideState extends State<MenuAside> {
     }
   }
 
+  Future<bool> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return await prefs.remove('accessToken');
+  }
+
   @override
   void initState() {
     getInforUser();
+    logout();
     super.initState();
   }
 
@@ -74,7 +81,7 @@ class _MenuAsideState extends State<MenuAside> {
             leading: const Icon(Icons.bookmark_added_outlined),
             title: const Text('Thư viện sách'),
             onTap: () {
-              Get.toNamed(Routes.home);
+              // Get.toNamed(Routes.home);
             },
           ),
           ListTile(
@@ -87,9 +94,8 @@ class _MenuAsideState extends State<MenuAside> {
           ),
           TextButton(
               onPressed: () async {
-                final SharedPreferences? prefs = await _prefs;
-                prefs?.clear();
-                Get.offAll(Routes.login);
+                logout();
+                Get.offAll(LoginPage());
               },
               style: ButtonStyle(
                   padding: MaterialStateProperty.all<EdgeInsets>(
