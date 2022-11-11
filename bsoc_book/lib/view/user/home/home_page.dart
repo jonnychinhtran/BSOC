@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../../data/model/books/book_model.dart';
 
@@ -64,6 +65,7 @@ final List<Widget> imageSliders = imgList
 
 class _HomePageState extends State<HomePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  bool isLoading = true;
 
   Future<void> getAllBooks() async {
     String? token;
@@ -76,15 +78,11 @@ class _HomePageState extends State<HomePage> {
         .get(url, headers: {'Authorization': 'Bearer $token', 'accept': '*/*'});
 
     if (response.statusCode == 200) {
-      // var Data = jsonDecode(response.body);
-      mapDemo = jsonDecode(response.body);
-      listReponse = mapDemo?['content'];
-      // print('home: {listReponse}');
-      // setState(() {
-      //   // demo = response.body;
-      //   mapDemo = jsonDecode(response.body);
-      //   listReponse = mapDemo?['content'];
-      // });
+      setState(() {
+        isLoading = false;
+        mapDemo = jsonDecode(response.body);
+        listReponse = mapDemo?['content'];
+      });
     } else {
       throw Exception('Failed to load Infor');
     }
@@ -99,6 +97,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    isLoading
+        ? LoadingAnimationWidget.discreteCircle(
+            color: Colors.blue,
+            secondRingColor: Colors.black,
+            thirdRingColor: Colors.purple,
+            size: 50,
+          )
+        : Text(listReponse?.toString() ?? "");
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
