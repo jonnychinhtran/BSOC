@@ -2,13 +2,10 @@ import 'dart:convert';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
-import '../../../data/model/books/book_model.dart';
 
 final List<String> imgList = [
   'https://bucket.nhanh.vn/store/12365/bn/277780380_150038747477147_3183770388341905537_n.jpg',
@@ -78,14 +75,29 @@ class _HomePageState extends State<HomePage> {
         .get(url, headers: {'Authorization': 'Bearer $token', 'accept': '*/*'});
 
     if (response.statusCode == 200) {
+      mapDemo = jsonDecode(response.body);
+      listReponse = mapDemo?['content'];
       setState(() {
         isLoading = false;
-        mapDemo = jsonDecode(response.body);
-        listReponse = mapDemo?['content'];
       });
     } else {
       throw Exception('Failed to load Infor');
     }
+  }
+
+  Future<void> saveBookId(int id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('idBook', id);
+  }
+
+  Future<int> getBookId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('idBook') ?? 0;
+  }
+
+  Future<String> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('accessToken') ?? '';
   }
 
   @override
@@ -162,11 +174,14 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => DetailBookPage(
-                                  //             books: listReponse?[index])));
+//                                   SharedPreferences prefs = await SharedPreferences.getInstance();
+// String info = await prefs.getString('user_data');
+                                  getBookId();
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const DetailBookPage()));
                                 },
                                 child: SizedBox(
                                   height: 120,

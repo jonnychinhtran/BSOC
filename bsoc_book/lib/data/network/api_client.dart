@@ -21,7 +21,7 @@ class _AuthEndPoints {
   //BOOK
   final String getAllBook = '/api/book/all-book';
   final String createBook = '/api/book/create';
-  final String getItemBook = '/api/book/{id}';
+  final String getItemBook = '/api/book/2';
 
   //CHAPTER BOOK
   final String createChapter = '/api/chapter';
