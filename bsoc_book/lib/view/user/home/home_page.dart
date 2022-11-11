@@ -77,6 +77,10 @@ class _HomePageState extends State<HomePage> {
     if (response.statusCode == 200) {
       mapDemo = jsonDecode(response.body);
       listReponse = mapDemo?['content'];
+      int? abc = mapDemo?['content']['id'];
+      print(abc);
+      final SharedPreferences? prefs = await _prefs;
+      // await prefs?.setString('idbook', token);
       setState(() {
         isLoading = false;
       });
@@ -167,16 +171,18 @@ class _HomePageState extends State<HomePage> {
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       child: Hero(
-                        tag: listReponse?[index]['bookName'],
+                        tag: listReponse![index]['id'].toString(),
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               GestureDetector(
-                                onTap: () {
+                                onTap: () async {
 //                                   SharedPreferences prefs = await SharedPreferences.getInstance();
 // String info = await prefs.getString('user_data');
-                                  getBookId();
+                                  final SharedPreferences? prefs = await _prefs;
+                                  await prefs?.setString('idbook',
+                                      listReponse![index]['id'].toString());
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -195,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               SizedBox(height: size.height * 0.02),
                               Text(
-                                listReponse?[index]['bookName'],
+                                listReponse![index]['id'].toString(),
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -206,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 'by ${listReponse?[index]['author']}',
                                 style: const TextStyle(fontSize: 12),
-                              )
+                              ),
                             ]),
                       ),
                     );
