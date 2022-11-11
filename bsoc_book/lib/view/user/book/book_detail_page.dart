@@ -61,11 +61,11 @@ class _DetailBookPageState extends State<DetailBookPage> {
       appBar: AppBar(
         title: const Text('Detail Book'),
       ),
-      body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Container(
-            child: Text(mapDemo.toString()),
-          )),
+      // body: Padding(
+      //     padding: const EdgeInsets.all(16.0),
+      //     child: Container(
+      //       child: Text(mapDemo.toString()),
+      //     )),
     );
   }
 }

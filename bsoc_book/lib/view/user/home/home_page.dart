@@ -77,31 +77,12 @@ class _HomePageState extends State<HomePage> {
     if (response.statusCode == 200) {
       mapDemo = jsonDecode(response.body);
       listReponse = mapDemo?['content'];
-      int? abc = mapDemo?['content']['id'];
-      print(abc);
-      final SharedPreferences? prefs = await _prefs;
-      // await prefs?.setString('idbook', token);
       setState(() {
         isLoading = false;
       });
     } else {
       throw Exception('Failed to load Infor');
     }
-  }
-
-  Future<void> saveBookId(int id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('idBook', id);
-  }
-
-  Future<int> getBookId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('idBook') ?? 0;
-  }
-
-  Future<String> getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('accessToken') ?? '';
   }
 
   @override
@@ -219,65 +200,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
-              SizedBox(height: size.height * 0.04),
-              // const Align(
-              //   alignment: Alignment.centerLeft,
-              //   child: Padding(
-              //     padding: EdgeInsets.only(left: 10, bottom: 4),
-              //     child: Text(
-              //       'SÁCH START-UP',
-              //       textAlign: TextAlign.left,
-              //       style: TextStyle(
-              //         fontSize: 18,
-              //         fontWeight: FontWeight.bold,
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              // SizedBox(height: size.height * 0.02),
-              // Container(
-              //   height: 210,
-              //   child: ListView.builder(
-              //     padding: const EdgeInsets.only(left: 15),
-              //     shrinkWrap: true,
-              //     scrollDirection: Axis.horizontal,
-              //     itemCount: 6,
-              //     itemBuilder: (BuildContext context, int index) {
-              //       Book books = book[index + 2];
-              //       return SizedBox(
-              //         width: 150,
-              //         height: 210,
-              //         child: Column(
-              //             mainAxisAlignment: MainAxisAlignment.start,
-              //             crossAxisAlignment: CrossAxisAlignment.start,
-              //             children: [
-              //               SizedBox(
-              //                 height: 130,
-              //                 width: 100,
-              //                 child: Image.network(
-              //                   books.imageUrl,
-              //                   fit: BoxFit.fill,
-              //                 ),
-              //               ),
-              //               SizedBox(height: size.height * 0.02),
-              //               Text(
-              //                 books.title,
-              //                 overflow: TextOverflow.ellipsis,
-              //                 style: const TextStyle(
-              //                   fontWeight: FontWeight.bold,
-              //                   fontSize: 16,
-              //                 ),
-              //               ),
-              //               SizedBox(height: size.height * 0.02),
-              //               Text(
-              //                 'by ${books.author}',
-              //                 style: const TextStyle(fontSize: 12),
-              //               )
-              //             ]),
-              //       );
-              //     },
-              //   ),
-              // ),
+              SizedBox(height: size.height * 0.05),
             ],
           ),
         ),
