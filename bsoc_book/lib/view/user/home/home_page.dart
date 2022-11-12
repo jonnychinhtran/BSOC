@@ -71,8 +71,10 @@ class _HomePageState extends State<HomePage> {
 
     var url =
         Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.getAllBook);
-    http.Response response = await http
-        .get(url, headers: {'Authorization': 'Bearer $token', 'accept': '*/*'});
+    http.Response response = await http.get(url, headers: {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/pdf'
+    });
 
     if (response.statusCode == 200) {
       mapDemo = jsonDecode(response.body);
@@ -85,9 +87,15 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<String> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('accessToken') ?? '';
+  }
+
   @override
   void initState() {
     getAllBooks();
+    getToken();
     super.initState();
   }
 
@@ -103,108 +111,122 @@ class _HomePageState extends State<HomePage> {
           )
         : Text(listReponse?.toString() ?? "");
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: Column(
-            children: [
-              SizedBox(height: size.height * 0.02),
-              FlutterCarousel(
-                items: imageSliders,
-                options: CarouselOptions(
-                  enlargeCenterPage: true,
-                  autoPlay: false,
-                  autoPlayInterval: const Duration(seconds: 1),
-                  height: 200,
-                  viewportFraction: 0.8,
-                  slideIndicator: CircularWaveSlideIndicator(),
-                  floatingIndicator: true,
-                ),
+      body: isLoading
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  CircularProgressIndicator(),
+                ],
               ),
-              SizedBox(height: size.height * 0.04),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 10, bottom: 4),
-                  child: Text(
-                    'EDUCATION BOOKS',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: size.height * 0.02),
-              Container(
-                height: 500,
-                child: GridView.builder(
-                  padding: EdgeInsets.all(15),
-                  // shrinkWrap: true,
-                  // scrollDirection: Axis.horizontal,
-                  itemCount: listReponse == null ? 0 : listReponse?.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.8,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20),
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      child: Hero(
-                        tag: listReponse![index]['id'].toString(),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                onTap: () async {
-//                                   SharedPreferences prefs = await SharedPreferences.getInstance();
-// String info = await prefs.getString('user_data');
-                                  final SharedPreferences? prefs = await _prefs;
-                                  await prefs?.setString('idbook',
-                                      listReponse![index]['id'].toString());
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const DetailBookPage()));
-                                },
-                                child: SizedBox(
-                                  height: 120,
-                                  width: 100,
-                                  child: Image.network(
-                                    'http://ec2-54-172-194-31.compute-1.amazonaws.com' +
-                                        listReponse?[index]['image'],
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: size.height * 0.02),
-                              Text(
-                                listReponse![index]['id'].toString(),
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              SizedBox(height: size.height * 0.02),
-                              Text(
-                                'by ${listReponse?[index]['author']}',
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                            ]),
+            )
+          : SafeArea(
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                child: Column(
+                  children: [
+                    SizedBox(height: size.height * 0.02),
+                    FlutterCarousel(
+                      items: imageSliders,
+                      options: CarouselOptions(
+                        enlargeCenterPage: true,
+                        autoPlay: false,
+                        autoPlayInterval: const Duration(seconds: 1),
+                        height: 200,
+                        viewportFraction: 0.8,
+                        slideIndicator: CircularWaveSlideIndicator(),
+                        floatingIndicator: true,
                       ),
-                    );
-                  },
+                    ),
+                    SizedBox(height: size.height * 0.04),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 10, bottom: 4),
+                        child: Text(
+                          'EDUCATION BOOKS',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: size.height * 0.02),
+                    Container(
+                      height: 500,
+                      child: GridView.builder(
+                        padding: EdgeInsets.all(15),
+                        itemCount:
+                            listReponse == null ? 0 : listReponse?.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 0.8,
+                                crossAxisSpacing: 20,
+                                mainAxisSpacing: 20),
+                        itemBuilder: (BuildContext context, int index) {
+                          return InkWell(
+                            child: Hero(
+                              tag: listReponse![index]['id'].toString(),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () async {
+                                        final SharedPreferences? prefs =
+                                            await _prefs;
+                                        await prefs?.setString(
+                                            'idbook',
+                                            listReponse![index]['id']
+                                                .toString());
+
+                                        print(
+                                            'idBook: ${listReponse![index]['id'].toString()}');
+
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const DetailBookPage()));
+                                      },
+                                      child: SizedBox(
+                                        height: 120,
+                                        width: 100,
+                                        child: Image.network(
+                                          'http://ec2-54-172-194-31.compute-1.amazonaws.com' +
+                                              listReponse?[index]['image'],
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: size.height * 0.02),
+                                    Text(
+                                      listReponse?[index]['bookName'],
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    SizedBox(height: size.height * 0.02),
+                                    Text(
+                                      'by ${listReponse?[index]['author']}',
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  ]),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: size.height * 0.05),
+                  ],
                 ),
               ),
-              SizedBox(height: size.height * 0.05),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }
