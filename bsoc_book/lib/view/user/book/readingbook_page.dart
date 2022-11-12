@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 Map? viewBook;
 
@@ -56,25 +57,25 @@ class _ReadeBookState extends State<ReadeBook> {
     }
   }
 
-  void loadDocument() async {
-    /// Clears the cache before download, so [PDFDocument.fromURLWithDownloadProgress.downloadProgress()]
-    /// is always executed (meant only for testing).
-    await DefaultCacheManager().emptyCache();
-    String? namepdf;
-    final prefs = await SharedPreferences.getInstance();
-    namepdf = prefs.getString('filename');
+  // void loadDocument() async {
+  //   /// Clears the cache before download, so [PDFDocument.fromURLWithDownloadProgress.downloadProgress()]
+  //   /// is always executed (meant only for testing).
+  //   await DefaultCacheManager().emptyCache();
+  //   String? namepdf;
+  //   final prefs = await SharedPreferences.getInstance();
+  //   namepdf = prefs.getString('filename');
 
-    PDFDocument.fromURLWithDownloadProgress(
-      'http://ec2-54-172-194-31.compute-1.amazonaws.com/$namepdf',
-      downloadProgress: (downloadProgress) => setState(() {
-        this.downloadProgress = downloadProgress;
-      }),
-      onDownloadComplete: (document) => setState(() {
-        this.document = document;
-        _isLoading = false;
-      }),
-    );
-  }
+  //   PDFDocument.fromURLWithDownloadProgress(
+  //     'http://ec2-54-172-194-31.compute-1.amazonaws.com/$namepdf',
+  //     downloadProgress: (downloadProgress) => setState(() {
+  //       this.downloadProgress = downloadProgress;
+  //     }),
+  //     onDownloadComplete: (document) => setState(() {
+  //       this.document = document;
+  //       _isLoading = false;
+  //     }),
+  //   );
+  // }
 
   // Widget buildProgress() {
   //   if (downloadProgress == null) return SizedBox();
@@ -100,7 +101,7 @@ class _ReadeBookState extends State<ReadeBook> {
   void initState() {
     super.initState();
     _loadFileName();
-    loadDocument();
+    // loadDocument();
   }
 
   @override
@@ -133,7 +134,7 @@ class _ReadeBookState extends State<ReadeBook> {
             ? Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
+                  children: const [
                     CircularProgressIndicator(),
                     // buildProgress(),
                   ],

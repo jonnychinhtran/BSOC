@@ -45,6 +45,8 @@ dependencies:
   hive_flutter: ^1.1.0
   loading_animation_widget: ^1.2.0+3
   easy_pdf_viewer: ^1.0.4
+  flutter_downloader: ^1.9.1
+  flutter_pdfview: ^1.2.5
 
 dev_dependencies:
   flutter_test:
