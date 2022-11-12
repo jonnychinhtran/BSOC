@@ -38,10 +38,12 @@ class _DetailBookPageState extends State<DetailBookPage>
 
     if (response.statusCode == 200) {
       // print(response.body);
-      mapDemo = jsonDecode(response.body);
-      listReponse = mapDemo!['chapters'];
-      print('Detail Book: $listReponse');
+      await prefs.setString('token', response.body);
+      print(prefs.getString('token'));
       setState(() {
+        mapDemo = jsonDecode(response.body);
+        listReponse = mapDemo!['chapters'];
+        print('Detail Book: $listReponse');
         isLoading = false;
       });
     } else {

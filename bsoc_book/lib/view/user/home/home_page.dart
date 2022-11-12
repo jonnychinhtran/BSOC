@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
     String? token;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
-
+    print("Token home: $token");
     var url =
         Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.getAllBook);
     http.Response response = await http.get(url, headers: {
@@ -77,9 +77,11 @@ class _HomePageState extends State<HomePage> {
     });
 
     if (response.statusCode == 200) {
-      mapDemo = jsonDecode(response.body);
-      listReponse = mapDemo?['content'];
+      await prefs.setString('token', response.body);
+      print(prefs.getString('token'));
       setState(() {
+        mapDemo = jsonDecode(response.body);
+        listReponse = mapDemo?['content'];
         isLoading = false;
       });
     } else {
@@ -95,7 +97,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     getAllBooks();
-    getToken();
     super.initState();
   }
 
