@@ -187,25 +187,25 @@ class _DetailBookPageState extends State<DetailBookPage>
                                             ),
                                             IconButton(
                                                 onPressed: () async {
-                                                  final SharedPreferences?
-                                                      prefs = await _prefs;
-                                                  await prefs?.setString(
-                                                      'chapterId',
-                                                      listReponse![index]
-                                                              ['chapterId']
-                                                          .toString());
-                                                  await prefs?.setString(
-                                                      'filename',
-                                                      listReponse?[index]
-                                                          ['filePath']);
-                                                  print(listReponse![index]
-                                                          ['chapterId']
-                                                      .toString());
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              ReadeBook()));
+                                                  // final SharedPreferences?
+                                                  //     prefs = await _prefs;
+                                                  // await prefs?.setString(
+                                                  //     'chapterId',
+                                                  //     listReponse![index]
+                                                  //             ['chapterId']
+                                                  //         .toString());
+                                                  // await prefs?.setString(
+                                                  //     'filename',
+                                                  //     listReponse?[index]
+                                                  //         ['filePath']);
+                                                  // print(listReponse![index]
+                                                  //         ['chapterId']
+                                                  //     .toString());
+                                                  // Navigator.push(
+                                                  //     context,
+                                                  //     MaterialPageRoute(
+                                                  //         builder: (context) =>
+                                                  // ReadeBook()));
                                                 },
                                                 // onPressed: () {},
                                                 icon: Icon(
