@@ -32,28 +32,16 @@ class _MenuAsideState extends State<MenuAside> {
     });
 
     if (response.statusCode == 200) {
-      // var Data = jsonDecode(response.body);
-      setState(() {
-        // demo = response.body;
-        mapDemo = json.decode(response.body);
-        demoReponse = mapDemo;
-      });
-
-      // print(Data);
+      mapDemo = json.decode(response.body);
+      demoReponse = mapDemo;
     } else {
       throw Exception('Failed to load Infor');
     }
   }
 
-  Future<bool> logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return await prefs.remove('accessToken');
-  }
-
   @override
   void initState() {
     getInforUser();
-    logout();
     super.initState();
   }
 
@@ -94,7 +82,8 @@ class _MenuAsideState extends State<MenuAside> {
           ),
           TextButton(
               onPressed: () async {
-                logout();
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.remove('accessToken');
                 Get.offAll(LoginPage());
               },
               style: ButtonStyle(
