@@ -129,15 +129,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       TextFormField(
                         controller: registerController.phoneController,
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Vui lòng nhập số điện thoại';
-                          } else if (int.parse(value) < 1 ||
-                              int.parse(value) > 10) {
-                            return 'Nhập không quá 10 số';
-                          }
-                          return null;
+                          return (value == null || value.isEmpty)
+                              ? 'Vui lòng nhập Số điện thoại'
+                              : null;
                         },
-                        maxLength: 10,
+                        maxLength: 2,
                         decoration: InputDecoration(
                             hintText: "Phone",
                             isDense: true,
