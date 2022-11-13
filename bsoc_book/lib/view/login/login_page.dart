@@ -1,5 +1,6 @@
 import 'package:bsoc_book/controller/login/login_controller.dart';
 import 'package:bsoc_book/routes/app_routes.dart';
+import 'package:bsoc_book/view/register/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
