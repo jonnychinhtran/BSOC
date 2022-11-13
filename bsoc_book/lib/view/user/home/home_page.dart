@@ -233,7 +233,30 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
-                    SizedBox(height: size.height * 0.05),
+                    // SizedBox(height: size.height * 0.05),
+                    Container(
+                      height: 100,
+                      color: Colors.grey.shade800,
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Center(
+                            child: Column(
+                          children: [
+                            Text(
+                              "© B4USOLUTION. All Rights Reserved.",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              "Privacy Policy Designed by B4USOLUTION",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
+                            )
+                          ],
+                        )),
+                      ),
+                    )
                   ],
                 ),
               ),
