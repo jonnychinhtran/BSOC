@@ -32,9 +32,8 @@ class _MenuAsideState extends State<MenuAside> {
     http.Response response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
     });
-
     if (response.statusCode == 200) {
-      mapDemo = json.decode(response.body);
+      mapDemo = jsonDecode(response.body);
       demoReponse = mapDemo;
     } else {
       throw Exception('Failed to load Infor');
@@ -55,17 +54,37 @@ class _MenuAsideState extends State<MenuAside> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Colors.green,
-              ),
-              child: UserAccountsDrawerHeader(
-                decoration: const BoxDecoration(color: Colors.green),
-                accountName: demoReponse == null
-                    ? Text('Data is loading')
-                    : Text(demoReponse!['username'].toString()),
-                accountEmail: demoReponse == null
-                    ? Text('Data is loading')
-                    : Text(demoReponse!['email'].toString()),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: <Color>[Colors.lightBlue, Colors.blue])),
+              child: Container(
+                child: Column(
+                  children: <Widget>[
+                    Material(
+                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                      elevation: 10,
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Image.asset("assets/images/logo-b4usolution.png",
+                            height: 60, width: 60),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      demoReponse == null
+                          ? 'Data is loading'
+                          : demoReponse!['username'].toString(),
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      demoReponse == null
+                          ? 'Data is loading'
+                          : demoReponse!['email'].toString(),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    )
+                  ],
+                ),
               )),
           ListTile(
             leading: const Icon(Icons.bookmark_added_outlined),
