@@ -1,16 +1,21 @@
-import 'package:bsoc_book/view/user/book/readingbook_page.dart';
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 
 String? demo;
+int? chapters;
 Map? mapDemo;
 Map? demoReponse;
 List? listReponse;
+Map? viewbook;
 
 class DetailBookPage extends StatefulWidget {
   const DetailBookPage({super.key});
@@ -39,13 +44,14 @@ class _DetailBookPageState extends State<DetailBookPage>
         await http.get(url, headers: {'Authorization': 'Bearer $token'});
 
     if (response.statusCode == 200) {
-      // print(response.body);
       await prefs.setString('token', response.body);
       print(prefs.getString('token'));
+      mapDemo = jsonDecode(response.body);
+      listReponse = mapDemo!['chapters'];
+      // chapters = jsonDecode(mapDemo!['chapters']['id'].toString());
+      // print('ChapterID: $chapters');
       setState(() {
-        mapDemo = jsonDecode(response.body);
-        listReponse = mapDemo!['chapters'];
-        print('Detail Book: $listReponse');
+        // print(listReponse);
         isLoading = false;
       });
     } else {
@@ -53,14 +59,32 @@ class _DetailBookPageState extends State<DetailBookPage>
     }
   }
 
-  Future<int> getBookId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('idBook') ?? 0;
-  }
+  // getDownloadBooks() async {
+  //   String? token;
+  //   String? idchapter;
+  //   final prefs = await SharedPreferences.getInstance();
+  //   token = prefs.getString('accessToken');
+  //   idchapter = prefs.getString('chapterId');
+  //   // print('ChapterID: $idchapter');
+
+  //   var url = Uri.parse(
+  //       'http://ec2-54-172-194-31.compute-1.amazonaws.com/api/chapter/download/$idchapter');
+  //   http.Response response =
+  //       await http.get(url, headers: {'Authorization': 'Bearer $token'});
+
+  //   if (response.statusCode == 200) {
+  //     viewbook = jsonDecode(response.body);
+  //     print('PDF: $viewbook');
+  //     isLoading = false;
+  //   } else {
+  //     throw Exception('Failed to load Infor');
+  //   }
+  // }
 
   @override
   void initState() {
     getItemBooks();
+    // getDownloadBooks();
     super.initState();
   }
 
@@ -186,28 +210,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                   color: Colors.white),
                                             ),
                                             IconButton(
-                                                onPressed: () async {
-                                                  // final SharedPreferences?
-                                                  //     prefs = await _prefs;
-                                                  // await prefs?.setString(
-                                                  //     'chapterId',
-                                                  //     listReponse![index]
-                                                  //             ['chapterId']
-                                                  //         .toString());
-                                                  // await prefs?.setString(
-                                                  //     'filename',
-                                                  //     listReponse?[index]
-                                                  //         ['filePath']);
-                                                  // print(listReponse![index]
-                                                  //         ['chapterId']
-                                                  //     .toString());
-                                                  // Navigator.push(
-                                                  //     context,
-                                                  //     MaterialPageRoute(
-                                                  //         builder: (context) =>
-                                                  // ReadeBook()));
-                                                },
-                                                // onPressed: () {},
+                                                onPressed: () async {},
                                                 icon: Icon(
                                                   Icons.import_contacts_sharp,
                                                   color: Colors.yellow.shade200,
@@ -223,7 +226,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                             ]),
                           );
                         }),
-                    Text(listReponse.toString()),
+                    Container(),
                   ]),
                 ),
               ],

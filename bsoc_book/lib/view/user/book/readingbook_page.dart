@@ -36,26 +36,26 @@
 //   //   setState(() => _isLoading = false);
 //   // }
 
-//   getDownloadBooks() async {
-//     String? token;
-//     final prefs = await SharedPreferences.getInstance();
-//     token = prefs.getString('accessToken');
+  // getDownloadBooks() async {
+  //   String? token;
+  //   final prefs = await SharedPreferences.getInstance();
+  //   token = prefs.getString('accessToken');
 
-//     var url = Uri.parse(
-//         'http://ec2-54-172-194-31.compute-1.amazonaws.com/api/chapter/download/$idchapter');
-//     http.Response response =
-//         await http.get(url, headers: {'Authorization': 'Bearer $token'});
+  //   var url = Uri.parse(
+  //       'http://ec2-54-172-194-31.compute-1.amazonaws.com/api/chapter/download/$idchapter');
+  //   http.Response response =
+  //       await http.get(url, headers: {'Authorization': 'Bearer $token'});
 
-//     if (response.statusCode == 200) {
-//       viewBook = jsonDecode(response.body);
-//       print('viewbook: $viewBook');
-//       setState(() {
-//         _isLoading = false;
-//       });
-//     } else {
-//       throw Exception('Failed to load Infor');
-//     }
-//   }
+  //   if (response.statusCode == 200) {
+  //     viewBook = jsonDecode(response.body);
+  //     print('viewbook: $viewBook');
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //   } else {
+  //     throw Exception('Failed to load Infor');
+  //   }
+  // }
 
 //   // void loadDocument() async {
 //   //   /// Clears the cache before download, so [PDFDocument.fromURLWithDownloadProgress.downloadProgress()]
@@ -282,3 +282,4 @@
 //     );
 //   }
 // }
+
