@@ -133,7 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ? 'Vui lòng nhập Số điện thoại'
                               : null;
                         },
-                        maxLength: 2,
+                        maxLength: 10,
                         decoration: InputDecoration(
                             hintText: "Phone",
                             isDense: true,
