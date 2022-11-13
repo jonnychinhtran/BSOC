@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
@@ -56,39 +58,6 @@ class _DetailBookPageState extends State<DetailBookPage>
       throw Exception('Failed to load Infor');
     }
   }
-
-  // void _getIdChapter() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     ipchapter = prefs.getString('idchapter') ?? '';
-  //     print('ipchater: $ipchapter');
-  //   });
-  // }
-
-  // void getDownloadBooks() async {
-  //   String? token;
-  //   String? idchapter;
-  //   final prefs = await SharedPreferences.getInstance();
-  //   token = prefs.getString('accessToken');
-  //   idchapter = prefs.getString('idchapter');
-  //   print('Token ChapterID: $token');
-  //   print('ChapterID: $idchapter');
-
-  //   var url = Uri.parse(
-  //       'http://ec2-54-172-194-31.compute-1.amazonaws.com/api/chapter/download/$idchapter');
-  //   http.Response response = await http.get(url, headers: {
-  //     'Authorization': 'Bearer $token',
-  //     'Accept': 'application/pdf'
-  //   });
-
-  //   if (response.statusCode == 200) {
-  //     datapdf = response.body;
-  //     print('DATA Chapter: $datapdf');
-  //     isLoading = false;
-  //   } else {
-  //     throw Exception('Failed to load Infor');
-  //   }
-  // }
 
   @override
   void initState() {
@@ -282,7 +251,27 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                         Colors.yellow.shade200,
                                                   )),
                                               IconButton(
-                                                  onPressed: () {},
+                                                  onPressed: () async {
+                                                    final SharedPreferences?
+                                                        prefs = await _prefs;
+                                                    await prefs?.setString(
+                                                        'idchapter',
+                                                        listReponse![index]
+                                                                ['id']
+                                                            .toString());
+                                                    await prefs?.setString(
+                                                        'titleChapter',
+                                                        listReponse![index]
+                                                                ['chapterTitle']
+                                                            .toString());
+                                                    print(
+                                                        'ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          const DownloadingDialog(),
+                                                    );
+                                                  },
                                                   icon: Icon(
                                                       Icons.download_sharp,
                                                       color: Colors
@@ -315,12 +304,10 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
   void getTitleChap() async {
     final prefs = await SharedPreferences.getInstance();
     titleChapter = prefs.getString('accessToken');
-    print('Title Chap: $titleChapter');
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     ApiServiceProvider.loadPDF().then((value) {
@@ -334,7 +321,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text(
             "BSOC App",
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -345,16 +332,13 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
           ? PDFView(
               filePath: localPath,
             )
-          : Center(child: CircularProgressIndicator()),
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }
 
 class ApiServiceProvider {
-  static final String BASE_URL = "https://www.ibm.com/downloads/cas/GJ5QVQ7X";
-
   static Future<String> loadPDF() async {
-    // var response = await http.get(BASE_URL);
     String? token;
     String? idchapter;
     final prefs = await SharedPreferences.getInstance();
@@ -373,5 +357,83 @@ class ApiServiceProvider {
     File file = File("${dir.path}/data.pdf");
     file.writeAsBytesSync(response.bodyBytes, flush: true);
     return file.path;
+  }
+}
+
+class DownloadingDialog extends StatefulWidget {
+  const DownloadingDialog({Key? key}) : super(key: key);
+
+  @override
+  _DownloadingDialogState createState() => _DownloadingDialogState();
+}
+
+class _DownloadingDialogState extends State<DownloadingDialog> {
+  double progress = 0.0;
+  String? localPath;
+
+  void startDownloading() async {
+    Dio dio = Dio();
+    String? token;
+    String? idchapter;
+    final prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('accessToken');
+    idchapter = prefs.getString('idchapter');
+
+    String url =
+        'http://ec2-54-172-194-31.compute-1.amazonaws.com/api/chapter/download/$idchapter';
+
+    dio.options.headers["Authorization"] = "Bearer $token";
+    dio.get(url);
+    String fileName = "data.pdf";
+    String path = await _getFilePath(fileName);
+    await dio.download(
+      url,
+      path,
+      onReceiveProgress: (recivedBytes, totalBytes) {
+        setState(() {
+          progress = recivedBytes / totalBytes;
+        });
+        print(progress);
+      },
+      deleteOnError: true,
+    ).then((_) {
+      Navigator.pop(context);
+    });
+  }
+
+  Future<String> _getFilePath(String filename) async {
+    final dir = await getApplicationDocumentsDirectory();
+    return "${dir.path}/$filename";
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startDownloading();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String downloadingprogress = (progress * 100).toInt().toString();
+
+    return AlertDialog(
+      backgroundColor: Colors.black,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator.adaptive(),
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            "Downloading: $downloadingprogress%",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 17,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

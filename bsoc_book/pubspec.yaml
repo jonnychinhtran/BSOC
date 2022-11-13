@@ -51,6 +51,7 @@ dependencies:
   pdfx: ^2.3.0
   advance_pdf_viewer: ^2.0.1
   flutter_pdfview: ^1.2.5
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_test:
