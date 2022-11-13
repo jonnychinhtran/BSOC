@@ -43,7 +43,7 @@ class _DetailBookPageState extends State<DetailBookPage>
     if (response.statusCode == 200) {
       await prefs.setString('token', response.body);
       print(prefs.getString('token'));
-      mapDemo = jsonDecode(response.body);
+      mapDemo = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
       listReponse = mapDemo!['chapters'];
       // ipchapter = listReponse['chapterId'].toString();
       // print('ChapterID: $ipchapter');

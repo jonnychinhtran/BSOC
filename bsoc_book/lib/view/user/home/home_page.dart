@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
       await prefs.setString('token', response.body);
       print(prefs.getString('token'));
       setState(() {
-        mapDemo = jsonDecode(response.body);
+        mapDemo = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
         listReponse = mapDemo?['content'];
         isLoading = false;
       });
