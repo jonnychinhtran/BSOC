@@ -21,7 +21,7 @@ class _MainIndexPageState extends State<MainIndexPage> {
     return Scaffold(
       drawer: const MenuAside(),
       appBar: AppBar(
-        title: const Text('Demo App'),
+        title: const Text('BSOC App'),
       ),
       body: const HomePage(),
     );

@@ -47,6 +47,9 @@ dependencies:
   flutter_downloader: ^1.9.1
   path_provider: ^2.0.11
   file_picker: ^5.2.2
+  flutter_cached_pdfview: ^0.4.1
+  pdfx: ^2.3.0
+  advance_pdf_viewer: ^2.0.1
 
 dev_dependencies:
   flutter_test:

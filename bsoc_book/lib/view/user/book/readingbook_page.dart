@@ -19,15 +19,15 @@
 //   late PDFDocument document;
 //   late DownloadProgress downloadProgress;
 
-//   String idchapter = '';
+  // String idchapter = '';
 
-//   void _loadFileName() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     setState(() {
-//       idchapter = prefs.getString('chapterId') ?? '';
-//       print('Namepdf: $idchapter');
-//     });
-//   }
+  // void _loadFileName() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     idchapter = prefs.getString('chapterId') ?? '';
+  //     print('Namepdf: $idchapter');
+  //   });
+  // }
 
 //   // loadDocument() async {
 //   //   document = await PDFDocument.fromURL(

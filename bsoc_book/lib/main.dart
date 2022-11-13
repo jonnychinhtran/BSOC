@@ -2,10 +2,8 @@ import 'package:bsoc_book/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'routes/app_routes.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
