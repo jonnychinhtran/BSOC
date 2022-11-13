@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -368,9 +372,14 @@ class DownloadingDialog extends StatefulWidget {
 }
 
 class _DownloadingDialogState extends State<DownloadingDialog> {
+  Map<String, dynamic> result = {
+    'isSuccess': false,
+    'filePath': null,
+    'error': null,
+  };
   double progress = 0.0;
   String? localPath;
-
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   void startDownloading() async {
     Dio dio = Dio();
     String? token;
@@ -386,6 +395,8 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     dio.get(url);
     String fileName = "data.pdf";
     String path = await _getFilePath(fileName);
+    // final result = await OpenFilex.open(path);
+
     await dio.download(
       url,
       path,

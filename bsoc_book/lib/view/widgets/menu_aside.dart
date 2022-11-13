@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bsoc_book/routes/app_routes.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -68,16 +69,17 @@ class _MenuAsideState extends State<MenuAside> {
             leading: const Icon(Icons.bookmark_added_outlined),
             title: const Text('Thư viện sách'),
             onTap: () {
-              // Get.toNamed(Routes.home);
+              Get.toNamed(Routes.main);
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.assessment_outlined),
-            title: const Text('Rao vặt'),
-          ),
+          // ListTile(
+          //   leading: const Icon(Icons.assessment_outlined),
+          //   title: const Text('Rao vặt'),
+          // ),
           ListTile(
             leading: const Icon(Icons.contacts_outlined),
             title: const Text('Liên hệ'),
+            onTap: () {},
           ),
           TextButton(
               onPressed: () async {
