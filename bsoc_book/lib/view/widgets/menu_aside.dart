@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:bsoc_book/routes/app_routes.dart';
+import 'package:bsoc_book/view/contact/contact_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
+import 'package:bsoc_book/view/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -69,7 +71,7 @@ class _MenuAsideState extends State<MenuAside> {
             leading: const Icon(Icons.bookmark_added_outlined),
             title: const Text('Thư viện sách'),
             onTap: () {
-              Get.toNamed(Routes.main);
+              Get.to(MainIndexPage());
             },
           ),
           // ListTile(
@@ -79,7 +81,9 @@ class _MenuAsideState extends State<MenuAside> {
           ListTile(
             leading: const Icon(Icons.contacts_outlined),
             title: const Text('Liên hệ'),
-            onTap: () {},
+            onTap: () {
+              Get.to(ContactPage());
+            },
           ),
           TextButton(
               onPressed: () async {
