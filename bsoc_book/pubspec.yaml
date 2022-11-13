@@ -50,6 +50,7 @@ dependencies:
   flutter_cached_pdfview: ^0.4.1
   pdfx: ^2.3.0
   advance_pdf_viewer: ^2.0.1
+  flutter_pdfview: ^1.2.5
 
 dev_dependencies:
   flutter_test:
