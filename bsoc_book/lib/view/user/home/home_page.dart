@@ -51,7 +51,7 @@ final List<Widget> imageSliders = imgList
                 StackTrace? stackTrace,
               ) {
                 return const Text(
-                  'Oops!! An error occurred. 😢',
+                  'Oops!! An error occurred.',
                   style: TextStyle(fontSize: 16.0),
                 );
               },

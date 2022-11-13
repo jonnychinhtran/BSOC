@@ -12,6 +12,7 @@ class ContactPage extends StatefulWidget {
 }
 
 class _ContactPageState extends State<ContactPage> {
+  bool isLoading = true;
   final GlobalKey webViewKey = GlobalKey();
 
   InAppWebViewController? webViewController;
@@ -43,9 +44,11 @@ class _ContactPageState extends State<ContactPage> {
       onRefresh: () async {
         if (Platform.isAndroid) {
           webViewController?.reload();
+          isLoading = false;
         } else if (Platform.isIOS) {
           webViewController?.loadUrl(
               urlRequest: URLRequest(url: await webViewController?.getUrl()));
+          isLoading = false;
         }
       },
     );

@@ -86,37 +86,76 @@ class _MenuAsideState extends State<MenuAside> {
                   ],
                 ),
               )),
-          ListTile(
-            leading: const Icon(Icons.bookmark_added_outlined),
-            title: const Text('Thư viện sách'),
-            onTap: () {
-              Get.to(MainIndexPage());
-            },
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+            child: Container(
+              decoration: BoxDecoration(
+                  border:
+                      Border(bottom: BorderSide(color: Colors.grey.shade400))),
+              child: InkWell(
+                splashColor: Colors.blueGrey,
+                onTap: () {
+                  Get.to(MainIndexPage());
+                },
+                child: ListTile(
+                  leading: const Icon(Icons.bookmark_added_outlined),
+                  title: const Text(
+                    'Thư viện sách',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+            ),
           ),
           // ListTile(
           //   leading: const Icon(Icons.assessment_outlined),
           //   title: const Text('Rao vặt'),
           // ),
-          ListTile(
-            leading: const Icon(Icons.contacts_outlined),
-            title: const Text('Liên hệ'),
-            onTap: () {
-              Get.to(ContactPage());
-            },
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+            child: Container(
+              decoration: BoxDecoration(
+                  border:
+                      Border(bottom: BorderSide(color: Colors.grey.shade400))),
+              child: InkWell(
+                splashColor: Colors.blueGrey,
+                onTap: () {
+                  Get.to(ContactPage());
+                },
+                child: ListTile(
+                  leading: const Icon(Icons.bookmark_added_outlined),
+                  title: const Text(
+                    'Liên hệ',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+            ),
           ),
-          TextButton(
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.remove('accessToken');
-                Get.offAll(LoginPage());
-              },
-              style: ButtonStyle(
-                  padding: MaterialStateProperty.all<EdgeInsets>(
-                      const EdgeInsets.only(left: -10))),
-              child: const ListTile(
-                leading: Icon(Icons.logout_outlined),
-                title: Text('Đăng xuất'),
-              )),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+            child: Container(
+              decoration: BoxDecoration(
+                  border:
+                      Border(bottom: BorderSide(color: Colors.grey.shade400))),
+              child: InkWell(
+                splashColor: Colors.blueGrey,
+                onTap: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  await prefs.remove('accessToken');
+                  Get.offAll(LoginPage());
+                },
+                child: ListTile(
+                  leading: const Icon(Icons.logout_outlined),
+                  title: const Text(
+                    'Đăng xuất',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
