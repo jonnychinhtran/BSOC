@@ -203,73 +203,95 @@ class _DetailBookPageState extends State<DetailBookPage>
                         itemCount:
                             listReponse == null ? 0 : listReponse?.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return Card(
-                            color: Colors.purple,
-                            child: Row(children: [
-                              Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Chương: ' +
-                                              listReponse![index]['chapterId']
-                                                  .toString(),
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Text(
-                                              listReponse?[index]
-                                                  ['chapterTitle'],
-                                              style: const TextStyle(
-                                                  color: Colors.white),
+                          return GestureDetector(
+                            onTap: () async {
+                              final SharedPreferences? prefs = await _prefs;
+                              await prefs?.setString('idchapter',
+                                  listReponse![index]['id'].toString());
+                              await prefs?.setString(
+                                  'titleChapter',
+                                  listReponse![index]['chapterTitle']
+                                      .toString());
+                              print(
+                                  'ChapterID Click: ${listReponse![index]['id'].toString()}');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute<dynamic>(
+                                    builder: (_) => PdfViewerPage()),
+                              );
+                            },
+                            child: Card(
+                              color: Colors.purple,
+                              child: Row(children: [
+                                Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Chương: ' +
+                                                listReponse![index]['chapterId']
+                                                    .toString(),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
                                             ),
-                                            IconButton(
-                                                onPressed: () async {
-                                                  final SharedPreferences?
-                                                      prefs = await _prefs;
-                                                  await prefs?.setString(
-                                                      'idchapter',
-                                                      listReponse![index]['id']
-                                                          .toString());
-                                                  await prefs?.setString(
-                                                      'titleChapter',
-                                                      listReponse![index]
-                                                              ['chapterTitle']
-                                                          .toString());
-                                                  print(
-                                                      'ChapterID Click: ${listReponse![index]['id'].toString()}');
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute<dynamic>(
-                                                        builder: (_) =>
-                                                            PdfViewerPage()),
-                                                  );
-                                                },
-                                                icon: Icon(
-                                                  Icons.import_contacts_sharp,
-                                                  color: Colors.yellow.shade200,
-                                                )),
-                                            IconButton(
-                                                onPressed: () {},
-                                                icon: Icon(Icons.download_sharp,
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Text(
+                                                listReponse?[index]
+                                                    ['chapterTitle'],
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              IconButton(
+                                                  onPressed: () async {
+                                                    final SharedPreferences?
+                                                        prefs = await _prefs;
+                                                    await prefs?.setString(
+                                                        'idchapter',
+                                                        listReponse![index]
+                                                                ['id']
+                                                            .toString());
+                                                    await prefs?.setString(
+                                                        'titleChapter',
+                                                        listReponse![index]
+                                                                ['chapterTitle']
+                                                            .toString());
+                                                    print(
+                                                        'ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute<
+                                                              dynamic>(
+                                                          builder: (_) =>
+                                                              PdfViewerPage()),
+                                                    );
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.import_contacts_sharp,
                                                     color:
-                                                        Colors.green.shade100))
-                                          ],
-                                        ),
-                                      ])),
-                            ]),
+                                                        Colors.yellow.shade200,
+                                                  )),
+                                              IconButton(
+                                                  onPressed: () {},
+                                                  icon: Icon(
+                                                      Icons.download_sharp,
+                                                      color: Colors
+                                                          .green.shade100))
+                                            ],
+                                          ),
+                                        ])),
+                              ]),
+                            ),
                           );
                         }),
                     Container(),
