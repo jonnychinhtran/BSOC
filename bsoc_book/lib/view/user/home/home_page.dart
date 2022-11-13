@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: size.height * 0.02),
                     Container(
-                      height: 500,
+                      height: 540,
                       child: GridView.builder(
                         padding: EdgeInsets.all(15),
                         itemCount:
@@ -165,8 +165,8 @@ class _HomePageState extends State<HomePage> {
                             const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
                                 childAspectRatio: 0.8,
-                                crossAxisSpacing: 20,
-                                mainAxisSpacing: 20),
+                                crossAxisSpacing: 35,
+                                mainAxisSpacing: 40),
                         itemBuilder: (BuildContext context, int index) {
                           return InkWell(
                             child: Hero(
@@ -193,29 +193,39 @@ class _HomePageState extends State<HomePage> {
                                                 builder: (context) =>
                                                     const DetailBookPage()));
                                       },
-                                      child: SizedBox(
-                                        height: 120,
-                                        width: 100,
-                                        child: Image.network(
-                                          'http://ec2-54-172-194-31.compute-1.amazonaws.com' +
-                                              listReponse?[index]['image'],
-                                          fit: BoxFit.fill,
+                                      child: Center(
+                                        child: SizedBox(
+                                          height: 145,
+                                          width: 120,
+                                          child: Image.network(
+                                            'http://ec2-54-172-194-31.compute-1.amazonaws.com' +
+                                                listReponse?[index]['image'],
+                                            fit: BoxFit.fill,
+                                          ),
                                         ),
                                       ),
                                     ),
                                     SizedBox(height: size.height * 0.02),
-                                    Text(
-                                      listReponse?[index]['bookName'],
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
+                                    Center(
+                                      child: Text(
+                                        listReponse?[index]['bookName'],
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
                                       ),
                                     ),
-                                    SizedBox(height: size.height * 0.02),
-                                    Text(
-                                      'by ${listReponse?[index]['author']}',
-                                      style: const TextStyle(fontSize: 12),
+                                    SizedBox(height: size.height * 0.01),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 4),
+                                        child: Text(
+                                          'by ${listReponse?[index]['author']}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                      ),
                                     ),
                                   ]),
                             ),

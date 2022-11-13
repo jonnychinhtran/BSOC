@@ -394,7 +394,6 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     dio.get(url);
     String fileName = "data.pdf";
     String path = await _getFilePath(fileName);
-    // final result = await OpenFilex.open(path);
 
     await dio.download(
       url,
@@ -413,6 +412,7 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
 
   Future<String> _getFilePath(String filename) async {
     final dir = await getApplicationDocumentsDirectory();
+    print('Save file: $dir');
     return "${dir.path}/$filename";
   }
 
