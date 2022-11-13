@@ -37,8 +37,7 @@ class LoginController extends GetxController {
         passwordController.clear();
         Get.offNamed(Routes.main);
       } else {
-        throw jsonDecode(response.body)["Message"] ??
-            "Liên kết API không chính xác";
+        throw jsonDecode(response.body)["Message"] ?? "Vui lòng đăng nhập";
       }
     } catch (error) {
       Get.back();
