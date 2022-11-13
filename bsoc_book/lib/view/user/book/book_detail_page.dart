@@ -1,8 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
-import 'package:bsoc_book/view/user/book/readingbook_page.dart';
-import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
@@ -246,24 +243,18 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                       'idchapter',
                                                       listReponse![index]['id']
                                                           .toString());
+                                                  await prefs?.setString(
+                                                      'titleChapter',
+                                                      listReponse![index]
+                                                              ['chapterTitle']
+                                                          .toString());
                                                   print(
                                                       'ChapterID Click: ${listReponse![index]['id'].toString()}');
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute<dynamic>(
                                                         builder: (_) =>
-                                                            PdfViewerPage()
-                                                        // PDFViewer(
-                                                        //   document: datapdf,
-                                                        // )
-                                                        // PDFViewerFromAsset(
-                                                        //     pdfAssetPath: datapdf
-                                                        //         .toString()),
-                                                        // url: 'http://ec2-54-172-194-31.compute-1.amazonaws.com/api/chapter/download/' +
-                                                        //     listReponse![index]
-                                                        //             ['id']
-                                                        //         .toString(),
-                                                        ),
+                                                            PdfViewerPage()),
                                                   );
                                                 },
                                                 icon: Icon(
@@ -290,136 +281,75 @@ class _DetailBookPageState extends State<DetailBookPage>
   }
 }
 
-// class PDFViewerFromUrl extends StatelessWidget {
-//   const PDFViewerFromUrl({Key? key, required this.url}) : super(key: key);
+class PdfViewerPage extends StatefulWidget {
+  @override
+  _PdfViewerPageState createState() => _PdfViewerPageState();
+}
 
-//   final String url;
+class _PdfViewerPageState extends State<PdfViewerPage> {
+  String? localPath;
+  String? titleChapter;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('PDF From Url'),
-//       ),
-//       body: const PDF().fromUrl(
-//         url,
-//         placeholder: (double progress) => Center(child: Text('$progress %')),
-//         errorWidget: (dynamic error) => Center(child: Text(error.toString())),
-//       ),
-//     );
-//   }
-// }
+  void getTitleChap() async {
+    final prefs = await SharedPreferences.getInstance();
+    titleChapter = prefs.getString('accessToken');
+    print('Title Chap: $titleChapter');
+  }
 
-// class PDFViewerCachedFromUrl extends StatelessWidget {
-//   const PDFViewerCachedFromUrl({Key? key, required this.url}) : super(key: key);
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
 
-//   final String url;
+    ApiServiceProvider.loadPDF().then((value) {
+      setState(() {
+        localPath = value;
+      });
+    });
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('BSOC App'),
-//       ),
-//       body: const PDF().cachedFromUrl(
-//         url,
-//         placeholder: (double progress) => Center(child: Text('$progress %')),
-//         errorWidget: (dynamic error) => Center(child: Text(error.toString())),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Center(
+          child: Text(
+            "BSOC App",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+      body: localPath != null
+          ? PDFView(
+              filePath: localPath,
+            )
+          : Center(child: CircularProgressIndicator()),
+    );
+  }
+}
 
-// class PDFViewerFromAsset extends StatelessWidget {
-//   PDFViewerFromAsset({Key? key, required this.pdfAssetPath}) : super(key: key);
-//   final String pdfAssetPath;
-//   final Completer<PDFViewController> _pdfViewController =
-//       Completer<PDFViewController>();
-//   final StreamController<String> _pageCountController =
-//       StreamController<String>();
+class ApiServiceProvider {
+  static final String BASE_URL = "https://www.ibm.com/downloads/cas/GJ5QVQ7X";
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('PDF From Asset'),
-//         actions: <Widget>[
-//           StreamBuilder<String>(
-//               stream: _pageCountController.stream,
-//               builder: (_, AsyncSnapshot<String> snapshot) {
-//                 if (snapshot.hasData) {
-//                   return Center(
-//                     child: Container(
-//                       padding: const EdgeInsets.all(16),
-//                       decoration: BoxDecoration(
-//                         shape: BoxShape.circle,
-//                         color: Colors.blue[900],
-//                       ),
-//                       child: Text(snapshot.data!),
-//                     ),
-//                   );
-//                 }
-//                 return const SizedBox();
-//               }),
-//         ],
-//       ),
-//       body: PDF(
-//         enableSwipe: true,
-//         swipeHorizontal: true,
-//         autoSpacing: false,
-//         pageFling: false,
-//         onPageChanged: (int? current, int? total) =>
-//             _pageCountController.add('${current! + 1} - $total'),
-//         onViewCreated: (PDFViewController pdfViewController) async {
-//           _pdfViewController.complete(pdfViewController);
-//           final int currentPage = await pdfViewController.getCurrentPage() ?? 0;
-//           final int? pageCount = await pdfViewController.getPageCount();
-//           _pageCountController.add('${currentPage + 1} - $pageCount');
-//         },
-//       ).fromAsset(
-//         pdfAssetPath,
-//         errorWidget: (dynamic error) => Center(child: Text(error.toString())),
-//       ),
-//       floatingActionButton: FutureBuilder<PDFViewController>(
-//         future: _pdfViewController.future,
-//         builder: (_, AsyncSnapshot<PDFViewController> snapshot) {
-//           if (snapshot.hasData && snapshot.data != null) {
-//             return Row(
-//               mainAxisSize: MainAxisSize.max,
-//               mainAxisAlignment: MainAxisAlignment.spaceAround,
-//               children: <Widget>[
-//                 FloatingActionButton(
-//                   heroTag: '-',
-//                   child: const Text('-'),
-//                   onPressed: () async {
-//                     final PDFViewController pdfController = snapshot.data!;
-//                     final int currentPage =
-//                         (await pdfController.getCurrentPage())! - 1;
-//                     if (currentPage >= 0) {
-//                       await pdfController.setPage(currentPage);
-//                     }
-//                   },
-//                 ),
-//                 FloatingActionButton(
-//                   heroTag: '+',
-//                   child: const Text('+'),
-//                   onPressed: () async {
-//                     final PDFViewController pdfController = snapshot.data!;
-//                     final int currentPage =
-//                         (await pdfController.getCurrentPage())! + 1;
-//                     final int numberOfPages =
-//                         await pdfController.getPageCount() ?? 0;
-//                     if (numberOfPages > currentPage) {
-//                       await pdfController.setPage(currentPage);
-//                     }
-//                   },
-//                 ),
-//               ],
-//             );
-//           }
-//           return const SizedBox();
-//         },
-//       ),
-//     );
-//   }
-// }
+  static Future<String> loadPDF() async {
+    // var response = await http.get(BASE_URL);
+    String? token;
+    String? idchapter;
+    final prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('accessToken');
+    idchapter = prefs.getString('idchapter');
+    print('Token ChapterID: $token');
+    print('ChapterID: $idchapter');
+    var url = Uri.parse(
+        'http://ec2-54-172-194-31.compute-1.amazonaws.com/api/chapter/download/$idchapter');
+    http.Response response = await http.get(url, headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/pdf'
+    });
+
+    var dir = await getApplicationDocumentsDirectory();
+    File file = File("${dir.path}/data.pdf");
+    file.writeAsBytesSync(response.bodyBytes, flush: true);
+    return file.path;
+  }
+}
