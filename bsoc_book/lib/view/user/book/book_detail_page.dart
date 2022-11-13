@@ -392,12 +392,13 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
 
     dio.options.headers["Authorization"] = "Bearer $token";
     dio.get(url);
-    String fileName = "data.pdf";
-    String path = await _getFilePath(fileName);
-
+    // String fileName = "data.pdf";
+    // String path = await _getFilePath(fileName);
+    Directory dir = await getApplicationDocumentsDirectory();
+    print(dir);
     await dio.download(
       url,
-      path,
+      '${dir.path}/data.pdf',
       onReceiveProgress: (recivedBytes, totalBytes) {
         setState(() {
           progress = recivedBytes / totalBytes;
@@ -410,11 +411,11 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     });
   }
 
-  Future<String> _getFilePath(String filename) async {
-    final dir = await getApplicationDocumentsDirectory();
-    print('Save file: $dir');
-    return "${dir.path}/$filename";
-  }
+  // Future<String> _getFilePath(String filename) async {
+  //   final dir = await getApplicationDocumentsDirectory();
+  //   print('Save file: $dir');
+  //   return "${dir.path}/$filename";
+  // }
 
   @override
   void initState() {
