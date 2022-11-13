@@ -100,6 +100,7 @@ class _DetailBookPageState extends State<DetailBookPage>
   Widget build(BuildContext context) {
     TabController _tabController = TabController(length: 3, vsync: this);
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Center(child: Text('Detail Book')),
       ),
@@ -116,34 +117,46 @@ class _DetailBookPageState extends State<DetailBookPage>
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Hero(
-                            tag: 'cover',
-                            child: Container(
-                                height: 200,
-                                width: 150,
-                                child: Material(
-                                  elevation: 15.0,
-                                  shadowColor: Colors.grey.shade500,
-                                  child: mapDemo == null
-                                      ? Text('Data is loading')
-                                      : Image.network(
-                                          'http://ec2-54-172-194-31.compute-1.amazonaws.com' +
-                                              mapDemo?['image'],
-                                          fit: BoxFit.fill,
-                                        ),
-                                )),
-                          )
-                        ],
+                      Hero(
+                        tag: 'cover',
+                        child: Container(
+                            height: 200,
+                            width: 150,
+                            child: Material(
+                              child: mapDemo == null
+                                  ? Text('Data is loading')
+                                  : Image.network(
+                                      'http://ec2-54-172-194-31.compute-1.amazonaws.com' +
+                                          mapDemo?['image'],
+                                      fit: BoxFit.fill,
+                                    ),
+                            )),
                       ),
                       const SizedBox(
-                        width: 20,
+                        height: 20,
                       ),
-                      rowTitle(context),
+                      Hero(
+                        tag: 'title',
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(mapDemo?['bookName'],
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              mapDemo?['author'],
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -169,7 +182,8 @@ class _DetailBookPageState extends State<DetailBookPage>
                 ),
                 Container(
                   width: double.maxFinite,
-                  height: 400,
+                  height: 320,
+                  constraints: BoxConstraints(maxHeight: double.infinity),
                   child: TabBarView(controller: _tabController, children: [
                     Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -177,11 +191,14 @@ class _DetailBookPageState extends State<DetailBookPage>
                           ? Text('Data is loading')
                           : Text(
                               mapDemo?['description'],
+                              softWrap: true,
                               textAlign: TextAlign.justify,
                               style: const TextStyle(fontSize: 16, height: 1.5),
                             ),
                     ),
                     ListView.builder(
+                        shrinkWrap: true,
+                        physics: const ScrollPhysics(),
                         itemCount:
                             listReponse == null ? 0 : listReponse?.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -265,33 +282,6 @@ class _DetailBookPageState extends State<DetailBookPage>
             ),
     );
   }
-}
-
-Row rowTitle(BuildContext context) {
-  return Row(
-    children: [
-      Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(mapDemo?['bookName'],
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold)),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                mapDemo?['author'],
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 14),
-              ),
-            ],
-          )
-        ],
-      ),
-    ],
-  );
 }
 
 class PDFViewerFromUrl extends StatelessWidget {
