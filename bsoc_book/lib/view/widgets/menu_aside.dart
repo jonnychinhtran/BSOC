@@ -36,7 +36,7 @@ class _MenuAsideState extends State<MenuAside> {
       mapDemo = jsonDecode(response.body);
       demoReponse = mapDemo;
     } else {
-      throw Exception('Failed to load Infor');
+      throw Exception('Lỗi tải hệ thống');
     }
   }
 
@@ -168,10 +168,13 @@ class _MenuAsideState extends State<MenuAside> {
                   Get.offAll(LoginPage());
                 },
                 child: ListTile(
-                  leading: const Icon(Icons.logout_outlined),
+                  leading: const Icon(
+                    Icons.logout_outlined,
+                    color: Colors.red,
+                  ),
                   title: const Text(
                     'Đăng xuất',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, color: Colors.red),
                   ),
                 ),
               ),

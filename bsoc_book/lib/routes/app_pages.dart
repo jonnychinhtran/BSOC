@@ -13,6 +13,7 @@ class PageRoutes {
     GetPage(name: Routes.home, page: () => const HomePage()),
     GetPage(name: Routes.contact, page: () => const ContactPage()),
     GetPage(name: Routes.login, page: () => const LoginPage()),
+    GetPage(name: Routes.reset, page: () => const RegisterPage()),
     GetPage(name: Routes.register, page: () => const RegisterPage()),
   ];
 }

@@ -21,7 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.blueGrey[200],
+      backgroundColor: Colors.white,
       body: Form(
           key: _formKey,
           child: SizedBox(
@@ -50,8 +50,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: Text(
                           "ĐĂNG KÝ TÀI KHOẢN",
                           style: TextStyle(
-                            fontSize: 19,
-                            fontWeight: FontWeight.normal,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -141,7 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderRadius: BorderRadius.circular(10),
                             )),
                       ),
-                      SizedBox(height: size.height * 0.02),
+                      SizedBox(height: size.height * 0.01),
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Padding(
@@ -171,7 +171,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderRadius: BorderRadius.circular(10),
                             )),
                       ),
-                      SizedBox(height: size.height * 0.02),
+                      SizedBox(height: size.height * 0.04),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -184,7 +184,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   },
                               },
                               style: ElevatedButton.styleFrom(
-                                  primary: Colors.indigo,
+                                  primary: Color.fromARGB(255, 153, 195, 59),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10)),
                                   padding: const EdgeInsets.symmetric(
@@ -204,14 +204,18 @@ class _RegisterPageState extends State<RegisterPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Text(
+                            "Bạn đã tài khoản?",
+                            style: TextStyle(color: Colors.black),
+                          ),
                           TextButton(
                             onPressed: () {
-                              Get.toNamed(Routes.login);
+                              Get.offAllNamed(Routes.login);
                             },
-                            child: const Text("Đăng nhập"),
+                            child: const Text("Vui lòng đăng nhập"),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
