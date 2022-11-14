@@ -1,6 +1,5 @@
 class ApiEndPoints {
-  static final String baseUrl =
-      "http://ec2-54-172-194-31.compute-1.amazonaws.com";
+  static final String baseUrl = "http://103.77.166.202";
   static _AuthEndPoints authEndpoints = _AuthEndPoints();
 }
 

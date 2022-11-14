@@ -40,8 +40,7 @@ class _DetailBookPageState extends State<DetailBookPage>
     print('Token: $token');
     print('ID Book: $id');
 
-    var url = Uri.parse(
-        'http://ec2-54-172-194-31.compute-1.amazonaws.com/api/book/$id');
+    var url = Uri.parse('http://103.77.166.202/api/book/$id');
     http.Response response =
         await http.get(url, headers: {'Authorization': 'Bearer $token'});
 
@@ -96,8 +95,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                         child: mapDemo == null
                             ? Text('Data is loading')
                             : Image.network(
-                                'http://ec2-54-172-194-31.compute-1.amazonaws.com' +
-                                    mapDemo?['image'],
+                                'http://103.77.166.202' + mapDemo?['image'],
                                 fit: BoxFit.fill,
                               ),
                       )),
@@ -149,18 +147,21 @@ class _DetailBookPageState extends State<DetailBookPage>
                   child:
                       TabBarView(controller: _tabController, children: <Widget>[
                     Container(
-                      child: ListView(
-                        children: [
-                          mapDemo == null
-                              ? Text('Data is loading')
-                              : Text(
-                                  mapDemo?['description'],
-                                  softWrap: true,
-                                  textAlign: TextAlign.justify,
-                                  style: const TextStyle(
-                                      fontSize: 16, height: 1.5),
-                                ),
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ListView(
+                          children: [
+                            mapDemo == null
+                                ? Text('Data is loading')
+                                : Text(
+                                    mapDemo?['description'],
+                                    softWrap: true,
+                                    textAlign: TextAlign.justify,
+                                    style: const TextStyle(
+                                        fontSize: 16, height: 1.5),
+                                  ),
+                          ],
+                        ),
                       ),
                     ),
                     Container(
@@ -259,7 +260,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                             MaterialPageRoute<
                                                                     dynamic>(
                                                                 builder: (_) =>
-                                                                    PdfViewPage()),
+                                                                    PdfViewerPage()),
                                                           );
                                                         },
                                                         icon: Icon(
@@ -380,8 +381,8 @@ class ApiServiceProvider {
     namesave = prefs.getString('filePath');
     print('Token ChapterID: $token');
     print('ChapterID: $idchapter');
-    var url = Uri.parse(
-        'http://ec2-54-172-194-31.compute-1.amazonaws.com/api/chapter/download/$idchapter');
+    var url =
+        Uri.parse('http://103.77.166.202/api/chapter/download/$idchapter');
     http.Response response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
       'Accept': 'application/pdf'
@@ -389,7 +390,7 @@ class ApiServiceProvider {
 
     var dir = await getApplicationDocumentsDirectory();
     File file = File("${dir.path}/$namesave");
-    await prefs.setString('duongdan', "$file");
+
     file.writeAsBytesSync(response.bodyBytes, flush: true);
     return file.path;
   }
@@ -432,8 +433,7 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     namesave = prefs.getString('filePath');
     print(namesave);
 
-    String url =
-        'http://ec2-54-172-194-31.compute-1.amazonaws.com/api/chapter/download/$idchapter';
+    String url = 'http://103.77.166.202/api/chapter/download/$idchapter';
 
     dio.options.headers["Authorization"] = "Bearer $token";
     dio.get(url);
@@ -445,7 +445,7 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
 
     Directory dir = await getApplicationDocumentsDirectory();
     print(dir);
-
+    await prefs.setString('duongdan', "${dir.path}/$namesave");
     await dio.download(
       url,
       '${dir.path}/$namesave',
@@ -465,7 +465,7 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
 
   Future<void> openFile() async {
     final prefs = await SharedPreferences.getInstance();
-    String? namesave = prefs.getString('filePath');
+    String? duongtruyen = prefs.getString('duongdan');
     const filePath =
         '/data/user/0/com.example.bsoc_book/app_flutter/ + namesave';
     final result = await OpenFilex.open(filePath);
@@ -568,50 +568,6 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class PdfViewPage extends StatefulWidget {
-  @override
-  _PdfViewPageState createState() => _PdfViewPageState();
-}
-
-class _PdfViewPageState extends State<PdfViewPage> {
-  String? localPath;
-  // String? titleChapter;
-
-  void getTitleChap() async {
-    final prefs = await SharedPreferences.getInstance();
-    localPath = prefs.getString('duongdan');
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    // ApiServiceProvider.loadPDF().then((value) {
-    //   setState(() {
-    //     localPath = value;
-    //   });
-    // });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "BSOC App",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: localPath != null
-          ? PDFView(
-              filePath: localPath,
-            )
-          : const Center(child: CircularProgressIndicator()),
     );
   }
 }

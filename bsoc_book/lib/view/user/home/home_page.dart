@@ -198,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                                           height: 155,
                                           width: 120,
                                           child: Image.network(
-                                            'http://ec2-54-172-194-31.compute-1.amazonaws.com' +
+                                            'http://103.77.166.202' +
                                                 listReponse?[index]['image'],
                                             fit: BoxFit.fill,
                                           ),
