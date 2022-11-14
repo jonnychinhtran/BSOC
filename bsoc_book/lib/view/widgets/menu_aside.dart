@@ -140,6 +140,27 @@ class _MenuAsideState extends State<MenuAside> {
                       Border(bottom: BorderSide(color: Colors.grey.shade400))),
               child: InkWell(
                 splashColor: Colors.blueGrey,
+                onTap: () {
+                  Get.to(ContactPage());
+                },
+                child: ListTile(
+                  leading: const Icon(Icons.bookmark_added_outlined),
+                  title: const Text(
+                    'Liên hệ',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+            child: Container(
+              decoration: BoxDecoration(
+                  border:
+                      Border(bottom: BorderSide(color: Colors.grey.shade400))),
+              child: InkWell(
+                splashColor: Colors.blueGrey,
                 onTap: () async {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();

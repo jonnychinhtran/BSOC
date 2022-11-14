@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -51,10 +50,7 @@ class _DetailBookPageState extends State<DetailBookPage>
       print(prefs.getString('token'));
       mapDemo = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
       listReponse = mapDemo!['chapters'];
-      // ipchapter = listReponse['chapterId'].toString();
-      // print('ChapterID: $ipchapter');
       setState(() {
-        // print(listReponse);
         isLoading = false;
       });
     } else {
@@ -263,12 +259,11 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                             MaterialPageRoute<
                                                                     dynamic>(
                                                                 builder: (_) =>
-                                                                    PdfViewerPage()),
+                                                                    PdfViewPage()),
                                                           );
                                                         },
                                                         icon: Icon(
-                                                          Icons
-                                                              .import_contacts_sharp,
+                                                          Icons.ads_click,
                                                           color: Colors
                                                               .yellow.shade200,
                                                         )),
@@ -284,11 +279,11 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                       ['id']
                                                                   .toString());
                                                           await prefs?.setString(
-                                                              'titleChapter',
+                                                              'filePath',
                                                               listReponse![
                                                                           index]
                                                                       [
-                                                                      'chapterTitle']
+                                                                      'filePath']
                                                                   .toString());
                                                           print(
                                                               'ChapterID Click: ${listReponse![index]['id'].toString()}');
@@ -301,8 +296,12 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                         icon: Icon(
                                                             Icons
                                                                 .download_sharp,
-                                                            color: Colors.green
-                                                                .shade100))
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    255,
+                                                                    255,
+                                                                    255)))
                                                   ],
                                                 ),
                                               ],
@@ -374,9 +373,11 @@ class ApiServiceProvider {
   static Future<String> loadPDF() async {
     String? token;
     String? idchapter;
+    String? namesave;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
     idchapter = prefs.getString('idchapter');
+    namesave = prefs.getString('filePath');
     print('Token ChapterID: $token');
     print('ChapterID: $idchapter');
     var url = Uri.parse(
@@ -387,7 +388,8 @@ class ApiServiceProvider {
     });
 
     var dir = await getApplicationDocumentsDirectory();
-    File file = File("${dir.path}/data.pdf");
+    File file = File("${dir.path}/$namesave");
+    await prefs.setString('duongdan', "$file");
     file.writeAsBytesSync(response.bodyBytes, flush: true);
     return file.path;
   }
@@ -401,6 +403,8 @@ class DownloadingDialog extends StatefulWidget {
 }
 
 class _DownloadingDialogState extends State<DownloadingDialog> {
+  bool notificationsEnabled = false;
+
   Map<String, dynamic> result = {
     'isSuccess': false,
     'filePath': null,
@@ -408,31 +412,49 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
   };
   double progress = 0.0;
   String? localPath;
-  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  var _openResult = 'Unknown';
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   void startDownloading() async {
+    Map<String, dynamic> result = {
+      "isSuccess": false,
+      "filePath": null,
+      "error": null
+    };
     Dio dio = Dio();
     String? token;
     String? idchapter;
+    String? namesave;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
     idchapter = prefs.getString('idchapter');
+    namesave = prefs.getString('filePath');
+    print(namesave);
 
     String url =
         'http://ec2-54-172-194-31.compute-1.amazonaws.com/api/chapter/download/$idchapter';
 
     dio.options.headers["Authorization"] = "Bearer $token";
     dio.get(url);
-    // String fileName = "data.pdf";
-    // String path = await _getFilePath(fileName);
+
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+
     Directory dir = await getApplicationDocumentsDirectory();
     print(dir);
+
     await dio.download(
       url,
-      '${dir.path}/data.pdf',
+      '${dir.path}/$namesave',
       onReceiveProgress: (recivedBytes, totalBytes) {
         setState(() {
           progress = recivedBytes / totalBytes;
         });
+        result['isSuccess'] = progress;
+        result['filePath'] = dir.path;
         print(progress);
       },
       deleteOnError: true,
@@ -441,16 +463,87 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     });
   }
 
-  // Future<String> _getFilePath(String filename) async {
-  //   final dir = await getApplicationDocumentsDirectory();
-  //   print('Save file: $dir');
-  //   return "${dir.path}/$filename";
-  // }
+  Future<void> openFile() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? namesave = prefs.getString('filePath');
+    const filePath =
+        '/data/user/0/com.example.bsoc_book/app_flutter/ + namesave';
+    final result = await OpenFilex.open(filePath);
+
+    setState(() {
+      _openResult = "type=${result.type}  message=${result.message}";
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    requestPermissions();
     startDownloading();
+  }
+
+  Future showNotification(Map<String, dynamic> downloadStatus) async {
+    final andorid = AndroidNotificationDetails("chapterId", 'BSOC Book',
+        priority: Priority.high, importance: Importance.max);
+    final ios = DarwinNotificationDetails();
+    final notificationDetails = NotificationDetails(android: andorid, iOS: ios);
+    final json = jsonEncode(downloadStatus);
+    final isSuccess = downloadStatus['isSuccess'];
+    await FlutterLocalNotificationsPlugin().show(
+        0,
+        isSuccess ? "Thành công" : "lỗi",
+        isSuccess ? "Dữ liệu tải thành công" : "Dữ liệu bị lỗi",
+        notificationDetails,
+        payload: json);
+  }
+
+  final android = AndroidInitializationSettings('mipmap/ic_launcher');
+  final ios = DarwinNotificationDetails();
+
+  Future onselectedNotification(String json) async {
+    final obj = jsonDecode(json);
+    if (obj['isSuccess']) {
+      OpenFilex.open(obj['filePath']);
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('Error'),
+                content: Text(obj['error']),
+              ));
+    }
+  }
+
+  Future<void> requestPermissions() async {
+    if (Platform.isIOS || Platform.isMacOS) {
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+            critical: true,
+          );
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              MacOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+            critical: true,
+          );
+    } else if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
+
+      final bool? granted = await androidImplementation?.requestPermission();
+      setState(() {
+        notificationsEnabled = granted ?? false;
+      });
+    }
   }
 
   @override
@@ -467,14 +560,58 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
             height: 20,
           ),
           Text(
-            "Downloading: $downloadingprogress%",
+            "Tải về: $downloadingprogress%",
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 17,
+              fontSize: 20,
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class PdfViewPage extends StatefulWidget {
+  @override
+  _PdfViewPageState createState() => _PdfViewPageState();
+}
+
+class _PdfViewPageState extends State<PdfViewPage> {
+  String? localPath;
+  // String? titleChapter;
+
+  void getTitleChap() async {
+    final prefs = await SharedPreferences.getInstance();
+    localPath = prefs.getString('duongdan');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ApiServiceProvider.loadPDF().then((value) {
+    //   setState(() {
+    //     localPath = value;
+    //   });
+    // });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "BSOC App",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: localPath != null
+          ? PDFView(
+              filePath: localPath,
+            )
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }
