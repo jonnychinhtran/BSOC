@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> {
             )
           : SafeArea(
               child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
+                physics: ScrollPhysics(),
                 child: Column(
                   children: [
                     SizedBox(height: size.height * 0.02),
@@ -156,9 +156,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: size.height * 0.02),
                     Container(
-                      height: 540,
+                      height: 500,
                       child: GridView.builder(
-                        padding: EdgeInsets.all(15),
+                        // padding: EdgeInsets.all(15),
                         itemCount:
                             listReponse == null ? 0 : listReponse?.length,
                         gridDelegate:
@@ -195,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                                       },
                                       child: Center(
                                         child: SizedBox(
-                                          height: 145,
+                                          height: 155,
                                           width: 120,
                                           child: Image.network(
                                             'http://ec2-54-172-194-31.compute-1.amazonaws.com' +
@@ -205,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(height: size.height * 0.02),
+                                    SizedBox(height: size.height * 0.01),
                                     Center(
                                       child: Text(
                                         listReponse?[index]['bookName'],
@@ -218,13 +218,10 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     SizedBox(height: size.height * 0.01),
                                     Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(left: 4),
-                                        child: Text(
-                                          'by ${listReponse?[index]['author']}',
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(fontSize: 12),
-                                        ),
+                                      child: Text(
+                                        'by ${listReponse?[index]['author']}',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(fontSize: 12),
                                       ),
                                     ),
                                   ]),
@@ -237,25 +234,21 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       height: 100,
                       color: Colors.grey.shade800,
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Center(
-                            child: Column(
-                          children: [
-                            Text(
-                              "© B4USOLUTION. All Rights Reserved.",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "Privacy Policy Designed by B4USOLUTION",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
-                            )
-                          ],
-                        )),
-                      ),
+                      child: Center(
+                          child: Column(
+                        children: [
+                          SizedBox(height: size.height * 0.03),
+                          Text(
+                            "© B4USOLUTION. All Rights Reserved.",
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            "Privacy Policy Designed by B4USOLUTION",
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          )
+                        ],
+                      )),
                     )
                   ],
                 ),

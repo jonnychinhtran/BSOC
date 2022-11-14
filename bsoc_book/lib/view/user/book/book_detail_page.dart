@@ -75,7 +75,8 @@ class _DetailBookPageState extends State<DetailBookPage>
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Center(child: Text('Detail Book')),
+        centerTitle: true,
+        title: Text('Detail Book'),
       ),
       body: isLoading
           ? Center(
@@ -90,10 +91,13 @@ class _DetailBookPageState extends State<DetailBookPage>
               children: [
                 Column(
                   children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Hero(
                       tag: 'cover',
                       child: Container(
-                          height: 181,
+                          height: 195,
                           width: 150,
                           child: Material(
                             child: mapDemo == null
@@ -105,9 +109,9 @@ class _DetailBookPageState extends State<DetailBookPage>
                                   ),
                           )),
                     ),
-                    // const SizedBox(
-                    //   height: 20,
-                    // ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Container(
                       child: Hero(
                         tag: 'title',
@@ -120,9 +124,9 @@ class _DetailBookPageState extends State<DetailBookPage>
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold)),
-                              // const SizedBox(
-                              //   height: 10,
-                              // ),
+                              const SizedBox(
+                                height: 10,
+                              ),
                               Text(
                                 mapDemo?['author'],
                                 overflow: TextOverflow.ellipsis,
@@ -197,100 +201,125 @@ class _DetailBookPageState extends State<DetailBookPage>
                                 },
                                 child: Card(
                                   color: Colors.purple,
-                                  child: Row(children: [
-                                    Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                  margin: EdgeInsets.all(10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Chương: ' +
+                                                listReponse![index]['chapterId']
+                                                    .toString(),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          // SizedBox(
+                                          //   height: 5,
+                                          // ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                'Chương: ' +
-                                                    listReponse![index]
-                                                            ['chapterId']
-                                                        .toString(),
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
+                                              Flexible(
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      listReponse?[index]
+                                                          ['chapterTitle'],
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 2,
+                                                      softWrap: false,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              // SizedBox(
-                                              //   height: 5,
-                                              // ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
+                                              Column(
                                                 children: [
-                                                  Text(
-                                                    listReponse?[index]
-                                                        ['chapterTitle'],
-                                                    style: const TextStyle(
-                                                        color: Colors.white),
+                                                  Row(
+                                                    children: [
+                                                      IconButton(
+                                                          onPressed: () async {
+                                                            final SharedPreferences?
+                                                                prefs =
+                                                                await _prefs;
+                                                            await prefs?.setString(
+                                                                'idchapter',
+                                                                listReponse![
+                                                                            index]
+                                                                        ['id']
+                                                                    .toString());
+                                                            await prefs?.setString(
+                                                                'titleChapter',
+                                                                listReponse![
+                                                                            index]
+                                                                        [
+                                                                        'chapterTitle']
+                                                                    .toString());
+                                                            print(
+                                                                'ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute<
+                                                                      dynamic>(
+                                                                  builder: (_) =>
+                                                                      PdfViewerPage()),
+                                                            );
+                                                          },
+                                                          icon: Icon(
+                                                            Icons
+                                                                .import_contacts_sharp,
+                                                            color: Colors.yellow
+                                                                .shade200,
+                                                          )),
+                                                      IconButton(
+                                                          onPressed: () async {
+                                                            final SharedPreferences?
+                                                                prefs =
+                                                                await _prefs;
+                                                            await prefs?.setString(
+                                                                'idchapter',
+                                                                listReponse![
+                                                                            index]
+                                                                        ['id']
+                                                                    .toString());
+                                                            await prefs?.setString(
+                                                                'titleChapter',
+                                                                listReponse![
+                                                                            index]
+                                                                        [
+                                                                        'chapterTitle']
+                                                                    .toString());
+                                                            print(
+                                                                'ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                            showDialog(
+                                                              context: context,
+                                                              builder: (context) =>
+                                                                  const DownloadingDialog(),
+                                                            );
+                                                          },
+                                                          icon: Icon(
+                                                              Icons
+                                                                  .download_sharp,
+                                                              color: Colors
+                                                                  .green
+                                                                  .shade100))
+                                                    ],
                                                   ),
-                                                  IconButton(
-                                                      onPressed: () async {
-                                                        final SharedPreferences?
-                                                            prefs =
-                                                            await _prefs;
-                                                        await prefs?.setString(
-                                                            'idchapter',
-                                                            listReponse![index]
-                                                                    ['id']
-                                                                .toString());
-                                                        await prefs?.setString(
-                                                            'titleChapter',
-                                                            listReponse![index][
-                                                                    'chapterTitle']
-                                                                .toString());
-                                                        print(
-                                                            'ChapterID Click: ${listReponse![index]['id'].toString()}');
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute<
-                                                                  dynamic>(
-                                                              builder: (_) =>
-                                                                  PdfViewerPage()),
-                                                        );
-                                                      },
-                                                      icon: Icon(
-                                                        Icons
-                                                            .import_contacts_sharp,
-                                                        color: Colors
-                                                            .yellow.shade200,
-                                                      )),
-                                                  IconButton(
-                                                      onPressed: () async {
-                                                        final SharedPreferences?
-                                                            prefs =
-                                                            await _prefs;
-                                                        await prefs?.setString(
-                                                            'idchapter',
-                                                            listReponse![index]
-                                                                    ['id']
-                                                                .toString());
-                                                        await prefs?.setString(
-                                                            'titleChapter',
-                                                            listReponse![index][
-                                                                    'chapterTitle']
-                                                                .toString());
-                                                        print(
-                                                            'ChapterID Click: ${listReponse![index]['id'].toString()}');
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (context) =>
-                                                              const DownloadingDialog(),
-                                                        );
-                                                      },
-                                                      icon: Icon(
-                                                          Icons.download_sharp,
-                                                          color: Colors
-                                                              .green.shade100))
                                                 ],
                                               ),
-                                            ])),
-                                  ]),
+                                            ],
+                                          ),
+                                        ]),
+                                  ),
                                 ),
                               );
                             }),
@@ -334,11 +363,10 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            "BSOC App",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+        centerTitle: true,
+        title: Text(
+          "BSOC App",
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: localPath != null
