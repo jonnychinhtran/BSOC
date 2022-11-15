@@ -69,6 +69,7 @@ class _DetailBookPageState extends State<DetailBookPage>
     TabController _tabController = TabController(length: 3, vsync: this);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 153, 195, 59),
         centerTitle: true,
         title: Text('Detail Book'),
       ),
@@ -189,7 +190,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                 );
                               },
                               child: Card(
-                                color: Colors.purple,
+                                color: Color.fromARGB(255, 192, 193, 192),
                                 margin: EdgeInsets.all(10),
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),
@@ -353,6 +354,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 153, 195, 59),
         centerTitle: true,
         title: Text(
           "BSOC App",

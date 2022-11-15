@@ -21,6 +21,7 @@ class _MainIndexPageState extends State<MainIndexPage> {
     return Scaffold(
       drawer: const MenuAside(),
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 153, 195, 59),
         centerTitle: true,
         title: const Text('BSOC App'),
       ),

@@ -23,6 +23,7 @@ class MenuAside extends StatefulWidget {
 }
 
 class _MenuAsideState extends State<MenuAside> {
+  bool isLoading = true;
   Future<void> getInforUser() async {
     String? token;
     final prefs = await SharedPreferences.getInstance();
@@ -36,6 +37,7 @@ class _MenuAsideState extends State<MenuAside> {
     if (response.statusCode == 200) {
       mapDemo = jsonDecode(response.body);
       demoReponse = mapDemo;
+      isLoading = false;
     } else {
       throw Exception('Lỗi tải hệ thống');
     }
@@ -56,8 +58,10 @@ class _MenuAsideState extends State<MenuAside> {
         children: <Widget>[
           DrawerHeader(
               decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: <Color>[Colors.lightBlue, Colors.blue])),
+                  gradient: LinearGradient(colors: <Color>[
+                Color.fromARGB(255, 153, 195, 59),
+                Color.fromARGB(255, 153, 195, 59)
+              ])),
               child: Container(
                 child: Column(
                   children: <Widget>[
@@ -73,14 +77,15 @@ class _MenuAsideState extends State<MenuAside> {
                     SizedBox(height: 10),
                     Text(
                       demoReponse == null
-                          ? 'Data is loading'
+                          ? 'Đang tải dữ liệu'
                           : demoReponse!['username'].toString(),
+                      textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     SizedBox(height: 5),
                     Text(
                       demoReponse == null
-                          ? 'Data is loading'
+                          ? 'Đang tải dữ liệu'
                           : demoReponse!['email'].toString(),
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     )
