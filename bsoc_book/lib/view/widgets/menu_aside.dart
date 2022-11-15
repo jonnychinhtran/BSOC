@@ -29,16 +29,13 @@ class _MenuAsideState extends State<MenuAside> {
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
 
-    var url =
-        Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.inforUser);
-    http.Response response = await http.get(url, headers: {
-      'Authorization': 'Bearer $token',
-    });
+    var url = Uri.parse('http://103.77.166.202/api/user/infor');
+    http.Response response =
+        await http.get(url, headers: {'Authorization': 'Bearer $token'});
     if (response.statusCode == 200) {
       mapDemo = jsonDecode(response.body);
-      demoReponse = mapDemo;
-      isLoading = false;
     } else {
+      isLoading = false;
       throw Exception('Lỗi tải hệ thống');
     }
   }
@@ -76,17 +73,17 @@ class _MenuAsideState extends State<MenuAside> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      demoReponse == null
+                      mapDemo!['username'] == null
                           ? 'Đang tải dữ liệu'
-                          : demoReponse!['username'].toString(),
+                          : mapDemo!['username'],
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     SizedBox(height: 5),
                     Text(
-                      demoReponse == null
+                      mapDemo!['email'] == null
                           ? 'Đang tải dữ liệu'
-                          : demoReponse!['email'].toString(),
+                          : mapDemo!['email'],
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     )
                   ],

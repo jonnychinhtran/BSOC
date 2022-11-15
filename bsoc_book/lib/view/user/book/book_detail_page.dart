@@ -37,8 +37,6 @@ class _DetailBookPageState extends State<DetailBookPage>
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
     id = prefs.getString('idbook');
-    print('Token: $token');
-    print('ID Book: $id');
 
     var url = Uri.parse('http://103.77.166.202/api/book/$id');
     http.Response response =
@@ -190,7 +188,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                 );
                               },
                               child: Card(
-                                color: Color.fromARGB(255, 192, 193, 192),
+                                color: Color.fromARGB(255, 255, 134, 52),
                                 margin: EdgeInsets.all(10),
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),

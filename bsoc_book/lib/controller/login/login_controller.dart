@@ -36,7 +36,7 @@ class LoginController extends GetxController {
         usernameController.clear();
         passwordController.clear();
         Get.snackbar("Thành công", "Đăng nhập thành công.");
-        Get.offNamed(Routes.main);
+        Get.toNamed(Routes.main);
       } else {
         throw jsonDecode(response.body)["Message"] ?? "Vui lòng đăng nhập";
       }
