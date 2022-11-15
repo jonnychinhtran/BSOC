@@ -728,7 +728,30 @@ class DialogComment extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
-                        children: [],
+                        children: [
+                          Text("Rating: "),
+                          ConstrainedBox(
+                            constraints:
+                                BoxConstraints(minWidth: 40, minHeight: 10),
+                            child: IntrinsicWidth(
+                              child: TextField(
+                                keyboardType: TextInputType.number,
+                                // decoration: InputDecoration(
+                                //   focusedBorder: OutlineInputBorder(
+                                //       borderSide: BorderSide(
+                                //           width: 1, color: Colors.black)),
+                                //   enabledBorder: OutlineInputBorder(
+                                //       borderSide: BorderSide(
+                                //           width: 1, color: Colors.black)),
+                                // ),
+                              ),
+                            ),
+                          ),
+                          Text("/5 Sao"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
                       ),
                       Text("Nội dung:"),
                       SizedBox(
@@ -736,11 +759,15 @@ class DialogComment extends StatelessWidget {
                       ),
                       TextFormField(
                         decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(width: 1, color: Colors.black))),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(width: 1, color: Colors.black)),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(width: 1, color: Colors.black)),
+                        ),
                         keyboardType: TextInputType.multiline,
-                        maxLines: 4,
+                        maxLines: 3,
                       )
                     ],
                   ),
