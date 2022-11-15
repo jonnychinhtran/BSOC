@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:bsoc_book/routes/app_routes.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 class RegisterationController extends GetxController {
   TextEditingController usernameController = TextEditingController();
@@ -12,26 +10,38 @@ class RegisterationController extends GetxController {
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
   Future<void> registerWithUser() async {
-    var headers = {'content-type': 'application/json'};
-    var url = Uri.parse(
-        ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.registerUser);
-    Map body = {
+    int value1 = int.parse(phoneController.text);
+    final formData = {
       "username": usernameController.text,
       "email": emailController.text,
+      "phone": value1,
       "password": passwordController.text,
-      "phone": phoneController.text,
     };
-    http.Response response =
-        await http.post(url, body: jsonEncode(body), headers: headers);
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      Get.offAndToNamed(Routes.login);
-    } else {
-      throw jsonDecode(response.body)["Message"] ??
-          "Liên kết API không chính xác";
+
+    try {
+      Dio().options.headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      };
+      var response = await Dio().post('http://103.77.166.202/api/auth/register',
+          data: json.encode(formData));
+      if (response.statusCode == 200) {
+        final jsondata = response.data;
+        print(jsondata);
+        Get.snackbar("Thành công", "Đăng ký thành công.");
+        usernameController.clear();
+        emailController.clear();
+        passwordController.clear();
+        phoneController.clear();
+        Get.offNamed(Routes.login);
+      } else {
+        Get.snackbar("Lỗi", "Đăng ký thất bại. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } catch (e) {
+      Get.snackbar("error", e.toString());
+      print(e);
     }
   }
 }

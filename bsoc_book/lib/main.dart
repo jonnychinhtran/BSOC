@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'BSOC App',
+      title: 'BSOC Book',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
