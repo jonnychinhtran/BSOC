@@ -35,21 +35,14 @@ class LoginController extends GetxController {
         await prefs?.setString('accessToken', token);
         usernameController.clear();
         passwordController.clear();
+        Get.snackbar("Thành công", "Đăng nhập thành công.");
         Get.offNamed(Routes.main);
       } else {
         throw jsonDecode(response.body)["Message"] ?? "Vui lòng đăng nhập";
       }
-    } catch (error) {
-      Get.back();
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              title: const Text('Error'),
-              contentPadding: const EdgeInsets.all(20),
-              children: [Text(error.toString())],
-            );
-          });
+    } catch (e) {
+      Get.snackbar("error", e.toString());
+      print(e);
     }
   }
 
