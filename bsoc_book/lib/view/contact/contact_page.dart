@@ -63,6 +63,7 @@ class _ContactPageState extends State<ContactPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 153, 195, 59),
         centerTitle: true,
         title: Text("Thông tin liên hệ"),
       ),

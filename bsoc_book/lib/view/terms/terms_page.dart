@@ -9,6 +9,7 @@ class TermsPage extends StatelessWidget {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 153, 195, 59),
         centerTitle: true,
         title: Text('Điều khoản sử dụng'),
       ),
