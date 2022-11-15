@@ -3,6 +3,7 @@ import 'package:bsoc_book/routes/app_routes.dart';
 import 'package:bsoc_book/view/contact/contact_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/main_page.dart';
+import 'package:bsoc_book/view/terms/terms_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -98,7 +99,7 @@ class _MenuAsideState extends State<MenuAside> {
                   Get.to(MainIndexPage());
                 },
                 child: ListTile(
-                  leading: const Icon(Icons.bookmark_added_outlined),
+                  leading: const Icon(Icons.my_library_books),
                   title: const Text(
                     'Thư viện sách',
                     style: TextStyle(fontSize: 16),
@@ -123,7 +124,7 @@ class _MenuAsideState extends State<MenuAside> {
                   Get.to(ContactPage());
                 },
                 child: ListTile(
-                  leading: const Icon(Icons.bookmark_added_outlined),
+                  leading: const Icon(Icons.contact_page),
                   title: const Text(
                     'Liên hệ',
                     style: TextStyle(fontSize: 16),
@@ -141,12 +142,12 @@ class _MenuAsideState extends State<MenuAside> {
               child: InkWell(
                 splashColor: Colors.blueGrey,
                 onTap: () {
-                  Get.to(ContactPage());
+                  Get.to(TermsPage());
                 },
                 child: ListTile(
-                  leading: const Icon(Icons.bookmark_added_outlined),
+                  leading: const Icon(Icons.list),
                   title: const Text(
-                    'Liên hệ',
+                    'Điều khoản sử dụng',
                     style: TextStyle(fontSize: 16),
                   ),
                 ),

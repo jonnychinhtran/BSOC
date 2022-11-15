@@ -63,7 +63,8 @@ class _ContactPageState extends State<ContactPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("BSOC Contact")),
+        centerTitle: true,
+        title: Text("Thông tin liên hệ"),
       ),
       drawer: const MenuAside(),
       body: SafeArea(
