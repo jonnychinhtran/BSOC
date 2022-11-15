@@ -33,10 +33,10 @@ class LoginController extends GetxController {
         print(token);
         final SharedPreferences? prefs = await _prefs;
         await prefs?.setString('accessToken', token);
+        Get.snackbar("Thành công", "Đăng nhập thành công.");
+        Get.offNamed(Routes.main);
         usernameController.clear();
         passwordController.clear();
-        Get.snackbar("Thành công", "Đăng nhập thành công.");
-        Get.toNamed(Routes.main);
       } else {
         throw jsonDecode(response.body)["Message"] ?? "Vui lòng đăng nhập";
       }
