@@ -574,51 +574,60 @@ class ReviewBook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: ListView(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
             children: [
-              Container(
-                  child: Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: CircleAvatar(
-                    radius: 30,
-                    backgroundImage: NetworkImage(
-                      'https://avatars.githubusercontent.com/u/104020709?s=96&v=4',
-                    )),
-              )),
-              Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Ngọc Tài',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                      child: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(
+                          'https://avatars.githubusercontent.com/u/104020709?s=96&v=4',
+                        )),
+                  )),
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Ngọc Tài',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          'Quyển kỷ yếu rất hay về chiến lược Marketing',
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(fontWeight: FontWeight.normal),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        RatingBars(
+                          rating: 3.5,
+                          ratingCount: 12,
+                        )
+                      ],
                     ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      'Quyển kỷ yếu rất hay về chiến lược Marketing',
-                      textAlign: TextAlign.justify,
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    RatingBars(
-                      rating: 3.5,
-                      ratingCount: 12,
-                    )
-                  ],
-                ),
-              )),
-              SizedBox()
+                  )),
+                ],
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Center(
+                child: DialogComment(),
+              ),
             ],
           ),
         ],
@@ -696,4 +705,56 @@ class _Clipper extends CustomClipper<Rect> {
 
   @override
   bool shouldReclip(covariant CustomClipper<Rect> oldClipper) => true;
+}
+
+class DialogComment extends StatelessWidget {
+  const DialogComment({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      child: Text('CHIA SẺ ĐÁNH GIÁ'),
+      style: ElevatedButton.styleFrom(
+          elevation: 5,
+          primary: Colors.grey.shade600,
+          padding: EdgeInsets.all(20)),
+      onPressed: () => showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Đánh giá"),
+                content: Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [],
+                      ),
+                      Text("Nội dung:"),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(width: 1, color: Colors.black))),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 4,
+                      )
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Huỷ'),
+                    child: const Text('Huỷ'),
+                  ),
+                  TextButton(
+                      onPressed: () => Navigator.pop(context, 'Gửi'),
+                      child: Text('Gửi'))
+                ],
+              )),
+    );
+  }
 }
