@@ -30,7 +30,7 @@ class _MenuAsideState extends State<MenuAside> {
   Future<void> getInforUser() async {
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
-    print('Token Menu: $token');
+
     var url =
         Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.inforUser);
     http.Response response =
@@ -67,44 +67,51 @@ class _MenuAsideState extends State<MenuAside> {
                   children: <Widget>[
                     Expanded(
                       child: Material(
-                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                        borderRadius: BorderRadius.all(Radius.circular(80.0)),
                         elevation: 8,
                         child: Padding(
                           padding: EdgeInsets.all(6.0),
                           child: Image.asset(
                               "assets/images/logo-b4usolution.png",
-                              height: 60,
-                              width: 60),
+                              height: 80,
+                              width: 80),
                         ),
                       ),
                     ),
-
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Text(
+                            'Xin chào,',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ),
+                        TextButton(
+                            onPressed: () async {
+                              final SharedPreferences? prefs = await _prefs;
+                              await prefs?.setString(
+                                  'accessToken', token.toString());
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const InforPage()));
+                            },
+                            child: Text(
+                              mapDemo == null
+                                  ? 'Đang tải dữ liệu'
+                                  : mapDemo!['username'],
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.red, fontSize: 20),
+                            )),
+                      ],
+                    ),
                     // Text(
-                    // mapDemo == null
-                    //     ? 'Đang tải dữ liệu'
-                    //     : mapDemo!['username'],
-                    // textAlign: TextAlign.center,
-                    // style: TextStyle(color: Colors.white, fontSize: 20),
-                    // ),
-                    TextButton(
-                        onPressed: () async {
-                          final SharedPreferences? prefs = await _prefs;
-                          await prefs?.setString(
-                              'accessToken', token.toString());
-                          Get.to(InforPage());
-                        },
-                        child: Text(
-                          mapDemo == null
-                              ? 'Đang tải dữ liệu'
-                              : mapDemo!['username'],
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        )),
-
-                    Text(
-                      mapDemo == null ? 'Đang tải dữ liệu' : mapDemo!['email'],
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    )
+                    //   mapDemo == null ? 'Đang tải dữ liệu' : mapDemo!['email'],
+                    //   style: TextStyle(color: Colors.white, fontSize: 16),
+                    // )
                   ],
                 ),
               )),

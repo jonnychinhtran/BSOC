@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:bsoc_book/controller/changepass/changepass_controller.dart';
+import 'package:bsoc_book/controller/update/update_controller.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,8 +25,6 @@ class _InforPageState extends State<InforPage> {
   bool isLoading = true;
   String? token;
   Future<void> getUserDetail() async {
-    // final dio = Dio();
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
 
@@ -36,13 +35,10 @@ class _InforPageState extends State<InforPage> {
         await http.get(url, headers: {'Authorization': 'Bearer $token'});
 
     if (response.statusCode == 200) {
-      // print(prefs.getString('token'));
       datauser = jsonDecode(response.body);
       await prefs.setString('username', datauser!['username']);
 
-      setState(() {
-        isLoading = false;
-      });
+      isLoading = false;
     } else {
       throw Exception('Failed to load Infor');
     }
@@ -85,11 +81,7 @@ class _InforPageState extends State<InforPage> {
               SettingsTile.navigation(
                 title: Text('Đổi mật khẩu'),
                 leading: Icon(CupertinoIcons.exclamationmark_shield),
-                // description: Text('UI created to show plugin\'s possibilities'),
                 onPressed: (context) async {
-                  // SharedPreferences prefs =
-                  //     await SharedPreferences.getInstance();
-                  // await prefs.remove('accessToken');
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -99,7 +91,6 @@ class _InforPageState extends State<InforPage> {
               SettingsTile.navigation(
                 title: Text('Cập nhật thông tin'),
                 leading: Icon(CupertinoIcons.info),
-                // description: Text('UI created to show plugin\'s possibilities'),
                 onPressed: (context) async {
                   Navigator.push(
                       context,
@@ -116,7 +107,6 @@ class _InforPageState extends State<InforPage> {
                   CupertinoIcons.clear_circled,
                   color: Colors.red,
                 ),
-                // description: Text('UI created to show plugin\'s possibilities'),
                 onPressed: (context) async {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
@@ -311,6 +301,7 @@ class UpdateUser extends StatefulWidget {
 
 class _UpdateUserState extends State<UpdateUser> {
   final _formKey = GlobalKey<FormState>();
+  UpdateUserConntroller updateuser = Get.put(UpdateUserConntroller());
 
   @override
   void initState() {
@@ -340,8 +331,6 @@ class _UpdateUserState extends State<UpdateUser> {
                       width: size.width * 0.85,
                       child: SingleChildScrollView(
                         child: Column(
-                          // crossAxisAlignment: CrossAxisAlignment.start,
-                          // mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             SizedBox(height: size.height * 0.02),
                             const Align(
@@ -359,7 +348,7 @@ class _UpdateUserState extends State<UpdateUser> {
                               ),
                             ),
                             TextFormField(
-                              // controller: registerController.usernameController,
+                              controller: updateuser.usernameController,
                               validator: (value) {
                                 return (value == null || value.isEmpty)
                                     ? 'Vui lòng nhập Username'
@@ -388,7 +377,7 @@ class _UpdateUserState extends State<UpdateUser> {
                               ),
                             ),
                             TextFormField(
-                              // controller: registerController.emailController,
+                              controller: updateuser.emailController,
                               validator: (value) =>
                                   EmailValidator.validate(value!)
                                       ? null
@@ -416,7 +405,7 @@ class _UpdateUserState extends State<UpdateUser> {
                               ),
                             ),
                             TextFormField(
-                              // controller: registerController.phoneController,
+                              controller: updateuser.phoneController,
                               validator: (value) {
                                 return (value == null || value.isEmpty)
                                     ? 'Vui lòng nhập Số điện thoại'
@@ -443,7 +432,7 @@ class _UpdateUserState extends State<UpdateUser> {
                                     onPressed: () => {
                                       if (_formKey.currentState!.validate())
                                         {
-                                          // resetController.Resetpassword(),
+                                          updateuser.updateUser(),
                                         }
                                     },
                                     style: ElevatedButton.styleFrom(

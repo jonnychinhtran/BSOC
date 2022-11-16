@@ -2,8 +2,6 @@ import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangepassConntroller extends GetxController {
