@@ -21,6 +21,11 @@ class TermsPage extends StatelessWidget {
             child: Column(
           children: [
             Text(
+                'Cảm ơn bạn đã chọn sản phẩm của chúng tôi. BSOC Book là sản phẩm của Startup Hoa Le, được xây dựng tại bởi nhóm lập trình B4USolution Việt Nam. Các điều khoản dịch vụ này là hợp đồng giữa bạn và BSOC Book. Bằng cách sử dụng BSOC Book, tạo tài khoản của bạn và sử dụng ứng dụng của chúng tôi để đăng tải nhiều nội dung khác nhau lên cộng đồng, bao gồm đăng bài ( đăng sách nếu có) nhận xét , đánh giá và tin nhắn hoặc để truy cập và xem nhận xét của người dùng.',
+                textAlign: TextAlign.justify,
+                style: TextStyle(fontSize: 14)),
+            SizedBox(height: size.height * 0.01),
+            Text(
               '1. Quy định chung',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
             ),
