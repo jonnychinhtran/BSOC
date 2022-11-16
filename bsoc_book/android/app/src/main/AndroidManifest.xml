@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.example.bsoc_book">
    <application
-        android:label="bsoc_book"
+        android:label="B4U_BSOC"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
