@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
     String? token;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
-    print("Token home: $token");
+    // print("Token home: $token");
     var url =
         Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.getAllBook);
     http.Response response = await http.get(url, headers: {
@@ -77,8 +77,9 @@ class _HomePageState extends State<HomePage> {
     });
 
     if (response.statusCode == 200) {
-      await prefs.setString('token', response.body);
-      print(prefs.getString('token'));
+      await prefs.setString('accessToken', token!);
+      var datau = prefs.getString('accessToken');
+      print(datau);
       setState(() {
         mapDemo = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
         listReponse = mapDemo?['content'];
@@ -144,12 +145,14 @@ class _HomePageState extends State<HomePage> {
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: EdgeInsets.only(left: 10, bottom: 4),
-                        child: Text(
-                          'EDUCATION BOOKS',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        child: Center(
+                          child: Text(
+                            'THƯ VIỆN SÁCH',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),

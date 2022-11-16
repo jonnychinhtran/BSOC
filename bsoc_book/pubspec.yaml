@@ -57,6 +57,7 @@ dependencies:
   flutter_inappwebview: ^5.7.1
   email_validator: ^2.1.17
   percent_indicator: ^4.2.2
+  settings_ui: ^2.0.2
   
 
 dev_dependencies:

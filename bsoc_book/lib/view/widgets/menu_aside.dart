@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:bsoc_book/routes/app_routes.dart';
 import 'package:bsoc_book/view/contact/contact_page.dart';
+import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/main_page.dart';
 import 'package:bsoc_book/view/terms/terms_page.dart';
@@ -23,18 +24,20 @@ class MenuAside extends StatefulWidget {
 }
 
 class _MenuAsideState extends State<MenuAside> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
+  String? token;
   Future<void> getInforUser() async {
-    String? token;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
-
+    print('Token Menu: $token');
     var url =
         Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.inforUser);
     http.Response response =
         await http.get(url, headers: {'Authorization': 'Bearer $token'});
     if (response.statusCode == 200) {
       mapDemo = jsonDecode(response.body);
+
       isLoading = false;
     } else {
       throw Exception('Lỗi tải hệ thống');
@@ -56,30 +59,48 @@ class _MenuAsideState extends State<MenuAside> {
           DrawerHeader(
               decoration: BoxDecoration(
                   gradient: LinearGradient(colors: <Color>[
-                Color.fromARGB(255, 153, 195, 59),
-                Color.fromARGB(255, 153, 195, 59)
+                Color.fromARGB(255, 138, 175, 52),
+                Color.fromARGB(255, 138, 175, 52)
               ])),
               child: Container(
                 child: Column(
                   children: <Widget>[
-                    Material(
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                      elevation: 10,
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Image.asset("assets/images/logo-b4usolution.png",
-                            height: 60, width: 60),
+                    Expanded(
+                      child: Material(
+                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                        elevation: 8,
+                        child: Padding(
+                          padding: EdgeInsets.all(6.0),
+                          child: Image.asset(
+                              "assets/images/logo-b4usolution.png",
+                              height: 60,
+                              width: 60),
+                        ),
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      mapDemo == null
-                          ? 'Đang tải dữ liệu'
-                          : mapDemo!['username'],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    SizedBox(height: 5),
+
+                    // Text(
+                    // mapDemo == null
+                    //     ? 'Đang tải dữ liệu'
+                    //     : mapDemo!['username'],
+                    // textAlign: TextAlign.center,
+                    // style: TextStyle(color: Colors.white, fontSize: 20),
+                    // ),
+                    TextButton(
+                        onPressed: () async {
+                          final SharedPreferences? prefs = await _prefs;
+                          await prefs?.setString(
+                              'accessToken', token.toString());
+                          Get.to(InforPage());
+                        },
+                        child: Text(
+                          mapDemo == null
+                              ? 'Đang tải dữ liệu'
+                              : mapDemo!['username'],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        )),
+
                     Text(
                       mapDemo == null ? 'Đang tải dữ liệu' : mapDemo!['email'],
                       style: TextStyle(color: Colors.white, fontSize: 16),
@@ -120,7 +141,7 @@ class _MenuAsideState extends State<MenuAside> {
                       Border(bottom: BorderSide(color: Colors.grey.shade400))),
               child: InkWell(
                 splashColor: Colors.blueGrey,
-                onTap: () {
+                onTap: () async {
                   Get.to(ContactPage());
                 },
                 child: ListTile(
