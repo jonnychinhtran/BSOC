@@ -416,23 +416,10 @@ class DownloadingDialog extends StatefulWidget {
 class _DownloadingDialogState extends State<DownloadingDialog> {
   bool notificationsEnabled = false;
 
-  Map<String, dynamic> result = {
-    'isSuccess': false,
-    'filePath': null,
-    'error': null,
-  };
   double progress = 0.0;
   String? localPath;
-  var _openResult = 'Unknown';
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
 
   void startDownloading() async {
-    Map<String, dynamic> result = {
-      "isSuccess": false,
-      "filePath": null,
-      "error": null
-    };
     Dio dio = Dio();
     String? token;
     String? idchapter;
@@ -463,9 +450,6 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
         setState(() {
           progress = recivedBytes / totalBytes;
         });
-        result['isSuccess'] = progress;
-        result['filePath'] = dir.path;
-        print(progress);
       },
       deleteOnError: true,
     ).then((_) {
@@ -473,87 +457,10 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     });
   }
 
-  Future<void> openFile() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? duongtruyen = prefs.getString('duongdan');
-    const filePath =
-        '/data/user/0/com.example.bsoc_book/app_flutter/ + namesave';
-    final result = await OpenFilex.open(filePath);
-
-    setState(() {
-      _openResult = "type=${result.type}  message=${result.message}";
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    requestPermissions();
     startDownloading();
-  }
-
-  Future showNotification(Map<String, dynamic> downloadStatus) async {
-    final andorid = AndroidNotificationDetails("chapterId", 'BSOC Book',
-        priority: Priority.high, importance: Importance.max);
-    final ios = DarwinNotificationDetails();
-    final notificationDetails = NotificationDetails(android: andorid, iOS: ios);
-    final json = jsonEncode(downloadStatus);
-    final isSuccess = downloadStatus['isSuccess'];
-    await FlutterLocalNotificationsPlugin().show(
-        0,
-        isSuccess ? "Thành công" : "lỗi",
-        isSuccess ? "Dữ liệu tải thành công" : "Dữ liệu bị lỗi",
-        notificationDetails,
-        payload: json);
-  }
-
-  final android = AndroidInitializationSettings('mipmap/ic_launcher');
-  final ios = DarwinNotificationDetails();
-
-  Future onselectedNotification(String json) async {
-    final obj = jsonDecode(json);
-    if (obj['isSuccess']) {
-      OpenFilex.open(obj['filePath']);
-    } else {
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                title: Text('Error'),
-                content: Text(obj['error']),
-              ));
-    }
-  }
-
-  Future<void> requestPermissions() async {
-    if (Platform.isIOS || Platform.isMacOS) {
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-            critical: true,
-          );
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              MacOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-            critical: true,
-          );
-    } else if (Platform.isAndroid) {
-      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
-
-      final bool? granted = await androidImplementation?.requestPermission();
-      setState(() {
-        notificationsEnabled = granted ?? false;
-      });
-    }
   }
 
   @override
