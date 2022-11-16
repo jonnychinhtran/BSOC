@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bsoc_book/controller/changepass/changepass_controller.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,10 +36,10 @@ class _InforPageState extends State<InforPage> {
         await http.get(url, headers: {'Authorization': 'Bearer $token'});
 
     if (response.statusCode == 200) {
-      // await prefs.setString('token', response.body);
       // print(prefs.getString('token'));
       datauser = jsonDecode(response.body);
-      // listReponse = mapDemo!['chapters'];
+      await prefs.setString('username', datauser!['username']);
+
       setState(() {
         isLoading = false;
       });
@@ -49,7 +50,6 @@ class _InforPageState extends State<InforPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     getUserDetail();
     super.initState();
   }
@@ -139,6 +139,7 @@ class ChangePassword extends StatefulWidget {
 
 class _ChangePasswordState extends State<ChangePassword> {
   final _formKey = GlobalKey<FormState>();
+  ChangepassConntroller changepass = Get.put(ChangepassConntroller());
 
   @override
   void initState() {
@@ -167,10 +168,37 @@ class _ChangePasswordState extends State<ChangePassword> {
                       width: size.width * 0.85,
                       child: SingleChildScrollView(
                         child: Column(
-                          // crossAxisAlignment: CrossAxisAlignment.start,
-                          // mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             SizedBox(height: size.height * 0.04),
+                            // const Align(
+                            //   alignment: Alignment.centerLeft,
+                            //   child: Padding(
+                            //     padding: EdgeInsets.only(left: 0, bottom: 4),
+                            //     child: Text(
+                            //       'Tên đăng nhập',
+                            //       textAlign: TextAlign.left,
+                            //       style: TextStyle(
+                            //         fontSize: 16,
+                            //         fontWeight: FontWeight.bold,
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
+                            // TextFormField(
+                            //   controller: changepass.usernameController,
+                            //   validator: (value) {
+                            //     return (value == null || value.isEmpty)
+                            //         ? 'Vui lòng nhập Username'
+                            //         : null;
+                            //   },
+                            //   decoration: InputDecoration(
+                            //       hintText: "Tên đăng nhập",
+                            //       isDense: true,
+                            //       border: OutlineInputBorder(
+                            //         borderRadius: BorderRadius.circular(10),
+                            //       )),
+                            // ),
+                            // SizedBox(height: size.height * 0.02),
                             const Align(
                               alignment: Alignment.centerLeft,
                               child: Padding(
@@ -186,7 +214,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                               ),
                             ),
                             TextFormField(
-                              // controller: resetController.emailController,
+                              controller: changepass.currentpasswordController,
                               obscureText: true,
                               validator: (value) {
                                 return (value == null || value.isEmpty)
@@ -216,11 +244,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                               ),
                             ),
                             TextFormField(
-                              // controller: resetController.emailController,
+                              controller: changepass.newpasswordController,
                               obscureText: true,
                               validator: (value) {
                                 return (value == null || value.isEmpty)
-                                    ? 'Vui lòng nhập mật khẩu hiện tại'
+                                    ? 'Vui lòng nhập mật khẩu mới'
                                     : null;
                               },
                               decoration: InputDecoration(
@@ -239,7 +267,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                     onPressed: () => {
                                       if (_formKey.currentState!.validate())
                                         {
-                                          // resetController.Resetpassword(),
+                                          changepass.changepassUser(),
                                         }
                                     },
                                     style: ElevatedButton.styleFrom(

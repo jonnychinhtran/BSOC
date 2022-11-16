@@ -29,11 +29,13 @@ class LoginController extends GetxController {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         var token = json['data']['accessToken'];
+        var user = json['data']['username'];
         var idUser = json['data']['id'].toString();
         print(response.body);
         // print(token);
         final SharedPreferences? prefs = await _prefs;
         await prefs?.setString('accessToken', token);
+        await prefs?.setString('username', user);
         await prefs?.setString('idInforUser', idUser);
         var hoang = await prefs?.getString('accessToken');
         print(hoang);
