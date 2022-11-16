@@ -1,6 +1,7 @@
 import 'package:bsoc_book/controller/register/register_controller.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../routes/app_routes.dart';
 
@@ -134,6 +135,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               : null;
                         },
                         maxLength: 10,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             hintText: "Phone",
                             isDense: true,
