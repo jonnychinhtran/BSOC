@@ -44,7 +44,7 @@ class LoginController extends GetxController {
         usernameController.clear();
         passwordController.clear();
       } else {
-        throw jsonDecode(response.body)["Message"] ?? "Vui lòng đăng nhập";
+        throw jsonDecode(response.body)["Thông báo"] ?? "Vui lòng đăng nhập";
       }
     } catch (e) {
       Get.snackbar("error", e.toString());

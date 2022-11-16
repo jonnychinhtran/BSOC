@@ -28,8 +28,6 @@ class _InforPageState extends State<InforPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
 
-    print(token);
-
     var url = Uri.parse('http://103.77.166.202/api/user/infor');
     http.Response response =
         await http.get(url, headers: {'Authorization': 'Bearer $token'});

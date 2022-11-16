@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
     String? token;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
-    // print("Token home: $token");
+
     var url =
         Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.getAllBook);
     http.Response response = await http.get(url, headers: {
@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
         isLoading = false;
       });
     } else {
-      throw Exception('Failed to load Infor');
+      throw Exception('Lỗi tải hệ thống');
     }
   }
 
@@ -161,7 +161,6 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       height: 500,
                       child: GridView.builder(
-                        // padding: EdgeInsets.all(15),
                         itemCount:
                             listReponse == null ? 0 : listReponse?.length,
                         gridDelegate:
@@ -233,7 +232,6 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
-                    // SizedBox(height: size.height * 0.05),
                     Container(
                       height: 100,
                       color: Colors.grey.shade800,

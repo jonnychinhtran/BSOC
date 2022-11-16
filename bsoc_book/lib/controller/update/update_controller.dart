@@ -15,8 +15,6 @@ class UpdateUserConntroller extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
 
-    print('Token: $token');
-
     final formData = {
       "username": usernameController.text,
       "email": emailController.text,

@@ -21,7 +21,7 @@ class InforUserController extends GetxController {
 
       print(response.body);
     } else {
-      throw Exception('Failed to load Infor');
+      throw Exception('Lỗi tải dữ liệu');
     }
   }
 }

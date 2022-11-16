@@ -51,7 +51,7 @@ class _DetailBookPageState extends State<DetailBookPage>
         isLoading = false;
       });
     } else {
-      throw Exception('Failed to load Infor');
+      throw Exception('Lỗi tải hệ thống');
     }
   }
 
@@ -69,7 +69,7 @@ class _DetailBookPageState extends State<DetailBookPage>
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 138, 175, 52),
         centerTitle: true,
-        title: Text('Detail Book'),
+        title: Text('Chi tiết'),
       ),
       body: isLoading
           ? Center(
@@ -92,7 +92,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                       width: 150,
                       child: Material(
                         child: mapDemo == null
-                            ? Text('Data is loading')
+                            ? Text('Đang tải dữ liệu')
                             : Image.network(
                                 'http://103.77.166.202' + mapDemo?['image'],
                                 fit: BoxFit.fill,
@@ -155,7 +155,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                           child: ListView(
                             children: [
                               mapDemo == null
-                                  ? Text('Data is loading')
+                                  ? Text('Đang tải dữ liệu')
                                   : Text(
                                       mapDemo?['description'],
                                       softWrap: true,
@@ -367,7 +367,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
         backgroundColor: Color.fromARGB(255, 138, 175, 52),
         centerTitle: true,
         title: Text(
-          "BSOC",
+          "B4U BSOC",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -389,8 +389,7 @@ class ApiServiceProvider {
     token = prefs.getString('accessToken');
     idchapter = prefs.getString('idchapter');
     namesave = prefs.getString('filePath');
-    print('Token ChapterID: $token');
-    print('ChapterID: $idchapter');
+
     var url =
         Uri.parse('http://103.77.166.202/api/chapter/download/$idchapter');
     http.Response response = await http.get(url, headers: {
@@ -428,7 +427,6 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     token = prefs.getString('accessToken');
     idchapter = prefs.getString('idchapter');
     namesave = prefs.getString('filePath');
-    print(namesave);
 
     String url = 'http://103.77.166.202/api/chapter/download/$idchapter';
 

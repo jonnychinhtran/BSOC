@@ -15,8 +15,6 @@ class ChangepassConntroller extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
     username = prefs.getString('username');
-    print('Token: $token');
-    print('Username: $username');
 
     final formData = {
       "username": username,
