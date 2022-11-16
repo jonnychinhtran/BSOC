@@ -88,16 +88,16 @@ class _InforPageState extends State<InforPage> {
                           builder: (context) => const ChangePassword()));
                 },
               ),
-              SettingsTile.navigation(
-                title: Text('Cập nhật thông tin'),
-                leading: Icon(CupertinoIcons.info),
-                onPressed: (context) async {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const UpdateUser()));
-                },
-              ),
+              // SettingsTile.navigation(
+              //   title: Text('Cập nhật thông tin'),
+              //   leading: Icon(CupertinoIcons.info),
+              //   onPressed: (context) async {
+              //     Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //             builder: (context) => const UpdateUser()));
+              //   },
+              // ),
               SettingsTile.navigation(
                 title: Text(
                   'Đăng xuất',
@@ -144,6 +144,10 @@ class _ChangePasswordState extends State<ChangePassword> {
         backgroundColor: Color.fromARGB(255, 138, 175, 52),
         centerTitle: true,
         title: Text('Đổi mật khẩu'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context, false),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -292,177 +296,177 @@ class _ChangePasswordState extends State<ChangePassword> {
   }
 }
 
-class UpdateUser extends StatefulWidget {
-  const UpdateUser({super.key});
+// class UpdateUser extends StatefulWidget {
+//   const UpdateUser({super.key});
 
-  @override
-  State<UpdateUser> createState() => _UpdateUserState();
-}
+//   @override
+//   State<UpdateUser> createState() => _UpdateUserState();
+// }
 
-class _UpdateUserState extends State<UpdateUser> {
-  final _formKey = GlobalKey<FormState>();
-  UpdateUserConntroller updateuser = Get.put(UpdateUserConntroller());
+// class _UpdateUserState extends State<UpdateUser> {
+//   final _formKey = GlobalKey<FormState>();
+//   UpdateUserConntroller updateuser = Get.put(UpdateUserConntroller());
 
-  @override
-  void initState() {
-    super.initState();
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 138, 175, 52),
-        centerTitle: true,
-        title: Text('Cập nhật thông tin'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Form(
-                key: _formKey,
-                child: SizedBox(
-                  width: size.width,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      width: size.width * 0.85,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(height: size.height * 0.02),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 0, bottom: 4),
-                                child: Text(
-                                  'Tên đăng nhập',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            TextFormField(
-                              controller: updateuser.usernameController,
-                              validator: (value) {
-                                return (value == null || value.isEmpty)
-                                    ? 'Vui lòng nhập Username'
-                                    : null;
-                              },
-                              decoration: InputDecoration(
-                                  hintText: "Tên đăng nhập",
-                                  isDense: true,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  )),
-                            ),
-                            SizedBox(height: size.height * 0.02),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 0, bottom: 4),
-                                child: Text(
-                                  'Email',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            TextFormField(
-                              controller: updateuser.emailController,
-                              validator: (value) =>
-                                  EmailValidator.validate(value!)
-                                      ? null
-                                      : "Vui lòng nhập email",
-                              decoration: InputDecoration(
-                                  hintText: "Email",
-                                  isDense: true,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  )),
-                            ),
-                            SizedBox(height: size.height * 0.02),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 0, bottom: 4),
-                                child: Text(
-                                  'Số điện thoại',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            TextFormField(
-                              controller: updateuser.phoneController,
-                              validator: (value) {
-                                return (value == null || value.isEmpty)
-                                    ? 'Vui lòng nhập Số điện thoại'
-                                    : null;
-                              },
-                              maxLength: 10,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                  hintText: "Số điện thoại",
-                                  isDense: true,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  )),
-                            ),
-                            SizedBox(height: size.height * 0.04),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () => {
-                                      if (_formKey.currentState!.validate())
-                                        {
-                                          updateuser.updateUser(),
-                                        }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        primary:
-                                            Color.fromARGB(255, 153, 195, 59),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 40, vertical: 15)),
-                                    child: const Text(
-                                      "Cập nhật",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                )),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     var size = MediaQuery.of(context).size;
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       appBar: AppBar(
+//         backgroundColor: Color.fromARGB(255, 138, 175, 52),
+//         centerTitle: true,
+//         title: Text('Cập nhật thông tin'),
+//       ),
+//       body: SingleChildScrollView(
+//         child: Column(
+//           children: [
+//             Form(
+//                 key: _formKey,
+//                 child: SizedBox(
+//                   width: size.width,
+//                   child: Align(
+//                     alignment: Alignment.center,
+//                     child: Container(
+//                       width: size.width * 0.85,
+//                       child: SingleChildScrollView(
+//                         child: Column(
+//                           children: <Widget>[
+//                             SizedBox(height: size.height * 0.02),
+//                             const Align(
+//                               alignment: Alignment.centerLeft,
+//                               child: Padding(
+//                                 padding: EdgeInsets.only(left: 0, bottom: 4),
+//                                 child: Text(
+//                                   'Tên đăng nhập',
+//                                   textAlign: TextAlign.left,
+//                                   style: TextStyle(
+//                                     fontSize: 16,
+//                                     fontWeight: FontWeight.bold,
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                             TextFormField(
+//                               controller: updateuser.usernameController,
+//                               validator: (value) {
+//                                 return (value == null || value.isEmpty)
+//                                     ? 'Vui lòng nhập Username'
+//                                     : null;
+//                               },
+//                               decoration: InputDecoration(
+//                                   hintText: "Tên đăng nhập",
+//                                   isDense: true,
+//                                   border: OutlineInputBorder(
+//                                     borderRadius: BorderRadius.circular(10),
+//                                   )),
+//                             ),
+//                             SizedBox(height: size.height * 0.02),
+//                             const Align(
+//                               alignment: Alignment.centerLeft,
+//                               child: Padding(
+//                                 padding: EdgeInsets.only(left: 0, bottom: 4),
+//                                 child: Text(
+//                                   'Email',
+//                                   textAlign: TextAlign.left,
+//                                   style: TextStyle(
+//                                     fontSize: 16,
+//                                     fontWeight: FontWeight.bold,
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                             TextFormField(
+//                               controller: updateuser.emailController,
+//                               validator: (value) =>
+//                                   EmailValidator.validate(value!)
+//                                       ? null
+//                                       : "Vui lòng nhập email",
+//                               decoration: InputDecoration(
+//                                   hintText: "Email",
+//                                   isDense: true,
+//                                   border: OutlineInputBorder(
+//                                     borderRadius: BorderRadius.circular(10),
+//                                   )),
+//                             ),
+//                             SizedBox(height: size.height * 0.02),
+//                             const Align(
+//                               alignment: Alignment.centerLeft,
+//                               child: Padding(
+//                                 padding: EdgeInsets.only(left: 0, bottom: 4),
+//                                 child: Text(
+//                                   'Số điện thoại',
+//                                   textAlign: TextAlign.left,
+//                                   style: TextStyle(
+//                                     fontSize: 16,
+//                                     fontWeight: FontWeight.bold,
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                             TextFormField(
+//                               controller: updateuser.phoneController,
+//                               validator: (value) {
+//                                 return (value == null || value.isEmpty)
+//                                     ? 'Vui lòng nhập Số điện thoại'
+//                                     : null;
+//                               },
+//                               maxLength: 10,
+//                               inputFormatters: [
+//                                 FilteringTextInputFormatter.digitsOnly
+//                               ],
+//                               keyboardType: TextInputType.number,
+//                               decoration: InputDecoration(
+//                                   hintText: "Số điện thoại",
+//                                   isDense: true,
+//                                   border: OutlineInputBorder(
+//                                     borderRadius: BorderRadius.circular(10),
+//                                   )),
+//                             ),
+//                             SizedBox(height: size.height * 0.04),
+//                             Row(
+//                               mainAxisAlignment: MainAxisAlignment.center,
+//                               children: [
+//                                 Expanded(
+//                                   child: ElevatedButton(
+//                                     onPressed: () => {
+//                                       if (_formKey.currentState!.validate())
+//                                         {
+//                                           updateuser.updateUser(),
+//                                         }
+//                                     },
+//                                     style: ElevatedButton.styleFrom(
+//                                         primary:
+//                                             Color.fromARGB(255, 153, 195, 59),
+//                                         shape: RoundedRectangleBorder(
+//                                             borderRadius:
+//                                                 BorderRadius.circular(10)),
+//                                         padding: const EdgeInsets.symmetric(
+//                                             horizontal: 40, vertical: 15)),
+//                                     child: const Text(
+//                                       "Cập nhật",
+//                                       style: TextStyle(
+//                                         fontSize: 20,
+//                                         fontWeight: FontWeight.bold,
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                 )),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
