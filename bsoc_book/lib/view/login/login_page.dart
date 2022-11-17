@@ -4,6 +4,7 @@ import 'package:bsoc_book/view/register/register_page.dart';
 import 'package:bsoc_book/view/resetpassword/reset_pass_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:group_button/group_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -13,6 +14,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _isRemember = false;
   final _formKey = GlobalKey<FormState>();
   LoginController loginController = Get.put(LoginController());
 
