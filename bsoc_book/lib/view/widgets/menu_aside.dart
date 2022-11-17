@@ -145,26 +145,30 @@ class _MenuAsideState extends State<MenuAside> {
                   ],
                 ),
               )),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-            child: Container(
-              decoration: BoxDecoration(
-                  border:
-                      Border(bottom: BorderSide(color: Colors.grey.shade400))),
-              child: InkWell(
-                splashColor: Colors.blueGrey,
-                onTap: () {
-                  Get.to(MainIndexPage());
-                },
-                child: ListTile(
-                  leading: const Icon(Icons.my_library_books),
-                  title: const Text(
-                    'Thư viện sách',
-                    style: TextStyle(fontSize: 16),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(color: Colors.grey.shade400))),
+                  child: InkWell(
+                    splashColor: Colors.blueGrey,
+                    onTap: () {
+                      Get.to(MainIndexPage());
+                    },
+                    child: ListTile(
+                      leading: const Icon(Icons.my_library_books),
+                      title: const Text(
+                        'Thư viện sách',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
           // ListTile(
           //   leading: const Icon(Icons.assessment_outlined),
@@ -237,6 +241,14 @@ class _MenuAsideState extends State<MenuAside> {
                   ),
                 ),
               ),
+            ),
+          ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Align(
+                  alignment: FractionalOffset.bottomLeft,
+                  child: Text('Phiên bản: 1.0.0 (1)')),
             ),
           ),
         ],
