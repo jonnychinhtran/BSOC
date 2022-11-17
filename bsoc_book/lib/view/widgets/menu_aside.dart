@@ -5,6 +5,7 @@ import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/main_page.dart';
 import 'package:bsoc_book/view/terms/terms_page.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,26 +28,55 @@ class _MenuAsideState extends State<MenuAside> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
   String? token;
-  Future<void> getInforUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
 
-    var url =
-        Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.inforUser);
-    http.Response response =
-        await http.get(url, headers: {'Authorization': 'Bearer $token'});
-    if (response.statusCode == 200) {
-      mapDemo = jsonDecode(response.body);
-
-      isLoading = false;
-    } else {
-      throw Exception('Lỗi tải hệ thống');
+  Future<void> getUserDetail() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      var response = await Dio().get('http://103.77.166.202/api/user/infor',
+          options: Options(headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          }));
+      if (response.statusCode == 200) {
+        mapDemo = response.data;
+        // print(datauser);
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } catch (e) {
+      Get.snackbar("error", e.toString());
+      print(e);
     }
   }
 
+  // Future<void> getInforUser() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   token = prefs.getString('accessToken');
+
+  //   var url =
+  //       Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.inforUser);
+  //   http.Response response =
+  //       await http.get(url, headers: {'Authorization': 'Bearer $token'});
+  //   if (response.statusCode == 200) {
+  //     mapDemo = jsonDecode(response.body);
+
+  //     isLoading = false;
+  //   } else {
+  //     throw Exception('Lỗi tải hệ thống');
+  //   }
+  // }
+
   @override
   void initState() {
-    getInforUser();
+    getUserDetail();
     super.initState();
   }
 

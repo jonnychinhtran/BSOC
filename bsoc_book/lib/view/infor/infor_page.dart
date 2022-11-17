@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:bsoc_book/controller/changepass/changepass_controller.dart';
-import 'package:bsoc_book/controller/update/update_controller.dart';
+// import 'package:bsoc_book/controller/update/update_controller.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
-import 'package:email_validator/email_validator.dart';
+// import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
@@ -24,21 +24,33 @@ class InforPage extends StatefulWidget {
 class _InforPageState extends State<InforPage> {
   bool isLoading = true;
   String? token;
+
   Future<void> getUserDetail() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
-
-    var url = Uri.parse('http://103.77.166.202/api/user/infor');
-    http.Response response =
-        await http.get(url, headers: {'Authorization': 'Bearer $token'});
-
-    if (response.statusCode == 200) {
-      datauser = jsonDecode(response.body);
-      await prefs.setString('username', datauser!['username']);
-
-      isLoading = false;
-    } else {
-      throw Exception('Failed to load Infor');
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      var response = await Dio().get('http://103.77.166.202/api/user/infor',
+          options: Options(headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          }));
+      if (response.statusCode == 200) {
+        datauser = response.data;
+        await prefs.setString('username', datauser!['username']);
+        // print(datauser);
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } catch (e) {
+      Get.snackbar("error", e.toString());
+      print(e);
     }
   }
 
@@ -56,65 +68,74 @@ class _InforPageState extends State<InforPage> {
           centerTitle: true,
           title: Text('Cài đặt tài khoản'),
         ),
-        body: SettingsList(
-          sections: [
-            SettingsSection(
-              title: Text('Thông tin'),
-              tiles: [
-                SettingsTile(
-                  title: Text('Tên đăng nhập:'),
-                  value: Text(datauser!['username']),
+        body: isLoading
+            ? Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    CircularProgressIndicator(),
+                  ],
                 ),
-                SettingsTile(
-                  title: Text('Email:'),
-                  value: Text(datauser!['email']),
-                ),
-                SettingsTile(
-                  title: Text('Số điện thoại:'),
-                  value: Text('0' + datauser!['phone']),
-                ),
-              ],
-            ),
-            SettingsSection(title: Text('Cài đặt chung'), tiles: [
-              SettingsTile.navigation(
-                title: Text('Đổi mật khẩu'),
-                leading: Icon(CupertinoIcons.exclamationmark_shield),
-                onPressed: (context) async {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ChangePassword()));
-                },
-              ),
-              // SettingsTile.navigation(
-              //   title: Text('Cập nhật thông tin'),
-              //   leading: Icon(CupertinoIcons.info),
-              //   onPressed: (context) async {
-              //     Navigator.push(
-              //         context,
-              //         MaterialPageRoute(
-              //             builder: (context) => const UpdateUser()));
-              //   },
-              // ),
-              SettingsTile.navigation(
-                title: Text(
-                  'Đăng xuất',
-                  style: TextStyle(color: Colors.red),
-                ),
-                leading: Icon(
-                  CupertinoIcons.clear_circled,
-                  color: Colors.red,
-                ),
-                onPressed: (context) async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  await prefs.remove('accessToken');
-                  Get.offAll(LoginPage());
-                },
-              ),
-            ]),
-          ],
-        ));
+              )
+            : SettingsList(
+                sections: [
+                  SettingsSection(
+                    title: Text('Thông tin'),
+                    tiles: [
+                      SettingsTile(
+                        title: Text('Tên đăng nhập:'),
+                        value: Text(datauser!['username']),
+                      ),
+                      SettingsTile(
+                        title: Text('Email:'),
+                        value: Text(datauser!['email']),
+                      ),
+                      SettingsTile(
+                        title: Text('Số điện thoại:'),
+                        value: Text('0' + datauser!['phone']),
+                      ),
+                    ],
+                  ),
+                  SettingsSection(title: Text('Cài đặt chung'), tiles: [
+                    SettingsTile.navigation(
+                      title: Text('Đổi mật khẩu'),
+                      leading: Icon(CupertinoIcons.exclamationmark_shield),
+                      onPressed: (context) async {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ChangePassword()));
+                      },
+                    ),
+                    // SettingsTile.navigation(
+                    //   title: Text('Cập nhật thông tin'),
+                    //   leading: Icon(CupertinoIcons.info),
+                    //   onPressed: (context) async {
+                    //     Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //             builder: (context) => const UpdateUser()));
+                    //   },
+                    // ),
+                    SettingsTile.navigation(
+                      title: Text(
+                        'Đăng xuất',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      leading: Icon(
+                        CupertinoIcons.clear_circled,
+                        color: Colors.red,
+                      ),
+                      onPressed: (context) async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        await prefs.remove('accessToken');
+                        Get.offAll(LoginPage());
+                      },
+                    ),
+                  ]),
+                ],
+              ));
   }
 }
 
