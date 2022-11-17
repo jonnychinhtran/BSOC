@@ -127,10 +127,10 @@ class _InforPageState extends State<InforPage> {
                         color: Colors.red,
                       ),
                       onPressed: (context) async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        await prefs.remove('accessToken');
-                        Get.offAll(LoginPage());
+                        showDialog(
+                          context: context,
+                          builder: (context) => const DialogLogout(),
+                        );
                       },
                     ),
                   ]),
@@ -311,6 +311,55 @@ class _ChangePasswordState extends State<ChangePassword> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class DialogLogout extends StatelessWidget {
+  const DialogLogout({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Thông báo'),
+      content: Container(
+          child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Bạn có chắc chắn muốn thoát khỏi ứng dụng?'),
+          SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 2,
+              primary: Colors.blueAccent,
+              minimumSize: const Size.fromHeight(35),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.remove('accessToken');
+              Get.offAll(LoginPage());
+            },
+            child: Text('Có'),
+          ),
+          OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size.fromHeight(35),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              onPressed: () => Navigator.pop(context, 'Không'),
+              child: Text(
+                'Không',
+                style: TextStyle(color: Colors.black),
+              )),
+        ],
+      )),
     );
   }
 }
