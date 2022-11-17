@@ -33,7 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Container(
                 width: size.width * 0.85,
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
@@ -75,7 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: registerController.usernameController,
                         validator: (value) {
                           return (value == null || value.isEmpty)
-                              ? 'Vui lòng nhập Username'
+                              ? 'Vui lòng nhập tên đăng nhập'
                               : null;
                         },
                         decoration: InputDecoration(
@@ -140,7 +140,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ],
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                            hintText: "Phone",
+                            hintText: "Số điện thoại",
                             isDense: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -166,11 +166,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: registerController.passwordController,
                         validator: (value) {
                           return (value == null || value.isEmpty)
-                              ? 'Please Enter Password'
+                              ? 'Vui lòng nhập mật khẩu'
                               : null;
                         },
                         decoration: InputDecoration(
-                            hintText: "Password",
+                            hintText: "Mật khẩu",
                             isDense: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -210,7 +210,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Bạn đã tài khoản?",
+                            "Bạn đã có tài khoản?",
                             style: TextStyle(color: Colors.black),
                           ),
                           TextButton(
