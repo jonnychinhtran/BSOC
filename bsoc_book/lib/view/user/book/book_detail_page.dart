@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
+import 'package:bsoc_book/view/main_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -73,6 +74,10 @@ class _DetailBookPageState extends State<DetailBookPage>
         backgroundColor: Color.fromARGB(255, 138, 175, 52),
         centerTitle: true,
         title: Text('Chi tiết'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Get.to(MainIndexPage()),
+        ),
       ),
       body: isLoading
           ? Center(
@@ -499,27 +504,37 @@ class _ReviewBookState extends State<ReviewBook> {
   bool isLoading = true;
 
   Future<void> getComment() async {
-    String? token;
-    String? idBook;
-    final prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
-    idBook = prefs.getString('idbook');
-    print(idBook);
-
-    var url = Uri.parse('http://103.77.166.202/api/book/list-comment/$idBook');
-    http.Response response = await http.get(url, headers: {
-      'Authorization': 'Bearer $token',
-    });
-
-    if (response.statusCode == 200) {
-      listComment = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
-      // demoReponse = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
-      print(listComment);
+    try {
       setState(() {
-        isLoading = false;
+        isLoading = true;
       });
-    } else {
-      throw Exception('Lỗi tải hệ thống');
+      String? token;
+      String? idBook;
+      final prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      idBook = prefs.getString('idbook');
+      print(idBook);
+      setState(() {
+        isLoading = true;
+      });
+      var url =
+          Uri.parse('http://103.77.166.202/api/book/list-comment/$idBook');
+      http.Response response = await http.get(url, headers: {
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        listComment = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Lỗi tải hệ thống');
+      }
+      print("res: ${response.bodyBytes}");
+    } catch (e) {
+      Get.snackbar("error", e.toString());
+      print(e);
     }
   }
 
@@ -532,78 +547,97 @@ class _ReviewBookState extends State<ReviewBook> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              itemCount: listComment == null ? 0 : listComment?.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          child: Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: CircleAvatar(
-                            radius: 30,
-                            backgroundImage: NetworkImage(
-                              'http://103.77.166.202' +
-                                  listComment![index]['user']['avatar']
-                                      .toString(),
-                            )),
-                      )),
-                      // Text(listComment![index]['content'].toString())
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: Column(
+      body: isLoading
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  CircularProgressIndicator(),
+                ],
+              ),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const ScrollPhysics(),
+                    itemCount: listComment == null ? 0 : listComment?.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              listComment![index]['user']['username']
-                                  .toString(),
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              listComment![index]['content'].toString(),
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.justify,
-                              style: TextStyle(fontWeight: FontWeight.normal),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            RatingBars(
-                              rating: listComment![index]['rating'].toDouble(),
-                              ratingCount: 12,
-                            )
+                            Container(
+                                child: Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage: NetworkImage(
+                                    'http://103.77.166.202' +
+                                        listComment![index]['user']['avatar']
+                                            .toString(),
+                                  )),
+                            )),
+                            // Text(listComment![index]['content'].toString())
+                            Expanded(
+                                child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    listComment == null
+                                        ? 'Đang tải dữ liệu'
+                                        : listComment![index]['user']
+                                                ['username']
+                                            .toString(),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    listComment == null
+                                        ? 'Đang tải dữ liệu'
+                                        : listComment![index]['content']
+                                            .toString(),
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.justify,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  RatingBars(
+                                    rating: listComment![index]['rating']
+                                        .toDouble(),
+                                    ratingCount: 12,
+                                  )
+                                ],
+                              ),
+                            )),
                           ],
                         ),
-                      )),
-                    ],
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 30),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: DialogComment(),
+                  Container(
+                    margin: EdgeInsets.only(top: 30),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: DialogComment(),
+                    ),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
-      ),
+            ),
     );
   }
 }
@@ -767,7 +801,7 @@ class DialogComment extends StatelessWidget {
                             if (_formKey.currentState!.validate())
                               {
                                 cmtcontroller.commentUserBook(),
-                                Navigator.pop(context, 'Gửi'),
+                                Navigator.pop(context),
                               },
                           },
                       child: Text('Gửi'))

@@ -31,9 +31,6 @@ class _MenuAsideState extends State<MenuAside> {
 
   Future<void> getUserDetail() async {
     try {
-      setState(() {
-        isLoading = true;
-      });
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
       var response = await Dio().get('http://103.77.166.202/api/user/infor',
@@ -79,18 +76,12 @@ class _MenuAsideState extends State<MenuAside> {
                 child: Column(
                   children: <Widget>[
                     Expanded(
-                      child: Material(
-                        borderRadius: BorderRadius.all(Radius.circular(80.0)),
-                        elevation: 8,
-                        child: Padding(
-                          padding: EdgeInsets.all(6.0),
-                          child: Image.asset(
-                              "assets/images/logo-b4usolution.png",
-                              height: 80,
-                              width: 80),
-                        ),
-                      ),
-                    ),
+                        child: CircleAvatar(
+                      radius: 60.0,
+                      backgroundImage: NetworkImage(
+                          'http://103.77.166.202' + mapDemo!['avatar']),
+                      backgroundColor: Colors.transparent,
+                    )),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
