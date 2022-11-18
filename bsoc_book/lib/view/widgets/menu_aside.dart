@@ -9,11 +9,7 @@ import 'package:bsoc_book/view/terms/terms_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker_widget/image_picker_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:bsoc_book/data/network/api_client.dart';
-import 'package:http/http.dart' as http;
-import 'package:get/get_connect/http/src/multipart/multipart_file.dart';
 
 String? demo;
 Map? mapDemo;

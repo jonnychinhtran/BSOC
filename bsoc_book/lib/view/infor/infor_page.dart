@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:bsoc_book/controller/changepass/changepass_controller.dart';
+import 'package:bsoc_book/controller/delete/deleteruser_controller.dart';
 // import 'package:bsoc_book/controller/update/update_controller.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 // import 'package:email_validator/email_validator.dart';
@@ -105,6 +106,16 @@ class _InforPageState extends State<InforPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const ChangePassword()));
+                      },
+                    ),
+                    SettingsTile.navigation(
+                      title: Text('Xóa tài khoản'),
+                      leading: Icon(CupertinoIcons.exclamationmark_shield),
+                      onPressed: (context) async {
+                        showDialog(
+                          context: context,
+                          builder: (context) => DialogDelete(),
+                        );
                       },
                     ),
                     // SettingsTile.navigation(
@@ -363,6 +374,55 @@ class DialogLogout extends StatelessWidget {
     );
   }
 }
+
+class DialogDelete extends StatelessWidget {
+  DialogDelete({super.key});
+  DeleteUserController deleteusrController = Get.put(DeleteUserController());
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Thông báo'),
+      content: Container(
+          child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Bạn có chắc chắn muốn xóa tài khoản này?'),
+          SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 2,
+              primary: Colors.blueAccent,
+              minimumSize: const Size.fromHeight(35),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            onPressed: () async {
+              deleteusrController.deleteUser();
+            },
+            child: Text('Có'),
+          ),
+          OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size.fromHeight(35),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              onPressed: () => Navigator.pop(context, 'Không'),
+              child: Text(
+                'Không',
+                style: TextStyle(color: Colors.black),
+              )),
+        ],
+      )),
+    );
+  }
+}
+
 
 // class UpdateUser extends StatefulWidget {
 //   const UpdateUser({super.key});
