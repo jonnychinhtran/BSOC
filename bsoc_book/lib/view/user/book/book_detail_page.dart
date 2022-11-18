@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:get/get.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,6 +20,7 @@ List? listReponse;
 Map? viewbook;
 String? ipchapter;
 String? datapdf;
+List? listComment;
 
 class DetailBookPage extends StatefulWidget {
   const DetailBookPage({super.key});
@@ -487,72 +490,53 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
   }
 }
 
-class ReviewBook extends StatelessWidget {
+class ReviewBook extends StatefulWidget {
+  @override
+  State<ReviewBook> createState() => _ReviewBookState();
+}
+
+class _ReviewBookState extends State<ReviewBook> {
+  bool isLoading = true;
+
+  Future<void> getComment() async {
+    String? token;
+    String? idBook;
+    final prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('accessToken');
+    idBook = prefs.getString('idbook');
+    print(idBook);
+
+    var url = Uri.parse('http://103.77.166.202/api/book/list-comment/$idBook');
+    http.Response response = await http.get(url, headers: {
+      'Authorization': 'Bearer $token',
+    });
+
+    if (response.statusCode == 200) {
+      listComment = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      throw Exception('Lỗi tải hệ thống');
+    }
+  }
+
+  @override
+  void initState() {
+    getComment();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Color.fromARGB(255, 242, 254, 255),
-        ),
-        child: ListView(
-          children: [
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        child: Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: CircleAvatar(
-                          radius: 30,
-                          backgroundImage: NetworkImage(
-                            'https://avatars.githubusercontent.com/u/104020709?s=96&v=4',
-                          )),
-                    )),
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Ngọc Tài',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            'Quyển kỷ yếu rất hay về chiến lược Marketing',
-                            textAlign: TextAlign.justify,
-                            style: TextStyle(fontWeight: FontWeight.normal),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          RatingBars(
-                            rating: 3.5,
-                            ratingCount: 12,
-                          )
-                        ],
-                      ),
-                    )),
-                  ],
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                Center(
-                  child: DialogComment(),
-                ),
-              ],
-            ),
-          ],
-        ),
+      body: ListView.builder(
+        itemCount: listComment == null ? 0 : listComment?.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Row(
+            children: [Text(listComment![index]['content'].toString())],
+          );
+        },
       ),
     );
   }
@@ -630,7 +614,9 @@ class _Clipper extends CustomClipper<Rect> {
 }
 
 class DialogComment extends StatelessWidget {
-  const DialogComment({super.key});
+  DialogComment({super.key});
+  final _formKey = GlobalKey<FormState>();
+  CommentController cmtcontroller = Get.put(CommentController());
 
   @override
   Widget build(BuildContext context) {
@@ -645,53 +631,60 @@ class DialogComment extends StatelessWidget {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Đánh giá"),
                 content: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          Text("Rating: "),
-                          ConstrainedBox(
-                            constraints:
-                                BoxConstraints(minWidth: 40, minHeight: 10),
-                            child: IntrinsicWidth(
-                              child: TextField(
-                                keyboardType: TextInputType.number,
-                                // decoration: InputDecoration(
-                                //   focusedBorder: OutlineInputBorder(
-                                //       borderSide: BorderSide(
-                                //           width: 1, color: Colors.black)),
-                                //   enabledBorder: OutlineInputBorder(
-                                //       borderSide: BorderSide(
-                                //           width: 1, color: Colors.black)),
-                                // ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Text("Số điểm: "),
+                            ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(minWidth: 40, minHeight: 10),
+                              child: IntrinsicWidth(
+                                child: TextFormField(
+                                  controller: cmtcontroller.ratingController,
+                                  keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    return (value == null || value.isEmpty)
+                                        ? 'Vui lòng nhập số điểm'
+                                        : null;
+                                  },
+                                ),
                               ),
                             ),
-                          ),
-                          Text("/5 Sao"),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Text("Nội dung:"),
-                      SizedBox(
-                        height: 3,
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: Colors.black)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: Colors.black)),
+                            Text("/5 Sao"),
+                          ],
                         ),
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 3,
-                      )
-                    ],
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text("Nội dung:"),
+                        SizedBox(
+                          height: 3,
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(width: 1, color: Colors.black)),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(width: 1, color: Colors.black)),
+                          ),
+                          controller: cmtcontroller.contentController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 3,
+                          validator: (value) {
+                            return (value == null || value.isEmpty)
+                                ? 'Vui lòng nhập nội dung'
+                                : null;
+                          },
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 actions: <Widget>[
@@ -700,7 +693,13 @@ class DialogComment extends StatelessWidget {
                     child: const Text('Huỷ'),
                   ),
                   TextButton(
-                      onPressed: () => Navigator.pop(context, 'Gửi'),
+                      onPressed: () => {
+                            if (_formKey.currentState!.validate())
+                              {
+                                cmtcontroller.commentUserBook(),
+                                Navigator.pop(context, 'Gửi'),
+                              },
+                          },
                       child: Text('Gửi'))
                 ],
               )),
