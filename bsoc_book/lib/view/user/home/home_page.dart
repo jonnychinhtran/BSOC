@@ -1,21 +1,24 @@
 import 'dart:convert';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-final List<String> imgList = [
-  'https://bucket.nhanh.vn/store/12365/bn/277780380_150038747477147_3183770388341905537_n.jpg',
-  'https://bucket.nhanh.vn/store/12365/bn/7b2908e35ac19c66cbc5da0924f297de.jpg',
-];
+// final List<String> imgList = [
+//   'https://bucket.nhanh.vn/store/12365/bn/277780380_150038747477147_3183770388341905537_n.jpg',
+//   'https://bucket.nhanh.vn/store/12365/bn/7b2908e35ac19c66cbc5da0924f297de.jpg',
+// ];
 
 String? demo;
 Map? mapDemo;
 Map? demoReponse;
 List? listReponse;
+List? listTop;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,45 +27,11 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-final List<Widget> imageSliders = imgList
-    .map((item) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-            child: Image.network(
-              item,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              loadingBuilder: (BuildContext ctx, Widget child,
-                  ImageChunkEvent? loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                        : null,
-                  ),
-                );
-              },
-              errorBuilder: (
-                BuildContext context,
-                Object exception,
-                StackTrace? stackTrace,
-              ) {
-                return const Text(
-                  'Oops!! An error occurred.',
-                  style: TextStyle(fontSize: 16.0),
-                );
-              },
-            ),
-          ),
-        ))
-    .toList();
-
 class _HomePageState extends State<HomePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
+
+  // List<Map<String, dynamic>> map = [];
 
   Future<void> getAllBooks() async {
     String? token;
@@ -90,6 +59,29 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> getTopBook() async {
+    String? token;
+    final prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('accessToken');
+
+    var url = Uri.parse('http://103.77.166.202/api/book/top-book');
+    http.Response response = await http.get(url, headers: {
+      'Authorization': 'Bearer $token',
+    });
+
+    if (response.statusCode == 200) {
+      listTop = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
+      // demoReponse = _map;
+      // print(listTop[image].toString());
+      // listTop =
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      throw Exception('Lỗi tải hệ thống');
+    }
+  }
+
   Future<String> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('accessToken') ?? '';
@@ -98,6 +90,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     getAllBooks();
+    getTopBook();
     super.initState();
   }
 
@@ -128,17 +121,46 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: [
                     SizedBox(height: size.height * 0.02),
-                    FlutterCarousel(
-                      items: imageSliders,
-                      options: CarouselOptions(
-                        enlargeCenterPage: true,
-                        autoPlay: false,
-                        autoPlayInterval: const Duration(seconds: 1),
-                        height: 200,
-                        viewportFraction: 0.8,
-                        slideIndicator: CircularWaveSlideIndicator(),
-                        floatingIndicator: true,
+                    Center(
+                      child: Text(
+                        'TOP 5 SÁCH HAY',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                    ),
+                    Container(
+                      height: 200,
+                      margin: EdgeInsets.only(left: 10, right: 10),
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: listTop == null ? 0 : listTop?.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  final SharedPreferences? prefs = await _prefs;
+                                  await prefs?.setString('idbook',
+                                      listTop![index]['id'].toString());
+
+                                  print(
+                                      'idBook: ${listTop![index]['id'].toString()}');
+
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const DetailBookPage()));
+                                },
+                                child: SizedBox(
+                                  child: Image.network('http://103.77.166.202' +
+                                      listTop?[index]['image']),
+                                ),
+                              ),
+                            );
+                          }),
                     ),
                     SizedBox(height: size.height * 0.04),
                     const Align(

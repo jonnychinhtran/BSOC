@@ -57,23 +57,6 @@ class _MenuAsideState extends State<MenuAside> {
     }
   }
 
-  // Future<void> getInforUser() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   token = prefs.getString('accessToken');
-
-  //   var url =
-  //       Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.inforUser);
-  //   http.Response response =
-  //       await http.get(url, headers: {'Authorization': 'Bearer $token'});
-  //   if (response.statusCode == 200) {
-  //     mapDemo = jsonDecode(response.body);
-
-  //     isLoading = false;
-  //   } else {
-  //     throw Exception('Lỗi tải hệ thống');
-  //   }
-  // }
-
   @override
   void initState() {
     getUserDetail();
