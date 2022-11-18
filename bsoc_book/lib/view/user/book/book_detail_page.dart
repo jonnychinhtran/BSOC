@@ -513,8 +513,7 @@ class _ReviewBookState extends State<ReviewBook> {
 
     if (response.statusCode == 200) {
       listComment = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
-      demoReponse = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
-
+      // demoReponse = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
       print(listComment);
       setState(() {
         isLoading = false;
@@ -538,6 +537,7 @@ class _ReviewBookState extends State<ReviewBook> {
           children: [
             ListView.builder(
               shrinkWrap: true,
+              physics: const ScrollPhysics(),
               itemCount: listComment == null ? 0 : listComment?.length,
               itemBuilder: (BuildContext context, int index) {
                 return Padding(

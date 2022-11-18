@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:bsoc_book/routes/app_routes.dart';
+import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,6 +37,7 @@ class CommentController extends GetxController {
         Get.snackbar("Thành công", "Bình luận thành công.");
         ratingController.clear();
         contentController.clear();
+        Get.to(DetailBookPage());
       } else {
         Get.snackbar("Lỗi", "Bình luận thất bại. Thử lại.");
       }
