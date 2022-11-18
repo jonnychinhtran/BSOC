@@ -57,30 +57,30 @@ class _MenuAsideState extends State<MenuAside> {
     }
   }
 
-  void _upload(File file) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
-    String fileName = file.path.split('/').last;
+  // void _upload(File file) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   token = prefs.getString('accessToken');
+  //   String fileName = file.path.split('/').last;
 
-    Dio dio = new Dio();
+  //   Dio dio = new Dio();
 
-    // var formData = FormData.fromMap({
-    //   "avatar": await MultipartFile.fromFile(
-    //     file.path,
-    //     filename: fileName,
-    //   ),
-    // });
+  //   // var formData = FormData.fromMap({
+  //   //   "avatar": await MultipartFile.fromFile(
+  //   //     file.path,
+  //   //     filename: fileName,
+  //   //   ),
+  //   // });
 
-    dio
-        .post("http://103.77.166.202/api/user/update",
-            data: '${file.path}/$fileName',
-            options: Options(headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer $token',
-            }))
-        .then((response) => print(response))
-        .catchError((error) => print(error));
-  }
+  //   dio
+  //       .post("http://103.77.166.202/api/user/update",
+  //           data: '${file.path}/$fileName',
+  //           options: Options(headers: {
+  //             'Content-Type': 'application/json',
+  //             'Authorization': 'Bearer $token',
+  //           }))
+  //       .then((response) => print(response))
+  //       .catchError((error) => print(error));
+  // }
 
   @override
   void initState() {
@@ -104,27 +104,27 @@ class _MenuAsideState extends State<MenuAside> {
                 child: Column(
                   children: <Widget>[
                     Expanded(
-                      child: Center(
-                          child: ImagePickerWidget(
-                        diameter: 90,
-                        initialImage:
-                            'http://103.77.166.202' + mapDemo!['avatar'],
-                        shape: ImagePickerWidgetShape.circle,
-                        isEditable: true,
-                        shouldCrop: true,
-                        imagePickerOptions:
-                            ImagePickerOptions(imageQuality: 65),
-                        onChange: (File file) {
-                          print("I changed the file to: ${file.path}");
-                        },
-                      )),
-                      //     CircleAvatar(
-                      //   radius: 60.0,
-                      //   backgroundImage: NetworkImage(
-                      //       'http://103.77.166.202' + mapDemo!['avatar']),
-                      //   backgroundColor: Colors.transparent,
-                      // )
-                    ),
+                        child:
+                            // Center(
+                            //     child: ImagePickerWidget(
+                            //   diameter: 90,
+                            //   initialImage:
+                            //       'http://103.77.166.202' + mapDemo!['avatar'],
+                            //   shape: ImagePickerWidgetShape.circle,
+                            //   isEditable: true,
+                            //   shouldCrop: true,
+                            //   imagePickerOptions:
+                            //       ImagePickerOptions(imageQuality: 65),
+                            //   onChange: (File file) {
+                            //     print("I changed the file to: ${file.path}");
+                            //   },
+                            // )),
+                            CircleAvatar(
+                      radius: 60.0,
+                      backgroundImage: NetworkImage(
+                          'http://103.77.166.202' + mapDemo!['avatar']),
+                      backgroundColor: Colors.transparent,
+                    )),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
