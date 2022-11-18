@@ -513,6 +513,9 @@ class _ReviewBookState extends State<ReviewBook> {
 
     if (response.statusCode == 200) {
       listComment = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
+      demoReponse = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
+
+      print(listComment);
       setState(() {
         isLoading = false;
       });
@@ -530,13 +533,76 @@ class _ReviewBookState extends State<ReviewBook> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: listComment == null ? 0 : listComment?.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Row(
-            children: [Text(listComment![index]['content'].toString())],
-          );
-        },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: listComment == null ? 0 : listComment?.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          child: Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: CircleAvatar(
+                            radius: 30,
+                            backgroundImage: NetworkImage(
+                              'http://103.77.166.202' +
+                                  listComment![index]['user']['avatar']
+                                      .toString(),
+                            )),
+                      )),
+                      // Text(listComment![index]['content'].toString())
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              listComment![index]['user']['username']
+                                  .toString(),
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              listComment![index]['content'].toString(),
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            RatingBars(
+                              rating: listComment![index]['rating'].toDouble(),
+                              ratingCount: 12,
+                            )
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
+                );
+              },
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 30),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: DialogComment(),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -623,9 +689,13 @@ class DialogComment extends StatelessWidget {
     return ElevatedButton(
       child: Text('CHIA SẺ ĐÁNH GIÁ'),
       style: ElevatedButton.styleFrom(
-          elevation: 5,
-          primary: Colors.grey.shade600,
-          padding: EdgeInsets.all(20)),
+        elevation: 2,
+        primary: Colors.blueAccent,
+        minimumSize: const Size.fromHeight(40),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+      ),
       onPressed: () => showDialog<String>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
