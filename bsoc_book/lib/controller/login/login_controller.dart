@@ -30,6 +30,7 @@ class LoginController extends GetxController {
         final json = jsonDecode(response.body);
         var token = json['data']['accessToken'];
         var user = json['data']['username'];
+        var email = json['data']['email'];
         var idUser = json['data']['id'].toString();
         print(response.body);
         // print(token);
@@ -37,6 +38,7 @@ class LoginController extends GetxController {
         await prefs?.setString('accessToken', token);
         await prefs?.setString('username', user);
         await prefs?.setString('idInforUser', idUser);
+        await prefs?.setString('emailuser', email);
         var hoang = await prefs?.getString('accessToken');
         print(hoang);
         Get.snackbar("Thành công", "Đăng nhập thành công.");

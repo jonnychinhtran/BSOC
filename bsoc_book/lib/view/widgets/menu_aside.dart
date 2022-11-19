@@ -6,6 +6,7 @@ import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/main_page.dart';
 import 'package:bsoc_book/view/terms/terms_page.dart';
+import 'package:bsoc_book/view/update/uploadavt_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,6 +40,9 @@ class _MenuAsideState extends State<MenuAside> {
           }));
       if (response.statusCode == 200) {
         mapDemo = response.data;
+        var phoneuser = mapDemo!['phone'].toString();
+        final SharedPreferences? prefs = await _prefs;
+        await prefs?.setString('phoneUser', phoneuser);
         // print(datauser);
         setState(() {
           isLoading = false;
@@ -52,31 +56,6 @@ class _MenuAsideState extends State<MenuAside> {
       print(e);
     }
   }
-
-  // void _upload(File file) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   token = prefs.getString('accessToken');
-  //   String fileName = file.path.split('/').last;
-
-  //   Dio dio = new Dio();
-
-  //   // var formData = FormData.fromMap({
-  //   //   "avatar": await MultipartFile.fromFile(
-  //   //     file.path,
-  //   //     filename: fileName,
-  //   //   ),
-  //   // });
-
-  //   dio
-  //       .post("http://103.77.166.202/api/user/update",
-  //           data: '${file.path}/$fileName',
-  //           options: Options(headers: {
-  //             'Content-Type': 'application/json',
-  //             'Authorization': 'Bearer $token',
-  //           }))
-  //       .then((response) => print(response))
-  //       .catchError((error) => print(error));
-  // }
 
   @override
   void initState() {
@@ -100,26 +79,19 @@ class _MenuAsideState extends State<MenuAside> {
                 child: Column(
                   children: <Widget>[
                     Expanded(
-                        child:
-                            // Center(
-                            //     child: ImagePickerWidget(
-                            //   diameter: 90,
-                            //   initialImage:
-                            //       'http://103.77.166.202' + mapDemo!['avatar'],
-                            //   shape: ImagePickerWidgetShape.circle,
-                            //   isEditable: true,
-                            //   shouldCrop: true,
-                            //   imagePickerOptions:
-                            //       ImagePickerOptions(imageQuality: 65),
-                            //   onChange: (File file) {
-                            //     print("I changed the file to: ${file.path}");
-                            //   },
-                            // )),
-                            CircleAvatar(
-                      radius: 60.0,
-                      backgroundImage: NetworkImage(
-                          'http://103.77.166.202' + mapDemo!['avatar']),
-                      backgroundColor: Colors.transparent,
+                        child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const UploadAvatar()));
+                      },
+                      child: CircleAvatar(
+                        radius: 60.0,
+                        backgroundImage: NetworkImage(
+                            'http://103.77.166.202' + mapDemo!['avatar']),
+                        backgroundColor: Colors.transparent,
+                      ),
                     )),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,

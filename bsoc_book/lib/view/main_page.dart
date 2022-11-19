@@ -3,8 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media_flutter/social_media_flutter.dart';
 import 'user/home/home_page.dart';
 import 'widgets/menu_aside.dart';
-import 'dart:convert';
-import 'package:flutter_downloader/flutter_downloader.dart';
 
 class MainIndexPage extends StatefulWidget {
   const MainIndexPage({Key? key}) : super(key: key);
@@ -14,13 +12,10 @@ class MainIndexPage extends StatefulWidget {
 }
 
 class _MainIndexPageState extends State<MainIndexPage> {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
   @override
   Widget build(BuildContext context) {
-    final platform = Theme.of(context).platform;
     return Scaffold(
-      drawer: const MenuAside(),
+      drawer: MenuAside(),
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 138, 175, 52),
         centerTitle: true,
