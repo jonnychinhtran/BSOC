@@ -5,7 +5,6 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   modal_progress_hud_nsn
   pdfx
-  share_plus
   url_launcher_windows
 )
 

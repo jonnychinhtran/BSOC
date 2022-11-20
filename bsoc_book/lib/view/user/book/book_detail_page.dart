@@ -9,7 +9,6 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -66,11 +65,6 @@ class _DetailBookPageState extends State<DetailBookPage>
     super.initState();
   }
 
-  void sharePressed() {
-    String message = 'Chec';
-    Share.share(message);
-  }
-
   @override
   Widget build(BuildContext context) {
     TabController _tabController = TabController(length: 3, vsync: this);
@@ -89,10 +83,11 @@ class _DetailBookPageState extends State<DetailBookPage>
               Icons.share,
               color: Colors.white,
             ),
-            onPressed: () {
-              // Navigator.push(context,
-              //     MaterialPageRoute(builder: (context) => const SearchPage()));
-            },
+            onPressed: () {},
+            // onPressed: () {
+            //   // Navigator.push(context,
+            //   //     MaterialPageRoute(builder: (context) => const SearchPage()));
+            // },
           ),
         ],
       ),
@@ -462,13 +457,15 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     if (!status.isGranted) {
       await Permission.storage.request();
     }
-
-    Directory dir = await getApplicationDocumentsDirectory();
+    Directory? dir = Platform.isAndroid
+        ? await getExternalStorageDirectory()
+        : await getApplicationDocumentsDirectory();
+    // Directory dir = await getApplicationDocumentsDirectory();
     print(dir);
-    await prefs.setString('duongdan', "${dir.path}/$namesave");
+    await prefs.setString('duongdan', "${dir?.path}/$namesave");
     await dio.download(
       url,
-      '${dir.path}/$namesave',
+      '${dir?.path}/$namesave',
       onReceiveProgress: (recivedBytes, totalBytes) {
         setState(() {
           progress = recivedBytes / totalBytes;

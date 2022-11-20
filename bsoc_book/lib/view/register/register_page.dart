@@ -140,11 +140,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         maxLength: 10,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
+                          FilteringTextInputFormatter.allow(
+                              RegExp("[0-9\u0660-\u0669]")),
+                          FilteringTextInputFormatter.deny(RegExp(r'^[1-9]+')),
                         ],
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                            hintText: "Số điện thoại",
+                            hintText: "Số điện thoại (vd:0901234567)",
                             isDense: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
