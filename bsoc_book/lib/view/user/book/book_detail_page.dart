@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
@@ -35,6 +36,7 @@ class DetailBookPage extends StatefulWidget {
 class _DetailBookPageState extends State<DetailBookPage>
     with TickerProviderStateMixin {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   bool isLoading = true;
 
   void getItemBooks() async {
@@ -64,7 +66,6 @@ class _DetailBookPageState extends State<DetailBookPage>
   @override
   void initState() {
     getItemBooks();
-    // getDownloadBooks();
     super.initState();
   }
 
@@ -307,20 +308,6 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                     182,
                                                                     61),
                                                           )),
-                                                      FavoriteButton(
-                                                        isFavorite: false,
-                                                        iconDisabledColor:
-                                                            Colors.grey,
-                                                        iconSize: 40,
-                                                        valueChanged:
-                                                            (_isFavorite) {
-                                                          listReponse![index][
-                                                                  'chapterTitle']
-                                                              .toString();
-                                                          print(
-                                                              'Is Favorite : $_isFavorite');
-                                                        },
-                                                      ),
                                                       IconButton(
                                                           onPressed: () async {
                                                             final SharedPreferences?
