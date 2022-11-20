@@ -9,6 +9,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -83,11 +84,13 @@ class _DetailBookPageState extends State<DetailBookPage>
               Icons.share,
               color: Colors.white,
             ),
-            onPressed: () {},
-            // onPressed: () {
-            //   // Navigator.push(context,
-            //   //     MaterialPageRoute(builder: (context) => const SearchPage()));
-            // },
+            onPressed: () {
+              Share.share('Đọc ngay: ' +
+                  mapDemo!['bookName'].toString() +
+                  ' trên ứng dụng B4U BSOC '
+                      '- Cài ứng dụng B4U BSOC tại: ' +
+                  'https://www.google.com.vn');
+            },
           ),
         ],
       ),
