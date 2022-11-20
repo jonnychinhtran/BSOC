@@ -89,7 +89,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                   mapDemo!['bookName'].toString() +
                   ' trên ứng dụng B4U BSOC '
                       '- Cài ứng dụng B4U BSOC tại AppStore: https://apps.apple.com/us/app/b4u-bsoc/id6444538062 ' +
-                  ' - PlayStore: https://www.google.com.vn');
+                  ' - PlayStore: https://play.google.com/store/apps/details?id=com.b4usolution.b4u_bsoc&pli=1');
             },
           ),
         ],
