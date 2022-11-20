@@ -3,6 +3,7 @@ import 'package:bsoc_book/routes/app_routes.dart';
 import 'package:bsoc_book/view/register/register_page.dart';
 import 'package:bsoc_book/view/resetpassword/reset_pass_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -84,6 +85,10 @@ class _LoginPageState extends State<LoginPage> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             )),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp("[a-zA-Z0-9]")),
+                        ],
                       ),
                       SizedBox(height: size.height * 0.02),
                       const Align(

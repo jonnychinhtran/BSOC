@@ -85,6 +85,10 @@ class _RegisterPageState extends State<RegisterPage> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             )),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp("[a-zA-Z0-9]")),
+                        ],
                       ),
                       SizedBox(height: size.height * 0.02),
                       const Align(
