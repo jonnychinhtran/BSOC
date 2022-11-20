@@ -9,6 +9,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -65,6 +66,11 @@ class _DetailBookPageState extends State<DetailBookPage>
     super.initState();
   }
 
+  void sharePressed() {
+    String message = 'Chec';
+    Share.share(message);
+  }
+
   @override
   Widget build(BuildContext context) {
     TabController _tabController = TabController(length: 3, vsync: this);
@@ -77,6 +83,18 @@ class _DetailBookPageState extends State<DetailBookPage>
           icon: Icon(Icons.arrow_back),
           onPressed: () => Get.to(HomePage()),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.share,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => const SearchPage()));
+            },
+          ),
+        ],
       ),
       body: isLoading
           ? Center(
@@ -593,7 +611,7 @@ class _ReviewBookState extends State<ReviewBook> {
                                     listComment == null
                                         ? 'Đang tải dữ liệu'
                                         : listComment![index]['user']
-                                                ['username']
+                                                ['fullname']
                                             .toString(),
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
