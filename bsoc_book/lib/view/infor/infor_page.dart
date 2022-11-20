@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:bsoc_book/controller/changepass/changepass_controller.dart';
-import 'package:bsoc_book/controller/delete/deleteruser_controller.dart';
 // import 'package:bsoc_book/controller/update/update_controller.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/update/update_infor.dart';
@@ -354,9 +353,36 @@ class DialogLogout extends StatelessWidget {
   }
 }
 
-class DialogDelete extends StatelessWidget {
-  DialogDelete({super.key});
-  DeleteUserController deleteusrController = Get.put(DeleteUserController());
+class DialogDelete extends StatefulWidget {
+  const DialogDelete({super.key});
+
+  @override
+  State<DialogDelete> createState() => _DialogDeleteState();
+}
+
+class _DialogDeleteState extends State<DialogDelete> {
+  String? token;
+  Future<void> deleteUser() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+
+      var response = await Dio().post('http://103.77.166.202/api/user/delete',
+          options: Options(
+              headers: {'accept': '*/*', 'Authorization': 'Bearer $token'}));
+      if (response.statusCode == 200) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.remove('accessToken');
+        Get.offAll(LoginPage());
+      } else {
+        Get.snackbar("lỗi", "Xóa tải khoản lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } catch (e) {
+      Get.snackbar("error", e.toString());
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -380,7 +406,7 @@ class DialogDelete extends StatelessWidget {
               ),
             ),
             onPressed: () async {
-              deleteusrController.deleteUser();
+              deleteUser();
             },
             child: Text('Có'),
           ),
