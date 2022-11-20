@@ -1,13 +1,7 @@
 import 'dart:convert';
-import 'package:bsoc_book/routes/app_routes.dart';
-import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
-import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:http/http.dart' as http;
@@ -256,76 +250,80 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(height: size.height * 0.02),
                     Container(
                       height: 500,
-                      child: GridView.builder(
-                        itemCount:
-                            listReponse == null ? 0 : listReponse?.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                childAspectRatio: 0.8,
-                                crossAxisSpacing: 35,
-                                mainAxisSpacing: 40),
-                        itemBuilder: (BuildContext context, int index) {
-                          return InkWell(
-                            child: Hero(
-                              tag: listReponse![index]['id'].toString(),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () async {
-                                        final SharedPreferences? prefs =
-                                            await _prefs;
-                                        await prefs?.setString(
-                                            'idbook',
-                                            listReponse![index]['id']
-                                                .toString());
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: GridView.builder(
+                          itemCount:
+                              listReponse == null ? 0 : listReponse?.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 0.8,
+                                  crossAxisSpacing: 35,
+                                  mainAxisSpacing: 40),
+                          itemBuilder: (BuildContext context, int index) {
+                            return InkWell(
+                              child: Hero(
+                                tag: listReponse![index]['id'].toString(),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          final SharedPreferences? prefs =
+                                              await _prefs;
+                                          await prefs?.setString(
+                                              'idbook',
+                                              listReponse![index]['id']
+                                                  .toString());
 
-                                        print(
-                                            'idBook: ${listReponse![index]['id'].toString()}');
+                                          print(
+                                              'idBook: ${listReponse![index]['id'].toString()}');
 
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const DetailBookPage()));
-                                      },
-                                      child: Center(
-                                        child: SizedBox(
-                                          height: 155,
-                                          width: 120,
-                                          child: Image.network(
-                                            'http://103.77.166.202' +
-                                                listReponse?[index]['image'],
-                                            fit: BoxFit.fill,
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const DetailBookPage()));
+                                        },
+                                        child: Center(
+                                          child: SizedBox(
+                                            height: 155,
+                                            width: 120,
+                                            child: Image.network(
+                                              'http://103.77.166.202' +
+                                                  listReponse?[index]['image'],
+                                              fit: BoxFit.fill,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(height: size.height * 0.01),
-                                    Center(
-                                      child: Text(
-                                        listReponse?[index]['bookName'],
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15,
+                                      SizedBox(height: size.height * 0.01),
+                                      Center(
+                                        child: Text(
+                                          listReponse?[index]['bookName'],
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(height: size.height * 0.01),
-                                    Center(
-                                      child: Text(
-                                        'by ${listReponse?[index]['author']}',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(fontSize: 12),
+                                      SizedBox(height: size.height * 0.01),
+                                      Center(
+                                        child: Text(
+                                          'by ${listReponse?[index]['author']}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
                                       ),
-                                    ),
-                                  ]),
-                            ),
-                          );
-                        },
+                                    ]),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                     Container(
