@@ -21,7 +21,7 @@ class TermsPage extends StatelessWidget {
             child: Column(
           children: [
             Text(
-                'Cảm ơn bạn đã chọn sản phẩm của chúng tôi. BSOC Book là sản phẩm của Startup Hoa Le, được xây dựng tại bởi nhóm lập trình B4USolution Việt Nam. Các điều khoản dịch vụ này là hợp đồng giữa bạn và BSOC Book. Bằng cách sử dụng BSOC Book, tạo tài khoản của bạn và sử dụng ứng dụng của chúng tôi để đăng tải nhiều nội dung khác nhau lên cộng đồng, bao gồm đăng bài ( đăng sách nếu có) nhận xét , đánh giá và tin nhắn hoặc để truy cập và xem nhận xét của người dùng.',
+                'Cảm ơn bạn đã chọn sản phẩm của chúng tôi. B4U BSOC là sản phẩm của Startup Hoa Le, được xây dựng tại bởi nhóm lập trình B4USolution Việt Nam. Các điều khoản dịch vụ này là hợp đồng giữa bạn và B4U BSOC. Bằng cách sử dụng B4U BSOC, tạo tài khoản của bạn và sử dụng ứng dụng của chúng tôi để đăng tải nhiều nội dung khác nhau lên cộng đồng, bao gồm đăng bài ( đăng sách nếu có) nhận xét , đánh giá và tin nhắn hoặc để truy cập và xem nhận xét của người dùng.',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.01),
@@ -31,12 +31,12 @@ class TermsPage extends StatelessWidget {
             ),
             SizedBox(height: size.height * 0.02),
             Text(
-                'Điều khoản Sử dụng quy định các điều khoản ràng buộc bạn khi sử dụng Dịch vụ của BSOC Book. Thuật ngữ "Bạn" và/hoặc "Người sử dụng" sau đây được gọi chung để chỉ tới những người sử dụng Dịch vụ của BSOC Book. Vui lòng nghiên cứu kỹ và lưu lại một bản Điều khoản Sử dụng này.',
+                'Điều khoản Sử dụng quy định các điều khoản ràng buộc bạn khi sử dụng Dịch vụ của B4U BSOC. Thuật ngữ "Bạn" và/hoặc "Người sử dụng" sau đây được gọi chung để chỉ tới những người sử dụng Dịch vụ của B4U BSOC. Vui lòng nghiên cứu kỹ và lưu lại một bản Điều khoản Sử dụng này.',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.01),
             Text(
-                'Bằng việc tải phần mềm và sử dụng Dịch vụ của chúng tôi, Bạn đồng ý bị ràng buộc với Điều khoản Sử dụng này. Nếu Bạn không đồng ý bị ràng buộc với Điều khoản Sử dụng này. Bạn nên chấm dứt ngay lập tức việc sử dụng Dịch vụ của <App>.',
+                'Bằng việc tải phần mềm và sử dụng Dịch vụ của chúng tôi, Bạn đồng ý bị ràng buộc với Điều khoản Sử dụng này. Nếu Bạn không đồng ý bị ràng buộc với Điều khoản Sử dụng này. Bạn nên chấm dứt ngay lập tức việc sử dụng Dịch vụ của B4U BSOC.',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.02),
@@ -47,7 +47,7 @@ class TermsPage extends StatelessWidget {
             ),
             SizedBox(height: size.height * 0.02),
             Text(
-                'BSOC Book là tổ chức duy nhất có toàn quyền thay đổi, chỉnh sửa, thêm vào hoặc xóa bỏ các Điều Khoản và Điều Kiện bất kỳ lúc nào bằng cách cập nhật nội dung của ứng dụng, và có thể báo trước hoặc không báo trước cho bạn các thay đổi đó. ',
+                'B4U BSOC là tổ chức duy nhất có toàn quyền thay đổi, chỉnh sửa, thêm vào hoặc xóa bỏ các Điều Khoản và Điều Kiện bất kỳ lúc nào bằng cách cập nhật nội dung của ứng dụng, và có thể báo trước hoặc không báo trước cho bạn các thay đổi đó. ',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.01),
@@ -63,7 +63,7 @@ class TermsPage extends StatelessWidget {
             ),
             SizedBox(height: size.height * 0.02),
             Text(
-                'Bạn không thể  sử dụng Dịch vụ mà không đăng ký tài khoản. Để tận dụng tối đa nền tảng, bạn cần đăng ký, chọn tên tài khoản và đặt mật khẩu.',
+                'Bạn không thể sử dụng Dịch vụ mà không đăng ký tài khoản. Để tận dụng tối đa nền tảng, bạn cần đăng ký, chọn tên tài khoản và đặt mật khẩu.',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.02),
@@ -79,7 +79,7 @@ class TermsPage extends StatelessWidget {
             ),
             SizedBox(height: size.height * 0.02),
             Text(
-                'Trước khi đăng bất kỳ nội dung nào lên BSOC Book, điều quan trọng là bạn phải đọc “Nguyên tắc nội dung” của chúng tôi. Nếu nội dung của bạn không tuân thủ các nguyên tắc này, nội dung đó có thể bị xóa bất kỳ lúc nào.',
+                'Trước khi đăng bất kỳ nội dung nào lên B4U BSOC, điều quan trọng là bạn phải đọc “Nguyên tắc nội dung” của chúng tôi. Nếu nội dung của bạn không tuân thủ các nguyên tắc này, nội dung đó có thể bị xóa bất kỳ lúc nào.',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.01),
@@ -104,12 +104,12 @@ class TermsPage extends StatelessWidget {
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.02),
             Text(
-                '-	Phương tiện trên ứng dụng bao gồm hình ảnh, video, gif và clip âm thanh. Để giúp giữ cho BSOC Book trở thành một không gian an toàn cho mọi người khám phá nội dung, chúng tôi có thể xóa những hình ảnh không tuân theo nguyên tác của chúng tôi .',
+                '-	Phương tiện trên ứng dụng bao gồm hình ảnh, video, gif và clip âm thanh. Để giúp giữ cho B4U BSOC trở thành một không gian an toàn cho mọi người khám phá nội dung, chúng tôi có thể xóa những hình ảnh không tuân theo nguyên tác của chúng tôi .',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.02),
             Text(
-                '-	Bất kỳ nội dung nào quảng cáo sản phẩm hoặc dịch vụ không liên quan <App>  đều không được phép và sẽ bị xóa',
+                '-	Bất kỳ nội dung nào quảng cáo sản phẩm hoặc dịch vụ không liên quan B4U BSOC đều không được phép và sẽ bị xóa',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.02),
@@ -120,12 +120,12 @@ class TermsPage extends StatelessWidget {
             ),
             SizedBox(height: size.height * 0.02),
             Text(
-                'Chúng tôi bảo lưu tất cả các quyền đối với giao diện ứng dụng cũng như đối với nội dung của chúng tôi. Bạn không được sao chép hoặc điều chỉnh bất kỳ phần nào trong mã hoặc các yếu tố thiết kế trực quan của chúng tôi (bao gồm cả logo) mà không có sự cho phép rõ ràng bằng văn bản từ BSOC Book hoặc như được quy định trong điều khoản này. .',
+                'Chúng tôi bảo lưu tất cả các quyền đối với giao diện ứng dụng cũng như đối với nội dung của chúng tôi. Bạn không được sao chép hoặc điều chỉnh bất kỳ phần nào trong mã hoặc các yếu tố thiết kế trực quan của chúng tôi (bao gồm cả logo) mà không có sự cho phép rõ ràng bằng văn bản từ B4U BSOC hoặc như được quy định trong điều khoản này. .',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.01),
             Text(
-                'BSOC Book  có thể thay đổi, chấm dứt hoặc hạn chế quyền truy cập vào bất kỳ khía cạnh nào của Dịch vụ bất cứ lúc nào mà không cần thông báo trước. Chúng tôi có thể xóa bất kỳ nội dung nào bạn đăng hoặc gửi vì bất kỳ lý do gì. BSOC Book có thể truy cập, đọc, lưu giữ và tiết lộ bất kỳ thông tin nào mà chúng tôi tin rằng cần thiết để  đáp ứng mọi luật, quy định, quy trình pháp lý hiện hành hoặc yêu cầu của chính phủ,  thực thi Điều khoản dịch vụ, bao gồm cả việc điều tra các vi phạm tiềm ẩn,  phát hiện, ngăn chặn hoặc giải quyết các vấn đề gian lận, bảo mật hoặc kỹ thuật, phản hồi các yêu cầu hỗ trợ của người dùng hoặc bảo vệ quyền, tài sản hoặc sự an toàn của Dịch vụ, người dùng và công chúng.',
+                'B4U BSOC  có thể thay đổi, chấm dứt hoặc hạn chế quyền truy cập vào bất kỳ khía cạnh nào của Dịch vụ bất cứ lúc nào mà không cần thông báo trước. Chúng tôi có thể xóa bất kỳ nội dung nào bạn đăng hoặc gửi vì bất kỳ lý do gì. B4U BSOC có thể truy cập, đọc, lưu giữ và tiết lộ bất kỳ thông tin nào mà chúng tôi tin rằng cần thiết để  đáp ứng mọi luật, quy định, quy trình pháp lý hiện hành hoặc yêu cầu của chính phủ,  thực thi Điều khoản dịch vụ, bao gồm cả việc điều tra các vi phạm tiềm ẩn,  phát hiện, ngăn chặn hoặc giải quyết các vấn đề gian lận, bảo mật hoặc kỹ thuật, phản hồi các yêu cầu hỗ trợ của người dùng hoặc bảo vệ quyền, tài sản hoặc sự an toàn của Dịch vụ, người dùng và công chúng.',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.02),
@@ -136,7 +136,7 @@ class TermsPage extends StatelessWidget {
             ),
             SizedBox(height: size.height * 0.02),
             Text(
-                'Bạn có thể xóa vĩnh viễn tài khoản của mình. Nếu bạn đóng tài khoản của mình, trước tiên tài khoản đó sẽ bị hủy kích hoạt và sau đó bị xóa. Khi tài khoản của bạn bị vô hiệu hóa, trong khi nó không thể xem được trên BSOC Book, tất cả các nhận xét và bài đăng trên bảng tin của bạn trên cộng đồng sẽ vẫn còn ngoại trừ việc chúng sẽ được ẩn danh.',
+                'Bạn có thể xóa vĩnh viễn tài khoản của mình. Nếu bạn đóng tài khoản của mình, trước tiên tài khoản đó sẽ bị hủy kích hoạt và sau đó bị xóa. Khi tài khoản của bạn bị vô hiệu hóa, trong khi nó không thể xem được trên B4U BSOC, tất cả các nhận xét và bài đăng trên bảng tin của bạn trên cộng đồng sẽ vẫn còn ngoại trừ việc chúng sẽ được ẩn danh.',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.01),
@@ -152,7 +152,7 @@ class TermsPage extends StatelessWidget {
             ),
             SizedBox(height: size.height * 0.02),
             Text(
-                'Nếu Bạn có bất kỳ câu hỏi nào về Điều khoản Sử dụng này, về hoạt động củaứng dụng , hoặc sự kết nối của Bạn với BSOC Book, vui lòng liên hệ với chúng tôi qua email: hoale@b4usolution.com Tất cả các vấn đề hoặc mâu thuẫn sẽ được giải quyết nhanh chóng và hợp lý.',
+                'Nếu Bạn có bất kỳ câu hỏi nào về Điều khoản Sử dụng này, về hoạt động của ứng dụng , hoặc sự kết nối của Bạn với B4U BSOC, vui lòng liên hệ với chúng tôi qua email: hoale@b4usolution.com Tất cả các vấn đề hoặc mâu thuẫn sẽ được giải quyết nhanh chóng và hợp lý.',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.01),
