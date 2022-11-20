@@ -42,8 +42,10 @@ class _MenuAsideState extends State<MenuAside> {
       if (response.statusCode == 200) {
         mapDemo = response.data;
         var phoneuser = mapDemo!['phone'].toString();
+        var fullname = mapDemo!['fullname'].toString();
         final SharedPreferences? prefs = await _prefs;
         await prefs?.setString('phoneUser', phoneuser);
+        await prefs?.setString('fullname', fullname);
         // print(datauser);
         setState(() {
           isLoading = false;
@@ -118,16 +120,12 @@ class _MenuAsideState extends State<MenuAside> {
                             child: Text(
                               mapDemo == null
                                   ? 'Đang tải dữ liệu'
-                                  : mapDemo!['username'],
+                                  : mapDemo!['fullname'],
                               textAlign: TextAlign.center,
                               style: TextStyle(color: Colors.red, fontSize: 20),
                             )),
                       ],
                     ),
-                    // Text(
-                    //   mapDemo == null ? 'Đang tải dữ liệu' : mapDemo!['email'],
-                    //   style: TextStyle(color: Colors.white, fontSize: 16),
-                    // )
                   ],
                 ),
               )),
@@ -156,10 +154,6 @@ class _MenuAsideState extends State<MenuAside> {
               ),
             ],
           ),
-          // ListTile(
-          //   leading: const Icon(Icons.assessment_outlined),
-          //   title: const Text('Rao vặt'),
-          // ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
             child: Container(
@@ -233,7 +227,6 @@ class _MenuAsideState extends State<MenuAside> {
               ),
             ),
           ),
-
           Container(
             child: Padding(
               padding: const EdgeInsets.all(25.0),

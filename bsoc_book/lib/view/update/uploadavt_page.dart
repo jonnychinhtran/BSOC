@@ -20,6 +20,7 @@ class _UploadAvatarState extends State<UploadAvatar> {
   String? username;
   String? emailUser;
   String? phoneUser;
+  String? fullnameUser;
 
   _getFromGallery() async {
     XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -42,6 +43,7 @@ class _UploadAvatarState extends State<UploadAvatar> {
       {
         "image": await MultipartFile.fromFile(imageFile!.path),
         "userId": idUser.toString(),
+        "fullname": username,
         "username": username,
         "email": emailUser,
         "phone": phoneUser.toString(),
@@ -55,9 +57,8 @@ class _UploadAvatarState extends State<UploadAvatar> {
     print(response.toString());
     print(response.data);
     if (response.statusCode == 200) {
-// rest of code here before navigation.
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+          context, MaterialPageRoute(builder: (context) => const HomePage()));
     }
   }
 

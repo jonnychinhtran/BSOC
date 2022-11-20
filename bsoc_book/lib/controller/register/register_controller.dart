@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:bsoc_book/routes/app_routes.dart';
+import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class RegisterationController extends GetxController {
+  TextEditingController fullnameController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -34,7 +36,7 @@ class RegisterationController extends GetxController {
         emailController.clear();
         passwordController.clear();
         phoneController.clear();
-        Get.offNamed(Routes.login);
+        Get.to(LoginPage());
       } else {
         Get.snackbar("Lỗi", "Đăng ký thất bại. Thử lại.");
       }
