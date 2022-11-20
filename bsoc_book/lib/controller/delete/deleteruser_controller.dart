@@ -11,11 +11,8 @@ class DeleteUserController extends GetxController {
       token = prefs.getString('accessToken');
 
       var response = await Dio().post('http://103.77.166.202/api/user/delete',
-          options: Options(
-              headers: {'accept': '*/*', 'Authorization': 'Bearer $token'}));
+          options: Options(headers: {'Authorization': 'Bearer $token'}));
       if (response.statusCode == 200) {
-        var data = response.data;
-        print(data);
         Get.offNamed(Routes.login);
       } else {
         Get.snackbar("lỗi", "Xóa tải khoản lỗi. Thử lại.");

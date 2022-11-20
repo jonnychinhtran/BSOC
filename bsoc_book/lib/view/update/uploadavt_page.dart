@@ -1,10 +1,8 @@
-import 'package:bsoc_book/view/main_page.dart';
+import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UploadAvatar extends StatefulWidget {
@@ -59,7 +57,7 @@ class _UploadAvatarState extends State<UploadAvatar> {
     if (response.statusCode == 200) {
 // rest of code here before navigation.
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MainIndexPage()));
+          context, MaterialPageRoute(builder: (context) => HomePage()));
     }
   }
 

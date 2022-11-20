@@ -1,4 +1,5 @@
 import 'package:bsoc_book/controller/register/register_controller.dart';
+import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -215,7 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.offAllNamed(Routes.login);
+                              Get.to(LoginPage());
                             },
                             child: const Text("Vui lòng đăng nhập"),
                           ),

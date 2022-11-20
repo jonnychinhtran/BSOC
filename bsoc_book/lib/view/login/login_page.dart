@@ -1,8 +1,10 @@
 import 'package:bsoc_book/controller/login/login_controller.dart';
 import 'package:bsoc_book/routes/app_routes.dart';
+import 'package:bsoc_book/view/register/register_page.dart';
 import 'package:bsoc_book/view/resetpassword/reset_pass_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -14,6 +16,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   LoginController loginController = Get.put(LoginController());
+  final userdata = GetStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +144,14 @@ class _LoginPageState extends State<LoginPage> {
                               onPressed: () => {
                                 if (_formKey.currentState!.validate())
                                   {
+                                    userdata.write('isLogged', true),
                                     loginController.loginWithUsername(),
+                                  }
+                                else
+                                  {
+                                    Get.snackbar("Lỗi",
+                                        "Vui lòng nhập tên đăng nhập và mật khẩu",
+                                        snackPosition: SnackPosition.TOP)
                                   }
                               },
                               style: ElevatedButton.styleFrom(
@@ -171,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.offAllNamed(Routes.register);
+                              Get.to(RegisterPage());
                             },
                             child: const Text("Đăng ký ngay"),
                           ),

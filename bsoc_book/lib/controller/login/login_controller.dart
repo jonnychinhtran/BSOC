@@ -1,9 +1,9 @@
 import 'dart:convert';
-
 import 'package:bsoc_book/data/network/api_client.dart';
-import 'package:bsoc_book/view/main_page.dart';
+import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,7 +13,6 @@ class LoginController extends GetxController {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
   Future<void> loginWithUsername() async {
     var headers = {'content-type': 'application/json'};
     try {
@@ -35,14 +34,14 @@ class LoginController extends GetxController {
         print(response.body);
         // print(token);
         final SharedPreferences? prefs = await _prefs;
+
         await prefs?.setString('accessToken', token);
         await prefs?.setString('username', user);
         await prefs?.setString('idInforUser', idUser);
         await prefs?.setString('emailuser', email);
-        var hoang = await prefs?.getString('accessToken');
-        print(hoang);
+
         Get.snackbar("Thành công", "Đăng nhập thành công.");
-        Get.offNamed(Routes.main);
+        Get.offAll(HomePage());
         usernameController.clear();
         passwordController.clear();
       } else {
@@ -53,28 +52,4 @@ class LoginController extends GetxController {
       print(e);
     }
   }
-
-  //save token
-  // Future<void> saveToken(String token) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.remove('accessToken');
-  //   prefs.setString('accessToken', token);
-  // }
-
-  // //get token
-  // Future<String> getToken() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   return prefs.getString('accessToken') ?? '';
-  // }
-
-  // Future<void> saveUserId(int id) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.remove('userId');
-  //   prefs.setInt('userId', id);
-  // }
-
-  // Future<bool> logout() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   return await prefs.remove('accessToken');
-  // }
 }

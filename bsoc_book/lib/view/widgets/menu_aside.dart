@@ -4,12 +4,13 @@ import 'package:bsoc_book/routes/app_routes.dart';
 import 'package:bsoc_book/view/contact/contact_page.dart';
 import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
-import 'package:bsoc_book/view/main_page.dart';
 import 'package:bsoc_book/view/terms/terms_page.dart';
 import 'package:bsoc_book/view/update/uploadavt_page.dart';
+import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String? demo;
@@ -141,7 +142,7 @@ class _MenuAsideState extends State<MenuAside> {
                   child: InkWell(
                     splashColor: Colors.blueGrey,
                     onTap: () {
-                      Get.to(MainIndexPage());
+                      Get.to(HomePage());
                     },
                     child: ListTile(
                       leading: const Icon(Icons.my_library_books),
@@ -216,7 +217,7 @@ class _MenuAsideState extends State<MenuAside> {
                   // Get.offAll(LoginPage());
                   showDialog(
                     context: context,
-                    builder: (context) => const DialogLogout(),
+                    builder: (context) => DialogLogout(),
                   );
                 },
                 child: ListTile(
@@ -248,7 +249,8 @@ class _MenuAsideState extends State<MenuAside> {
 }
 
 class DialogLogout extends StatelessWidget {
-  const DialogLogout({super.key});
+  DialogLogout({super.key});
+  final userdata = GetStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -274,6 +276,7 @@ class DialogLogout extends StatelessWidget {
             onPressed: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.remove('accessToken');
+              userdata.write('isLogged', false);
               Get.offAll(LoginPage());
             },
             child: Text('Có'),

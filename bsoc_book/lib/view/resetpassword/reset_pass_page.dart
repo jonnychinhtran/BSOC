@@ -1,5 +1,6 @@
 import 'package:bsoc_book/controller/reset/reset_controller.dart';
 import 'package:bsoc_book/routes/app_routes.dart';
+import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -120,7 +121,7 @@ class _ResetPassPageState extends State<ResetPassPage> {
                           children: [
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () => {Get.offNamed(Routes.login)},
+                                onPressed: () => {Get.to(LoginPage())},
                                 style: ElevatedButton.styleFrom(
                                     primary: Color.fromARGB(255, 59, 118, 195),
                                     shape: RoundedRectangleBorder(

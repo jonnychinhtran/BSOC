@@ -1,18 +1,18 @@
 import 'dart:convert';
+import 'package:bsoc_book/routes/app_routes.dart';
+import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
+import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
-// final List<String> imgList = [
-//   'https://bucket.nhanh.vn/store/12365/bn/277780380_150038747477147_3183770388341905537_n.jpg',
-//   'https://bucket.nhanh.vn/store/12365/bn/7b2908e35ac19c66cbc5da0924f297de.jpg',
-// ];
+import 'package:social_media_flutter/social_media_flutter.dart';
 
 String? demo;
 Map? mapDemo;
@@ -30,8 +30,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
-
-  // List<Map<String, dynamic>> map = [];
 
   Future<void> getAllBooks() async {
     String? token;
@@ -106,6 +104,82 @@ class _HomePageState extends State<HomePage> {
           )
         : Text(listReponse?.toString() ?? "");
     return Scaffold(
+      drawer: MenuAside(),
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 138, 175, 52),
+        centerTitle: true,
+        title: const Text('B4U BSOC'),
+        actions: [
+          Theme(
+              data: Theme.of(context).copyWith(
+                dividerColor: Colors.white,
+                iconTheme: IconThemeData(color: Colors.white),
+                textTheme: TextTheme().apply(bodyColor: Colors.white),
+              ),
+              child: PopupMenuButton<int>(
+                  color: Colors.white,
+                  itemBuilder: (context) => [
+                        PopupMenuItem<int>(
+                          value: 0,
+                          child: SocialWidget(
+                            placeholderText: 'B4U Solution',
+                            iconData: SocialIconsFlutter.facebook_box,
+                            link:
+                                'https://www.facebook.com/groups/376149517873940',
+                            iconColor: Color.fromARGB(255, 0, 170, 255),
+                            placeholderStyle:
+                                TextStyle(color: Colors.black, fontSize: 20),
+                          ),
+                        ),
+                        PopupMenuItem<int>(
+                          value: 1,
+                          child: SocialWidget(
+                            placeholderText: 'B4U Solution',
+                            iconData: SocialIconsFlutter.linkedin_box,
+                            link:
+                                'https://www.linkedin.com/in/b4usolution-b16383128/',
+                            iconColor: Colors.blueGrey,
+                            placeholderStyle:
+                                TextStyle(color: Colors.black, fontSize: 20),
+                          ),
+                        ),
+                        PopupMenuItem<int>(
+                          value: 2,
+                          child: SocialWidget(
+                            placeholderText: 'B4U Solution',
+                            iconData: SocialIconsFlutter.youtube,
+                            link:
+                                'https://www.youtube.com/channel/UC1UDTdvGiei6Lc4ei7VzL_A',
+                            iconColor: Colors.red,
+                            placeholderStyle:
+                                TextStyle(color: Colors.black, fontSize: 20),
+                          ),
+                        ),
+                        PopupMenuItem<int>(
+                          value: 3,
+                          child: SocialWidget(
+                            placeholderText: 'B4U Solution',
+                            iconData: SocialIconsFlutter.twitter,
+                            iconColor: Colors.lightBlue,
+                            link: 'https://twitter.com/b4usolution',
+                            placeholderStyle:
+                                TextStyle(color: Colors.black, fontSize: 20),
+                          ),
+                        ),
+                        PopupMenuItem<int>(
+                          value: 4,
+                          child: SocialWidget(
+                            placeholderText: 'B4U Solution',
+                            iconData: Icons.people,
+                            iconColor: Colors.lightBlue,
+                            link: 'https://www.slideshare.net/b4usolution/',
+                            placeholderStyle:
+                                TextStyle(color: Colors.black, fontSize: 20),
+                          ),
+                        ),
+                      ]))
+        ],
+      ),
       body: isLoading
           ? Center(
               child: Column(

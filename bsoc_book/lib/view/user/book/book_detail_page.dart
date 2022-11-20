@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
-import 'package:bsoc_book/view/main_page.dart';
+import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -74,7 +74,7 @@ class _DetailBookPageState extends State<DetailBookPage>
         title: Text('Chi tiết'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Get.to(MainIndexPage()),
+          onPressed: () => Get.to(HomePage()),
         ),
       ),
       body: isLoading
