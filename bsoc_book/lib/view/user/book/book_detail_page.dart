@@ -88,8 +88,8 @@ class _DetailBookPageState extends State<DetailBookPage>
               Share.share('Đọc ngay: ' +
                   mapDemo!['bookName'].toString() +
                   ' trên ứng dụng B4U BSOC '
-                      '- Cài ứng dụng B4U BSOC tại: ' +
-                  'https://www.google.com.vn');
+                      '- Cài ứng dụng B4U BSOC tại AppStore: https://apps.apple.com/us/app/b4u-bsoc/id6444538062 ' +
+                  ' - PlayStore: https://www.google.com.vn');
             },
           ),
         ],
@@ -325,6 +325,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                     .toString());
                                                             print(
                                                                 'ChapterID Click: ${listReponse![index]['id'].toString()}');
+
                                                             showDialog(
                                                               context: context,
                                                               builder: (context) =>
@@ -363,7 +364,13 @@ class PdfViewerPage extends StatefulWidget {
   _PdfViewerPageState createState() => _PdfViewerPageState();
 }
 
-class _PdfViewerPageState extends State<PdfViewerPage> {
+class _PdfViewerPageState extends State<PdfViewerPage>
+    with WidgetsBindingObserver {
+  final Completer<PDFViewController> _controller =
+      Completer<PDFViewController>();
+  int? pages = 0;
+  int? currentPage = 0;
+  bool isReady = false;
   String? localPath;
   String? titleChapter;
 
@@ -397,6 +404,26 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
       body: localPath != null
           ? PDFView(
               filePath: localPath,
+              pageSnap: true,
+              defaultPage: currentPage!,
+              fitPolicy: FitPolicy.BOTH,
+              preventLinkNavigation:
+                  false, // if set to true the link is handled in flutter
+              onRender: (_pages) {
+                setState(() {
+                  pages = _pages;
+                  isReady = true;
+                });
+              },
+              onViewCreated: (PDFViewController pdfViewController) {
+                _controller.complete(pdfViewController);
+              },
+              onPageChanged: (int? page, int? total) {
+                print('page change: $page/$total');
+                setState(() {
+                  currentPage = page;
+                });
+              },
             )
           : const Center(child: CircularProgressIndicator()),
     );
