@@ -1,64 +1,167 @@
-class Book {
-  int id;
-  String imageUrl;
-  String title;
-  String author;
+class BookModel {
+  List<Content>? content;
+  Pageable? pageable;
+  int? totalPages;
+  int? totalElements;
+  bool? last;
+  int? number;
+  int? size;
+  Sort? sort;
+  bool? first;
+  int? numberOfElements;
+  bool? empty;
 
-  Book({
-    required this.id,
-    required this.imageUrl,
-    required this.title,
-    required this.author,
-  });
+  BookModel(
+      {this.content,
+      this.pageable,
+      this.totalPages,
+      this.totalElements,
+      this.last,
+      this.number,
+      this.size,
+      this.sort,
+      this.first,
+      this.numberOfElements,
+      this.empty});
+
+  BookModel.fromJson(Map<String, dynamic> json) {
+    if (json['content'] != null) {
+      content = <Content>[];
+      json['content'].forEach((v) {
+        content!.add(new Content.fromJson(v));
+      });
+    }
+    pageable = json['pageable'] != null
+        ? new Pageable.fromJson(json['pageable'])
+        : null;
+    totalPages = json['totalPages'];
+    totalElements = json['totalElements'];
+    last = json['last'];
+    number = json['number'];
+    size = json['size'];
+    sort = json['sort'] != null ? new Sort.fromJson(json['sort']) : null;
+    first = json['first'];
+    numberOfElements = json['numberOfElements'];
+    empty = json['empty'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.content != null) {
+      data['content'] = this.content!.map((v) => v.toJson()).toList();
+    }
+    if (this.pageable != null) {
+      data['pageable'] = this.pageable!.toJson();
+    }
+    data['totalPages'] = this.totalPages;
+    data['totalElements'] = this.totalElements;
+    data['last'] = this.last;
+    data['number'] = this.number;
+    data['size'] = this.size;
+    if (this.sort != null) {
+      data['sort'] = this.sort!.toJson();
+    }
+    data['first'] = this.first;
+    data['numberOfElements'] = this.numberOfElements;
+    data['empty'] = this.empty;
+    return data;
+  }
 }
 
-final List<Book> book = [
-  Book(
-      id: 1,
-      imageUrl:
-          'https://images.ctfassets.net/17o2epk8ivh7/1LGtb6QljrmklbvIafU9WA/60f01dbc1e44037547d0104f8f56d812/image10.png?q=90&w=1646',
-      title: 'The Personal MBA',
-      author: 'Josh Kaufman'),
-  Book(
-      id: 2,
-      imageUrl:
-          'https://images.ctfassets.net/17o2epk8ivh7/2TdKWPMKROmS7fvzizxL02/247a2a7f4fd66846c35aed531720aea1/image6.jpg?q=90&w=1646',
-      title: 'Everybody Writes',
-      author: 'Ann Handley'),
-  Book(
-      id: 3,
-      imageUrl:
-          'https://images.ctfassets.net/17o2epk8ivh7/3Js6xghEhHq6BN7mMNhQv4/4418d6c69a9689a3a900281f60b7b5cc/image7.png?q=90&w=1646',
-      title: 'The Art of Gathering',
-      author: 'Priya Parker'),
-  Book(
-      id: 4,
-      imageUrl:
-          'https://images.ctfassets.net/17o2epk8ivh7/5uasBCZnRHTlJVJHPkn2hs/288dd92edccd9e8e954bbf72a3b1be8c/image2.png?q=90&w=1646',
-      title: 'DotCom Secrets',
-      author: 'Russell Brunson'),
-  Book(
-      id: 5,
-      imageUrl:
-          'https://images.ctfassets.net/17o2epk8ivh7/1SBU5hgMWJpRedTwaIRc2U/43d3545546aa6d1e752a64e6c088aa6c/image1.png?q=90&w=1646',
-      title: 'Supermaker',
-      author: 'Jaime Schmidt'),
-  Book(
-      id: 6,
-      imageUrl:
-          'https://images.ctfassets.net/17o2epk8ivh7/7sBuLHEYDVqDv4tvsHRj5o/67cbdb000a81f56bf5faf6c764de2b99/image4.jpg?q=90&w=1646',
-      title: 'Building a Story Brand',
-      author: 'Donald Miller'),
-  Book(
-      id: 7,
-      imageUrl:
-          'https://images.ctfassets.net/17o2epk8ivh7/1CQFelPTgCtZ5CGDkSt29a/36e79d81465e92c019cd818cd5c125ea/image3.png?q=90&w=1646',
-      title: 'Atomic Habits',
-      author: 'James Clear'),
-  Book(
-      id: 8,
-      imageUrl:
-          'https://images.ctfassets.net/17o2epk8ivh7/3ad3YMuoQgutiwnpLwYdv5/cf3ba3d74d9fd6811ee25e81e0ec36e5/image5.png?q=90&w=1646',
-      title: 'The 7 Habits of Highly Effective People',
-      author: 'Stephen R. Covey'),
-];
+class Content {
+  int? id;
+  String? bookName;
+  String? author;
+  String? description;
+  String? image;
+  double? rating;
+
+  Content(
+      {this.id,
+      this.bookName,
+      this.author,
+      this.description,
+      this.image,
+      this.rating});
+
+  Content.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    bookName = json['bookName'];
+    author = json['author'];
+    description = json['description'];
+    image = json['image'];
+    rating = json['rating'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['bookName'] = this.bookName;
+    data['author'] = this.author;
+    data['description'] = this.description;
+    data['image'] = this.image;
+    data['rating'] = this.rating;
+    return data;
+  }
+}
+
+class Pageable {
+  Sort? sort;
+  int? offset;
+  int? pageSize;
+  int? pageNumber;
+  bool? paged;
+  bool? unpaged;
+
+  Pageable(
+      {this.sort,
+      this.offset,
+      this.pageSize,
+      this.pageNumber,
+      this.paged,
+      this.unpaged});
+
+  Pageable.fromJson(Map<String, dynamic> json) {
+    sort = json['sort'] != null ? new Sort.fromJson(json['sort']) : null;
+    offset = json['offset'];
+    pageSize = json['pageSize'];
+    pageNumber = json['pageNumber'];
+    paged = json['paged'];
+    unpaged = json['unpaged'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.sort != null) {
+      data['sort'] = this.sort!.toJson();
+    }
+    data['offset'] = this.offset;
+    data['pageSize'] = this.pageSize;
+    data['pageNumber'] = this.pageNumber;
+    data['paged'] = this.paged;
+    data['unpaged'] = this.unpaged;
+    return data;
+  }
+}
+
+class Sort {
+  bool? empty;
+  bool? sorted;
+  bool? unsorted;
+
+  Sort({this.empty, this.sorted, this.unsorted});
+
+  Sort.fromJson(Map<String, dynamic> json) {
+    empty = json['empty'];
+    sorted = json['sorted'];
+    unsorted = json['unsorted'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['empty'] = this.empty;
+    data['sorted'] = this.sorted;
+    data['unsorted'] = this.unsorted;
+    return data;
+  }
+}

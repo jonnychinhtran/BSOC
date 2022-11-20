@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +105,16 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         title: const Text('B4U BSOC'),
         actions: [
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const SearchPage()));
+            },
+          ),
           Theme(
               data: Theme.of(context).copyWith(
                 dividerColor: Colors.white,
@@ -171,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                                 TextStyle(color: Colors.black, fontSize: 20),
                           ),
                         ),
-                      ]))
+                      ])),
         ],
       ),
       body: isLoading
