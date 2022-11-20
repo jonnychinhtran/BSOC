@@ -4,6 +4,7 @@ import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
@@ -744,16 +745,29 @@ class DialogComment extends StatelessWidget {
                             Text("Số điểm: "),
                             ConstrainedBox(
                               constraints:
-                                  BoxConstraints(minWidth: 40, minHeight: 10),
+                                  BoxConstraints(minWidth: 30, maxHeight: 50),
                               child: IntrinsicWidth(
-                                child: TextFormField(
-                                  controller: cmtcontroller.ratingController,
-                                  keyboardType: TextInputType.number,
-                                  validator: (value) {
-                                    return (value == null || value.isEmpty)
-                                        ? 'Vui lòng nhập số điểm'
-                                        : null;
-                                  },
+                                child: Container(
+                                  height: 30,
+                                  child: TextFormField(
+                                    controller: cmtcontroller.ratingController,
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                      return (value == null || value.isEmpty)
+                                          ? 'Nhập số'
+                                          : null;
+                                    },
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp("[1-5]")),
+                                    ],
+                                    maxLength: 1,
+                                    decoration: new InputDecoration(
+                                      counterText: '',
+                                      border: OutlineInputBorder(),
+                                      errorStyle: TextStyle(height: 30),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
