@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
+import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
+import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -305,6 +307,20 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                     182,
                                                                     61),
                                                           )),
+                                                      FavoriteButton(
+                                                        isFavorite: false,
+                                                        iconDisabledColor:
+                                                            Colors.grey,
+                                                        iconSize: 40,
+                                                        valueChanged:
+                                                            (_isFavorite) {
+                                                          listReponse![index][
+                                                                  'chapterTitle']
+                                                              .toString();
+                                                          print(
+                                                              'Is Favorite : $_isFavorite');
+                                                        },
+                                                      ),
                                                       IconButton(
                                                           onPressed: () async {
                                                             final SharedPreferences?
