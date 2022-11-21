@@ -219,6 +219,8 @@ class _HomePageState extends State<HomePage> {
                         height: 200,
                         margin: EdgeInsets.only(left: 10, right: 10),
                         child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
                             scrollDirection: Axis.horizontal,
                             itemCount: listTop == null ? 0 : listTop?.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -332,13 +334,14 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: size.height * 0.01),
-                                        Center(
-                                          child: Text(
-                                            'by ${listReponse?[index]['author']}',
-                                            overflow: TextOverflow.ellipsis,
-                                            style:
-                                                const TextStyle(fontSize: 12),
+                                        Expanded(
+                                          child: Center(
+                                            child: Text(
+                                              'by ${listReponse?[index]['author']}',
+                                              overflow: TextOverflow.ellipsis,
+                                              style:
+                                                  const TextStyle(fontSize: 12),
+                                            ),
                                           ),
                                         ),
                                       ]),
