@@ -42,8 +42,9 @@ class RegisterationController extends GetxController {
       }
       print("res: ${response.data}");
     } catch (e) {
-      // Get.snackbar("Lỗi đăng ký", e.toString());
-      Get.snackbar("Lỗi đăng ký", "Vui lòng kiểm tra lại");
+      // Get.snackbar("Lỗi đăng ký", e['message']);
+      Get.snackbar("Lỗi đăng ký",
+          "Vui lòng kiểm tra lại thiếu thông tin hoặc trùng tên");
       print(e);
     }
   }

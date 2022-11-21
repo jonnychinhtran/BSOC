@@ -1,17 +1,11 @@
-import 'dart:convert';
 import 'package:bsoc_book/controller/changepass/changepass_controller.dart';
-// import 'package:bsoc_book/controller/update/update_controller.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/update/update_infor.dart';
-import 'package:email_validator/email_validator.dart';
-// import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-// import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -147,7 +141,7 @@ class _InforPageState extends State<InforPage> {
                       onPressed: (context) async {
                         showDialog(
                           context: context,
-                          builder: (context) => const DialogLogout(),
+                          builder: (context) => DialogLogout(),
                         );
                       },
                     ),
@@ -306,8 +300,8 @@ class _ChangePasswordState extends State<ChangePassword> {
 }
 
 class DialogLogout extends StatelessWidget {
-  const DialogLogout({super.key});
-
+  DialogLogout({super.key});
+  final userdata = GetStorage();
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -332,6 +326,7 @@ class DialogLogout extends StatelessWidget {
             onPressed: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.remove('accessToken');
+              userdata.write('isLogged', false);
               Get.offAll(LoginPage());
             },
             child: Text('Có'),
