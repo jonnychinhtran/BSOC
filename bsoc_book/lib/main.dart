@@ -1,15 +1,16 @@
-import 'package:bsoc_book/routes/app_pages.dart';
-import 'package:bsoc_book/routes/app_routes.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:update_handler/update_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   runApp(const MyApp());
+  UpdateHandler.androidAppId = "com.b4usolution.b4u_bsoc";
+  UpdateHandler.iosAppId = "6444538062";
 }
 
 class MyApp extends StatelessWidget {

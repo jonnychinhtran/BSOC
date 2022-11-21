@@ -7,7 +7,7 @@ import Foundation
 
 import device_info_plus_macos
 import modal_progress_hud_nsn
-import package_info_plus
+import package_info_plus_macos
 import path_provider_macos
 import pdfx
 import share_plus_macos

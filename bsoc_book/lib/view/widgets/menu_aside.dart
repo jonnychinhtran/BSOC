@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:bsoc_book/routes/app_routes.dart';
+import 'package:bsoc_book/view/about/about_page.dart';
 import 'package:bsoc_book/view/contact/contact_page.dart';
 import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
@@ -153,6 +154,27 @@ class _MenuAsideState extends State<MenuAside> {
                 ),
               ),
             ],
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+            child: Container(
+              decoration: BoxDecoration(
+                  border:
+                      Border(bottom: BorderSide(color: Colors.grey.shade400))),
+              child: InkWell(
+                splashColor: Colors.blueGrey,
+                onTap: () async {
+                  Get.to(AboutPage());
+                },
+                child: ListTile(
+                  leading: const Icon(Icons.info),
+                  title: const Text(
+                    'Giới thiệu',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),

@@ -767,112 +767,119 @@ class DialogComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      child: Text('CHIA SẺ ĐÁNH GIÁ'),
-      style: ElevatedButton.styleFrom(
-        elevation: 2,
-        primary: Colors.blueAccent,
-        minimumSize: const Size.fromHeight(40),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5.0),
+    return Container(
+      height: 60,
+      child: ElevatedButton(
+        child: Text(
+          'CHIA SẺ ĐÁNH GIÁ',
+          style: TextStyle(fontSize: 16),
         ),
-      ),
-      onPressed: () => showDialog<String>(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-                title: Text("Đánh giá"),
-                content: Container(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          children: [
-                            Text("Số điểm: "),
-                            ConstrainedBox(
-                              constraints:
-                                  BoxConstraints(minWidth: 30, maxHeight: 50),
-                              child: IntrinsicWidth(
-                                child: Container(
-                                  height: 30,
-                                  child: TextFormField(
-                                    controller: cmtcontroller.ratingController,
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      return (value == null || value.isEmpty)
-                                          ? 'Nhập số'
-                                          : null;
-                                    },
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp("[1-5]")),
-                                    ],
-                                    maxLength: 1,
-                                    decoration: new InputDecoration(
-                                      counterText: '',
-                                      border: OutlineInputBorder(),
-                                      errorStyle: TextStyle(height: 30),
+        style: ElevatedButton.styleFrom(
+          elevation: 2,
+          primary: Colors.blueAccent,
+          minimumSize: const Size.fromHeight(40),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+        ),
+        onPressed: () => showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: Text("Đánh giá"),
+                  content: Container(
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Text("Số điểm: "),
+                              ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 30, maxHeight: 50),
+                                child: IntrinsicWidth(
+                                  child: Container(
+                                    height: 30,
+                                    child: TextFormField(
+                                      controller:
+                                          cmtcontroller.ratingController,
+                                      keyboardType: TextInputType.number,
+                                      validator: (value) {
+                                        return (value == null || value.isEmpty)
+                                            ? 'Nhập số'
+                                            : null;
+                                      },
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp("[1-5]")),
+                                      ],
+                                      maxLength: 1,
+                                      decoration: new InputDecoration(
+                                        counterText: '',
+                                        border: OutlineInputBorder(),
+                                        errorStyle: TextStyle(height: 30),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Text("/5 Sao"),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text("Nội dung:"),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(width: 1, color: Colors.black)),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(width: 1, color: Colors.black)),
+                              Text("/5 Sao"),
+                            ],
                           ),
-                          controller: cmtcontroller.contentController,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 3,
-                          validator: (value) {
-                            return (value == null || value.isEmpty)
-                                ? 'Vui lòng nhập nội dung'
-                                : null;
-                          },
-                        )
-                      ],
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text("Nội dung:"),
+                          SizedBox(
+                            height: 3,
+                          ),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 1, color: Colors.black)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 1, color: Colors.black)),
+                            ),
+                            controller: cmtcontroller.contentController,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 3,
+                            validator: (value) {
+                              return (value == null || value.isEmpty)
+                                  ? 'Vui lòng nhập nội dung'
+                                  : null;
+                            },
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, 'Huỷ'),
-                    child: const Text('Huỷ'),
-                  ),
-                  TextButton(
-                      onPressed: () => {
-                            if (_formKey.currentState!.validate())
-                              {
-                                cmtcontroller.commentUserBook(),
-                                // Navigator.of(context).pop(),
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            DetailBookPage()),
-                                    (Route<dynamic> route) => false),
-                              },
-                          },
-                      child: Text('Gửi'))
-                ],
-              )),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Huỷ'),
+                      child: const Text('Huỷ'),
+                    ),
+                    TextButton(
+                        onPressed: () => {
+                              if (_formKey.currentState!.validate())
+                                {
+                                  cmtcontroller.commentUserBook(),
+                                  // Navigator.of(context).pop(),
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              DetailBookPage()),
+                                      (Route<dynamic> route) => false),
+                                },
+                            },
+                        child: Text('Gửi'))
+                  ],
+                )),
+      ),
     );
   }
 }
