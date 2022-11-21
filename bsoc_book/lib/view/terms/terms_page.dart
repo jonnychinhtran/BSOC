@@ -21,7 +21,7 @@ class TermsPage extends StatelessWidget {
             child: Column(
           children: [
             Text(
-                'Cảm ơn bạn đã chọn sản phẩm của chúng tôi. B4U BSOC là sản phẩm của Startup Hoa Le, được xây dựng tại bởi nhóm lập trình B4USolution Việt Nam. Các điều khoản dịch vụ này là hợp đồng giữa bạn và B4U BSOC. Bằng cách sử dụng B4U BSOC, tạo tài khoản của bạn và sử dụng ứng dụng của chúng tôi để đăng tải nhiều nội dung khác nhau lên cộng đồng, bao gồm đăng bài ( đăng sách nếu có) nhận xét , đánh giá và tin nhắn hoặc để truy cập và xem nhận xét của người dùng.',
+                'Cảm ơn bạn đã chọn sản phẩm của chúng tôi. B4U BSOC là sản phẩm của Startup Hoa Le, được xây dựng bởi nhóm lập trình B4USolution Việt Nam. Các điều khoản dịch vụ này là hợp đồng giữa bạn và B4U BSOC. Bằng cách sử dụng B4U BSOC, tạo tài khoản của bạn và sử dụng ứng dụng của chúng tôi để đăng tải nhiều nội dung khác nhau lên cộng đồng, bao gồm đăng bài ( đăng sách nếu có) nhận xét , đánh giá và tin nhắn hoặc để truy cập và xem nhận xét của người dùng.',
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.01),

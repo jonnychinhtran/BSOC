@@ -92,8 +92,8 @@ class _MenuAsideState extends State<MenuAside> {
                       },
                       child: CircleAvatar(
                         radius: 60.0,
-                        backgroundImage: NetworkImage(
-                            'http://103.77.166.202' + mapDemo!['avatar']),
+                        backgroundImage: NetworkImage('http://103.77.166.202' +
+                            mapDemo!['avatar'].toString()),
                         backgroundColor: Colors.transparent,
                       ),
                     )),
