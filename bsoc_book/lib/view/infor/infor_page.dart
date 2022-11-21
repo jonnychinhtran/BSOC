@@ -270,6 +270,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                       if (_formKey.currentState!.validate())
                                         {
                                           changepass.changepassUser(),
+                                          Navigator.of(context).pop(),
                                         }
                                     },
                                     style: ElevatedButton.styleFrom(

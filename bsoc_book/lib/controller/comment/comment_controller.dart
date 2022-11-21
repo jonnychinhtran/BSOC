@@ -37,7 +37,7 @@ class CommentController extends GetxController {
         Get.snackbar("Thành công", "Bình luận thành công.");
         ratingController.clear();
         contentController.clear();
-        Get.to(DetailBookPage());
+        // Get.to(DetailBookPage());
       } else {
         Get.snackbar("Lỗi", "Bình luận thất bại. Thử lại.");
       }

@@ -1,4 +1,5 @@
 import 'package:bsoc_book/view/contact/contact_page.dart';
+import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/register/register_page.dart';
 import 'package:bsoc_book/view/resetpassword/reset_pass_page.dart';
@@ -14,5 +15,6 @@ class PageRoutes {
     GetPage(name: Routes.login, page: () => const LoginPage()),
     GetPage(name: Routes.reset, page: () => ResetPassPage()),
     GetPage(name: Routes.register, page: () => const RegisterPage()),
+    GetPage(name: Routes.infor, page: () => const InforPage()),
   ];
 }

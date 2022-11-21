@@ -861,7 +861,13 @@ class DialogComment extends StatelessWidget {
                             if (_formKey.currentState!.validate())
                               {
                                 cmtcontroller.commentUserBook(),
-                                Navigator.pop(context),
+                                // Navigator.of(context).pop(),
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            DetailBookPage()),
+                                    (Route<dynamic> route) => false),
                               },
                           },
                       child: Text('Gửi'))
