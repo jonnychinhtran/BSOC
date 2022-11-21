@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app_version_update/app_version_update.dart';
 import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
@@ -25,6 +26,24 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
+
+  void checkUpdateApp() async {
+    final appleId = '6444538062';
+    final playStoreId = 'com.b4usolution.b4u_bsoc';
+    final country = 'vn';
+    await AppVersionUpdate.checkForUpdates(
+            appleId: appleId, playStoreId: playStoreId, country: country)
+        .then((data) async {
+      print(data.storeUrl);
+      print(data.storeVersion);
+      if (data.canUpdate!) {
+        AppVersionUpdate.showAlertUpdate(
+          appVersionResult: data,
+          context: context,
+        );
+      }
+    });
+  }
 
   Future<void> getAllBooks() async {
     String? token;
@@ -84,6 +103,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     getAllBooks();
     getTopBook();
+    checkUpdateApp();
     super.initState();
   }
 
@@ -380,3 +400,23 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+
+// {BuildContext? context,
+//       AppVersionResult? appVersionResult,
+//       bool? mandatory = false,
+//       String? title = 'New version available',
+//       TextStyle titleTextStyle =
+//           const TextStyle(fontSize: 24.0, fontWeight: FontWeight.w500),
+//       String? content = 'Would you like to update your application?',
+//       TextStyle contentTextStyle =
+//           const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+//       ButtonStyle? cancelButtonStyle = const ButtonStyle(
+//           backgroundColor: MaterialStatePropertyAll(Colors.redAccent)),
+//       ButtonStyle? updateButtonStyle = const ButtonStyle(
+//           backgroundColor: MaterialStatePropertyAll(Colors.green)),
+//       String? cancelButtonText = 'UPDATE LATER',
+//       String? updateButtonText = 'UPDATE',
+//       TextStyle? cancelTextStyle = const TextStyle(color: Colors.white),
+//       TextStyle? updateTextStyle = const TextStyle(color: Colors.white),
+//       Color? backgroundColor = Colors.white}

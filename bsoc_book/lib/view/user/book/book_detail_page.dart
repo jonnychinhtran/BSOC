@@ -676,7 +676,7 @@ class _ReviewBookState extends State<ReviewBook> {
                     },
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 30),
+                    // margin: EdgeInsets.only(top: 30),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: DialogComment(),
