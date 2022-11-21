@@ -34,12 +34,11 @@ class CommentController extends GetxController {
       if (response.statusCode == 200) {
         final jsondata = response.data;
         print(jsondata);
-        Get.snackbar("Thành công", "Bình luận thành công.");
+        Get.snackbar("Thành công", "Đánh giá thành công.");
         ratingController.clear();
         contentController.clear();
-        // Get.to(DetailBookPage());
       } else {
-        Get.snackbar("Lỗi", "Bình luận thất bại. Thử lại.");
+        Get.snackbar("Lỗi", "Đánh giá thất bại. Thử lại.");
       }
       print("res: ${response.data}");
     } catch (e) {
