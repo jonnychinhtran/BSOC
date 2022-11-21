@@ -220,7 +220,6 @@ class _HomePageState extends State<HomePage> {
                         margin: EdgeInsets.only(left: 10, right: 10),
                         child: ListView.builder(
                             shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
                             scrollDirection: Axis.horizontal,
                             itemCount: listTop == null ? 0 : listTop?.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -270,10 +269,12 @@ class _HomePageState extends State<HomePage> {
                       ),
                       SizedBox(height: size.height * 0.02),
                       Container(
-                        height: 500,
+                        // height: 500,
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: GridView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
                             itemCount:
                                 listReponse == null ? 0 : listReponse?.length,
                             gridDelegate:
@@ -287,6 +288,7 @@ class _HomePageState extends State<HomePage> {
                                 child: Hero(
                                   tag: listReponse![index]['id'].toString(),
                                   child: Column(
+                                      mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       crossAxisAlignment:
