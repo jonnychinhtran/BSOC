@@ -1,3 +1,4 @@
+import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,7 +18,7 @@ class ResetController extends GetxController {
         print(json);
         Get.snackbar("Thành công", "Email đã gửi thành công.");
         emailController.clear();
-        Get.offNamed(Routes.login);
+        Get.to(LoginPage());
       } else {
         Get.snackbar("lỗi", "Email Không gửi được. Thử lại.");
       }
