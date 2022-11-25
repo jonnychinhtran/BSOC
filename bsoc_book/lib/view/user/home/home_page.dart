@@ -339,7 +339,7 @@ class _HomePageState extends State<HomePage> {
                                         Expanded(
                                           child: Center(
                                             child: Text(
-                                              'by ${listReponse?[index]['author']}',
+                                              'bởi ${listReponse?[index]['author']}',
                                               overflow: TextOverflow.ellipsis,
                                               style:
                                                   const TextStyle(fontSize: 12),

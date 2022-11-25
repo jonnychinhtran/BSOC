@@ -397,13 +397,20 @@ class _PdfViewerPageState extends State<PdfViewerPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 138, 175, 52),
-        centerTitle: true,
-        title: Text(
-          "B4U BSOC",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
+          backgroundColor: Color.fromARGB(255, 138, 175, 52),
+          centerTitle: true,
+          title: Text(
+            "B4U BSOC",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          actions: <Widget>[
+            IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.bookmark,
+                  color: Colors.white,
+                )),
+          ]),
       body: localPath != null
           ? PDFView(
               filePath: localPath,
