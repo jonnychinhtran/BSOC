@@ -333,64 +333,68 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                           182,
                                                                           61),
                                                                     )),
-                                                                listReponse![index]
-                                                                            [
-                                                                            'downloaded'] ==
-                                                                        false
-                                                                    ? IconButton(
-                                                                        onPressed:
-                                                                            () async {
-                                                                          final SharedPreferences?
-                                                                              prefs =
-                                                                              await _prefs;
-                                                                          await prefs?.setString(
-                                                                              'idchapter',
-                                                                              listReponse![index]['id'].toString());
-                                                                          await prefs?.setString(
-                                                                              'filePath',
-                                                                              listReponse![index]['filePath'].toString());
-                                                                          print(
-                                                                              'ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                                // listReponse![index]
+                                                                //             [
+                                                                //             'downloaded'] ==
+                                                                //         false
+                                                                //     ? IconButton(
+                                                                //         onPressed:
+                                                                //             () async {
+                                                                //           final SharedPreferences?
+                                                                //               prefs =
+                                                                //               await _prefs;
+                                                                //           await prefs?.setString(
+                                                                //               'idchapter',
+                                                                //               listReponse![index]['id'].toString());
+                                                                //           await prefs?.setString(
+                                                                //               'filePath',
+                                                                //               listReponse![index]['filePath'].toString());
+                                                                //           print(
+                                                                //               'ChapterID Click: ${listReponse![index]['id'].toString()}');
 
-                                                                          showDialog(
-                                                                            context:
-                                                                                context,
-                                                                            builder: (context) =>
-                                                                                const DownloadingDialog(),
-                                                                          );
-                                                                        },
-                                                                        icon:
-                                                                            Icon(
-                                                                          Icons
-                                                                              .download_outlined,
-                                                                        ))
-                                                                    : IconButton(
-                                                                        onPressed:
-                                                                            () async {
-                                                                          final SharedPreferences?
-                                                                              prefs =
-                                                                              await _prefs;
-                                                                          await prefs?.setString(
-                                                                              'idchapter',
-                                                                              listReponse![index]['id'].toString());
-                                                                          await prefs?.setString(
-                                                                              'filePath',
-                                                                              listReponse![index]['filePath'].toString());
-                                                                          print(
-                                                                              'ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                                //           showDialog(
+                                                                //             context:
+                                                                //                 context,
+                                                                //             builder: (context) =>
+                                                                //                 const DownloadingDialog(),
+                                                                //           );
+                                                                //         },
+                                                                //         icon:
+                                                                //             Icon(
+                                                                //           Icons
+                                                                //               .download_outlined,
+                                                                //         ))
+                                                                //     :
+                                                                IconButton(
+                                                                    onPressed:
+                                                                        () async {
+                                                                      final SharedPreferences?
+                                                                          prefs =
+                                                                          await _prefs;
+                                                                      await prefs?.setString(
+                                                                          'idchapter',
+                                                                          listReponse![index]['id']
+                                                                              .toString());
+                                                                      await prefs?.setString(
+                                                                          'filePath',
+                                                                          listReponse![index]['filePath']
+                                                                              .toString());
+                                                                      print(
+                                                                          'ChapterID Click: ${listReponse![index]['id'].toString()}');
 
-                                                                          showDialog(
-                                                                            context:
-                                                                                context,
-                                                                            builder: (context) =>
+                                                                      showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (context) =>
                                                                                 const DownloadingDialog(),
-                                                                          );
-                                                                        },
-                                                                        icon: Icon(
-                                                                            Icons
-                                                                                .download_sharp,
-                                                                            color:
-                                                                                Colors.blue))
+                                                                      );
+                                                                    },
+                                                                    icon: Icon(
+                                                                        Icons
+                                                                            .download_sharp,
+                                                                        color: Colors
+                                                                            .blue))
                                                               ],
                                                             ),
                                                           ],
