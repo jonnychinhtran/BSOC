@@ -429,7 +429,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
 
   void readData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    currentPage = prefs.getInt('keeppage');
+    currentPage = prefs.getInt('keeppage') ?? 0;
   }
 
   int? pages = 0;
@@ -488,7 +488,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
               autoSpacing: true,
               enableSwipe: true,
               defaultPage: currentPage!,
-              fitPolicy: FitPolicy.WIDTH,
+              fitPolicy: FitPolicy.BOTH,
               fitEachPage: true,
               onRender: (_pages) {
                 setState(() {
