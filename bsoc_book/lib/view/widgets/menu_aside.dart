@@ -44,10 +44,11 @@ class _MenuAsideState extends State<MenuAside> {
         mapDemo = response.data;
         var phoneuser = mapDemo!['phone'].toString();
         var fullname = mapDemo!['fullname'].toString();
+        // var avatar = mapDemo!['avatar'].toString();
         final SharedPreferences? prefs = await _prefs;
         await prefs?.setString('phoneUser', phoneuser);
         await prefs?.setString('fullname', fullname);
-        // print(datauser);
+        // print(avatar);
         setState(() {
           isLoading = false;
         });
@@ -90,12 +91,20 @@ class _MenuAsideState extends State<MenuAside> {
                             MaterialPageRoute(
                                 builder: (context) => const UploadAvatar()));
                       },
-                      child: CircleAvatar(
-                        radius: 60.0,
-                        backgroundImage: NetworkImage('http://103.77.166.202' +
-                            mapDemo!['avatar'].toString()),
-                        backgroundColor: Colors.transparent,
-                      ),
+                      child: mapDemo == null
+                          ? const CircleAvatar(
+                              radius: 50.0,
+                              backgroundImage:
+                                  AssetImage('assets/images/avatar.png'),
+                              backgroundColor: Colors.transparent,
+                            )
+                          : CircleAvatar(
+                              radius: 60.0,
+                              backgroundImage: NetworkImage(
+                                  'http://103.77.166.202' +
+                                      mapDemo!['avatar'].toString()),
+                              backgroundColor: Colors.transparent,
+                            ),
                     )),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,

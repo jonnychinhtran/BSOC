@@ -985,7 +985,10 @@ class _BookmarkPageState extends State<BookmarkPage> {
         centerTitle: true,
         title: Text('Đánh dấu chương'),
       ),
-      body: SafeArea(child: Text('ABC')),
+      body: SingleChildScrollView(
+          child: Column(
+        children: [],
+      )),
     );
   }
 }
