@@ -219,7 +219,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                   child: ListView.builder(
                                       shrinkWrap: true,
                                       physics: const ScrollPhysics(),
-                                      itemCount: listReponse?.length,
+                                      itemCount: listReponse!.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return GestureDetector(
@@ -487,7 +487,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
               pageSnap: true,
               autoSpacing: true,
               enableSwipe: true,
-              defaultPage: currentPage!,
+              defaultPage: currentPage!.toInt(),
               fitPolicy: FitPolicy.WIDTH,
               fitEachPage: true,
               onRender: (_pages) {
