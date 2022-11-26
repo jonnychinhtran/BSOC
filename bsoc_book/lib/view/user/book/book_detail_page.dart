@@ -316,17 +316,17 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                               .toString());
                                                                       print(
                                                                           'ChapterID Click: ${listReponse![index]['id'].toString()}');
-                                                                      Navigator
-                                                                          .push(
-                                                                        context,
-                                                                        MaterialPageRoute<dynamic>(
-                                                                            builder: (_) =>
-                                                                                PdfViewerPage()),
-                                                                      );
+                                                                      // Navigator
+                                                                      //     .push(
+                                                                      //   context,
+                                                                      //   MaterialPageRoute<dynamic>(
+                                                                      //       builder: (_) =>
+                                                                      //           PdfViewerPage()),
+                                                                      // );
                                                                     },
                                                                     icon: Icon(
                                                                       Icons
-                                                                          .ads_click,
+                                                                          .bookmark_border,
                                                                       color: Color.fromARGB(
                                                                           255,
                                                                           51,
