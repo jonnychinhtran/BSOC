@@ -487,7 +487,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
               pageSnap: true,
               autoSpacing: true,
               enableSwipe: true,
-              defaultPage: currentPage!.toInt(),
+              defaultPage: currentPage!,
               fitPolicy: FitPolicy.WIDTH,
               fitEachPage: true,
               onRender: (_pages) {
@@ -505,7 +505,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                   currentPage = page;
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
-                  prefs.setInt('keeppage', currentPage!);
+                  prefs.setInt('keeppage', page!);
                   print('Trang hien tai: ${prefs.getInt('keeppage')}');
                 });
               },
