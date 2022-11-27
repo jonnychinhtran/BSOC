@@ -73,9 +73,10 @@ class _SearchPageState extends State<SearchPage> {
 
                   return bookModel!.content!
                       .where((element) =>
-                          '${element.bookName!} ${element.author!} ${element.description!}'
+                          '${element.bookName} ${element.author} ${element.description}'
+                              .trim()
                               .toLowerCase()
-                              .contains(value.text.toLowerCase()))
+                              .contains(value.text.trim().toLowerCase()))
                       .toList();
                 },
                 fieldViewBuilder: (BuildContext context,
@@ -89,7 +90,7 @@ class _SearchPageState extends State<SearchPage> {
                       InputDecoration(hintText: 'Nhập tên sách tại đây...'),
                 ),
                 displayStringForOption: (Content d) =>
-                    '${d.bookName!} ${d.author!} ${d.description!}',
+                    '${d.bookName} ${d.author} ${d.description}',
                 onSelected: (value) => print(value.bookName),
                 optionsViewBuilder: (BuildContext context, Function onSelect,
                     Iterable<Content> contentList) {

@@ -922,7 +922,10 @@ class DialogComment extends StatelessWidget {
                   ),
                   actions: <Widget>[
                     TextButton(
-                      onPressed: () => Navigator.pop(context, 'Huỷ'),
+                      onPressed: () {
+                        _formKey.currentState?.reset();
+                        Navigator.pop(context, 'Huỷ');
+                      },
                       child: const Text('Huỷ'),
                     ),
                     TextButton(
