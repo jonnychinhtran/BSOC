@@ -60,6 +60,7 @@ class _InforPageState extends State<InforPage> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Color.fromARGB(255, 138, 175, 52),
@@ -75,78 +76,164 @@ class _InforPageState extends State<InforPage> {
                   ],
                 ),
               )
-            : SettingsList(
-                sections: [
-                  SettingsSection(
-                    title: Text('Thông tin'),
-                    tiles: [
-                      SettingsTile(
-                        title: Text('Họ Tên:'),
-                        value: Text(datauser!['fullname']),
+            : SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Thông tin',
+                        style: TextStyle(color: Colors.blue, fontSize: 16),
                       ),
-                      SettingsTile(
-                        title: Text('Tên đăng nhập:'),
-                        value: Text(datauser!['username']),
+                      SizedBox(height: size.height * 0.01),
+                      Card(
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title: Text(
+                                'Họ Tên:',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              trailing: Text(datauser!['fullname']),
+                            ),
+                            Divider(
+                              height: 2,
+                              endIndent: 0,
+                              color: Color.fromARGB(255, 87, 87, 87),
+                            ),
+                            ListTile(
+                              title: Text(
+                                'Tên đăng nhập:',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              trailing: Text(datauser!['username']),
+                            ),
+                            Divider(
+                              height: 2,
+                              endIndent: 0,
+                              color: Color.fromARGB(255, 87, 87, 87),
+                            ),
+                            ListTile(
+                              title: Text(
+                                'Email:',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              trailing: Text(datauser!['email']),
+                            ),
+                            Divider(
+                              height: 2,
+                              endIndent: 0,
+                              color: Color.fromARGB(255, 87, 87, 87),
+                            ),
+                            ListTile(
+                              title: Text(
+                                'Số điện thoại:',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              trailing: Text('0' + datauser!['phone']),
+                            ),
+                          ],
+                        ),
                       ),
-                      SettingsTile(
-                        title: Text('Email:'),
-                        value: Text(datauser!['email']),
+                      SizedBox(height: size.height * 0.04),
+                      Text(
+                        'Cài đặt chung',
+                        style: TextStyle(color: Colors.blue, fontSize: 16),
                       ),
-                      SettingsTile(
-                        title: Text('Số điện thoại:'),
-                        value: Text('0' + datauser!['phone']),
+                      SizedBox(height: size.height * 0.01),
+                      Card(
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: Icon(Icons.info),
+                              title: Text(
+                                'Cập nhật thông tin',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              trailing: Icon(Icons.keyboard_arrow_right),
+                              onTap: () async {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const UpdateUser()));
+                              },
+                            ),
+                            Divider(
+                              height: 2,
+                              endIndent: 0,
+                              color: Color.fromARGB(255, 87, 87, 87),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.shield),
+                              title: Text(
+                                'Đổi mật khẩu',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              trailing: Icon(Icons.keyboard_arrow_right),
+                              onTap: () async {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ChangePassword()));
+                              },
+                            ),
+                            Divider(
+                              height: 2,
+                              endIndent: 0,
+                              color: Color.fromARGB(255, 87, 87, 87),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.delete),
+                              title: Text(
+                                'Xóa tài khoản',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              trailing: Icon(Icons.keyboard_arrow_right),
+                              onTap: () async {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => DialogDelete(),
+                                );
+                              },
+                            ),
+                            Divider(
+                              height: 2,
+                              endIndent: 0,
+                              color: Color.fromARGB(255, 87, 87, 87),
+                            ),
+                            ListTile(
+                              leading: Icon(
+                                Icons.logout,
+                                color: Colors.red,
+                              ),
+                              title: Text(
+                                'Đăng xuất',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.red),
+                              ),
+                              trailing: Icon(
+                                Icons.keyboard_arrow_right,
+                                color: Colors.red,
+                              ),
+                              onTap: () async {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => DialogLogout(),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                  SettingsSection(title: Text('Cài đặt chung'), tiles: [
-                    SettingsTile.navigation(
-                      title: Text('Cập nhật thông tin'),
-                      leading: Icon(CupertinoIcons.info),
-                      onPressed: (context) async {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const UpdateUser()));
-                      },
-                    ),
-                    SettingsTile.navigation(
-                      title: Text('Đổi mật khẩu'),
-                      leading: Icon(CupertinoIcons.exclamationmark_shield),
-                      onPressed: (context) async {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ChangePassword()));
-                      },
-                    ),
-                    SettingsTile.navigation(
-                      title: Text('Xóa tài khoản'),
-                      leading: Icon(CupertinoIcons.delete),
-                      onPressed: (context) async {
-                        showDialog(
-                          context: context,
-                          builder: (context) => DialogDelete(),
-                        );
-                      },
-                    ),
-                    SettingsTile.navigation(
-                      title: Text(
-                        'Đăng xuất',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                      leading: Icon(
-                        CupertinoIcons.clear_circled,
-                        color: Colors.red,
-                      ),
-                      onPressed: (context) async {
-                        showDialog(
-                          context: context,
-                          builder: (context) => DialogLogout(),
-                        );
-                      },
-                    ),
-                  ]),
-                ],
+                ),
               ));
   }
 }
