@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
+import 'package:bsoc_book/provider/bookmark_provider.dart';
 import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
@@ -13,6 +14,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -73,6 +75,7 @@ class _DetailBookPageState extends State<DetailBookPage>
   @override
   Widget build(BuildContext context) {
     TabController _tabController = TabController(length: 3, vsync: this);
+    final provider = Provider.of<BookmarkProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 138, 175, 52),
@@ -323,16 +326,29 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                       //       builder: (_) =>
                                                                       //           PdfViewerPage()),
                                                                       // );
+                                                                      provider.toggleBookmark(listReponse![index]
+                                                                              [
+                                                                              'chapterTitle']
+                                                                          .toString());
                                                                     },
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .bookmark_border,
-                                                                      color: Color.fromARGB(
-                                                                          255,
-                                                                          51,
-                                                                          182,
-                                                                          61),
-                                                                    )),
+                                                                    icon: provider.isExist(listReponse![index]['chapterTitle']
+                                                                            .toString())
+                                                                        ? Icon(
+                                                                            Icons
+                                                                                .bookmark,
+                                                                            color: Color.fromARGB(
+                                                                                255,
+                                                                                51,
+                                                                                182,
+                                                                                61))
+                                                                        : Icon(
+                                                                            Icons.bookmark_border,
+                                                                            color: Color.fromARGB(
+                                                                                255,
+                                                                                51,
+                                                                                182,
+                                                                                61),
+                                                                          )),
                                                                 // listReponse![index]
                                                                 //             [
                                                                 //             'downloaded'] ==
@@ -977,18 +993,57 @@ class BookmarkPage extends StatefulWidget {
 }
 
 class _BookmarkPageState extends State<BookmarkPage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  String? chap;
+  void readBookmark() async {
+    final prefs = await SharedPreferences.getInstance();
+    chap = prefs.getString('saveBookmark') ?? "";
+    print(chap);
+  }
+
+  @override
+  void initState() {
+    readBookmark();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<BookmarkProvider>(context);
+    final chapter = provider.listReponse;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 138, 175, 52),
-        centerTitle: true,
-        title: Text('Đánh dấu chương'),
-      ),
-      body: SingleChildScrollView(
-          child: Column(
-        children: [],
-      )),
-    );
+        appBar: AppBar(
+          backgroundColor: Color.fromARGB(255, 138, 175, 52),
+          centerTitle: true,
+          title: Text('Đánh dấu chương'),
+        ),
+        body: ListView.builder(
+            itemCount: chapter.length,
+            itemBuilder: (context, index) {
+              chap = chapter[index];
+              return GestureDetector(
+                onTap: () async {
+                  final SharedPreferences? prefs = await _prefs;
+                  await prefs?.getString('idchapter') ?? "";
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<dynamic>(builder: (_) => PdfViewerPage()),
+                  );
+                },
+                child: ListTile(
+                  title: Text(chap!),
+                  trailing: IconButton(
+                      onPressed: () {
+                        provider.toggleBookmark(chap!);
+                      },
+                      icon: provider.isExist(chap!)
+                          ? Icon(Icons.bookmark,
+                              color: Color.fromARGB(255, 51, 182, 61))
+                          : Icon(Icons.bookmark_border,
+                              color: Color.fromARGB(255, 51, 182, 61))),
+                ),
+              );
+            }));
   }
 }
