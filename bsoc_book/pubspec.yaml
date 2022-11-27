@@ -67,6 +67,7 @@ dependencies:
   update_handler: ^0.0.4
   url_launcher: ^6.1.6
   provider: ^6.0.4
+  diacritic: ^0.1.3
 
 dev_dependencies:
   flutter_test:

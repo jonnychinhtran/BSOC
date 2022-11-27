@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:bsoc_book/data/model/books/book_model.dart'
     show Content, BookModel;
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
+import 'package:diacritic/diacritic.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -70,13 +71,11 @@ class _SearchPageState extends State<SearchPage> {
                   if (value.text.isEmpty) {
                     return List.empty();
                   }
-
                   return bookModel!.content!
                       .where((element) =>
-                          '${element.bookName} ${element.author} ${element.description}'
-                              .trim()
+                          '${removeDiacritics(element.bookName!)} ${removeDiacritics(element.author!)} ${removeDiacritics(element.description!)}'
                               .toLowerCase()
-                              .contains(value.text.trim().toLowerCase()))
+                              .contains(value.text.toLowerCase()))
                       .toList();
                 },
                 fieldViewBuilder: (BuildContext context,
@@ -104,7 +103,7 @@ class _SearchPageState extends State<SearchPage> {
                             final SharedPreferences? prefs = await _prefs;
                             await prefs?.setString('idbook', d.id!.toString());
 
-                            print('idBook: ${d.id!.toString()}');
+                            print('idBook: ${d.id.toString()}');
 
                             Navigator.push(
                                 context,
