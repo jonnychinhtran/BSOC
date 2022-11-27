@@ -170,10 +170,10 @@ class _DetailBookPageState extends State<DetailBookPage>
                     unselectedLabelColor: Colors.grey,
                     tabs: const [
                       Tab(
-                        text: "Mô tả",
+                        text: "Chương sách",
                       ),
                       Tab(
-                        text: "Chương",
+                        text: "Giới thiệu",
                       ),
                       Tab(
                         text: "Đánh giá",
@@ -184,29 +184,6 @@ class _DetailBookPageState extends State<DetailBookPage>
                   child: TabBarView(
                       controller: _tabController,
                       children: <Widget>[
-                        Container(
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 242, 254, 255),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: ListView(
-                                children: [
-                                  mapDemo == null
-                                      ? Text('Đang tải dữ liệu')
-                                      : Text(
-                                          mapDemo?['description'],
-                                          softWrap: true,
-                                          textAlign: TextAlign.justify,
-                                          style: const TextStyle(
-                                              fontSize: 17, height: 1.5),
-                                        ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
                         isLoading
                             ? LoadingAnimationWidget.discreteCircle(
                                 color: Colors.blue,
@@ -319,13 +296,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                               .toString());
                                                                       print(
                                                                           'ChapterID Click: ${listReponse![index]['id'].toString()}');
-                                                                      // Navigator
-                                                                      //     .push(
-                                                                      //   context,
-                                                                      //   MaterialPageRoute<dynamic>(
-                                                                      //       builder: (_) =>
-                                                                      //           PdfViewerPage()),
-                                                                      // );
+
                                                                       provider.toggleBookmark(listReponse![index]
                                                                               [
                                                                               'chapterTitle']
@@ -349,38 +320,6 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                                 182,
                                                                                 61),
                                                                           )),
-                                                                // listReponse![index]
-                                                                //             [
-                                                                //             'downloaded'] ==
-                                                                //         false
-                                                                //     ? IconButton(
-                                                                //         onPressed:
-                                                                //             () async {
-                                                                //           final SharedPreferences?
-                                                                //               prefs =
-                                                                //               await _prefs;
-                                                                //           await prefs?.setString(
-                                                                //               'idchapter',
-                                                                //               listReponse![index]['id'].toString());
-                                                                //           await prefs?.setString(
-                                                                //               'filePath',
-                                                                //               listReponse![index]['filePath'].toString());
-                                                                //           print(
-                                                                //               'ChapterID Click: ${listReponse![index]['id'].toString()}');
-
-                                                                //           showDialog(
-                                                                //             context:
-                                                                //                 context,
-                                                                //             builder: (context) =>
-                                                                //                 const DownloadingDialog(),
-                                                                //           );
-                                                                //         },
-                                                                //         icon:
-                                                                //             Icon(
-                                                                //           Icons
-                                                                //               .download_outlined,
-                                                                //         ))
-                                                                //     :
                                                                 IconButton(
                                                                     onPressed:
                                                                         () async {
@@ -424,6 +363,29 @@ class _DetailBookPageState extends State<DetailBookPage>
                                       }),
                                 ),
                               ),
+                        Container(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 242, 254, 255),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: ListView(
+                                children: [
+                                  mapDemo == null
+                                      ? Text('Đang tải dữ liệu')
+                                      : Text(
+                                          mapDemo?['description'],
+                                          softWrap: true,
+                                          textAlign: TextAlign.justify,
+                                          style: const TextStyle(
+                                              fontSize: 17, height: 1.5),
+                                        ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                         ReviewBook(),
                       ]),
                 ))
@@ -1022,10 +984,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
             itemBuilder: (context, index) {
               chap = chapter[index];
               return GestureDetector(
-                onTap: () async {
-                  final SharedPreferences? prefs = await _prefs;
-                  await prefs?.getString('idchapter') ?? "";
-
+                onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute<dynamic>(builder: (_) => PdfViewerPage()),
