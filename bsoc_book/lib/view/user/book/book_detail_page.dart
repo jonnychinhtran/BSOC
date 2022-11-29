@@ -336,20 +336,55 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                               .toString());
                                                                       print(
                                                                           'ChapterID Click: ${listReponse![index]['id'].toString()}');
-
-                                                                      showDialog(
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (context) =>
-                                                                                const DownloadingDialog(),
-                                                                      );
+                                                                      listReponse![index]['downloaded'] ==
+                                                                              true
+                                                                          ? showDialog(
+                                                                              context: context,
+                                                                              builder: (context) => AlertDialog(
+                                                                                  title: Text("Thông báo"),
+                                                                                  content: Column(
+                                                                                    mainAxisSize: MainAxisSize.min,
+                                                                                    children: [
+                                                                                      Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
+                                                                                    ],
+                                                                                  ),
+                                                                                  actions: <Widget>[
+                                                                                    TextButton(
+                                                                                      onPressed: () {
+                                                                                        Navigator.pop(context, 'Thoát');
+                                                                                      },
+                                                                                      child: const Text('Thoát'),
+                                                                                    ),
+                                                                                    TextButton(
+                                                                                      onPressed: () {
+                                                                                        showDialog(
+                                                                                          context: context,
+                                                                                          useRootNavigator: false,
+                                                                                          builder: (context) => const DownloadingDialog(),
+                                                                                        );
+                                                                                        Timer(Duration(seconds: 1), () => Navigator.of(context).pop());
+                                                                                      },
+                                                                                      child: const Text('Tải về'),
+                                                                                    ),
+                                                                                  ]),
+                                                                            )
+                                                                          : showDialog(
+                                                                              context: context,
+                                                                              builder: (context) => const DownloadingDialog(),
+                                                                            );
                                                                     },
-                                                                    icon: Icon(
-                                                                        Icons
-                                                                            .download_sharp,
-                                                                        color: Colors
-                                                                            .blue))
+                                                                    icon: listReponse![index]['downloaded'] ==
+                                                                            true
+                                                                        ? Icon(
+                                                                            Icons
+                                                                                .download_sharp,
+                                                                            color: Colors
+                                                                                .blue)
+                                                                        : Icon(
+                                                                            Icons
+                                                                                .download_outlined,
+                                                                            color:
+                                                                                Colors.blue))
                                                               ],
                                                             ),
                                                           ],
