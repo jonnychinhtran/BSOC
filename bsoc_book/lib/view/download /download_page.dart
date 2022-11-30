@@ -29,7 +29,7 @@ class _DownloadPageState extends State<DownloadPage> {
     String? id;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
-    id = prefs.getString('idbooks');
+    id = prefs.getString('idbook');
 
     var url = Uri.parse('http://103.77.166.202/api/book/$id');
     http.Response response =
@@ -79,28 +79,54 @@ class _DownloadPageState extends State<DownloadPage> {
           ),
         ),
         body: ListView.builder(
-            itemCount: listReponse!.length,
+            itemCount: listReponse == null ? 0 : listReponse!.length,
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () async {
                   String? namesave;
                   namesave = listReponse![index]['filePath'].toString();
-                  Directory? dir = Platform.isAndroid
-                      ? await getExternalStorageDirectory()
-                      : await getApplicationDocumentsDirectory();
-                  await OpenFilex.open('${dir?.path}/$namesave');
+                  Directory? dir = await getApplicationDocumentsDirectory();
+                  print('${dir.path}/$namesave');
+                  listReponse![index]['downloaded'] == true
+                      ? await OpenFilex.open('${dir.path}/$namesave')
+                      : '';
+
+                  // '${dir?.path}/$namesave' == ''
+                  //     ? ''
+                  //     : showDialog(
+                  //         context: context,
+                  //         builder: (context) => AlertDialog(
+                  //               title: Text("Thông báo"),
+                  //               content: Column(
+                  //                 mainAxisSize: MainAxisSize.min,
+                  //                 children: [
+                  //                   Text(
+                  //                       'Tập tin pdf bị mất hoặc trùng tên vui lòng tải lại trong phần chương sách!')
+                  //                 ],
+                  //               ),
+                  //             ));
                 },
-                child: Card(
-                    child: ListTile(
-                  title: Text(listReponse![index]['filePath'].toString()),
-                  subtitle: Text(
-                    listReponse![index]['chapterTitle'].toString(),
-                    style: TextStyle(
-                        color: Color.fromARGB(255, 255, 91, 91),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16),
-                  ),
-                )),
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: Text(listReponse![index]['downloaded'] == true
+                          ? listReponse![index]['filePath'].toString()
+                          : ''),
+                      subtitle: Text(
+                        listReponse![index]['downloaded'] == true
+                            ? listReponse![index]['chapterTitle'].toString()
+                            : '',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 255, 91, 91),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    )
+                  ],
+                ),
               );
             }));
   }

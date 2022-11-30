@@ -106,12 +106,10 @@ class _DetailBookPageState extends State<DetailBookPage>
               },
               icon: Icon(Icons.bookmark_sharp)),
           IconButton(
-              onPressed: () async {
-                final SharedPreferences? prefs = await _prefs;
-                await prefs?.setString('idbooks', mapDemo!['id'].toString());
+              onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const DownloadPage()),
+                  MaterialPageRoute(builder: (context) => DownloadPage()),
                 );
               },
               icon: Icon(Icons.download_done))
@@ -207,7 +205,9 @@ class _DetailBookPageState extends State<DetailBookPage>
                                   child: ListView.builder(
                                       shrinkWrap: true,
                                       physics: const ScrollPhysics(),
-                                      itemCount: listReponse!.length,
+                                      itemCount: listReponse == null
+                                          ? 0
+                                          : listReponse!.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return GestureDetector(
@@ -716,7 +716,7 @@ class _ReviewBookState extends State<ReviewBook> {
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const ScrollPhysics(),
-                    itemCount: listComment == null ? 0 : listComment?.length,
+                    itemCount: listComment == null ? 0 : listComment!.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                         padding: const EdgeInsets.all(16.0),
