@@ -2,15 +2,13 @@ import 'dart:async';
 import 'dart:io';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/provider/bookmark_provider.dart';
-import 'package:bsoc_book/view/infor/infor_page.dart';
+import 'package:bsoc_book/view/download%20/download_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
-import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
@@ -80,8 +78,7 @@ class _DetailBookPageState extends State<DetailBookPage>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 138, 175, 52),
-        centerTitle: true,
-        title: Text('Chi tiết'),
+        title: Text('Chi tiết sách'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Get.to(HomePage()),
@@ -97,7 +94,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                   mapDemo!['bookName'].toString() +
                   ' trên ứng dụng B4U BSOC '
                       '- Cài ứng dụng B4U BSOC tại AppStore: https://apps.apple.com/us/app/b4u-bsoc/id6444538062 ' +
-                  ' - PlayStore: https://play.google.com/store/apps/details?id=com.b4usolution.b4u_bsoc&pli=1');
+                  ' - PlayStore: https://play.google.com/store/apps/details?id=com.b4usolution.b4u_bsoc');
             },
           ),
           IconButton(
@@ -107,7 +104,17 @@ class _DetailBookPageState extends State<DetailBookPage>
                   MaterialPageRoute(builder: (context) => const BookmarkPage()),
                 );
               },
-              icon: Icon(Icons.bookmark_sharp))
+              icon: Icon(Icons.bookmark_sharp)),
+          IconButton(
+              onPressed: () async {
+                final SharedPreferences? prefs = await _prefs;
+                await prefs?.setString('idbooks', mapDemo!['id'].toString());
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const DownloadPage()),
+                );
+              },
+              icon: Icon(Icons.download_done))
         ],
       ),
       body: isLoading

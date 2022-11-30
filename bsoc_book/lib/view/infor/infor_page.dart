@@ -1,4 +1,5 @@
 import 'package:bsoc_book/controller/changepass/changepass_controller.dart';
+import 'package:bsoc_book/view/download%20/download_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/update/update_infor.dart';
 import 'package:get/get.dart';
