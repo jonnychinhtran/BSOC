@@ -411,6 +411,7 @@ class DialogLogout extends StatelessWidget {
             onPressed: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.remove('accessToken');
+              await prefs.clear();
               userdata.write('isLogged', false);
               Get.offAll(LoginPage());
             },

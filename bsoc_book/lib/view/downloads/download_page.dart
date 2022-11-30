@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:bsoc_book/view/user/book/book_detail_page.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
@@ -49,20 +53,13 @@ class _DownloadPageState extends State<DownloadPage> {
     }
   }
 
-  // Future<void> openFile() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   String? namesave;
-  //   namesave = mapDemo!['chapters']['filePath'];
-  //   Directory? dir = Platform.isAndroid
-  //       ? await getExternalStorageDirectory()
-  //       : await getApplicationDocumentsDirectory();
-  //   await OpenFilex.open('${dir?.path}/$namesave');
-  // }
+  void _openFile(PlatformFile file) {
+    OpenFilex.open(file.path);
+  }
 
   @override
   void initState() {
     getItemBooks();
-    // openFile();
     super.initState();
   }
 
@@ -72,11 +69,24 @@ class _DownloadPageState extends State<DownloadPage> {
         appBar: AppBar(
           backgroundColor: Color.fromARGB(255, 138, 175, 52),
           centerTitle: true,
-          title: Text('Danh sách đã tải'),
+          title: Text('Danh sách tải về'),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context, false),
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.folder),
+              onPressed: () async {
+                FilePickerResult? result =
+                    await FilePicker.platform.pickFiles();
+                if (result == null) return;
+                final file = result.files.first;
+                _openFile(file);
+                setState(() {});
+              },
+            ),
+          ],
         ),
         body: ListView.builder(
             itemCount: listReponse == null ? 0 : listReponse!.length,
@@ -85,15 +95,16 @@ class _DownloadPageState extends State<DownloadPage> {
                 onTap: () async {
                   String? namesave;
                   namesave = listReponse![index]['filePath'].toString();
-                  Directory? dir = await getApplicationDocumentsDirectory();
-                  print('${dir.path}/$namesave');
-                  listReponse![index]['downloaded'] == true
-                      ? await OpenFilex.open('${dir.path}/$namesave')
-                      : 'abc';
+                  Directory? dir = Platform.isAndroid
+                      ? await getDownloadsDirectory()
+                      : await getApplicationDocumentsDirectory();
 
-                  // '${dir?.path}/$namesave' == ''
-                  //     ? ''
-                  //     : showDialog(
+                  listReponse![index]['downloaded'] == true
+                      ? await OpenFilex.open('${dir?.path}/$namesave')
+                      : Get.snackbar("Thông báo",
+                          "File chưa tải hoặc mất file lưu, vui lòng tải lại");
+
+                  // showDialog(
                   //         context: context,
                   //         builder: (context) => AlertDialog(
                   //               title: Text("Thông báo"),
@@ -109,18 +120,30 @@ class _DownloadPageState extends State<DownloadPage> {
                 child: Column(
                   children: [
                     ListTile(
-                      title: Text(listReponse![index]['downloaded'] == true
-                          ? listReponse![index]['filePath'].toString()
-                          : ''),
-                      subtitle: Text(
-                        listReponse![index]['downloaded'] == true
-                            ? listReponse![index]['chapterTitle'].toString()
-                            : '',
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 255, 91, 91),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16),
-                      ),
+                      title: listReponse![index]['downloaded'] == true
+                          ? Text(listReponse![index]['filePath'].toString())
+                          : Text(
+                              listReponse![index]['filePath'].toString() +
+                                  '- File chưa tải về',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                      subtitle: listReponse![index]['downloaded'] == true
+                          ? Text(
+                              listReponse![index]['chapterTitle'].toString(),
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 255, 91, 91),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
+                            )
+                          : Text(
+                              listReponse![index]['chapterTitle'].toString(),
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                    ),
+                    Divider(
+                      height: 2,
+                      endIndent: 0,
+                      color: Color.fromARGB(255, 87, 87, 87),
                     ),
                     SizedBox(
                       height: 10,

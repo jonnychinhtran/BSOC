@@ -113,7 +113,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                   MaterialPageRoute(builder: (context) => DownloadPage()),
                 );
               },
-              icon: Icon(Icons.download_done))
+              icon: Icon(Icons.download_for_offline))
         ],
       ),
       body: isLoading
@@ -371,7 +371,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                                           useRootNavigator: false,
                                                                                           builder: (context) => const DownloadingDialog(),
                                                                                         );
-                                                                                        Timer(Duration(seconds: 1), () => Navigator.of(context).pop());
+                                                                                        Timer(Duration(seconds: 2), () => Navigator.of(context).pop());
                                                                                       },
                                                                                       child: const Text('Tải về'),
                                                                                     ),
@@ -906,7 +906,7 @@ class DialogComment extends StatelessWidget {
                               Text("Số điểm: "),
                               ConstrainedBox(
                                 constraints:
-                                    BoxConstraints(minWidth: 30, maxHeight: 50),
+                                    BoxConstraints(minWidth: 40, maxHeight: 50),
                                 child: IntrinsicWidth(
                                   child: Container(
                                     height: 30,
@@ -933,7 +933,7 @@ class DialogComment extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              Text("/5 Sao"),
+                              Text("  /  5 Sao"),
                             ],
                           ),
                           SizedBox(
