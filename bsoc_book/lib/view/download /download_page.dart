@@ -89,7 +89,7 @@ class _DownloadPageState extends State<DownloadPage> {
                   print('${dir.path}/$namesave');
                   listReponse![index]['downloaded'] == true
                       ? await OpenFilex.open('${dir.path}/$namesave')
-                      : '';
+                      : 'abc';
 
                   // '${dir?.path}/$namesave' == ''
                   //     ? ''
