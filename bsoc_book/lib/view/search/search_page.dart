@@ -73,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
                   }
                   return bookModel!.content!
                       .where((element) =>
-                          '${removeDiacritics(element.bookName!)} ${removeDiacritics(element.author!)} ${removeDiacritics(element.description!)}'
+                          '${removeDiacritics(element.bookName!)} ${removeDiacritics(element.author!)} ${removeDiacritics(element.description!)} ${element.bookName} ${element.author} ${element.description}'
                               .toLowerCase()
                               .contains(value.text.toLowerCase()))
                       .toList();

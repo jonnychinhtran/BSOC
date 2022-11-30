@@ -12,6 +12,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -565,6 +566,7 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
   bool isLoading = true;
   double progress = 0.0;
   String? localPath;
+  var _openResult = '';
 
   void startDownloading() async {
     Dio dio = Dio();
@@ -591,6 +593,7 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     // Directory dir = await getApplicationDocumentsDirectory();
     print(dir);
     await prefs.setString('duongdan', "${dir?.path}/$namesave");
+
     await dio.download(
       url,
       '${dir?.path}/$namesave',
@@ -603,6 +606,8 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     ).then((_) {
       Navigator.pop(context);
     });
+    final result = await OpenFilex.open("${dir?.path}/$namesave");
+    _openResult = "type=${result.type}  message=${result.message}";
   }
 
   @override
