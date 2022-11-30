@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/provider/bookmark_provider.dart';
-import 'package:bsoc_book/view/download%20/download_page.dart';
+
+import 'package:bsoc_book/view/downloads/download_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
