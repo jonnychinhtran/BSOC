@@ -368,7 +368,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                                     useRootNavigator: false,
                                                                                     builder: (context) => const DownloadingDialog(),
                                                                                   );
-                                                                                  Timer(Duration(seconds: 2), () => Navigator.of(context).pop());
+                                                                                  Timer(Duration(seconds: 4), () => Navigator.of(context).pop());
                                                                                 },
                                                                                 child: const Text('Tải về'),
                                                                               ),
