@@ -96,7 +96,7 @@ class _DownloadPageState extends State<DownloadPage> {
                   String? namesave;
                   namesave = listReponse![index]['filePath'].toString();
                   Directory? dir = Platform.isAndroid
-                      ? await getDownloadsDirectory()
+                      ? await getExternalStorageDirectory()
                       : await getApplicationDocumentsDirectory();
 
                   listReponse![index]['downloaded'] == true
