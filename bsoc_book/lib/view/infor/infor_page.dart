@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:update_handler/update_handler.dart';
 
 Map? datauser;
 
@@ -178,6 +179,25 @@ class _InforPageState extends State<InforPage> {
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             const ChangePassword()));
+                              },
+                            ),
+                            Divider(
+                              height: 2,
+                              endIndent: 0,
+                              color: Color.fromARGB(255, 87, 87, 87),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.system_update),
+                              title: Text(
+                                'Cập nhật ứng dụng',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              trailing: Icon(Icons.keyboard_arrow_right),
+                              onTap: () async {
+                                UpdateHandler().isUpdateAvailable(
+                                    latestBuildNo: 11,
+                                    lastForceBuildNo: 10,
+                                    context: context);
                               },
                             ),
                             Divider(
