@@ -368,7 +368,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                                     useRootNavigator: false,
                                                                                     builder: (context) => const DownloadingDialog(),
                                                                                   );
-                                                                                  Timer(Duration(seconds: 4), () => Navigator.of(context).pop());
+                                                                                  // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
                                                                                 },
                                                                                 child: const Text('Tải về'),
                                                                               ),
@@ -381,25 +381,26 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                             (context) =>
                                                                                 const DownloadingDialog(),
                                                                       );
-
                                                                 setState(() {
-                                                                  listReponse![
+                                                                  isLoading =
+                                                                      false;
+                                                                });
+                                                              },
+                                                              icon: listReponse![
                                                                               index]
                                                                           [
                                                                           'downloaded'] ==
-                                                                      !listReponse![
-                                                                              index]
-                                                                          [
-                                                                          'downloaded'];
-                                                                  isLoading ==
-                                                                      !isLoading;
-                                                                });
-                                                              },
-                                                              icon: Icon(
-                                                                  Icons
-                                                                      .download_sharp,
-                                                                  color: Colors
-                                                                      .blue))
+                                                                      true
+                                                                  ? Icon(
+                                                                      Icons
+                                                                          .download_sharp,
+                                                                      color: Colors
+                                                                          .blue)
+                                                                  : Icon(
+                                                                      Icons
+                                                                          .download_sharp,
+                                                                      color: Colors
+                                                                          .blue))
                                                         ],
                                                       ),
                                                     ],
