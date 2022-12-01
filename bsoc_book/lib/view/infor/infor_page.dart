@@ -195,8 +195,8 @@ class _InforPageState extends State<InforPage> {
                               trailing: Icon(Icons.keyboard_arrow_right),
                               onTap: () async {
                                 UpdateHandler().isUpdateAvailable(
-                                    latestBuildNo: 11,
-                                    lastForceBuildNo: 10,
+                                    latestBuildNo: 13,
+                                    lastForceBuildNo: 12,
                                     context: context);
                               },
                             ),
