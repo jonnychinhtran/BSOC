@@ -109,7 +109,8 @@ class _UpdateDialogState extends State<UpdateDialog> {
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: Text(
-                                  widget.version,
+                                  // widget.version,
+                                  '',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -180,10 +181,10 @@ class _UpdateDialogState extends State<UpdateDialog> {
                               width: 120,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(50),
-                                color: Colors.indigo,
+                                color: Color.fromARGB(255, 138, 175, 52),
                                 boxShadow: const [
                                   BoxShadow(
-                                    color: Colors.indigo,
+                                    color: Color.fromARGB(255, 138, 175, 52),
                                     blurRadius: 10,
                                     offset: Offset(2, 2),
                                   ),

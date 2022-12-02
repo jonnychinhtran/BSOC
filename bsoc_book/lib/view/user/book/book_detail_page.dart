@@ -43,8 +43,8 @@ class _DetailBookPageState extends State<DetailBookPage>
   bool isLoading = true;
   String? token;
   String? idchap;
+  String? id;
   void getItemBooks() async {
-    String? id;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
     id = prefs.getString('idbook');

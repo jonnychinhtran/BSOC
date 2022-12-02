@@ -3,11 +3,8 @@ import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../routes/app_routes.dart';
 
 class LoginController extends GetxController {
   TextEditingController usernameController = TextEditingController();
