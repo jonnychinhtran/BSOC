@@ -1,4 +1,3 @@
-import 'package:app_version_update/app_version_update.dart';
 import 'package:bsoc_book/provider/bookmark_provider.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
@@ -14,20 +13,6 @@ void main() async {
   runApp(const MyApp());
   UpdateHandler.androidAppId = "com.b4usolution.b4u_bsoc";
   UpdateHandler.iosAppId = "6444538062";
-  final appleId =
-      '6444538062'; // If this value is null, its packagename will be considered
-  final playStoreId =
-      'com.b4usolution.b4u_bsoc'; // If this value is null, its packagename will be considered
-  final country = ''; // If this value is null 'us' will be the default value
-  await AppVersionUpdate.checkForUpdates(
-          appleId: appleId, playStoreId: playStoreId, country: country)
-      .then((data) async {
-    print(data.storeUrl);
-    print(data.storeVersion);
-    if (data.canUpdate!) {
-      AppVersionUpdate.showAlertUpdate(appVersionResult: data);
-    }
-  });
 }
 
 class MyApp extends StatelessWidget {

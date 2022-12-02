@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
+import 'package:bsoc_book/view/widgets/updatedialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:new_version/new_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:http/http.dart' as http;
@@ -84,7 +88,34 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     getAllBooks();
     getTopBook();
+    final newVersion = NewVersion(
+      iOSId: '6444538062',
+      androidId: 'com.b4usolution.b4u_bsoc',
+    );
+    checkNewVersion(newVersion);
+    // Timer(const Duration(seconds: 2), () {
+
+    // });
     super.initState();
+  }
+
+  void checkNewVersion(NewVersion newVersion) async {
+    final status = await newVersion.getVersionStatus();
+    if (status != null) {
+      if (status.canUpdate) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return UpdateDialog(
+              allowDismissal: true,
+              description: status.releaseNotes!,
+              version: status.storeVersion,
+              appLink: status.appStoreLink,
+            );
+          },
+        );
+      }
+    }
   }
 
   @override
