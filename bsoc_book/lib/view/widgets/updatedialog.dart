@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UpdateDialog extends StatefulWidget {
@@ -125,8 +126,8 @@ class _UpdateDialogState extends State<UpdateDialog> {
                         Expanded(
                           flex: 5,
                           child: SingleChildScrollView(
-                            child: Text(
-                              widget.description,
+                            child: Html(
+                              data: widget.description,
                             ),
                           ),
                         ),
