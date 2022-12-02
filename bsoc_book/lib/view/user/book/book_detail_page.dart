@@ -43,13 +43,13 @@ class _DetailBookPageState extends State<DetailBookPage>
   bool isLoading = true;
   String? token;
   String? idchap;
-  String? id;
+  String? idbooks;
   void getItemBooks() async {
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
-    id = prefs.getString('idbook');
+    idbooks = prefs.getString('idbook');
 
-    var url = Uri.parse('http://103.77.166.202/api/book/$id');
+    var url = Uri.parse('http://103.77.166.202/api/book/$idbooks');
     http.Response response =
         await http.get(url, headers: {'Authorization': 'Bearer $token'});
 
