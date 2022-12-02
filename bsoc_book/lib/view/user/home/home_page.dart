@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
     getAllBooks();
     getTopBook();
     final newVersion = NewVersion(
-      iOSId: '6444538062',
+      iOSId: 'com.b4usolution.app.bsoc',
       androidId: 'com.b4usolution.b4u_bsoc',
     );
     checkNewVersion(newVersion);
@@ -115,6 +115,8 @@ class _HomePageState extends State<HomePage> {
           },
         );
       }
+      print(status.appStoreLink);
+      print(status.storeVersion);
     }
   }
 
