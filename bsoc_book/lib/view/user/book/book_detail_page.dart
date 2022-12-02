@@ -41,9 +41,9 @@ class _DetailBookPageState extends State<DetailBookPage>
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   bool isLoading = true;
-
+  String? token;
+  String? idchap;
   void getItemBooks() async {
-    String? token;
     String? id;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
@@ -63,6 +63,32 @@ class _DetailBookPageState extends State<DetailBookPage>
       });
     } else {
       throw Exception('Lỗi tải hệ thống');
+    }
+  }
+
+  Future<void> addBookmark() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      idchap = prefs.getString('idchapter');
+      var response = await Dio().post(
+          'http://103.77.166.202/api/chapter/add-bookmark?chapterId=$idchap',
+          options: Options(headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          }));
+      if (response.statusCode == 200) {
+        // Get.snackbar("Thông báo", "Thêm đánh dấu trang thành công.");
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } catch (e) {
+      Get.snackbar("error", e.toString());
+      print(e);
     }
   }
 
@@ -281,43 +307,26 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                             [
                                                                             'id']
                                                                         .toString());
-                                                                await prefs?.setString(
-                                                                    'titleChapter',
-                                                                    listReponse![index]
-                                                                            [
-                                                                            'chapterTitle']
-                                                                        .toString());
+
                                                                 print(
                                                                     'ChapterID Click: ${listReponse![index]['id'].toString()}');
 
-                                                                provider.toggleBookmark(
-                                                                    listReponse![index]
-                                                                            [
-                                                                            'chapterTitle']
-                                                                        .toString());
+                                                                addBookmark();
+                                                                Get.snackbar(
+                                                                    'Chương: ' +
+                                                                        listReponse![index]['chapterTitle']
+                                                                            .toString(),
+                                                                    "Thêm đánh dấu trang thành công.");
                                                               },
-                                                              icon: provider.isExist(
-                                                                      listReponse![index]
-                                                                              [
-                                                                              'chapterTitle']
-                                                                          .toString())
-                                                                  ? Icon(
-                                                                      Icons
-                                                                          .bookmark,
-                                                                      color: Color.fromARGB(
-                                                                          255,
-                                                                          51,
-                                                                          182,
-                                                                          61))
-                                                                  : Icon(
-                                                                      Icons
-                                                                          .bookmark_border,
-                                                                      color: Color.fromARGB(
-                                                                          255,
-                                                                          51,
-                                                                          182,
-                                                                          61),
-                                                                    )),
+                                                              icon: Icon(
+                                                                Icons.bookmark,
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        51,
+                                                                        182,
+                                                                        61),
+                                                              )),
                                                           IconButton(
                                                               onPressed:
                                                                   () async {
@@ -973,7 +982,6 @@ class DialogComment extends StatelessWidget {
                               if (_formKey.currentState!.validate())
                                 {
                                   cmtcontroller.commentUserBook(),
-                                  // Navigator.of(context).pop(),
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
@@ -1006,46 +1014,130 @@ class _BookmarkPageState extends State<BookmarkPage> {
     print(chap);
   }
 
+  bool isLoading = true;
+  String? token;
+  String? id;
+  String? idchaps;
+  List? bookmark;
+
+  Future<void> getBookmarkDetail() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      id = prefs.getString('idbook');
+      setState(() {
+        isLoading = true;
+      });
+
+      var response = await Dio()
+          .get('http://103.77.166.202/api/chapter/list-bookmark?bookId=$id',
+              options: Options(headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer $token',
+              }));
+      if (response.statusCode == 200) {
+        bookmark = response.data;
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } catch (e) {
+      Get.snackbar("error", e.toString());
+      print(e);
+    }
+  }
+
+  Future<void> removeBookmark() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      idchaps = prefs.getString('idchapter');
+      setState(() {
+        isLoading = false;
+      });
+      var response = await Dio().delete(
+          'http://103.77.166.202/api/chapter/delete-bookmark?chapterId=$idchaps',
+          options: Options(headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          }));
+      if (response.statusCode == 200) {
+        Get.snackbar("Thông báo", "Xoá đánh dấu trang thành công.");
+        getBookmarkDetail();
+      } else {
+        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } catch (e) {
+      Get.snackbar("error", e.toString());
+      print(e);
+    }
+  }
+
   @override
   void initState() {
     readBookmark();
+    getBookmarkDetail();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<BookmarkProvider>(context);
-    final chapter = provider.listReponse;
+    // final provider = Provider.of<BookmarkProvider>(context);
+    // final chapter = provider.listReponse;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Color.fromARGB(255, 138, 175, 52),
           centerTitle: true,
           title: Text('Đánh dấu chương'),
         ),
-        body: ListView.builder(
-            itemCount: chapter.length,
-            itemBuilder: (context, index) {
-              chap = chapter[index];
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<dynamic>(builder: (_) => PdfViewerPage()),
-                  );
-                },
-                child: ListTile(
-                  title: Text(chap!),
-                  trailing: IconButton(
-                      onPressed: () {
-                        provider.toggleBookmark(chap!);
-                      },
-                      icon: provider.isExist(chap!)
-                          ? Icon(Icons.bookmark,
-                              color: Color.fromARGB(255, 51, 182, 61))
-                          : Icon(Icons.bookmark_border,
-                              color: Color.fromARGB(255, 51, 182, 61))),
+        body: isLoading
+            ? Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    CircularProgressIndicator(),
+                  ],
                 ),
-              );
-            }));
+              )
+            : ListView.builder(
+                itemCount: bookmark == null ? null : bookmark!.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () async {
+                      final SharedPreferences? prefs = await _prefs;
+                      await prefs?.setString('idchapter',
+                          bookmark![index]['chapter']['id'].toString());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<dynamic>(
+                            builder: (_) => PdfViewerPage()),
+                      );
+                    },
+                    child: ListTile(
+                      title: Text(bookmark![index] == null
+                          ? 'Không có tên'
+                          : 'Chương: ' +
+                              bookmark![index]['chapter']['chapterId']
+                                  .toString()),
+                      subtitle: Text(bookmark![index] == null
+                          ? 'Không có tên'
+                          : bookmark![index]['chapter']['chapterTitle']
+                              .toString()),
+                      trailing: IconButton(
+                          onPressed: () async {
+                            final SharedPreferences? prefs = await _prefs;
+                            await prefs?.setString('idchapter',
+                                bookmark![index]['chapter']['id'].toString());
+                            removeBookmark();
+                            // Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.bookmark_remove, color: Colors.red)),
+                    ),
+                  );
+                }));
   }
 }
