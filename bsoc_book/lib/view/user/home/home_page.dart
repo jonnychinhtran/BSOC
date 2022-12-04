@@ -5,7 +5,6 @@ import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:bsoc_book/view/widgets/updatedialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:new_version/new_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bsoc_book/data/network/api_client.dart';
@@ -88,6 +87,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     getAllBooks();
     getTopBook();
+
     final newVersion = NewVersion(
       iOSId: 'com.b4usolution.app.bsoc',
       androidId: 'com.b4usolution.b4u_bsoc',
