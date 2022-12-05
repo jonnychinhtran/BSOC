@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:open_store/open_store.dart';
 
 class UpdateDialog extends StatefulWidget {
   final String version;
@@ -141,41 +141,17 @@ class _UpdateDialogState extends State<UpdateDialog> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
                       children: [
-                        // widget.allowDismissal
-                        //     ? Expanded(
-                        //         child: GestureDetector(
-                        //           onTap: () {
-                        //             Navigator.pop(context);
-                        //           },
-                        //           child: Container(
-                        //             height: 30,
-                        //             width: 120,
-                        //             decoration: BoxDecoration(
-                        //               border: Border.all(
-                        //                 color: Colors.indigo,
-                        //               ),
-                        //               borderRadius: BorderRadius.circular(50),
-                        //             ),
-                        //             child: const Center(
-                        //               child: Text(
-                        //                 "LATER",
-                        //                 style: TextStyle(
-                        //                   color: Colors.indigo,
-                        //                   fontWeight: FontWeight.bold,
-                        //                 ),
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       )
-                        //     : const SizedBox(),
                         SizedBox(
                           width: widget.allowDismissal ? 16 : 0,
                         ),
                         Expanded(
                           child: GestureDetector(
                             onTap: () async {
-                              await launchUrl(Uri.parse(widget.appLink));
+                              OpenStore.instance.open(
+                                appStoreId: widget.appLink,
+                                androidAppBundleId: 'com.b4usolution.b4u_bsoc',
+                              );
+                              print(widget.appLink);
                             },
                             child: Container(
                               height: 30,
