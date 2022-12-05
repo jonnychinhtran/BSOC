@@ -138,21 +138,19 @@ class _RegisterPageState extends State<RegisterPage> {
                               ? 'Vui lòng nhập Số điện thoại'
                               : null;
                         },
-                        maxLength: 10,
+                        // maxLength: 20,
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp("[0-9\u0660-\u0669]")),
-                          FilteringTextInputFormatter.deny(RegExp(r'^[1-9]+')),
+                          FilteringTextInputFormatter.digitsOnly
                         ],
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                            hintText: "Số điện thoại (vd:0901234567)",
+                            hintText: "Số điện thoại",
                             isDense: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             )),
                       ),
-                      SizedBox(height: size.height * 0.01),
+                      SizedBox(height: size.height * 0.02),
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Padding(

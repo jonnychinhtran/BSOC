@@ -197,13 +197,13 @@ class _UpdateUserState extends State<UpdateUser> {
                                     ? 'Vui lòng nhập lại Số điện thoại'
                                     : null;
                               },
-                              maxLength: 10,
+                              // maxLength: 20,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly
                               ],
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
-                                  hintText: '0' + datauser!['phone'].toString(),
+                                  hintText: datauser!['phone'].toString(),
                                   isDense: true,
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
