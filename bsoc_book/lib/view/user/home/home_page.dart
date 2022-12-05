@@ -38,15 +38,17 @@ class _HomePageState extends State<HomePage> {
         Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.getAllBook);
     http.Response response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
-      'Content-Type': 'application/pdf'
+      // 'Content-Type': 'application/pdf'
     });
-
+    print('API: $url');
+    print('Param $token');
     if (response.statusCode == 200) {
       await prefs.setString('accessToken', token!);
       var datau = prefs.getString('accessToken');
       print(datau);
       setState(() {
         mapDemo = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
+        print('SACH: $mapDemo');
         listReponse = mapDemo?['content'];
         isLoading = false;
       });

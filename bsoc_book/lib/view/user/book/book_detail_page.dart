@@ -52,12 +52,14 @@ class _DetailBookPageState extends State<DetailBookPage>
     var url = Uri.parse('http://103.77.166.202/api/book/$idbooks');
     http.Response response =
         await http.get(url, headers: {'Authorization': 'Bearer $token'});
-
+    print('API: $url');
+    print('Param $idbooks and $token');
     if (response.statusCode == 200) {
       await prefs.setString('token', response.body);
       print(prefs.getString('token'));
       mapDemo = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
       listReponse = mapDemo!['chapters'];
+      print('CHI TIET SACH: $mapDemo');
       setState(() {
         isLoading = false;
       });
@@ -571,11 +573,9 @@ class DownloadingDialog extends StatefulWidget {
 }
 
 class _DownloadingDialogState extends State<DownloadingDialog> {
-  bool notificationsEnabled = false;
   bool isLoading = true;
   double progress = 0.0;
   String? localPath;
-  var _openResult = '';
 
   void startDownloading() async {
     Dio dio = Dio();
@@ -590,33 +590,30 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     String url = 'http://103.77.166.202/api/chapter/download/$idchapter';
 
     dio.options.headers["Authorization"] = "Bearer $token";
-    dio.get(url);
-
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
-    }
-    Directory? dir = Platform.isAndroid
-        ? await getExternalStorageDirectory()
-        : await getApplicationDocumentsDirectory();
-    // Directory dir = await getApplicationDocumentsDirectory();
-    print(dir);
-    await prefs.setString('duongdan', "${dir?.path}/$namesave");
-
+    print('API DOWNLOAD BOOK: $url');
+    print('PARAM: ID BOOK $idchapter and TOKEN $token ');
+    print(namesave);
+    String filename = namesave.toString();
+    String path = await _getFilePath(filename);
     await dio.download(
       url,
-      '${dir?.path}/$namesave',
+      path,
       onReceiveProgress: (recivedBytes, totalBytes) {
         setState(() {
           progress = recivedBytes / totalBytes;
+          print('PROGRESS DOWNLOAD: $progress');
         });
       },
       deleteOnError: true,
     ).then((_) {
       Navigator.pop(context);
     });
-    final result = await OpenFilex.open("${dir?.path}/$namesave");
-    _openResult = "type=${result.type}  message=${result.message}";
+    await OpenFilex.open(path);
+  }
+
+  Future<String> _getFilePath(String filename) async {
+    final dir = await getApplicationDocumentsDirectory();
+    return '${dir.path}/$filename';
   }
 
   @override
@@ -628,7 +625,7 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
   @override
   Widget build(BuildContext context) {
     String downloadingprogress = (progress * 100).toInt().toString();
-
+    print('PROGRESS DOWNLOAD: $downloadingprogress');
     return AlertDialog(
       backgroundColor: Colors.black,
       content: Column(
