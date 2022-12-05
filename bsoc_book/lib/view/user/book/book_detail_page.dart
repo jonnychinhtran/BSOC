@@ -612,8 +612,10 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
   }
 
   Future<String> _getFilePath(String filename) async {
-    final dir = await getApplicationDocumentsDirectory();
-    return '${dir.path}/$filename';
+    final dir = Platform.isAndroid
+        ? await getExternalStorageDirectory()
+        : await getApplicationDocumentsDirectory();
+    return '${dir?.path}/$filename';
   }
 
   @override
