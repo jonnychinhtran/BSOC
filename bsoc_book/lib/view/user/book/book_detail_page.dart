@@ -10,10 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +26,7 @@ Map? viewbook;
 String? ipchapter;
 String? datapdf;
 List? listComment;
+Map? dataBook;
 
 class DetailBookPage extends StatefulWidget {
   const DetailBookPage({super.key});
@@ -44,27 +43,31 @@ class _DetailBookPageState extends State<DetailBookPage>
   String? token;
   String? idchap;
   String? idbooks;
-  void getItemBooks() async {
-    final prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
-    idbooks = prefs.getString('idbook');
 
-    var url = Uri.parse('http://103.77.166.202/api/book/$idbooks');
-    http.Response response =
-        await http.get(url, headers: {'Authorization': 'Bearer $token'});
-    print('API: $url');
-    print('Param $idbooks and $token');
-    if (response.statusCode == 200) {
-      await prefs.setString('token', response.body);
-      print(prefs.getString('token'));
-      mapDemo = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
-      listReponse = mapDemo!['chapters'];
-      print('CHI TIET SACH: $mapDemo');
-      setState(() {
-        isLoading = false;
-      });
-    } else {
-      throw Exception('Lỗi tải hệ thống');
+  Future<void> getItemBooks() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      idbooks = prefs.getString('idbook');
+      var response = await Dio().get('http://103.77.166.202/api/book/$idbooks',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }));
+      if (response.statusCode == 200) {
+        // listReponse = jsonDecode(Utf8Decoder().convert(response.data));
+        dataBook = response.data;
+        listReponse = dataBook!['chapters'];
+        print('CHI TIET SACH: ${listReponse.toString()}');
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } catch (e) {
+      Get.snackbar("error", e.toString());
+      print(e);
     }
   }
 
@@ -120,7 +123,7 @@ class _DetailBookPageState extends State<DetailBookPage>
             ),
             onPressed: () {
               Share.share('Đọc ngay: ' +
-                  mapDemo!['bookName'].toString() +
+                  dataBook!['bookName'].toString() +
                   ' trên ứng dụng B4U BSOC '
                       '- Cài ứng dụng B4U BSOC tại AppStore: https://apps.apple.com/us/app/b4u-bsoc/id6444538062 ' +
                   ' - PlayStore: https://play.google.com/store/apps/details?id=com.b4usolution.b4u_bsoc');
@@ -164,10 +167,10 @@ class _DetailBookPageState extends State<DetailBookPage>
                       height: 195,
                       width: 150,
                       child: Material(
-                        child: mapDemo == null
+                        child: dataBook == null
                             ? Text('Đang tải dữ liệu')
                             : Image.network(
-                                'http://103.77.166.202' + mapDemo?['image'],
+                                'http://103.77.166.202' + dataBook?['image'],
                                 fit: BoxFit.fill,
                               ),
                       )),
@@ -182,7 +185,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(mapDemo?['bookName'],
+                          Text(dataBook?['bookName'],
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold)),
@@ -190,7 +193,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                             height: 10,
                           ),
                           Text(
-                            mapDemo?['author'],
+                            dataBook?['author'],
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(fontSize: 14),
                           ),
@@ -434,10 +437,10 @@ class _DetailBookPageState extends State<DetailBookPage>
                               padding: const EdgeInsets.all(16.0),
                               child: ListView(
                                 children: [
-                                  mapDemo == null
+                                  dataBook == null
                                       ? Text('Đang tải dữ liệu')
                                       : Text(
-                                          mapDemo?['description'],
+                                          dataBook?['description'],
                                           softWrap: true,
                                           textAlign: TextAlign.justify,
                                           style: const TextStyle(
