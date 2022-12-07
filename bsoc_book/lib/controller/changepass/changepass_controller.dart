@@ -1,5 +1,3 @@
-import 'package:bsoc_book/routes/app_routes.dart';
-import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

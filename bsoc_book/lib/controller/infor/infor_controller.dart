@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +16,7 @@ class InforUserController extends GetxController {
     });
 
     if (response.statusCode == 200) {
-      final json = jsonDecode(response.body)['results'];
+      // final json = jsonDecode(response.body)['results'];
 
       print(response.body);
     } else {

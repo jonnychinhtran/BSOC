@@ -118,35 +118,6 @@ class _UpdateUserState extends State<UpdateUser> {
                                     borderRadius: BorderRadius.circular(10),
                                   )),
                             ),
-                            // SizedBox(height: size.height * 0.02),
-                            // const Align(
-                            //   alignment: Alignment.centerLeft,
-                            //   child: Padding(
-                            //     padding: EdgeInsets.only(left: 0, bottom: 4),
-                            //     child: Text(
-                            //       'Tên đăng nhập',
-                            //       textAlign: TextAlign.left,
-                            //       style: TextStyle(
-                            //         fontSize: 16,
-                            //         fontWeight: FontWeight.bold,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                            // TextFormField(
-                            //   controller: updateuser.usernameController,
-                            //   validator: (value) {
-                            //     return (value == null || value.isEmpty)
-                            //         ? 'Vui lòng nhập Username'
-                            //         : null;
-                            //   },
-                            //   decoration: InputDecoration(
-                            //       hintText: datauser!['username'].toString(),
-                            //       isDense: true,
-                            //       border: OutlineInputBorder(
-                            //         borderRadius: BorderRadius.circular(10),
-                            //       )),
-                            // ),
                             SizedBox(height: size.height * 0.02),
                             const Align(
                               alignment: Alignment.centerLeft,
@@ -164,10 +135,23 @@ class _UpdateUserState extends State<UpdateUser> {
                             ),
                             TextFormField(
                               controller: emailController,
-                              validator: (value) =>
-                                  EmailValidator.validate(value!)
-                                      ? null
-                                      : "Vui lòng nhập lại email",
+                              keyboardType: TextInputType.emailAddress,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Vui lòng nhập email';
+                                }
+                                if (!RegExp(
+                                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                                    .hasMatch(value)) {
+                                  return 'Nhập sai định dạng email';
+                                }
+                                return null;
+                              },
+                              inputFormatters: [
+                                FilteringTextInputFormatter.deny(RegExp(r" "))
+                              ],
                               decoration: InputDecoration(
                                   hintText: datauser!['email'].toString(),
                                   isDense: true,

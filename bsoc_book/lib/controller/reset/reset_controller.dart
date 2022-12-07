@@ -2,7 +2,6 @@ import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../routes/app_routes.dart';
 
 class ResetController extends GetxController {
   TextEditingController emailController = TextEditingController();

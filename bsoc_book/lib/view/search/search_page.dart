@@ -3,9 +3,7 @@ import 'package:bsoc_book/data/model/books/book_model.dart'
     show Content, BookModel;
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:diacritic/diacritic.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 

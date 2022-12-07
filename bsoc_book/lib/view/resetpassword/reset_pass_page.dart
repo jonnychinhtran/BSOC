@@ -1,8 +1,8 @@
 import 'package:bsoc_book/controller/reset/reset_controller.dart';
-import 'package:bsoc_book/routes/app_routes.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class ResetPassPage extends StatefulWidget {
@@ -75,9 +75,22 @@ class _ResetPassPageState extends State<ResetPassPage> {
                         ),
                         TextFormField(
                           controller: resetController.emailController,
-                          validator: (value) => EmailValidator.validate(value!)
-                              ? null
-                              : "Vui lòng nhập email",
+                          keyboardType: TextInputType.emailAddress,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Vui lòng nhập email';
+                            }
+                            if (!RegExp(
+                                    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                                .hasMatch(value)) {
+                              return 'Nhập sai định dạng email';
+                            }
+                            return null;
+                          },
+                          inputFormatters: [
+                            FilteringTextInputFormatter.deny(RegExp(r" "))
+                          ],
                           decoration: InputDecoration(
                               hintText: "Email",
                               isDense: true,

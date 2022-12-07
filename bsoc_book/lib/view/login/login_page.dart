@@ -1,5 +1,4 @@
 import 'package:bsoc_book/controller/login/login_controller.dart';
-import 'package:bsoc_book/routes/app_routes.dart';
 import 'package:bsoc_book/view/register/register_page.dart';
 import 'package:bsoc_book/view/resetpassword/reset_pass_page.dart';
 import 'package:flutter/material.dart';
@@ -86,8 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                               borderRadius: BorderRadius.circular(10),
                             )),
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp("[a-zA-Z0-9]")),
+                          FilteringTextInputFormatter.allow(RegExp("[a-z0-9]")),
                         ],
                       ),
                       SizedBox(height: size.height * 0.02),

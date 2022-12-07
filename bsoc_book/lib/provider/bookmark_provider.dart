@@ -23,8 +23,8 @@ class BookmarkProvider extends ChangeNotifier {
     return isExit;
   }
 
-  void clearBookmark() {
-    final _bookmark = [];
-    notifyListeners();
-  }
+  // void clearBookmark() {
+  //   final _bookmark = [];
+  //   notifyListeners();
+  // }
 }

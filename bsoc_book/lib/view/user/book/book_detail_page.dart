@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
-import 'package:bsoc_book/provider/bookmark_provider.dart';
-
 import 'package:bsoc_book/view/downloads/download_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
@@ -12,7 +10,6 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -54,7 +51,6 @@ class _DetailBookPageState extends State<DetailBookPage>
             'Authorization': 'Bearer $token',
           }));
       if (response.statusCode == 200) {
-        // listReponse = jsonDecode(Utf8Decoder().convert(response.data));
         dataBook = response.data;
         listReponse = dataBook!['chapters'];
         print('CHI TIET SACH: ${listReponse.toString()}');
@@ -106,7 +102,7 @@ class _DetailBookPageState extends State<DetailBookPage>
   @override
   Widget build(BuildContext context) {
     TabController _tabController = TabController(length: 3, vsync: this);
-    final provider = Provider.of<BookmarkProvider>(context);
+    // final provider = Provider.of<BookmarkProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 138, 175, 52),

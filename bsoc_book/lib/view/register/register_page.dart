@@ -1,6 +1,6 @@
 import 'package:bsoc_book/controller/register/register_controller.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
-import 'package:email_validator/email_validator.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -85,8 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderRadius: BorderRadius.circular(10),
                             )),
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp("[a-zA-Z0-9]")),
+                          FilteringTextInputFormatter.allow(RegExp("[a-z0-9]")),
                         ],
                       ),
                       SizedBox(height: size.height * 0.02),
@@ -106,9 +105,22 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       TextFormField(
                         controller: registerController.emailController,
-                        validator: (value) => EmailValidator.validate(value!)
-                            ? null
-                            : "Vui lòng nhập email",
+                        keyboardType: TextInputType.emailAddress,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Vui lòng nhập email';
+                          }
+                          if (!RegExp(
+                                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                              .hasMatch(value)) {
+                            return 'Nhập sai định dạng email';
+                          }
+                          return null;
+                        },
+                        inputFormatters: [
+                          FilteringTextInputFormatter.deny(RegExp(r" "))
+                        ],
                         decoration: InputDecoration(
                             hintText: "Email",
                             isDense: true,

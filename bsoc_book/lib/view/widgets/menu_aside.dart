@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:bsoc_book/routes/app_routes.dart';
 import 'package:bsoc_book/view/about/about_page.dart';
 import 'package:bsoc_book/view/contact/contact_page.dart';
 import 'package:bsoc_book/view/infor/infor_page.dart';
@@ -263,7 +260,7 @@ class _MenuAsideState extends State<MenuAside> {
               padding: const EdgeInsets.all(25.0),
               child: Align(
                   alignment: FractionalOffset.bottomLeft,
-                  child: Text('Phiên bản: 1.0.1')),
+                  child: Text('Phiên bản: 1.0.2')),
             ),
           ),
         ],

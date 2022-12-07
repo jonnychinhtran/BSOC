@@ -185,11 +185,6 @@ class _InforPageState extends State<InforPage> {
                               endIndent: 0,
                               color: Color.fromARGB(255, 87, 87, 87),
                             ),
-                            Divider(
-                              height: 2,
-                              endIndent: 0,
-                              color: Color.fromARGB(255, 87, 87, 87),
-                            ),
                             ListTile(
                               leading: Icon(Icons.delete),
                               title: Text(
