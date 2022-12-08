@@ -1,6 +1,10 @@
+import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:open_store/open_store.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UpdateDialog extends StatefulWidget {
   final String version;
@@ -8,7 +12,7 @@ class UpdateDialog extends StatefulWidget {
   final String appLink;
   final bool allowDismissal;
 
-  const UpdateDialog(
+  UpdateDialog(
       {Key? key,
       this.version = " ",
       required this.description,
@@ -23,7 +27,7 @@ class UpdateDialog extends StatefulWidget {
 class _UpdateDialogState extends State<UpdateDialog> {
   double screenHeight = 0;
   double screenWidth = 0;
-
+  final userdata = GetStorage();
   @override
   void dispose() {
     if (!widget.allowDismissal) {
@@ -151,7 +155,12 @@ class _UpdateDialogState extends State<UpdateDialog> {
                                 appStoreId: widget.appLink,
                                 androidAppBundleId: 'com.b4usolution.b4u_bsoc',
                               );
-                              print(widget.appLink);
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              await prefs.remove('accessToken');
+                              await prefs.clear();
+                              userdata.write('isLogged', false);
+                              Get.offAll(LoginPage());
                             },
                             child: Container(
                               height: 30,

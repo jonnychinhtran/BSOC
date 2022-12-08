@@ -38,7 +38,6 @@ class _HomePageState extends State<HomePage> {
         Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.getAllBook);
     http.Response response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
-      // 'Content-Type': 'application/pdf'
     });
     print('API: $url');
     print('Param $token');
@@ -50,6 +49,7 @@ class _HomePageState extends State<HomePage> {
         mapDemo = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
         print('SACH: $mapDemo');
         listReponse = mapDemo?['content'];
+
         isLoading = false;
       });
     } else {
