@@ -177,9 +177,13 @@ class _UpdateUserState extends State<UpdateUser> {
                             TextFormField(
                               controller: phoneController,
                               validator: (value) {
-                                return (value == null || value.isEmpty)
-                                    ? 'Vui lòng nhập lại Số điện thoại'
-                                    : null;
+                                if (value == "") {
+                                  return null;
+                                }
+                                if (value!.isEmpty) {
+                                  return 'Vui lòng nhập Số điện thoại';
+                                }
+                                return null;
                               },
                               // maxLength: 20,
                               inputFormatters: [

@@ -12,11 +12,11 @@ class RegisterationController extends GetxController {
   TextEditingController passwordController = TextEditingController();
 
   Future<void> registerWithUser() async {
-    int value1 = int.parse(phoneController.text);
+    // int value1 = int.parse(phoneController.text);
     final formData = {
       "username": usernameController.text,
       "email": emailController.text,
-      "phone": value1,
+      "phone": phoneController.text,
       "password": passwordController.text,
     };
 
@@ -28,8 +28,8 @@ class RegisterationController extends GetxController {
       var response = await Dio().post('http://103.77.166.202/api/auth/register',
           data: json.encode(formData));
       if (response.statusCode == 200) {
-        final jsondata = response.data;
-        print(jsondata);
+        // final jsondata = response.data;
+        print(response.data);
         Get.snackbar("Thành công", "Đăng ký thành công.");
         usernameController.clear();
         emailController.clear();

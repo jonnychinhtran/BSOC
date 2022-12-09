@@ -129,7 +129,7 @@ class _MenuAsideState extends State<MenuAside> {
                                   ? 'Đang tải dữ liệu'
                                   : mapDemo!['fullname'],
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.red, fontSize: 20),
+                              style: TextStyle(color: Colors.red, fontSize: 18),
                             )),
                       ],
                     ),

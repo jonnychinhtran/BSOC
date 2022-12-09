@@ -134,7 +134,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: Padding(
                           padding: EdgeInsets.only(left: 0, bottom: 4),
                           child: Text(
-                            'Số điện thoại (*)',
+                            'Số điện thoại',
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontSize: 16,
@@ -146,9 +146,16 @@ class _RegisterPageState extends State<RegisterPage> {
                       TextFormField(
                         controller: registerController.phoneController,
                         validator: (value) {
-                          return (value == null || value.isEmpty)
-                              ? 'Vui lòng nhập Số điện thoại'
-                              : null;
+                          // return (value == null || value.isEmpty)
+                          //     ? 'Vui lòng nhập Số điện thoại'
+                          //     : null;
+                          if (value == "") {
+                            return null;
+                          }
+                          if (value!.isEmpty) {
+                            return 'Vui lòng nhập Số điện thoại';
+                          }
+                          return null;
                         },
                         // maxLength: 20,
                         inputFormatters: [
