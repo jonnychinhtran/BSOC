@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:bsoc_book/view/widgets/updatedialog.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:new_version/new_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bsoc_book/data/network/api_client.dart';
@@ -52,6 +55,8 @@ class _HomePageState extends State<HomePage> {
 
         isLoading = false;
       });
+    } else if (response.statusCode == 400) {
+      Get.dialog(DialogLogout());
     } else {
       throw Exception('Lỗi tải hệ thống');
     }
@@ -418,22 +423,42 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+class DialogLogout extends StatelessWidget {
+  DialogLogout({super.key});
+  final userdata = GetStorage();
 
-// {BuildContext? context,
-//       AppVersionResult? appVersionResult,
-//       bool? mandatory = false,
-//       String? title = 'New version available',
-//       TextStyle titleTextStyle =
-//           const TextStyle(fontSize: 24.0, fontWeight: FontWeight.w500),
-//       String? content = 'Would you like to update your application?',
-//       TextStyle contentTextStyle =
-//           const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
-//       ButtonStyle? cancelButtonStyle = const ButtonStyle(
-//           backgroundColor: MaterialStatePropertyAll(Colors.redAccent)),
-//       ButtonStyle? updateButtonStyle = const ButtonStyle(
-//           backgroundColor: MaterialStatePropertyAll(Colors.green)),
-//       String? cancelButtonText = 'UPDATE LATER',
-//       String? updateButtonText = 'UPDATE',
-//       TextStyle? cancelTextStyle = const TextStyle(color: Colors.white),
-//       TextStyle? updateTextStyle = const TextStyle(color: Colors.white),
-//       Color? backgroundColor = Colors.white}
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Thông báo'),
+      content: Container(
+          child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Lỗi tải hệ thống, vui lòng đăng nhập lại'),
+          SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 2,
+              primary: Colors.blueAccent,
+              minimumSize: const Size.fromHeight(35),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.remove('accessToken');
+              await prefs.clear();
+              userdata.write('isLogged', false);
+              Get.offAll(LoginPage());
+            },
+            child: Text('Đăng nhập lại'),
+          ),
+        ],
+      )),
+    );
+  }
+}

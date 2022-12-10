@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:io';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/view/downloads/download_page.dart';
+import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -57,6 +59,8 @@ class _DetailBookPageState extends State<DetailBookPage>
         setState(() {
           isLoading = false;
         });
+      } else if (response.statusCode == 400) {
+        Get.dialog(DialogLogout());
       } else {
         Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
       }
@@ -1137,5 +1141,45 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     ),
                   );
                 }));
+  }
+}
+
+class DialogLogout extends StatelessWidget {
+  DialogLogout({super.key});
+  final userdata = GetStorage();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Thông báo'),
+      content: Container(
+          child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Lỗi tải hệ thống, vui lòng đăng nhập lại'),
+          SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 2,
+              primary: Colors.blueAccent,
+              minimumSize: const Size.fromHeight(35),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.remove('accessToken');
+              await prefs.clear();
+              userdata.write('isLogged', false);
+              Get.offAll(LoginPage());
+            },
+            child: Text('Đăng nhập lại'),
+          ),
+        ],
+      )),
+    );
   }
 }
