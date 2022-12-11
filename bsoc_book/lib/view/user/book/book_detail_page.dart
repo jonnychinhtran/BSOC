@@ -493,6 +493,45 @@ class _PdfViewerPageState extends State<PdfViewerPage>
   String? localPath;
   String? titleChapter;
 
+  bool isLoading = true;
+  String? token;
+  String? idchap;
+  String? idbooks;
+
+  Future<void> getItemBooks() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      idbooks = prefs.getString('idbook');
+      var response = await Dio().get('http://103.77.166.202/api/book/$idbooks',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }));
+      if (response.statusCode == 200) {
+        dataBook = response.data;
+        listReponse = dataBook!['chapters']['id'];
+        print('CHI TIET SACH: ${listReponse.toString()}');
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 400) {
+        Get.dialog(DialogLogout());
+      }
+      if (e.isNoConnectionError) {
+        Get.dialog(DialogLogout());
+      } else {
+        Get.snackbar("error", e.toString());
+        print(e);
+        rethrow;
+      }
+    }
+  }
+
   void getTitleChap() async {
     final prefs = await SharedPreferences.getInstance();
     titleChapter = prefs.getString('accessToken');
@@ -501,6 +540,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
   @override
   void initState() {
     readData();
+    getItemBooks();
     super.initState();
 
     ApiServiceProvider.loadPDF().then((value) {
@@ -521,36 +561,76 @@ class _PdfViewerPageState extends State<PdfViewerPage>
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: localPath != null
-          ? PDFView(
-              filePath: localPath,
-              pageSnap: true,
-              autoSpacing: true,
-              enableSwipe: true,
-              defaultPage: currentPage!,
-              fitPolicy: FitPolicy.BOTH,
-              fitEachPage: true,
-              onRender: (_pages) {
-                setState(() {
-                  pages = _pages;
-                  isReady = true;
-                });
-              },
-              onViewCreated: (PDFViewController pdfViewController) {
-                _controller.complete(pdfViewController);
-              },
-              onPageChanged: (int? page, int? total) {
-                print('page change: $page/$total');
-                setState(() async {
-                  currentPage = page;
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.setInt('keeppage', page!);
-                  print('Trang hien tai: ${prefs.getInt('keeppage')}');
-                });
-              },
-            )
-          : const Center(child: CircularProgressIndicator()),
+      body: Column(
+        children: [
+          localPath != null
+              ? Expanded(
+                  child: PDFView(
+                    filePath: localPath,
+                    pageSnap: true,
+                    autoSpacing: true,
+                    enableSwipe: true,
+                    defaultPage: currentPage!,
+                    fitPolicy: FitPolicy.BOTH,
+                    fitEachPage: true,
+                    onRender: (_pages) {
+                      setState(() {
+                        pages = _pages;
+                        isReady = true;
+                      });
+                    },
+                    onViewCreated: (PDFViewController pdfViewController) {
+                      _controller.complete(pdfViewController);
+                    },
+                    onPageChanged: (int? page, int? total) {
+                      print('page change: $page/$total');
+                      setState(() async {
+                        currentPage = page;
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.setInt('keeppage', page!);
+                        print('Trang hien tai: ${prefs.getInt('keeppage')}');
+                      });
+                    },
+                  ),
+                )
+              : const Center(child: CircularProgressIndicator()),
+        ],
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          FloatingActionButton(
+            heroTag: "b1",
+            onPressed: () {
+              setState(() {
+                if (dataBook!['chapters']['id'] != 0) {
+                  // dataBook!['chapters']['id']--;
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => PdfViewerPage()));
+                }
+              });
+            },
+            child: Icon(Icons.arrow_back),
+            backgroundColor: Color.fromARGB(255, 138, 175, 52),
+          ),
+          FloatingActionButton(
+            heroTag: "b2",
+            onPressed: () {
+              setState(() {
+                if (dataBook!['chapters']['id'] !=
+                    dataBook!['chapters']['id']!.length - 1) {
+                  // dataBook!['chapters']['id']++;
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => PdfViewerPage()));
+                }
+              });
+            },
+            child: Icon(Icons.arrow_forward),
+            backgroundColor: Color.fromARGB(255, 138, 175, 52),
+          ),
+        ],
+      ),
     );
   }
 }

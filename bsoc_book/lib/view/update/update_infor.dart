@@ -33,7 +33,7 @@ class _UpdateUserState extends State<UpdateUser> {
     username = prefs.getString('username');
     emailUser = prefs.getString('emailuser');
     phoneUser = prefs.getString('phoneUser');
-    int value1 = int.parse(phoneController.text);
+    // int value1 = int.parse(phoneController.text);
 
     var formData = FormData.fromMap(
       {
@@ -41,7 +41,7 @@ class _UpdateUserState extends State<UpdateUser> {
         "fullname": fullnameController.text,
         "username": username,
         "email": emailController.text,
-        "phone": value1,
+        "phone": phoneController.text,
       },
     );
 
@@ -54,10 +54,12 @@ class _UpdateUserState extends State<UpdateUser> {
     print(response.data);
     if (response.statusCode == 200) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const HomePage()));
+          context, MaterialPageRoute(builder: (context) => const InforPage()));
+      Navigator.of(context).pop();
+      fullnameController.clear();
+      emailController.clear();
+      phoneController.clear();
     }
-    fullnameController.clear();
-    emailController.clear();
   }
 
   @override
