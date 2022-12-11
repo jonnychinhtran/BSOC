@@ -1,3 +1,4 @@
+import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/view/about/about_page.dart';
 import 'package:bsoc_book/view/contact/contact_page.dart';
 import 'package:bsoc_book/view/infor/infor_page.dart';
@@ -32,20 +33,20 @@ class _MenuAsideState extends State<MenuAside> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
-      var response = await Dio().get('http://103.77.166.202/api/user/infor',
-          options: Options(headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
-          }));
+      var response = await Dio()
+          .get('http://103.77.166.202/api/user/infor',
+              options: Options(headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer $token',
+              }))
+          .timeout(Duration(seconds: 2));
       if (response.statusCode == 200) {
         mapDemo = response.data;
         var phoneuser = mapDemo!['phone'].toString();
         var fullname = mapDemo!['fullname'].toString();
-        // var avatar = mapDemo!['avatar'].toString();
         final SharedPreferences? prefs = await _prefs;
         await prefs?.setString('phoneUser', phoneuser);
-        await prefs?.setString('fullname', fullname);
-        // print(avatar);
+
         setState(() {
           isLoading = false;
         });
@@ -53,9 +54,17 @@ class _MenuAsideState extends State<MenuAside> {
         Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
       }
       print("res: ${response.data}");
-    } catch (e) {
-      Get.snackbar("error", e.toString());
-      print(e);
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 400) {
+        Get.dialog(DialogLogout());
+      }
+      if (e.isNoConnectionError) {
+        Get.dialog(DialogLogout());
+      } else {
+        Get.snackbar("error", e.toString());
+        print(e);
+        rethrow;
+      }
     }
   }
 
@@ -88,7 +97,7 @@ class _MenuAsideState extends State<MenuAside> {
                             MaterialPageRoute(
                                 builder: (context) => const UploadAvatar()));
                       },
-                      child: mapDemo == null
+                      child: mapDemo!['avatar'] == null
                           ? const CircleAvatar(
                               radius: 50.0,
                               backgroundImage:

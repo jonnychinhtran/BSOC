@@ -130,7 +130,7 @@ class _InforPageState extends State<InforPage> {
                                 'Số điện thoại:',
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
-                              trailing: Text('0' + datauser!['phone']),
+                              trailing: Text(datauser!['phone']),
                             ),
                           ],
                         ),

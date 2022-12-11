@@ -238,7 +238,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.to(LoginPage());
+                              Get.off(LoginPage());
                             },
                             child: const Text("Vui lòng đăng nhập"),
                           ),

@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
+import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/view/downloads/download_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
-import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,15 +59,21 @@ class _DetailBookPageState extends State<DetailBookPage>
         setState(() {
           isLoading = false;
         });
-      } else if (response.statusCode == 400) {
-        Get.dialog(DialogLogout());
       } else {
         Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
       }
       print("res: ${response.data}");
-    } catch (e) {
-      Get.snackbar("error", e.toString());
-      print(e);
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 400) {
+        Get.dialog(DialogLogout());
+      }
+      if (e.isNoConnectionError) {
+        Get.dialog(DialogLogout());
+      } else {
+        Get.snackbar("error", e.toString());
+        print(e);
+        rethrow;
+      }
     }
   }
 
@@ -76,12 +82,14 @@ class _DetailBookPageState extends State<DetailBookPage>
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
       idchap = prefs.getString('idchapter');
-      var response = await Dio().post(
-          'http://103.77.166.202/api/chapter/add-bookmark?chapterId=$idchap',
-          options: Options(headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
-          }));
+      var response = await Dio()
+          .post(
+              'http://103.77.166.202/api/chapter/add-bookmark?chapterId=$idchap',
+              options: Options(headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer $token',
+              }))
+          .timeout(Duration(seconds: 3));
       if (response.statusCode == 200) {
         // Get.snackbar("Thông báo", "Thêm đánh dấu trang thành công.");
         setState(() {
@@ -113,7 +121,11 @@ class _DetailBookPageState extends State<DetailBookPage>
         title: Text('Chi tiết sách'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Get.to(HomePage()),
+          onPressed: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.remove('idbook');
+            Navigator.of(context).pop();
+          },
         ),
         actions: [
           IconButton(

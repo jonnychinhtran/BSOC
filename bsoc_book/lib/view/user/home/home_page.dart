@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:bsoc_book/view/widgets/updatedialog.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -34,31 +36,39 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getAllBooks() async {
     String? token;
-    final prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
-
-    var url =
-        Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.getAllBook);
-    http.Response response = await http.get(url, headers: {
-      'Authorization': 'Bearer $token',
-    });
-    print('API: $url');
-    print('Param $token');
-    if (response.statusCode == 200) {
-      await prefs.setString('accessToken', token!);
-      var datau = prefs.getString('accessToken');
-      print(datau);
-      setState(() {
-        mapDemo = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
-        print('SACH: $mapDemo');
-        listReponse = mapDemo?['content'];
-
-        isLoading = false;
-      });
-    } else if (response.statusCode == 400) {
-      Get.dialog(DialogLogout());
-    } else {
-      throw Exception('Lỗi tải hệ thống');
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      var response = await Dio()
+          .get('http://103.77.166.202/api/book/all-book',
+              options: Options(headers: {
+                'Authorization': 'Bearer $token',
+              }))
+          .timeout(Duration(seconds: 3));
+      if (response.statusCode == 200) {
+        mapDemo = response.data;
+        listReponse = mapDemo!['content'];
+        print('CHI TIET SACH: ${listReponse.toString()}');
+        setState(() {
+          isLoading = false;
+        });
+      } else if (response.statusCode == 400) {
+        Get.dialog(DialogLogout());
+      } else {
+        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 400) {
+        Get.dialog(DialogLogout());
+      }
+      if (e.isNoConnectionError) {
+        Get.dialog(DialogLogout());
+      } else {
+        Get.snackbar("error", e.toString());
+        print(e);
+        rethrow;
+      }
     }
   }
 
@@ -261,7 +271,7 @@ class _HomePageState extends State<HomePage> {
                         child: ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            itemCount: listTop == null ? 0 : listTop?.length,
+                            itemCount: listTop == null ? 0 : listTop!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -316,7 +326,7 @@ class _HomePageState extends State<HomePage> {
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount:
-                                listReponse == null ? 0 : listReponse?.length,
+                                listReponse == null ? 0 : listReponse!.length,
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
@@ -345,7 +355,6 @@ class _HomePageState extends State<HomePage> {
 
                                             print(
                                                 'idBook: ${listReponse![index]['id'].toString()}');
-
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(

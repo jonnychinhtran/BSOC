@@ -127,10 +127,11 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ResetPassPage()));
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => ResetPassPage()));
+                              Get.off(ResetPassPage());
                             },
                             child: const Text(
                               "Quên mật khẩu",
