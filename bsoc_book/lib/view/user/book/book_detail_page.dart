@@ -4,6 +4,7 @@ import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/view/downloads/download_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
+import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -124,7 +125,14 @@ class _DetailBookPageState extends State<DetailBookPage>
           onPressed: () async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.remove('idbook');
-            Navigator.of(context).pop();
+            Navigator.pushAndRemoveUntil<dynamic>(
+              context,
+              MaterialPageRoute<dynamic>(
+                builder: (BuildContext context) => HomePage(),
+              ),
+              (route) =>
+                  false, //if you want to disable back feature set to false
+            );
           },
         ),
         actions: [
@@ -231,240 +239,246 @@ class _DetailBookPageState extends State<DetailBookPage>
                     ]),
                 Expanded(
                     child: Container(
-                  child: TabBarView(
-                      controller: _tabController,
-                      children: <Widget>[
-                        Container(
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 242, 254, 255),
-                            ),
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                physics: const ScrollPhysics(),
-                                itemCount: listReponse == null
-                                    ? 0
-                                    : listReponse!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return GestureDetector(
-                                    onTap: () async {
-                                      final SharedPreferences? prefs =
-                                          await _prefs;
-                                      await prefs?.setString('idchapter',
-                                          listReponse![index]['id'].toString());
-                                      await prefs?.setString(
-                                          'titleChapter',
-                                          listReponse![index]['chapterTitle']
-                                              .toString());
-                                      print(
-                                          'ChapterID Click: ${listReponse![index]['id'].toString()}');
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute<dynamic>(
-                                            builder: (_) => PdfViewerPage()),
-                                      );
-                                    },
-                                    child: Card(
-                                      color: Color.fromARGB(255, 255, 255, 255),
-                                      elevation: 10,
-                                      margin: EdgeInsets.all(10),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                  child:
+                      TabBarView(controller: _tabController, children: <Widget>[
+                    Container(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 242, 254, 255),
+                        ),
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const ScrollPhysics(),
+                            itemCount:
+                                listReponse == null ? 0 : listReponse!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () async {
+                                  final SharedPreferences? prefs = await _prefs;
+                                  await prefs?.setInt(
+                                      'idchapter', listReponse![index]['id']);
+                                  await prefs?.setBool('chapfirst',
+                                      listReponse![index]['first']);
+                                  await prefs?.setBool(
+                                      'chaplast', listReponse![index]['last']);
+                                  await prefs?.setString(
+                                      'titleChapter',
+                                      listReponse![index]['chapterTitle']
+                                          .toString());
+                                  print(
+                                      'ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                  print(
+                                      'FIRST: ${listReponse![index]['first']}');
+                                  print('LAST: ${listReponse![index]['last']}');
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute<dynamic>(
+                                        builder: (_) => PdfViewerPage()),
+                                  );
+                                },
+                                child: Card(
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  elevation: 10,
+                                  margin: EdgeInsets.all(10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Chương: ' +
+                                                listReponse![index]['chapterId']
+                                                    .toString(),
+                                            style: TextStyle(
+                                              color: Colors.blue.shade900,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                'Chương: ' +
-                                                    listReponse![index]
-                                                            ['chapterId']
-                                                        .toString(),
-                                                style: TextStyle(
-                                                  color: Colors.blue.shade900,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
+                                              Flexible(
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      listReponse?[index]
+                                                          ['chapterTitle'],
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 2,
+                                                      softWrap: false,
+                                                      style: TextStyle(
+                                                        color: Colors
+                                                            .blue.shade900,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                              Column(
                                                 children: [
-                                                  Flexible(
-                                                    child: Column(
-                                                      children: [
-                                                        Text(
-                                                          listReponse?[index]
-                                                              ['chapterTitle'],
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          maxLines: 2,
-                                                          softWrap: false,
-                                                          style: TextStyle(
-                                                            color: Colors
-                                                                .blue.shade900,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Column(
+                                                  Row(
                                                     children: [
-                                                      Row(
-                                                        children: [
-                                                          IconButton(
-                                                              onPressed:
-                                                                  () async {
-                                                                final SharedPreferences?
-                                                                    prefs =
-                                                                    await _prefs;
-                                                                await prefs?.setString(
-                                                                    'idchapter',
+                                                      IconButton(
+                                                          onPressed: () async {
+                                                            final SharedPreferences?
+                                                                prefs =
+                                                                await _prefs;
+                                                            await prefs?.setString(
+                                                                'idchapter',
+                                                                listReponse![
+                                                                            index]
+                                                                        ['id']
+                                                                    .toString());
+
+                                                            print(
+                                                                'ChapterID Click: ${listReponse![index]['id'].toString()}');
+
+                                                            addBookmark();
+                                                            Get.snackbar(
+                                                                'Chương: ' +
                                                                     listReponse![index]
                                                                             [
-                                                                            'id']
-                                                                        .toString());
+                                                                            'chapterTitle']
+                                                                        .toString(),
+                                                                "Thêm đánh dấu trang thành công.");
+                                                          },
+                                                          icon: Icon(
+                                                            Icons.bookmark,
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    51,
+                                                                    182,
+                                                                    61),
+                                                          )),
+                                                      IconButton(
+                                                          onPressed: () async {
+                                                            final SharedPreferences?
+                                                                prefs =
+                                                                await _prefs;
+                                                            await prefs?.setString(
+                                                                'idchapter',
+                                                                listReponse![
+                                                                            index]
+                                                                        ['id']
+                                                                    .toString());
+                                                            await prefs?.setString(
+                                                                'filePath',
+                                                                listReponse![
+                                                                            index]
+                                                                        [
+                                                                        'filePath']
+                                                                    .toString());
+                                                            print(
+                                                                'ChapterID Click: ${listReponse![index]['id'].toString()}');
 
-                                                                print(
-                                                                    'ChapterID Click: ${listReponse![index]['id'].toString()}');
-
-                                                                addBookmark();
-                                                                Get.snackbar(
-                                                                    'Chương: ' +
-                                                                        listReponse![index]['chapterTitle']
-                                                                            .toString(),
-                                                                    "Thêm đánh dấu trang thành công.");
-                                                              },
-                                                              icon: Icon(
-                                                                Icons.bookmark,
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        51,
-                                                                        182,
-                                                                        61),
-                                                              )),
-                                                          IconButton(
-                                                              onPressed:
-                                                                  () async {
-                                                                final SharedPreferences?
-                                                                    prefs =
-                                                                    await _prefs;
-                                                                await prefs?.setString(
-                                                                    'idchapter',
-                                                                    listReponse![index]
-                                                                            [
-                                                                            'id']
-                                                                        .toString());
-                                                                await prefs?.setString(
-                                                                    'filePath',
-                                                                    listReponse![index]
-                                                                            [
-                                                                            'filePath']
-                                                                        .toString());
-                                                                print(
-                                                                    'ChapterID Click: ${listReponse![index]['id'].toString()}');
-
-                                                                listReponse![index]
-                                                                            [
-                                                                            'downloaded'] ==
-                                                                        true
-                                                                    ? showDialog(
-                                                                        context:
-                                                                            context,
-                                                                        builder: (context) => AlertDialog(
-                                                                            title: Text("Thông báo"),
-                                                                            content: Column(
-                                                                              mainAxisSize: MainAxisSize.min,
-                                                                              children: [
-                                                                                Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
-                                                                              ],
-                                                                            ),
-                                                                            actions: <Widget>[
-                                                                              TextButton(
-                                                                                onPressed: () {
-                                                                                  Navigator.pop(context, 'Thoát');
-                                                                                },
-                                                                                child: const Text('Thoát'),
-                                                                              ),
-                                                                              TextButton(
-                                                                                onPressed: () {
-                                                                                  showDialog(
-                                                                                    context: context,
-                                                                                    useRootNavigator: false,
-                                                                                    builder: (context) => const DownloadingDialog(),
-                                                                                  );
-                                                                                  // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
-                                                                                },
-                                                                                child: const Text('Tải về'),
-                                                                              ),
-                                                                            ]),
-                                                                      )
-                                                                    : showDialog(
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (context) =>
-                                                                                const DownloadingDialog(),
-                                                                      );
-                                                                setState(() {
-                                                                  isLoading =
-                                                                      false;
-                                                                });
-                                                              },
-                                                              icon: listReponse![
-                                                                              index]
-                                                                          [
-                                                                          'downloaded'] ==
-                                                                      true
-                                                                  ? Icon(
-                                                                      Icons
-                                                                          .download_sharp,
-                                                                      color: Colors
-                                                                          .blue)
-                                                                  : Icon(
-                                                                      Icons
-                                                                          .download_sharp,
-                                                                      color: Colors
-                                                                          .blue))
-                                                        ],
-                                                      ),
+                                                            listReponse![index][
+                                                                        'downloaded'] ==
+                                                                    true
+                                                                ? showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder: (context) => AlertDialog(
+                                                                        title: Text("Thông báo"),
+                                                                        content: Column(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.min,
+                                                                          children: [
+                                                                            Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
+                                                                          ],
+                                                                        ),
+                                                                        actions: <Widget>[
+                                                                          TextButton(
+                                                                            onPressed:
+                                                                                () {
+                                                                              Navigator.pop(context, 'Thoát');
+                                                                            },
+                                                                            child:
+                                                                                const Text('Thoát'),
+                                                                          ),
+                                                                          TextButton(
+                                                                            onPressed:
+                                                                                () {
+                                                                              showDialog(
+                                                                                context: context,
+                                                                                useRootNavigator: false,
+                                                                                builder: (context) => const DownloadingDialog(),
+                                                                              );
+                                                                              // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
+                                                                            },
+                                                                            child:
+                                                                                const Text('Tải về'),
+                                                                          ),
+                                                                        ]),
+                                                                  )
+                                                                : showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) =>
+                                                                            const DownloadingDialog(),
+                                                                  );
+                                                            setState(() {
+                                                              isLoading = false;
+                                                            });
+                                                          },
+                                                          icon: listReponse![
+                                                                          index]
+                                                                      [
+                                                                      'downloaded'] ==
+                                                                  true
+                                                              ? Icon(
+                                                                  Icons
+                                                                      .download_sharp,
+                                                                  color: Colors
+                                                                      .blue)
+                                                              : Icon(
+                                                                  Icons
+                                                                      .download_sharp,
+                                                                  color: Colors
+                                                                      .blue))
                                                     ],
                                                   ),
                                                 ],
                                               ),
-                                            ]),
-                                      ),
+                                            ],
+                                          ),
+                                        ]),
+                                  ),
+                                ),
+                              );
+                            }),
+                      ),
+                    ),
+                    Container(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 242, 254, 255),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ListView(
+                            children: [
+                              dataBook == null
+                                  ? Text('Đang tải dữ liệu')
+                                  : Text(
+                                      dataBook?['description'],
+                                      softWrap: true,
+                                      textAlign: TextAlign.justify,
+                                      style: const TextStyle(
+                                          fontSize: 17, height: 1.5),
                                     ),
-                                  );
-                                }),
+                            ],
                           ),
                         ),
-                        Container(
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 242, 254, 255),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: ListView(
-                                children: [
-                                  dataBook == null
-                                      ? Text('Đang tải dữ liệu')
-                                      : Text(
-                                          dataBook?['description'],
-                                          softWrap: true,
-                                          textAlign: TextAlign.justify,
-                                          style: const TextStyle(
-                                              fontSize: 17, height: 1.5),
-                                        ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        ReviewBook(),
-                      ]),
+                      ),
+                    ),
+                    ReviewBook(),
+                  ]),
                 ))
               ],
             ),
@@ -494,8 +508,10 @@ class _PdfViewerPageState extends State<PdfViewerPage>
   String? titleChapter;
 
   bool isLoading = true;
+  bool? isFirst;
+  bool? isLast;
   String? token;
-  String? idchap;
+  int? idchap;
   String? idbooks;
 
   Future<void> getItemBooks() async {
@@ -503,13 +519,18 @@ class _PdfViewerPageState extends State<PdfViewerPage>
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
       idbooks = prefs.getString('idbook');
+      idchap = prefs.getInt('idchapter') ?? 0;
+      // isFirst = prefs.getBool('chapfirst');
+      // isLast = prefs.getBool('chaplast');
       var response = await Dio().get('http://103.77.166.202/api/book/$idbooks',
           options: Options(headers: {
             'Authorization': 'Bearer $token',
           }));
       if (response.statusCode == 200) {
         dataBook = response.data;
-        listReponse = dataBook!['chapters']['id'];
+        listReponse = dataBook!['chapters'];
+        isLast = listReponse![0]['last'];
+        print(isLast);
         print('CHI TIET SACH: ${listReponse.toString()}');
         setState(() {
           isLoading = false;
@@ -517,7 +538,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
       } else {
         Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
       }
-      print("res: ${response.data}");
+      // print("res: ${response.data}");
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {
         Get.dialog(DialogLogout());
@@ -559,6 +580,21 @@ class _PdfViewerPageState extends State<PdfViewerPage>
         title: Text(
           "B4U BSOC",
           style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.remove('idchapter');
+            Navigator.pushAndRemoveUntil<dynamic>(
+              context,
+              MaterialPageRoute<dynamic>(
+                builder: (BuildContext context) => DetailBookPage(),
+              ),
+              (route) =>
+                  false, //if you want to disable back feature set to false
+            );
+          },
         ),
       ),
       body: Column(
@@ -602,13 +638,15 @@ class _PdfViewerPageState extends State<PdfViewerPage>
         children: [
           FloatingActionButton(
             heroTag: "b1",
-            onPressed: () {
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+
               setState(() {
-                if (dataBook!['chapters']['id'] != 0) {
-                  // dataBook!['chapters']['id']--;
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => PdfViewerPage()));
-                }
+                print(int.parse(idchap.toString()) - 1);
+                int.parse(idchap.toString()) - 1;
+                prefs.setInt('idchapter', int.parse(idchap.toString()) - 1);
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => PdfViewerPage()));
               });
             },
             child: Icon(Icons.arrow_back),
@@ -616,15 +654,20 @@ class _PdfViewerPageState extends State<PdfViewerPage>
           ),
           FloatingActionButton(
             heroTag: "b2",
-            onPressed: () {
-              setState(() {
-                if (dataBook!['chapters']['id'] !=
-                    dataBook!['chapters']['id']!.length - 1) {
-                  // dataBook!['chapters']['id']++;
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              if (isLast != true) {
+                setState(() {
+                  print(int.parse(idchap.toString()) + 1);
+                  print(isLast);
+                  int.parse(idchap.toString()) + 1;
+                  prefs.setInt('idchapter', int.parse(idchap.toString()) + 1);
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => PdfViewerPage()));
-                }
-              });
+                });
+              } else {
+                Get.snackbar("Thông báo", "Đã hết chương");
+              }
             },
             child: Icon(Icons.arrow_forward),
             backgroundColor: Color.fromARGB(255, 138, 175, 52),
@@ -638,11 +681,11 @@ class _PdfViewerPageState extends State<PdfViewerPage>
 class ApiServiceProvider {
   static Future<String> loadPDF() async {
     String? token;
-    String? idchapter;
+    int? idchapter;
     String? namesave;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
-    idchapter = prefs.getString('idchapter');
+    idchapter = prefs.getInt('idchapter') ?? 0;
     namesave = prefs.getString('filePath');
 
     var url =

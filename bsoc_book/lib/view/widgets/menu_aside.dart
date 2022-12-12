@@ -97,7 +97,7 @@ class _MenuAsideState extends State<MenuAside> {
                             MaterialPageRoute(
                                 builder: (context) => const UploadAvatar()));
                       },
-                      child: mapDemo!['avatar'] == null
+                      child: mapDemo == null
                           ? const CircleAvatar(
                               radius: 50.0,
                               backgroundImage:
