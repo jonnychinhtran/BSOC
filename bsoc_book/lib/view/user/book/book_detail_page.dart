@@ -125,6 +125,7 @@ class _DetailBookPageState extends State<DetailBookPage>
           onPressed: () async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.remove('idbook');
+            await prefs.remove('idchapter');
             Navigator.pushAndRemoveUntil<dynamic>(
               context,
               MaterialPageRoute<dynamic>(
@@ -575,36 +576,37 @@ class _PdfViewerPageState extends State<PdfViewerPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 138, 175, 52),
-          centerTitle: true,
-          title: Text(
-            "B4U BSOC",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.remove('idchapter');
-              Navigator.pushAndRemoveUntil<dynamic>(
-                context,
-                MaterialPageRoute<dynamic>(
-                  builder: (BuildContext context) => DetailBookPage(),
-                ),
-                (route) =>
-                    false, //if you want to disable back feature set to false
-              );
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(
-                Icons.list,
-                color: Colors.white,
+        backgroundColor: Color.fromARGB(255, 138, 175, 52),
+        centerTitle: true,
+        title: Text(
+          "B4U BSOC",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.remove('idchapter');
+            Navigator.pushAndRemoveUntil<dynamic>(
+              context,
+              MaterialPageRoute<dynamic>(
+                builder: (BuildContext context) => DetailBookPage(),
               ),
-              onPressed: () {},
-            ),
-          ]),
+              (route) =>
+                  false, //if you want to disable back feature set to false
+            );
+          },
+        ),
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(
+        //       Icons.list,
+        //       color: Colors.white,
+        //     ),
+        //     onPressed: () {},
+        //   ),
+        // ]
+      ),
       body: Column(
         children: [
           localPath != null
@@ -641,9 +643,9 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                   ),
                 )
               : const Center(child: CircularProgressIndicator()),
-          Container(
-            height: 100,
-          )
+          // Container(
+          //   height: 100,
+          // )
         ],
       ),
       // floatingActionButton: Row(

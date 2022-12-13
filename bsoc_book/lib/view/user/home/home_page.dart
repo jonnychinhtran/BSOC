@@ -403,25 +403,27 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       Container(
-                        height: 100,
+                        height: 80,
                         color: Colors.grey.shade800,
-                        child: Center(
-                            child: Column(
-                          children: [
-                            SizedBox(height: size.height * 0.03),
-                            Text(
-                              "© B4USOLUTION. All Rights Reserved.",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "Privacy Policy Designed by B4USOLUTION",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
-                            )
-                          ],
-                        )),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Center(
+                              child: Column(
+                            children: [
+                              Text(
+                                "© B4USOLUTION. All Rights Reserved.",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
+                              SizedBox(height: 3),
+                              Text(
+                                "Privacy Policy Designed by B4USOLUTION",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              )
+                            ],
+                          )),
+                        ),
                       )
                     ],
                   ),
