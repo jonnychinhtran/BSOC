@@ -575,105 +575,118 @@ class _PdfViewerPageState extends State<PdfViewerPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 138, 175, 52),
-        centerTitle: true,
-        title: Text(
-          "B4U BSOC",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () async {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.remove('idchapter');
-            Navigator.pushAndRemoveUntil<dynamic>(
-              context,
-              MaterialPageRoute<dynamic>(
-                builder: (BuildContext context) => DetailBookPage(),
+          backgroundColor: Color.fromARGB(255, 138, 175, 52),
+          centerTitle: true,
+          title: Text(
+            "B4U BSOC",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.remove('idchapter');
+              Navigator.pushAndRemoveUntil<dynamic>(
+                context,
+                MaterialPageRoute<dynamic>(
+                  builder: (BuildContext context) => DetailBookPage(),
+                ),
+                (route) =>
+                    false, //if you want to disable back feature set to false
+              );
+            },
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.list,
+                color: Colors.white,
               ),
-              (route) =>
-                  false, //if you want to disable back feature set to false
-            );
-          },
-        ),
-      ),
+              onPressed: () {},
+            ),
+          ]),
       body: Column(
         children: [
           localPath != null
               ? Expanded(
-                  child: PDFView(
-                    filePath: localPath,
-                    pageSnap: true,
-                    autoSpacing: true,
-                    enableSwipe: true,
-                    defaultPage: currentPage!,
-                    fitPolicy: FitPolicy.BOTH,
-                    fitEachPage: true,
-                    onRender: (_pages) {
-                      setState(() {
-                        pages = _pages;
-                        isReady = true;
-                      });
-                    },
-                    onViewCreated: (PDFViewController pdfViewController) {
-                      _controller.complete(pdfViewController);
-                    },
-                    onPageChanged: (int? page, int? total) {
-                      print('page change: $page/$total');
-                      setState(() async {
-                        currentPage = page;
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        prefs.setInt('keeppage', page!);
-                        print('Trang hien tai: ${prefs.getInt('keeppage')}');
-                      });
-                    },
+                  child: Container(
+                    child: PDFView(
+                      filePath: localPath,
+                      pageSnap: true,
+                      autoSpacing: true,
+                      enableSwipe: true,
+                      defaultPage: currentPage!,
+                      fitPolicy: FitPolicy.BOTH,
+                      fitEachPage: true,
+                      onRender: (_pages) {
+                        setState(() {
+                          pages = _pages;
+                          isReady = true;
+                        });
+                      },
+                      onViewCreated: (PDFViewController pdfViewController) {
+                        _controller.complete(pdfViewController);
+                      },
+                      onPageChanged: (int? page, int? total) {
+                        print('page change: $page/$total');
+                        setState(() async {
+                          currentPage = page;
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          prefs.setInt('keeppage', page!);
+                          print('Trang hien tai: ${prefs.getInt('keeppage')}');
+                        });
+                      },
+                    ),
                   ),
                 )
               : const Center(child: CircularProgressIndicator()),
+          Container(
+            height: 100,
+          )
         ],
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          FloatingActionButton(
-            heroTag: "b1",
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
+      // floatingActionButton: Row(
+      //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //   children: [
+      //     FloatingActionButton(
+      //       heroTag: "b1",
+      //       onPressed: () async {
+      //         SharedPreferences prefs = await SharedPreferences.getInstance();
 
-              setState(() {
-                print(int.parse(idchap.toString()) - 1);
-                int.parse(idchap.toString()) - 1;
-                prefs.setInt('idchapter', int.parse(idchap.toString()) - 1);
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => PdfViewerPage()));
-              });
-            },
-            child: Icon(Icons.arrow_back),
-            backgroundColor: Color.fromARGB(255, 138, 175, 52),
-          ),
-          FloatingActionButton(
-            heroTag: "b2",
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              if (isLast != true) {
-                setState(() {
-                  print(int.parse(idchap.toString()) + 1);
-                  print(isLast);
-                  int.parse(idchap.toString()) + 1;
-                  prefs.setInt('idchapter', int.parse(idchap.toString()) + 1);
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => PdfViewerPage()));
-                });
-              } else {
-                Get.snackbar("Thông báo", "Đã hết chương");
-              }
-            },
-            child: Icon(Icons.arrow_forward),
-            backgroundColor: Color.fromARGB(255, 138, 175, 52),
-          ),
-        ],
-      ),
+      //         setState(() {
+      //           print(int.parse(idchap.toString()) - 1);
+      //           int.parse(idchap.toString()) - 1;
+      //           prefs.setInt('idchapter', int.parse(idchap.toString()) - 1);
+      //           Navigator.of(context).push(
+      //               MaterialPageRoute(builder: (context) => PdfViewerPage()));
+      //         });
+      //       },
+      //       child: Icon(Icons.arrow_back),
+      //       backgroundColor: Color.fromARGB(255, 138, 175, 52),
+      //     ),
+      //     FloatingActionButton(
+      //       heroTag: "b2",
+      //       onPressed: () async {
+      //         SharedPreferences prefs = await SharedPreferences.getInstance();
+      //         if (isLast != true) {
+      //           setState(() {
+      //             print(int.parse(idchap.toString()) + 1);
+      //             print(isLast);
+      //             int.parse(idchap.toString()) + 1;
+      //             prefs.setInt('idchapter', int.parse(idchap.toString()) + 1);
+      //             Navigator.of(context).push(
+      //                 MaterialPageRoute(builder: (context) => PdfViewerPage()));
+      //           });
+      //         } else {
+      //           Get.snackbar("Thông báo", "Đã hết chương");
+      //         }
+      //       },
+      //       child: Icon(Icons.arrow_forward),
+      //       backgroundColor: Color.fromARGB(255, 138, 175, 52),
+      //     ),
+      //   ],
+      // ),
     );
   }
 }
