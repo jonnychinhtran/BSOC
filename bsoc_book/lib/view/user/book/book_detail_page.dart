@@ -18,6 +18,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../../data/model/books/book_detail.dart';
+
 String? demo;
 Map? mapDemo;
 Map? demoReponse;
@@ -77,6 +79,13 @@ class _DetailBookPageState extends State<DetailBookPage>
       }
     }
   }
+
+  final List<Chapters> Bookdata = List.generate(
+      listReponse!.length,
+      (index) => Chapters(
+          id: listReponse![index]['id'],
+          chapterId: listReponse![index]['chapterId'],
+          chapterTitle: listReponse![index]['chapterTitle']));
 
   Future<void> addBookmark() async {
     try {
@@ -258,23 +267,31 @@ class _DetailBookPageState extends State<DetailBookPage>
                                   final SharedPreferences? prefs = await _prefs;
                                   await prefs?.setInt(
                                       'idchapter', listReponse![index]['id']);
-                                  await prefs?.setBool('chapfirst',
-                                      listReponse![index]['first']);
-                                  await prefs?.setBool(
-                                      'chaplast', listReponse![index]['last']);
+                                  // await prefs?.setBool('chapfirst',
+                                  //     listReponse![index]['first']);
+                                  // await prefs?.setBool(
+                                  //     'chaplast', listReponse![index]['last']);
                                   await prefs?.setString(
                                       'titleChapter',
                                       listReponse![index]['chapterTitle']
                                           .toString());
                                   print(
                                       'ChapterID Click: ${listReponse![index]['id'].toString()}');
-                                  print(
-                                      'FIRST: ${listReponse![index]['first']}');
-                                  print('LAST: ${listReponse![index]['last']}');
+                                  // print(
+                                  //     'FIRST: ${listReponse![index]['first']}');
+                                  // print('LAST: ${listReponse![index]['last']}');
+                                  // Navigator.of(context).push(MaterialPageRoute(
+                                  //     builder: (context) => PdfViewerPage(
+                                  //           index: index,
+                                  //           bookDataModel: Bookdata,
+                                  //         )));
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute<dynamic>(
-                                        builder: (_) => PdfViewerPage()),
+                                        builder: (context) => PdfViewerPage(
+                                              index: index,
+                                              bookDataModel: Bookdata,
+                                            )),
                                   );
                                 },
                                 child: Card(
@@ -488,6 +505,11 @@ class _DetailBookPageState extends State<DetailBookPage>
 }
 
 class PdfViewerPage extends StatefulWidget {
+  final List<Chapters> bookDataModel;
+  int index;
+
+  PdfViewerPage({Key? key, required this.index, required this.bookDataModel})
+      : super(key: key);
   @override
   _PdfViewerPageState createState() => _PdfViewerPageState();
 }
@@ -530,7 +552,6 @@ class _PdfViewerPageState extends State<PdfViewerPage>
       if (response.statusCode == 200) {
         dataBook = response.data;
         listReponse = dataBook!['chapters'];
-        isLast = listReponse![0]['last'];
         print(isLast);
         print('CHI TIET SACH: ${listReponse.toString()}');
         setState(() {
@@ -553,6 +574,13 @@ class _PdfViewerPageState extends State<PdfViewerPage>
       }
     }
   }
+
+  final List<Chapters> Bookdata = List.generate(
+      listReponse!.length,
+      (index) => Chapters(
+          id: listReponse![index]['id'],
+          chapterId: listReponse![index]['chapterId'],
+          chapterTitle: listReponse![index]['chapterTitle']));
 
   void getTitleChap() async {
     final prefs = await SharedPreferences.getInstance();
@@ -612,40 +640,105 @@ class _PdfViewerPageState extends State<PdfViewerPage>
           localPath != null
               ? Expanded(
                   child: Container(
-                    child: PDFView(
-                      filePath: localPath,
-                      pageSnap: true,
-                      autoSpacing: true,
-                      enableSwipe: true,
-                      defaultPage: currentPage!,
-                      fitPolicy: FitPolicy.BOTH,
-                      fitEachPage: true,
-                      onRender: (_pages) {
-                        setState(() {
-                          pages = _pages;
-                          isReady = true;
-                        });
-                      },
-                      onViewCreated: (PDFViewController pdfViewController) {
-                        _controller.complete(pdfViewController);
-                      },
-                      onPageChanged: (int? page, int? total) {
-                        print('page change: $page/$total');
-                        setState(() async {
-                          currentPage = page;
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          prefs.setInt('keeppage', page!);
-                          print('Trang hien tai: ${prefs.getInt('keeppage')}');
-                        });
-                      },
-                    ),
-                  ),
+                      child: PageView(
+                    children: [
+                      PDFView(
+                        filePath: localPath,
+                        pageSnap: true,
+                        autoSpacing: true,
+                        enableSwipe: true,
+                        defaultPage: currentPage!,
+                        fitPolicy: FitPolicy.BOTH,
+                        fitEachPage: true,
+                        onRender: (_pages) {
+                          setState(() {
+                            pages = _pages;
+                            isReady = true;
+                          });
+                        },
+                        onViewCreated: (PDFViewController pdfViewController) {
+                          _controller.complete(pdfViewController);
+                        },
+                        onPageChanged: (int? page, int? total) {
+                          print('page change: $page/$total');
+                          setState(() async {
+                            currentPage = page;
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setInt('keeppage', page!);
+                            print(
+                                'Trang hien tai: ${prefs.getInt('keeppage')}');
+                          });
+                        },
+                      ),
+                    ],
+                  )),
                 )
               : const Center(child: CircularProgressIndicator()),
-          // Container(
-          //   height: 100,
-          // )
+          Container(
+            height: 80,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  FloatingActionButton(
+                    heroTag: "f1",
+                    onPressed: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      setState(() {
+                        if (widget.index != 0) {
+                          widget.index--;
+                          int.parse(idchap.toString()) - 1;
+                          prefs.setInt(
+                              'idchapter', int.parse(idchap.toString()) - 1);
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => PdfViewerPage(
+                                    index: 0,
+                                    bookDataModel: Bookdata,
+                                  )));
+                        }
+                      });
+                    },
+                    child: Icon(Icons.arrow_back_ios),
+                  ),
+                  Expanded(
+                      child: Center(
+                    child:
+                        Text(widget.bookDataModel[widget.index].id.toString()),
+                  )),
+                  FloatingActionButton(
+                    heroTag: "f2",
+                    onPressed: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      setState(() {
+                        if (widget.index != widget.bookDataModel.length - 1) {
+                          widget.index++;
+                          int.parse(widget.bookDataModel[widget.index].id
+                                  .toString()) +
+                              1;
+                          prefs.setInt(
+                              'idchapter',
+                              int.parse(widget.bookDataModel[widget.index].id
+                                      .toString()) +
+                                  1);
+                          Get.to(PDFView());
+                          // Navigator.of(context).push(MaterialPageRoute(
+                          //     builder: (context) => PdfViewerPage(
+                          //           // index: 0,
+                          //           // bookDataModel: Bookdata,
+                          //         )));
+                        }
+                      });
+                    },
+                    child: Icon(Icons.arrow_forward_ios),
+                  ),
+                ],
+              ),
+            ),
+          )
         ],
       ),
       // floatingActionButton: Row(
@@ -658,10 +751,10 @@ class _PdfViewerPageState extends State<PdfViewerPage>
 
       //         setState(() {
       //           print(int.parse(idchap.toString()) - 1);
-      //           int.parse(idchap.toString()) - 1;
-      //           prefs.setInt('idchapter', int.parse(idchap.toString()) - 1);
-      //           Navigator.of(context).push(
-      //               MaterialPageRoute(builder: (context) => PdfViewerPage()));
+      // int.parse(idchap.toString()) - 1;
+      // prefs.setInt('idchapter', int.parse(idchap.toString()) - 1);
+      // Navigator.of(context).push(
+      //     MaterialPageRoute(builder: (context) => PdfViewerPage()));
       //         });
       //       },
       //       child: Icon(Icons.arrow_back),
@@ -1263,11 +1356,11 @@ class _BookmarkPageState extends State<BookmarkPage> {
                       final SharedPreferences? prefs = await _prefs;
                       await prefs?.setString('idchapter',
                           bookmark![index]['chapter']['id'].toString());
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<dynamic>(
-                            builder: (_) => PdfViewerPage()),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute<dynamic>(
+                      //       builder: (_) => PdfViewerPage()),
+                      // );
                     },
                     child: ListTile(
                       title: Text(bookmark![index] == null
