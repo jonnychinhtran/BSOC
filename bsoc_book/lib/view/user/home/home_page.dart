@@ -12,7 +12,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:new_version/new_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:social_media_flutter/social_media_flutter.dart';
@@ -48,7 +47,7 @@ class _HomePageState extends State<HomePage> {
       if (response.statusCode == 200) {
         mapDemo = response.data;
         listReponse = mapDemo!['content'];
-        print('CHI TIET SACH: ${listReponse.toString()}');
+        // print('CHI TIET SACH: ${listReponse.toString()}');
         setState(() {
           isLoading = false;
         });

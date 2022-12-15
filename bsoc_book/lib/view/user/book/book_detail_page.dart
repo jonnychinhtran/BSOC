@@ -18,8 +18,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../../../data/model/books/book_detail.dart';
-
 String? demo;
 Map? mapDemo;
 Map? demoReponse;
@@ -58,7 +56,7 @@ class _DetailBookPageState extends State<DetailBookPage>
       if (response.statusCode == 200) {
         dataBook = response.data;
         listReponse = dataBook!['chapters'];
-        print('CHI TIET SACH: ${listReponse.toString()}');
+        // print('CHI TIET SACH: ${listReponse.toString()}');
         setState(() {
           isLoading = false;
         });
@@ -80,13 +78,6 @@ class _DetailBookPageState extends State<DetailBookPage>
     }
   }
 
-  final List<Chapters> Bookdata = List.generate(
-      listReponse!.length,
-      (index) => Chapters(
-          id: listReponse![index]['id'],
-          chapterId: listReponse![index]['chapterId'],
-          chapterTitle: listReponse![index]['chapterTitle']));
-
   Future<void> addBookmark() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -101,7 +92,6 @@ class _DetailBookPageState extends State<DetailBookPage>
               }))
           .timeout(Duration(seconds: 3));
       if (response.statusCode == 200) {
-        // Get.snackbar("Thông báo", "Thêm đánh dấu trang thành công.");
         setState(() {
           isLoading = false;
         });
@@ -267,31 +257,23 @@ class _DetailBookPageState extends State<DetailBookPage>
                                   final SharedPreferences? prefs = await _prefs;
                                   await prefs?.setInt(
                                       'idchapter', listReponse![index]['id']);
-                                  // await prefs?.setBool('chapfirst',
-                                  //     listReponse![index]['first']);
-                                  // await prefs?.setBool(
-                                  //     'chaplast', listReponse![index]['last']);
+                                  await prefs?.setInt('sttchapter',
+                                      listReponse![index]['chapterId']);
                                   await prefs?.setString(
                                       'titleChapter',
                                       listReponse![index]['chapterTitle']
                                           .toString());
+                                  await prefs?.setString(
+                                      'filePathChapter',
+                                      listReponse![index]['filePath']
+                                          .toString());
                                   print(
                                       'ChapterID Click: ${listReponse![index]['id'].toString()}');
-                                  // print(
-                                  //     'FIRST: ${listReponse![index]['first']}');
-                                  // print('LAST: ${listReponse![index]['last']}');
-                                  // Navigator.of(context).push(MaterialPageRoute(
-                                  //     builder: (context) => PdfViewerPage(
-                                  //           index: index,
-                                  //           bookDataModel: Bookdata,
-                                  //         )));
+
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute<dynamic>(
-                                        builder: (context) => PdfViewerPage(
-                                              index: index,
-                                              bookDataModel: Bookdata,
-                                            )),
+                                        builder: (context) => PdfViewerPage()),
                                   );
                                 },
                                 child: Card(
@@ -505,11 +487,6 @@ class _DetailBookPageState extends State<DetailBookPage>
 }
 
 class PdfViewerPage extends StatefulWidget {
-  final List<Chapters> bookDataModel;
-  int index;
-
-  PdfViewerPage({Key? key, required this.index, required this.bookDataModel})
-      : super(key: key);
   @override
   _PdfViewerPageState createState() => _PdfViewerPageState();
 }
@@ -531,11 +508,12 @@ class _PdfViewerPageState extends State<PdfViewerPage>
   String? titleChapter;
 
   bool isLoading = true;
-  bool? isFirst;
-  bool? isLast;
+
   String? token;
   int? idchap;
+  int? sttchap;
   String? idbooks;
+  String? filename;
 
   Future<void> getItemBooks() async {
     try {
@@ -543,8 +521,8 @@ class _PdfViewerPageState extends State<PdfViewerPage>
       token = prefs.getString('accessToken');
       idbooks = prefs.getString('idbook');
       idchap = prefs.getInt('idchapter') ?? 0;
-      // isFirst = prefs.getBool('chapfirst');
-      // isLast = prefs.getBool('chaplast');
+      sttchap = prefs.getInt('sttchapter') ?? 0;
+      titleChapter = prefs.getString('titleChapter');
       var response = await Dio().get('http://103.77.166.202/api/book/$idbooks',
           options: Options(headers: {
             'Authorization': 'Bearer $token',
@@ -552,8 +530,8 @@ class _PdfViewerPageState extends State<PdfViewerPage>
       if (response.statusCode == 200) {
         dataBook = response.data;
         listReponse = dataBook!['chapters'];
-        print(isLast);
-        print('CHI TIET SACH: ${listReponse.toString()}');
+
+        // print('CHI TIET SACH: ${listReponse.toString()}');
         setState(() {
           isLoading = false;
         });
@@ -575,12 +553,26 @@ class _PdfViewerPageState extends State<PdfViewerPage>
     }
   }
 
-  final List<Chapters> Bookdata = List.generate(
-      listReponse!.length,
-      (index) => Chapters(
-          id: listReponse![index]['id'],
-          chapterId: listReponse![index]['chapterId'],
-          chapterTitle: listReponse![index]['chapterTitle']));
+  Future<String> loadPDF() async {
+    String? token;
+
+    final prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('accessToken');
+    idchap = prefs.getInt('idchapter') ?? 0;
+    filename = prefs.getString('filePathChapter');
+
+    var url = Uri.parse('http://103.77.166.202/api/chapter/download/$idchap');
+    http.Response response = await http.get(url, headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/pdf'
+    });
+
+    var dir = await getApplicationDocumentsDirectory();
+    File file = File("${dir.path}/$filename");
+
+    file.writeAsBytesSync(response.bodyBytes, flush: true);
+    return file.path;
+  }
 
   void getTitleChap() async {
     final prefs = await SharedPreferences.getInstance();
@@ -591,9 +583,10 @@ class _PdfViewerPageState extends State<PdfViewerPage>
   void initState() {
     readData();
     getItemBooks();
+    loadPDF();
     super.initState();
 
-    ApiServiceProvider.loadPDF().then((value) {
+    loadPDF().then((value) {
       setState(() {
         localPath = value;
       });
@@ -607,14 +600,16 @@ class _PdfViewerPageState extends State<PdfViewerPage>
         backgroundColor: Color.fromARGB(255, 138, 175, 52),
         centerTitle: true,
         title: Text(
-          "B4U BSOC",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          'Chương ' + sttchap.toString() + ': ' + titleChapter.toString(),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.remove('idchapter');
+            await prefs.remove('sttchapter');
+            await prefs.remove('chapterTitle');
             Navigator.pushAndRemoveUntil<dynamic>(
               context,
               MaterialPageRoute<dynamic>(
@@ -636,6 +631,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
         // ]
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           localPath != null
               ? Expanded(
@@ -676,64 +672,155 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                 )
               : const Center(child: CircularProgressIndicator()),
           Container(
-            height: 80,
+            height: .10 * MediaQuery.of(context).size.height,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  FloatingActionButton(
-                    heroTag: "f1",
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      setState(() {
-                        if (widget.index != 0) {
-                          widget.index--;
-                          int.parse(idchap.toString()) - 1;
-                          prefs.setInt(
-                              'idchapter', int.parse(idchap.toString()) - 1);
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PdfViewerPage(
-                                    index: 0,
-                                    bookDataModel: Bookdata,
-                                  )));
-                        }
-                      });
-                    },
-                    child: Icon(Icons.arrow_back_ios),
+                  SizedBox(
+                    height: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+
+                        setState(() {
+                          if (sttchap!.bitLength != 1) {
+                            int.parse(idchap.toString()) - 1;
+
+                            prefs.setInt(
+                                'idchapter', int.parse(idchap.toString()) - 1);
+                            prefs.setInt('sttchapter',
+                                int.parse(sttchap.toString()) - 1);
+                            prefs.setString(
+                                'titleChapter',
+                                listReponse![int.parse(sttchap!.toString()) - 2]
+                                        ['chapterTitle']
+                                    .toString());
+                            print(
+                                listReponse![int.parse(sttchap!.toString()) - 2]
+                                        ['chapterTitle']
+                                    .toString());
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => PdfViewerPage()));
+                          }
+                        });
+                      },
+                      child: Icon(Icons.arrow_back_ios),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.pressed))
+                              return Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.5);
+                            else if (states.contains(MaterialState.disabled))
+                              return Color.fromARGB(255, 138, 175, 52);
+                            return Color.fromARGB(255, 138, 175,
+                                52); // Use the component's default.
+                          },
+                        ),
+                      ),
+                    ),
                   ),
                   Expanded(
                       child: Center(
-                    child:
-                        Text(widget.bookDataModel[widget.index].id.toString()),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: listReponse!.length,
+                      itemBuilder: (context, index) {
+                        // if (listReponse!.last != true)
+                        //   return Text(listReponse!.last);
+                        // return SizedBox();
+                        return Container(
+                          margin: EdgeInsets.only(right: 5, left: 5),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              setState(() {
+                                prefs.setInt(
+                                    'idchapter', listReponse![index]['id']);
+                                prefs.setInt('sttchapter',
+                                    listReponse![index]['chapterId']);
+                                prefs.setString(
+                                    'titleChapter',
+                                    listReponse![index]['chapterTitle']
+                                        .toString());
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (context) => PdfViewerPage()));
+                              });
+                            },
+                            child: Text(
+                              listReponse![index]['chapterId'].toString(),
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.pressed))
+                                    return Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withOpacity(0.5);
+                                  else if (states
+                                      .contains(MaterialState.disabled))
+                                    return Colors.black;
+                                  return Color.fromARGB(255, 138, 175, 52);
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   )),
-                  FloatingActionButton(
-                    heroTag: "f2",
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      setState(() {
-                        if (widget.index != widget.bookDataModel.length - 1) {
-                          widget.index++;
-                          int.parse(widget.bookDataModel[widget.index].id
-                                  .toString()) +
-                              1;
+                  SizedBox(
+                    height: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        setState(() {
+                          int.parse(idchap.toString()) + 1;
+
                           prefs.setInt(
-                              'idchapter',
-                              int.parse(widget.bookDataModel[widget.index].id
-                                      .toString()) +
-                                  1);
-                          Get.to(PDFView());
-                          // Navigator.of(context).push(MaterialPageRoute(
-                          //     builder: (context) => PdfViewerPage(
-                          //           // index: 0,
-                          //           // bookDataModel: Bookdata,
-                          //         )));
-                        }
-                      });
-                    },
-                    child: Icon(Icons.arrow_forward_ios),
+                              'idchapter', int.parse(idchap.toString()) + 1);
+                          prefs.setInt(
+                              'sttchapter', int.parse(sttchap.toString()) + 1);
+                          prefs.setString(
+                              'titleChapter',
+                              listReponse![sttchap!]['chapterTitle']
+                                  .toString());
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => PdfViewerPage()));
+                        });
+                      },
+                      child: Icon(Icons.arrow_forward_ios),
+                      // child: Text('Tiếp'),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.pressed))
+                              return Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.5);
+                            else if (states.contains(MaterialState.disabled))
+                              return Color.fromARGB(255, 138, 175, 52);
+                            return Color.fromARGB(255, 138, 175, 52);
+                          },
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -741,75 +828,34 @@ class _PdfViewerPageState extends State<PdfViewerPage>
           )
         ],
       ),
-      // floatingActionButton: Row(
-      //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-      //   children: [
-      //     FloatingActionButton(
-      //       heroTag: "b1",
-      //       onPressed: () async {
-      //         SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      //         setState(() {
-      //           print(int.parse(idchap.toString()) - 1);
-      // int.parse(idchap.toString()) - 1;
-      // prefs.setInt('idchapter', int.parse(idchap.toString()) - 1);
-      // Navigator.of(context).push(
-      //     MaterialPageRoute(builder: (context) => PdfViewerPage()));
-      //         });
-      //       },
-      //       child: Icon(Icons.arrow_back),
-      //       backgroundColor: Color.fromARGB(255, 138, 175, 52),
-      //     ),
-      //     FloatingActionButton(
-      //       heroTag: "b2",
-      //       onPressed: () async {
-      //         SharedPreferences prefs = await SharedPreferences.getInstance();
-      //         if (isLast != true) {
-      //           setState(() {
-      //             print(int.parse(idchap.toString()) + 1);
-      //             print(isLast);
-      //             int.parse(idchap.toString()) + 1;
-      //             prefs.setInt('idchapter', int.parse(idchap.toString()) + 1);
-      //             Navigator.of(context).push(
-      //                 MaterialPageRoute(builder: (context) => PdfViewerPage()));
-      //           });
-      //         } else {
-      //           Get.snackbar("Thông báo", "Đã hết chương");
-      //         }
-      //       },
-      //       child: Icon(Icons.arrow_forward),
-      //       backgroundColor: Color.fromARGB(255, 138, 175, 52),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }
 
-class ApiServiceProvider {
-  static Future<String> loadPDF() async {
-    String? token;
-    int? idchapter;
-    String? namesave;
-    final prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
-    idchapter = prefs.getInt('idchapter') ?? 0;
-    namesave = prefs.getString('filePath');
+// class ApiServiceProvider {
+// static Future<String> loadPDF() async {
+//   String? token;
+//   int? idchapter;
+//   String? namesave;
+//   final prefs = await SharedPreferences.getInstance();
+//   token = prefs.getString('accessToken');
+//   idchapter = prefs.getInt('idchapter') ?? 0;
+//   namesave = prefs.getString('filePath');
 
-    var url =
-        Uri.parse('http://103.77.166.202/api/chapter/download/$idchapter');
-    http.Response response = await http.get(url, headers: {
-      'Authorization': 'Bearer $token',
-      'Accept': 'application/pdf'
-    });
+//   var url =
+//       Uri.parse('http://103.77.166.202/api/chapter/download/$idchapter');
+//   http.Response response = await http.get(url, headers: {
+//     'Authorization': 'Bearer $token',
+//     'Accept': 'application/pdf'
+//   });
 
-    var dir = await getApplicationDocumentsDirectory();
-    File file = File("${dir.path}/$namesave");
+//   var dir = await getApplicationDocumentsDirectory();
+//   File file = File("${dir.path}/$namesave");
 
-    file.writeAsBytesSync(response.bodyBytes, flush: true);
-    return file.path;
-  }
-}
+//   file.writeAsBytesSync(response.bodyBytes, flush: true);
+//   return file.path;
+// }
+// }
 
 class DownloadingDialog extends StatefulWidget {
   const DownloadingDialog({Key? key}) : super(key: key);
@@ -1338,6 +1384,23 @@ class _BookmarkPageState extends State<BookmarkPage> {
           backgroundColor: Color.fromARGB(255, 138, 175, 52),
           centerTitle: true,
           title: Text('Đánh dấu chương'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.remove('idchapter');
+              await prefs.remove('sttchapter');
+              await prefs.remove('chapterTitle');
+              Navigator.pushAndRemoveUntil<dynamic>(
+                context,
+                MaterialPageRoute<dynamic>(
+                  builder: (BuildContext context) => DetailBookPage(),
+                ),
+                (route) =>
+                    false, //if you want to disable back feature set to false
+              );
+            },
+          ),
         ),
         body: isLoading
             ? Center(
@@ -1354,13 +1417,20 @@ class _BookmarkPageState extends State<BookmarkPage> {
                   return GestureDetector(
                     onTap: () async {
                       final SharedPreferences? prefs = await _prefs;
-                      await prefs?.setString('idchapter',
-                          bookmark![index]['chapter']['id'].toString());
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute<dynamic>(
-                      //       builder: (_) => PdfViewerPage()),
-                      // );
+                      await prefs?.setInt(
+                          'idchapter',
+                          int.parse(
+                              bookmark![index]['chapter']['id'].toString()));
+                      await prefs?.setInt('sttchapter',
+                          bookmark![index]['chapter']['chapterId']);
+                      await prefs?.setString(
+                          'titleChapter',
+                          bookmark![index]['chapter']['chapterTitle']
+                              .toString());
+                      await prefs?.setString('filePathChapter',
+                          bookmark![index]['chapter']['filePath'].toString());
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => PdfViewerPage()));
                     },
                     child: ListTile(
                       title: Text(bookmark![index] == null
