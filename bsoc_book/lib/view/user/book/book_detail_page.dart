@@ -125,6 +125,7 @@ class _DetailBookPageState extends State<DetailBookPage>
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.remove('idbook');
             await prefs.remove('idchapter');
+            await prefs.remove('sttchapter');
             Navigator.pushAndRemoveUntil<dynamic>(
               context,
               MaterialPageRoute<dynamic>(
@@ -832,31 +833,6 @@ class _PdfViewerPageState extends State<PdfViewerPage>
   }
 }
 
-// class ApiServiceProvider {
-// static Future<String> loadPDF() async {
-//   String? token;
-//   int? idchapter;
-//   String? namesave;
-//   final prefs = await SharedPreferences.getInstance();
-//   token = prefs.getString('accessToken');
-//   idchapter = prefs.getInt('idchapter') ?? 0;
-//   namesave = prefs.getString('filePath');
-
-//   var url =
-//       Uri.parse('http://103.77.166.202/api/chapter/download/$idchapter');
-//   http.Response response = await http.get(url, headers: {
-//     'Authorization': 'Bearer $token',
-//     'Accept': 'application/pdf'
-//   });
-
-//   var dir = await getApplicationDocumentsDirectory();
-//   File file = File("${dir.path}/$namesave");
-
-//   file.writeAsBytesSync(response.bodyBytes, flush: true);
-//   return file.path;
-// }
-// }
-
 class DownloadingDialog extends StatefulWidget {
   const DownloadingDialog({Key? key}) : super(key: key);
 
@@ -1028,7 +1004,6 @@ class _ReviewBookState extends State<ReviewBook> {
                                             .toString(),
                                   )),
                             )),
-                            // Text(listComment![index]['content'].toString())
                             Expanded(
                                 child: Padding(
                               padding:
@@ -1377,8 +1352,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final provider = Provider.of<BookmarkProvider>(context);
-    // final chapter = provider.listReponse;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Color.fromARGB(255, 138, 175, 52),
@@ -1388,6 +1361,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
             icon: Icon(Icons.arrow_back),
             onPressed: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.remove('idbook');
               await prefs.remove('idchapter');
               await prefs.remove('sttchapter');
               await prefs.remove('chapterTitle');
@@ -1396,8 +1370,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                 MaterialPageRoute<dynamic>(
                   builder: (BuildContext context) => DetailBookPage(),
                 ),
-                (route) =>
-                    false, //if you want to disable back feature set to false
+                (route) => false,
               );
             },
           ),

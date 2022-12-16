@@ -47,8 +47,10 @@ class _HomePageState extends State<HomePage> {
       if (response.statusCode == 200) {
         mapDemo = response.data;
         listReponse = mapDemo!['content'];
-        // print('CHI TIET SACH: ${listReponse.toString()}');
-        setState(() {
+        await prefs.remove('idbook');
+        await prefs.remove('idchapter');
+        await prefs.remove('sttchapter');
+        setState(() async {
           isLoading = false;
         });
       } else if (response.statusCode == 400) {
@@ -83,9 +85,9 @@ class _HomePageState extends State<HomePage> {
 
     if (response.statusCode == 200) {
       listTop = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
-      // demoReponse = _map;
-      // print(listTop[image].toString());
-      // listTop =
+      await prefs.remove('idbook');
+      await prefs.remove('idchapter');
+      await prefs.remove('sttchapter');
       setState(() {
         isLoading = false;
       });
@@ -345,6 +347,8 @@ class _HomePageState extends State<HomePage> {
                                       children: [
                                         GestureDetector(
                                           onTap: () async {
+                                            listReponse![index]['id']
+                                                .toString();
                                             final SharedPreferences? prefs =
                                                 await _prefs;
                                             await prefs?.setString(
