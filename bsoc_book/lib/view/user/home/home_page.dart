@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
         await prefs.remove('idbook');
         await prefs.remove('idchapter');
         await prefs.remove('sttchapter');
-        setState(() async {
+        setState(() {
           isLoading = false;
         });
       } else if (response.statusCode == 400) {

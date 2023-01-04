@@ -5,6 +5,7 @@ import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/view/downloads/download_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
+import 'package:bsoc_book/view/widgets/charge_book.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,7 +57,6 @@ class _DetailBookPageState extends State<DetailBookPage>
       if (response.statusCode == 200) {
         dataBook = response.data;
         listReponse = dataBook!['chapters'];
-        // print('CHI TIET SACH: ${listReponse.toString()}');
         setState(() {
           isLoading = false;
         });
@@ -202,23 +202,34 @@ class _DetailBookPageState extends State<DetailBookPage>
                 Container(
                   child: Hero(
                     tag: 'title',
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(dataBook?['bookName'],
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold)),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            dataBook?['author'],
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(dataBook?['bookName'],
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                                '(Mã sách: ' + dataBook!['id'].toString() + ')',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              dataBook?['author'],
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -271,11 +282,19 @@ class _DetailBookPageState extends State<DetailBookPage>
                                   print(
                                       'ChapterID Click: ${listReponse![index]['id'].toString()}');
 
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute<dynamic>(
-                                        builder: (context) => PdfViewerPage()),
-                                  );
+                                  if (listReponse![index]['allow'] == true) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute<dynamic>(
+                                          builder: (context) =>
+                                              PdfViewerPage()),
+                                    );
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => ChargeDialog(),
+                                    );
+                                  }
                                 },
                                 child: Card(
                                   color: Color.fromARGB(255, 255, 255, 255),
@@ -287,15 +306,29 @@ class _DetailBookPageState extends State<DetailBookPage>
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            'Chương: ' +
-                                                listReponse![index]['chapterId']
-                                                    .toString(),
-                                            style: TextStyle(
-                                              color: Colors.blue.shade900,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Chương: ' +
+                                                    listReponse![index]
+                                                            ['chapterId']
+                                                        .toString() +
+                                                    ' ',
+                                                style: TextStyle(
+                                                  color: Colors.blue.shade900,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              Icon(
+                                                listReponse![index]['allow'] ==
+                                                        true
+                                                    ? Icons.done_all_sharp
+                                                    : Icons.lock_sharp,
+                                                color: Colors.yellow.shade800,
+                                                size: 16,
+                                              ),
+                                            ],
                                           ),
                                           Row(
                                             mainAxisAlignment:
@@ -1361,16 +1394,16 @@ class _BookmarkPageState extends State<BookmarkPage> {
             icon: Icon(Icons.arrow_back),
             onPressed: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.remove('idbook');
-              await prefs.remove('idchapter');
-              await prefs.remove('sttchapter');
-              await prefs.remove('chapterTitle');
-              Navigator.pushAndRemoveUntil<dynamic>(
+              // await prefs.remove('idbook');
+              // await prefs.remove('idchapter');
+              // await prefs.remove('sttchapter');
+              // await prefs.remove('chapterTitle');
+              Navigator.push<dynamic>(
                 context,
                 MaterialPageRoute<dynamic>(
                   builder: (BuildContext context) => DetailBookPage(),
                 ),
-                (route) => false,
+                // (route) => false,
               );
             },
           ),

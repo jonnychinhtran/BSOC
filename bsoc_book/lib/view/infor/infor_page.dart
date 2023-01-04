@@ -91,6 +91,18 @@ class _InforPageState extends State<InforPage> {
                           children: [
                             ListTile(
                               title: Text(
+                                'Mã tài khoản:',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              trailing: Text(datauser!['id'].toString()),
+                            ),
+                            Divider(
+                              height: 2,
+                              endIndent: 0,
+                              color: Color.fromARGB(255, 87, 87, 87),
+                            ),
+                            ListTile(
+                              title: Text(
                                 'Họ Tên:',
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
