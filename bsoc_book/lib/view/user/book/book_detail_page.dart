@@ -356,125 +356,135 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                 children: [
                                                   Row(
                                                     children: [
-                                                      IconButton(
-                                                          onPressed: () async {
-                                                            final SharedPreferences?
-                                                                prefs =
-                                                                await _prefs;
-                                                            await prefs?.setString(
-                                                                'idchapter',
-                                                                listReponse![
-                                                                            index]
-                                                                        ['id']
-                                                                    .toString());
-
-                                                            print(
-                                                                'ChapterID Click: ${listReponse![index]['id'].toString()}');
-
-                                                            addBookmark();
-                                                            Get.snackbar(
-                                                                'Chương: ' +
+                                                      listReponse![index]
+                                                                  ['allow'] ==
+                                                              true
+                                                          ? IconButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                final SharedPreferences?
+                                                                    prefs =
+                                                                    await _prefs;
+                                                                await prefs?.setString(
+                                                                    'idchapter',
                                                                     listReponse![index]
                                                                             [
-                                                                            'chapterTitle']
-                                                                        .toString(),
-                                                                "Thêm đánh dấu trang thành công.");
-                                                          },
-                                                          icon: Icon(
-                                                            Icons.bookmark,
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    255,
-                                                                    51,
-                                                                    182,
-                                                                    61),
-                                                          )),
-                                                      IconButton(
-                                                          onPressed: () async {
-                                                            final SharedPreferences?
-                                                                prefs =
-                                                                await _prefs;
-                                                            await prefs?.setString(
-                                                                'idchapter',
-                                                                listReponse![
-                                                                            index]
-                                                                        ['id']
-                                                                    .toString());
-                                                            await prefs?.setString(
-                                                                'filePath',
-                                                                listReponse![
-                                                                            index]
-                                                                        [
-                                                                        'filePath']
-                                                                    .toString());
-                                                            print(
-                                                                'ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                                            'id']
+                                                                        .toString());
 
-                                                            listReponse![index][
-                                                                        'downloaded'] ==
-                                                                    true
-                                                                ? showDialog(
-                                                                    context:
-                                                                        context,
-                                                                    builder: (context) => AlertDialog(
-                                                                        title: Text("Thông báo"),
-                                                                        content: Column(
-                                                                          mainAxisSize:
-                                                                              MainAxisSize.min,
-                                                                          children: [
-                                                                            Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
-                                                                          ],
-                                                                        ),
-                                                                        actions: <Widget>[
-                                                                          TextButton(
-                                                                            onPressed:
-                                                                                () {
-                                                                              Navigator.pop(context, 'Thoát');
-                                                                            },
-                                                                            child:
-                                                                                const Text('Thoát'),
-                                                                          ),
-                                                                          TextButton(
-                                                                            onPressed:
-                                                                                () {
-                                                                              showDialog(
-                                                                                context: context,
-                                                                                useRootNavigator: false,
-                                                                                builder: (context) => const DownloadingDialog(),
-                                                                              );
-                                                                              // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
-                                                                            },
-                                                                            child:
-                                                                                const Text('Tải về'),
-                                                                          ),
-                                                                        ]),
-                                                                  )
-                                                                : showDialog(
-                                                                    context:
-                                                                        context,
-                                                                    builder:
-                                                                        (context) =>
-                                                                            const DownloadingDialog(),
-                                                                  );
-                                                            setState(() {
-                                                              isLoading = false;
-                                                            });
-                                                          },
-                                                          icon: listReponse![
-                                                                          index]
-                                                                      [
-                                                                      'downloaded'] ==
-                                                                  true
-                                                              ? Icon(
-                                                                  Icons
-                                                                      .download_sharp,
-                                                                  color: Colors
-                                                                      .blue)
-                                                              : Icon(
-                                                                  Icons
-                                                                      .download_sharp,
-                                                                  color: Colors
-                                                                      .blue))
+                                                                print(
+                                                                    'ChapterID Click: ${listReponse![index]['id'].toString()}');
+
+                                                                addBookmark();
+                                                                Get.snackbar(
+                                                                    'Chương: ' +
+                                                                        listReponse![index]['chapterTitle']
+                                                                            .toString(),
+                                                                    "Thêm đánh dấu trang thành công.");
+                                                              },
+                                                              icon: Icon(
+                                                                Icons.bookmark,
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        51,
+                                                                        182,
+                                                                        61),
+                                                              ))
+                                                          : IconButton(
+                                                              onPressed: () {},
+                                                              icon: Icon(Icons
+                                                                  .lock_person_sharp)),
+                                                      listReponse![index]
+                                                                  ['allow'] ==
+                                                              true
+                                                          ? IconButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                final SharedPreferences?
+                                                                    prefs =
+                                                                    await _prefs;
+                                                                await prefs?.setString(
+                                                                    'idchapter',
+                                                                    listReponse![index]
+                                                                            [
+                                                                            'id']
+                                                                        .toString());
+                                                                await prefs?.setString(
+                                                                    'filePath',
+                                                                    listReponse![index]
+                                                                            [
+                                                                            'filePath']
+                                                                        .toString());
+                                                                print(
+                                                                    'ChapterID Click: ${listReponse![index]['id'].toString()}');
+
+                                                                listReponse![index]
+                                                                            [
+                                                                            'downloaded'] ==
+                                                                        true
+                                                                    ? showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder: (context) => AlertDialog(
+                                                                            title: Text("Thông báo"),
+                                                                            content: Column(
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              children: [
+                                                                                Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
+                                                                              ],
+                                                                            ),
+                                                                            actions: <Widget>[
+                                                                              TextButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context, 'Thoát');
+                                                                                },
+                                                                                child: const Text('Thoát'),
+                                                                              ),
+                                                                              TextButton(
+                                                                                onPressed: () {
+                                                                                  showDialog(
+                                                                                    context: context,
+                                                                                    useRootNavigator: false,
+                                                                                    builder: (context) => const DownloadingDialog(),
+                                                                                  );
+                                                                                  // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
+                                                                                },
+                                                                                child: const Text('Tải về'),
+                                                                              ),
+                                                                            ]),
+                                                                      )
+                                                                    : showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (context) =>
+                                                                                const DownloadingDialog(),
+                                                                      );
+                                                                setState(() {
+                                                                  isLoading =
+                                                                      false;
+                                                                });
+                                                              },
+                                                              icon: listReponse![
+                                                                              index]
+                                                                          [
+                                                                          'downloaded'] ==
+                                                                      true
+                                                                  ? Icon(
+                                                                      Icons
+                                                                          .download_sharp,
+                                                                      color: Colors
+                                                                          .blue)
+                                                                  : Icon(
+                                                                      Icons
+                                                                          .download_sharp,
+                                                                      color: Colors
+                                                                          .blue))
+                                                          : IconButton(
+                                                              onPressed: () {},
+                                                              icon: Icon(Icons
+                                                                  .lock_person_sharp))
                                                     ],
                                                   ),
                                                 ],
