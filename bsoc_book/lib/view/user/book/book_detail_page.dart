@@ -50,10 +50,13 @@ class _DetailBookPageState extends State<DetailBookPage>
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
       idbooks = prefs.getString('idbook');
-      var response = await Dio().get('http://103.77.166.202/api/book/$idbooks',
-          options: Options(headers: {
-            'Authorization': 'Bearer $token',
-          }));
+      var response = await Dio()
+          .get('http://103.77.166.202/api/book/$idbooks',
+              options: Options(headers: {
+                'Authorization': 'Bearer $token',
+              }))
+          .timeout(Duration(seconds: 3));
+      ;
       if (response.statusCode == 200) {
         dataBook = response.data;
         listReponse = dataBook!['chapters'];
@@ -323,7 +326,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                               Icon(
                                                 listReponse![index]['allow'] ==
                                                         true
-                                                    ? Icons.done_all_sharp
+                                                    ? Icons.remove_red_eye
                                                     : Icons.lock_sharp,
                                                 color: Colors.yellow.shade800,
                                                 size: 16,
@@ -462,9 +465,12 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                                 const DownloadingDialog(),
                                                                       );
                                                                 setState(() {
+                                                                  getItemBooks();
                                                                   isLoading =
                                                                       false;
                                                                 });
+                                                                isLoading =
+                                                                    true;
                                                               },
                                                               icon: listReponse![
                                                                               index]
@@ -478,7 +484,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                           .blue)
                                                                   : Icon(
                                                                       Icons
-                                                                          .download_sharp,
+                                                                          .download_outlined,
                                                                       color: Colors
                                                                           .blue))
                                                           : IconButton(
@@ -796,9 +802,15 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                                     'titleChapter',
                                     listReponse![index]['chapterTitle']
                                         .toString());
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) => PdfViewerPage()));
+                                listReponse![index]['allow'] == true
+                                    ? Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                PdfViewerPage()))
+                                    : showDialog(
+                                        context: context,
+                                        builder: (context) => ChargeDialog(),
+                                      );
                               });
                             },
                             child: Text(
@@ -843,8 +855,15 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                               'titleChapter',
                               listReponse![sttchap!]['chapterTitle']
                                   .toString());
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PdfViewerPage()));
+                          if (listReponse![sttchap!]['allow'] == true) {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => PdfViewerPage()));
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) => ChargeDialog(),
+                            );
+                          }
                         });
                       },
                       child: Icon(Icons.arrow_forward_ios),
@@ -920,6 +939,8 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
       Navigator.pop(context);
     });
     await OpenFilex.open(path);
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (BuildContext context) => DetailBookPage()));
   }
 
   Future<String> _getFilePath(String filename) async {
