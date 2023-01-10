@@ -107,7 +107,7 @@ class _SearchPageState extends State<SearchPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const DetailBookPage()));
+                                        DetailBookPage(id: d.id!.toString())));
                           },
                           child: ListTile(
                             leading: Image.network(

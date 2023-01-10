@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
+import 'package:bsoc_book/data/model/books/book_model.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
@@ -32,6 +33,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
+  List<Content> id = [];
 
   Future<void> getAllBooks() async {
     String? token;
@@ -45,12 +47,12 @@ class _HomePageState extends State<HomePage> {
               }))
           .timeout(Duration(seconds: 3));
       if (response.statusCode == 200) {
-        mapDemo = response.data;
-        listReponse = mapDemo!['content'];
-        await prefs.remove('idbook');
-        await prefs.remove('idchapter');
-        await prefs.remove('sttchapter');
+        // await prefs.remove('idbook');
+        // await prefs.remove('idchapter');
+        // await prefs.remove('sttchapter');
         setState(() {
+          mapDemo = response.data;
+          listReponse = mapDemo!['content'];
           isLoading = false;
         });
       } else if (response.statusCode == 400) {
@@ -84,11 +86,11 @@ class _HomePageState extends State<HomePage> {
     });
 
     if (response.statusCode == 200) {
-      listTop = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
-      await prefs.remove('idbook');
-      await prefs.remove('idchapter');
-      await prefs.remove('sttchapter');
+      // await prefs.remove('idbook');
+      // await prefs.remove('idchapter');
+      // await prefs.remove('sttchapter');
       setState(() {
+        listTop = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
         isLoading = false;
       });
     } else {
@@ -290,7 +292,9 @@ class _HomePageState extends State<HomePage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const DetailBookPage()));
+                                                DetailBookPage(
+                                                    id: listTop![index]['id']
+                                                        .toString())));
                                   },
                                   child: SizedBox(
                                     child: Image.network(
@@ -336,70 +340,67 @@ class _HomePageState extends State<HomePage> {
                                     mainAxisSpacing: 40),
                             itemBuilder: (BuildContext context, int index) {
                               return InkWell(
-                                child: Hero(
-                                  tag: listReponse![index]['id'].toString(),
-                                  child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () async {
-                                            listReponse![index]['id']
-                                                .toString();
-                                            final SharedPreferences? prefs =
-                                                await _prefs;
-                                            await prefs?.setString(
-                                                'idbook',
-                                                listReponse![index]['id']
-                                                    .toString());
+                                child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          listReponse![index]['id'].toString();
+                                          final SharedPreferences? prefs =
+                                              await _prefs;
+                                          await prefs?.setString(
+                                              'idbook',
+                                              listReponse![index]['id']
+                                                  .toString());
 
-                                            print(
-                                                'idBook: ${listReponse![index]['id'].toString()}');
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const DetailBookPage()));
-                                          },
-                                          child: Center(
-                                            child: SizedBox(
-                                              height: 155,
-                                              width: 120,
-                                              child: Image.network(
-                                                'http://103.77.166.202' +
-                                                    listReponse?[index]
-                                                        ['image'],
-                                                fit: BoxFit.fill,
-                                              ),
+                                          print(
+                                              'idBook: ${listReponse![index]['id'].toString()}');
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DetailBookPage(
+                                                          id: listReponse![
+                                                                  index]['id']
+                                                              .toString())));
+                                        },
+                                        child: Center(
+                                          child: SizedBox(
+                                            height: 155,
+                                            width: 120,
+                                            child: Image.network(
+                                              'http://103.77.166.202' +
+                                                  listReponse?[index]['image'],
+                                              fit: BoxFit.fill,
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: size.height * 0.01),
-                                        Center(
+                                      ),
+                                      SizedBox(height: size.height * 0.01),
+                                      Center(
+                                        child: Text(
+                                          listReponse?[index]['bookName'],
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Center(
                                           child: Text(
-                                            listReponse?[index]['bookName'],
+                                            'bởi ${listReponse?[index]['author']}',
                                             overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                            ),
+                                            style:
+                                                const TextStyle(fontSize: 12),
                                           ),
                                         ),
-                                        Expanded(
-                                          child: Center(
-                                            child: Text(
-                                              'bởi ${listReponse?[index]['author']}',
-                                              overflow: TextOverflow.ellipsis,
-                                              style:
-                                                  const TextStyle(fontSize: 12),
-                                            ),
-                                          ),
-                                        ),
-                                      ]),
-                                ),
+                                      ),
+                                    ]),
                               );
                             },
                           ),

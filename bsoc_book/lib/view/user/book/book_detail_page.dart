@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
+import 'package:bsoc_book/data/model/books/book_model.dart';
 import 'package:bsoc_book/view/downloads/download_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
@@ -30,8 +31,8 @@ List? listComment;
 Map? dataBook;
 
 class DetailBookPage extends StatefulWidget {
-  const DetailBookPage({super.key});
-
+  const DetailBookPage({super.key, required this.id});
+  final String id;
   @override
   State<DetailBookPage> createState() => _DetailBookPageState();
 }
@@ -46,12 +47,13 @@ class _DetailBookPageState extends State<DetailBookPage>
   String? idbooks;
 
   Future<void> getItemBooks() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('accessToken');
+    idbooks = prefs.getString('idbook');
+    print(idbooks);
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      token = prefs.getString('accessToken');
-      idbooks = prefs.getString('idbook');
       var response = await Dio()
-          .get('http://103.77.166.202/api/book/$idbooks',
+          .get('http://103.77.166.202/api/book/${widget.id}',
               options: Options(headers: {
                 'Authorization': 'Bearer $token',
               }))
@@ -66,7 +68,7 @@ class _DetailBookPageState extends State<DetailBookPage>
       } else {
         Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
       }
-      print("res: ${response.data}");
+      // print("res: ${response.data}");
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {
         Get.dialog(DialogLogout());
@@ -134,7 +136,7 @@ class _DetailBookPageState extends State<DetailBookPage>
               MaterialPageRoute<dynamic>(
                 builder: (BuildContext context) => HomePage(),
               ),
-              (route) =>
+              (Route<dynamic> route) =>
                   false, //if you want to disable back feature set to false
             );
           },
@@ -289,8 +291,8 @@ class _DetailBookPageState extends State<DetailBookPage>
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute<dynamic>(
-                                          builder: (context) =>
-                                              PdfViewerPage()),
+                                          builder: (context) => PdfViewerPage(
+                                              idb: dataBook!['id'].toString())),
                                     );
                                   } else {
                                     showDialog(
@@ -386,7 +388,8 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                     "Thêm đánh dấu trang thành công.");
                                                               },
                                                               icon: Icon(
-                                                                Icons.bookmark,
+                                                                Icons
+                                                                    .bookmark_add_sharp,
                                                                 color: Color
                                                                     .fromARGB(
                                                                         255,
@@ -537,6 +540,8 @@ class _DetailBookPageState extends State<DetailBookPage>
 }
 
 class PdfViewerPage extends StatefulWidget {
+  PdfViewerPage({super.key, required this.idb});
+  final String idb;
   @override
   _PdfViewerPageState createState() => _PdfViewerPageState();
 }
@@ -573,10 +578,11 @@ class _PdfViewerPageState extends State<PdfViewerPage>
       idchap = prefs.getInt('idchapter') ?? 0;
       sttchap = prefs.getInt('sttchapter') ?? 0;
       titleChapter = prefs.getString('titleChapter');
-      var response = await Dio().get('http://103.77.166.202/api/book/$idbooks',
-          options: Options(headers: {
-            'Authorization': 'Bearer $token',
-          }));
+      var response =
+          await Dio().get('http://103.77.166.202/api/book/${widget.idb}',
+              options: Options(headers: {
+                'Authorization': 'Bearer $token',
+              }));
       if (response.statusCode == 200) {
         dataBook = response.data;
         listReponse = dataBook!['chapters'];
@@ -663,7 +669,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
             Navigator.pushAndRemoveUntil<dynamic>(
               context,
               MaterialPageRoute<dynamic>(
-                builder: (BuildContext context) => DetailBookPage(),
+                builder: (BuildContext context) => DetailBookPage(id: idbooks!),
               ),
               (route) =>
                   false, //if you want to disable back feature set to false
@@ -754,7 +760,8 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                                     .toString());
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
-                                    builder: (context) => PdfViewerPage()));
+                                    builder: (context) => PdfViewerPage(
+                                        idb: dataBook!['id'].toString())));
                           }
                         });
                       },
@@ -805,8 +812,9 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                                 listReponse![index]['allow'] == true
                                     ? Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                PdfViewerPage()))
+                                            builder: (context) => PdfViewerPage(
+                                                idb: dataBook!['id']
+                                                    .toString())))
                                     : showDialog(
                                         context: context,
                                         builder: (context) => ChargeDialog(),
@@ -857,7 +865,8 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                                   .toString());
                           if (listReponse![sttchap!]['allow'] == true) {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => PdfViewerPage()));
+                                builder: (context) => PdfViewerPage(
+                                    idb: dataBook!['id'].toString())));
                           } else {
                             showDialog(
                               context: context,
@@ -906,6 +915,7 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
   bool isLoading = true;
   double progress = 0.0;
   String? localPath;
+  String? idbooks;
 
   void startDownloading() async {
     Dio dio = Dio();
@@ -916,6 +926,7 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     token = prefs.getString('accessToken');
     idchapter = prefs.getString('idchapter');
     namesave = prefs.getString('filePath');
+    idbooks = prefs.getString('idbook');
 
     String url = 'http://103.77.166.202/api/chapter/download/$idchapter';
 
@@ -938,9 +949,14 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     ).then((_) {
       Navigator.pop(context);
     });
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => DetailBookPage(id: idbooks!)));
     await OpenFilex.open(path);
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (BuildContext context) => DetailBookPage()));
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Future<String> _getFilePath(String filename) async {
@@ -1316,7 +1332,7 @@ class DialogComment extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) =>
-                                              DetailBookPage()),
+                                              DetailBookPage(id: "")),
                                       (Route<dynamic> route) => false),
                                 },
                             },
@@ -1423,8 +1439,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
           title: Text('Đánh dấu chương'),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
+            onPressed: () {
+              // SharedPreferences prefs = await SharedPreferences.getInstance();
               // await prefs.remove('idbook');
               // await prefs.remove('idchapter');
               // await prefs.remove('sttchapter');
@@ -1432,7 +1448,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
               Navigator.push<dynamic>(
                 context,
                 MaterialPageRoute<dynamic>(
-                  builder: (BuildContext context) => DetailBookPage(),
+                  builder: (BuildContext context) => DetailBookPage(id: id!),
                 ),
                 // (route) => false,
               );
@@ -1467,7 +1483,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                       await prefs?.setString('filePathChapter',
                           bookmark![index]['chapter']['filePath'].toString());
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => PdfViewerPage()));
+                          builder: (context) => PdfViewerPage(idb: id!)));
                     },
                     child: ListTile(
                       title: Text(bookmark![index] == null
