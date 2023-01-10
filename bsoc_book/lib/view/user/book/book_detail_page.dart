@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:open_filex/open_filex.dart';
@@ -676,15 +677,6 @@ class _PdfViewerPageState extends State<PdfViewerPage>
             );
           },
         ),
-        // actions: [
-        //   IconButton(
-        //     icon: Icon(
-        //       Icons.list,
-        //       color: Colors.white,
-        //     ),
-        //     onPressed: () {},
-        //   ),
-        // ]
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -1215,10 +1207,35 @@ class _Clipper extends CustomClipper<Rect> {
   bool shouldReclip(covariant CustomClipper<Rect> oldClipper) => true;
 }
 
-class DialogComment extends StatelessWidget {
+class DialogComment extends StatefulWidget {
   DialogComment({super.key});
+
+  @override
+  State<DialogComment> createState() => _DialogCommentState();
+}
+
+class _DialogCommentState extends State<DialogComment> {
   final _formKey = GlobalKey<FormState>();
+
   CommentController cmtcontroller = Get.put(CommentController());
+  String? idbooks;
+  getIdbook() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    idbooks = prefs.getString('idbook');
+    prefs.setDouble('rating', _rating);
+  }
+
+  late final _ratingController;
+  late double _rating;
+  double _initialRating = 5;
+  bool _isVertical = false;
+
+  @override
+  void initState() {
+    getIdbook();
+    _rating = _initialRating;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1250,37 +1267,59 @@ class DialogComment extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              Text("Số điểm: "),
+                              // Text("Số điểm: "),
                               ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 40, maxHeight: 50),
                                 child: IntrinsicWidth(
                                   child: Container(
-                                    height: 30,
-                                    child: TextFormField(
-                                      controller:
-                                          cmtcontroller.ratingController,
-                                      keyboardType: TextInputType.number,
-                                      validator: (value) {
-                                        return (value == null || value.isEmpty)
-                                            ? 'Nhập số'
-                                            : null;
-                                      },
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp("[1-5]")),
-                                      ],
-                                      maxLength: 1,
-                                      decoration: new InputDecoration(
-                                        counterText: '',
-                                        border: OutlineInputBorder(),
-                                        errorStyle: TextStyle(height: 30),
+                                      height: 30,
+                                      child: RatingBar.builder(
+                                        initialRating: _initialRating,
+                                        minRating: 1,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: false,
+                                        unratedColor:
+                                            Colors.amber.withAlpha(50),
+                                        itemCount: 5,
+                                        itemSize: 40.0,
+                                        itemPadding: EdgeInsets.symmetric(
+                                            horizontal: 4.0),
+                                        itemBuilder: (context, _) => Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                        onRatingUpdate: (rating) {
+                                          setState(() {
+                                            _rating = rating;
+                                          });
+                                        },
+                                        updateOnDrag: true,
+                                      )
+                                      // TextFormField(
+                                      //   controller:
+                                      //       cmtcontroller.ratingController,
+                                      //   keyboardType: TextInputType.number,
+                                      //   validator: (value) {
+                                      //     return (value == null || value.isEmpty)
+                                      //         ? 'Nhập số'
+                                      //         : null;
+                                      //   },
+                                      //   inputFormatters: [
+                                      //     FilteringTextInputFormatter.allow(
+                                      //         RegExp("[1-5]")),
+                                      //   ],
+                                      //   maxLength: 1,
+                                      //   decoration: new InputDecoration(
+                                      //     counterText: '',
+                                      //     border: OutlineInputBorder(),
+                                      //     errorStyle: TextStyle(height: 30),
+                                      //   ),
+                                      // ),
                                       ),
-                                    ),
-                                  ),
                                 ),
                               ),
-                              Text("  /  5 Sao"),
+                              // Text("  /  5 Sao"),
                             ],
                           ),
                           SizedBox(
@@ -1332,7 +1371,7 @@ class DialogComment extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) =>
-                                              DetailBookPage(id: "")),
+                                              DetailBookPage(id: idbooks!)),
                                       (Route<dynamic> route) => false),
                                 },
                             },

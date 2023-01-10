@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
               options: Options(headers: {
                 'Authorization': 'Bearer $token',
               }))
-          .timeout(Duration(seconds: 3));
+          .timeout(Duration(seconds: 2));
       if (response.statusCode == 200) {
         // await prefs.remove('idbook');
         // await prefs.remove('idchapter');

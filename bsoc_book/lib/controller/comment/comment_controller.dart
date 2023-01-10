@@ -7,21 +7,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CommentController extends GetxController {
   TextEditingController ratingController = TextEditingController();
   TextEditingController contentController = TextEditingController();
+  String? token;
+  String? idUser;
+  String? idBook;
+  double? rating;
 
   Future<void> commentUserBook() async {
-    String? token;
-    String? idUser;
-    String? idBook;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
     idBook = prefs.getString('idbook');
     idUser = prefs.getString('idInforUser');
-
-    int value1 = int.parse(ratingController.text);
+    rating = prefs.getDouble('rating');
+    print(rating);
+    // int value1 = int.parse(ratingController.text);
     final formData = {
       "userId": idUser,
       "bookId": idBook,
-      "rating": value1,
+      "rating": rating,
       "content": contentController.text,
     };
 
