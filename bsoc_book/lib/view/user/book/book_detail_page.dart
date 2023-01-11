@@ -1222,7 +1222,6 @@ class _DialogCommentState extends State<DialogComment> {
   getIdbook() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     idbooks = prefs.getString('idbook');
-    prefs.setDouble('rating', _rating);
   }
 
   late final _ratingController;
@@ -1257,7 +1256,7 @@ class _DialogCommentState extends State<DialogComment> {
         onPressed: () => showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
-                  title: Text("Đánh giá"),
+                  title: Text("Đánh giá & Nhận xét"),
                   content: Container(
                     child: Form(
                       key: _formKey,
@@ -1289,41 +1288,23 @@ class _DialogCommentState extends State<DialogComment> {
                                           Icons.star,
                                           color: Colors.amber,
                                         ),
-                                        onRatingUpdate: (rating) {
+                                        onRatingUpdate: (rating) async {
+                                          SharedPreferences prefs =
+                                              await SharedPreferences
+                                                  .getInstance();
                                           setState(() {
                                             _rating = rating;
+                                            prefs.setDouble('rating', _rating);
                                           });
                                         },
                                         updateOnDrag: true,
-                                      )
-                                      // TextFormField(
-                                      //   controller:
-                                      //       cmtcontroller.ratingController,
-                                      //   keyboardType: TextInputType.number,
-                                      //   validator: (value) {
-                                      //     return (value == null || value.isEmpty)
-                                      //         ? 'Nhập số'
-                                      //         : null;
-                                      //   },
-                                      //   inputFormatters: [
-                                      //     FilteringTextInputFormatter.allow(
-                                      //         RegExp("[1-5]")),
-                                      //   ],
-                                      //   maxLength: 1,
-                                      //   decoration: new InputDecoration(
-                                      //     counterText: '',
-                                      //     border: OutlineInputBorder(),
-                                      //     errorStyle: TextStyle(height: 30),
-                                      //   ),
-                                      // ),
-                                      ),
+                                      )),
                                 ),
                               ),
-                              // Text("  /  5 Sao"),
                             ],
                           ),
                           SizedBox(
-                            height: 15,
+                            height: 25,
                           ),
                           Text("Nội dung:"),
                           SizedBox(

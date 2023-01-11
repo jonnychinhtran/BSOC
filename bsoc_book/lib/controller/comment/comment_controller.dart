@@ -26,7 +26,6 @@ class CommentController extends GetxController {
       "rating": rating,
       "content": contentController.text,
     };
-
     try {
       var response = await Dio().post('http://103.77.166.202/api/book/comment',
           data: json.encode(formData),
