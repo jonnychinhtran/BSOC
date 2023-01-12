@@ -531,7 +531,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                         ),
                       ),
                     ),
-                    ReviewBook(),
+                    ReviewBook(id: dataBook!['id'].toString()),
                   ]),
                 ))
               ],
@@ -991,29 +991,30 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
 }
 
 class ReviewBook extends StatefulWidget {
+  ReviewBook({super.key, required this.id});
+  final String id;
   @override
   State<ReviewBook> createState() => _ReviewBookState();
 }
 
 class _ReviewBookState extends State<ReviewBook> {
   bool isLoading = true;
+  String? token;
 
   Future<void> getComment() async {
     try {
       setState(() {
         isLoading = true;
       });
-      String? token;
-      String? idBook;
+
       final prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
-      idBook = prefs.getString('idbook');
-      print(idBook);
+
       setState(() {
         isLoading = true;
       });
       var url =
-          Uri.parse('http://103.77.166.202/api/book/list-comment/$idBook');
+          Uri.parse('http://103.77.166.202/api/book/list-comment/${widget.id}');
       http.Response response = await http.get(url, headers: {
         'Authorization': 'Bearer $token',
       });
