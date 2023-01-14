@@ -27,7 +27,7 @@ class ChargeDialog extends StatelessWidget {
                 style: TextStyle(fontSize: 17, height: 1.5),
               ),
               Text(
-                '29.000VNĐ',
+                '59.000VNĐ',
                 style: TextStyle(
                     fontSize: 18,
                     height: 1.5,

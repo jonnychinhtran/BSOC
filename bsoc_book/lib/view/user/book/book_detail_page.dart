@@ -99,6 +99,7 @@ class _DetailBookPageState extends State<DetailBookPage>
           .timeout(Duration(seconds: 3));
       if (response.statusCode == 200) {
         setState(() {
+          getItemBooks();
           isLoading = false;
         });
       } else {
@@ -388,16 +389,29 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                             .toString(),
                                                                     "Thêm đánh dấu trang thành công.");
                                                               },
-                                                              icon: Icon(
-                                                                Icons
-                                                                    .bookmark_add_sharp,
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        51,
-                                                                        182,
-                                                                        61),
-                                                              ))
+                                                              icon: listReponse![
+                                                                              index]
+                                                                          [
+                                                                          'bookmark'] ==
+                                                                      true
+                                                                  ? Icon(
+                                                                      Icons
+                                                                          .bookmark_added_sharp,
+                                                                      color: Color.fromARGB(
+                                                                          255,
+                                                                          253,
+                                                                          135,
+                                                                          0),
+                                                                    )
+                                                                  : Icon(
+                                                                      Icons
+                                                                          .bookmark_add_sharp,
+                                                                      color: Color.fromARGB(
+                                                                          255,
+                                                                          51,
+                                                                          182,
+                                                                          61),
+                                                                    ))
                                                           : IconButton(
                                                               onPressed: () {},
                                                               icon: Icon(Icons
