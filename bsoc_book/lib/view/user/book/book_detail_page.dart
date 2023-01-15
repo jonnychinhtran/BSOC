@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
-import 'package:bsoc_book/data/model/books/book_model.dart';
 import 'package:bsoc_book/view/downloads/download_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:bsoc_book/view/widgets/charge_book.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
@@ -51,7 +49,6 @@ class _DetailBookPageState extends State<DetailBookPage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
     idbooks = prefs.getString('idbook');
-    print(idbooks);
     try {
       var response = await Dio()
           .get('http://103.77.166.202/api/book/${widget.id}',
@@ -60,6 +57,7 @@ class _DetailBookPageState extends State<DetailBookPage>
               }))
           .timeout(Duration(seconds: 3));
       ;
+      print(widget.id);
       if (response.statusCode == 200) {
         dataBook = response.data;
         listReponse = dataBook!['chapters'];
@@ -1116,7 +1114,7 @@ class _ReviewBookState extends State<ReviewBook> {
                                         ? 'Đang tải dữ liệu'
                                         : listComment![index]['content']
                                             .toString(),
-                                    overflow: TextOverflow.ellipsis,
+                                    // overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.justify,
                                     style: TextStyle(
                                         fontWeight: FontWeight.normal),
@@ -1124,11 +1122,12 @@ class _ReviewBookState extends State<ReviewBook> {
                                   SizedBox(
                                     height: 5,
                                   ),
-                                  RatingBars(
-                                    rating: listComment![index]['rating']
-                                        .toDouble(),
-                                    ratingCount: 12,
-                                  )
+                                  // RatingBars(
+                                  //   rating: double.parse(listComment![index]
+                                  //           ['rating']
+                                  //       .toString()),
+                                  //   ratingCount: 5,
+                                  // )
                                 ],
                               ),
                             )),
@@ -1137,8 +1136,7 @@ class _ReviewBookState extends State<ReviewBook> {
                       );
                     },
                   ),
-                  Container(
-                    // margin: EdgeInsets.only(top: 30),
+                  SizedBox(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: DialogComment(),
@@ -1254,7 +1252,7 @@ class _DialogCommentState extends State<DialogComment> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60,
+      height: 40,
       child: ElevatedButton(
         child: Text(
           'CHIA SẺ ĐÁNH GIÁ',
