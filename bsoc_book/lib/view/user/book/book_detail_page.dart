@@ -1122,12 +1122,14 @@ class _ReviewBookState extends State<ReviewBook> {
                                   SizedBox(
                                     height: 5,
                                   ),
-                                  // RatingBars(
-                                  //   rating: double.parse(listComment![index]
-                                  //           ['rating']
-                                  //       .toString()),
-                                  //   ratingCount: 5,
-                                  // )
+                                  RatingBars(
+                                    rating:
+                                        listComment![index]['rating'] == null
+                                            ? 0.0
+                                            : listComment![index]['rating']
+                                                .toDouble(),
+                                    // ratingCount: 5,
+                                  )
                                 ],
                               ),
                             )),
@@ -1150,7 +1152,7 @@ class _ReviewBookState extends State<ReviewBook> {
 }
 
 class RatingBars extends StatelessWidget {
-  final double rating;
+  double rating;
   final double size;
   int? ratingCount;
 
