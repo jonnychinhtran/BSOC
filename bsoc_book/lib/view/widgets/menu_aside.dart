@@ -58,6 +58,9 @@ class _MenuAsideState extends State<MenuAside> {
       if (e.response?.statusCode == 400) {
         Get.dialog(DialogLogout());
       }
+      if (e.response?.statusCode == 401) {
+        Get.offAll(LoginPage());
+      }
       if (e.isNoConnectionError) {
         Get.dialog(DialogLogout());
       } else {
