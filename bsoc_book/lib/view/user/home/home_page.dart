@@ -47,9 +47,6 @@ class _HomePageState extends State<HomePage> {
               }))
           .timeout(Duration(seconds: 2));
       if (response.statusCode == 200) {
-        // await prefs.remove('idbook');
-        // await prefs.remove('idchapter');
-        // await prefs.remove('sttchapter');
         setState(() {
           mapDemo = response.data;
           listReponse = mapDemo!['content'];
@@ -57,6 +54,8 @@ class _HomePageState extends State<HomePage> {
         });
       } else if (response.statusCode == 400) {
         Get.dialog(DialogLogout());
+      } else if (response.statusCode == 401) {
+        Get.offAll(LoginPage());
       } else {
         Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
       }
@@ -64,6 +63,9 @@ class _HomePageState extends State<HomePage> {
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {
         Get.dialog(DialogLogout());
+      }
+      if (e.response?.statusCode == 401) {
+        Get.offAll(LoginPage());
       }
       if (e.isNoConnectionError) {
         Get.dialog(DialogLogout());
@@ -86,9 +88,6 @@ class _HomePageState extends State<HomePage> {
     });
 
     if (response.statusCode == 200) {
-      // await prefs.remove('idbook');
-      // await prefs.remove('idchapter');
-      // await prefs.remove('sttchapter');
       setState(() {
         listTop = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
         isLoading = false;
