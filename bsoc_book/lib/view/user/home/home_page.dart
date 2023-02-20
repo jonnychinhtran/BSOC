@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
               options: Options(headers: {
                 'Authorization': 'Bearer $token',
               }))
-          .timeout(Duration(seconds: 2));
+          .timeout(Duration(seconds: 3));
       if (response.statusCode == 200) {
         setState(() {
           mapDemo = response.data;
@@ -243,7 +243,7 @@ class _HomePageState extends State<HomePage> {
                         ])),
           ],
         ),
-        body: isLoading
+        body: listTop == null && listReponse == null
             ? Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
