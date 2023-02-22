@@ -6,7 +6,6 @@ import 'package:bsoc_book/view/downloads/download_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:bsoc_book/view/widgets/charge_book.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -65,16 +64,12 @@ class _DetailBookPageState extends State<DetailBookPage>
         listReponse = dataBook!['chapters'];
         setState(() {
           isLoading = false;
-          initConnectivity();
         });
       } else {
         Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
       }
-      // print("res: ${response.data}");
     } on DioError catch (e) {
-      if (e.response?.statusCode == 400) {
-        // Get.dialog(DialogLogout());
-      }
+      if (e.response?.statusCode == 400) {}
       if (e.isNoConnectionError) {
         Get.dialog(DialogError());
       } else {
@@ -113,29 +108,15 @@ class _DetailBookPageState extends State<DetailBookPage>
     }
   }
 
-  Future<void> initConnectivity() async {
-    final connectivityResult = await (Connectivity().checkConnectivity());
-    print(connectivityResult);
-    if (connectivityResult == ConnectivityResult.mobile) {
-      // I am connected to a mobile network.
-      getItemBooks();
-    } else if (connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to a wifi network.
-      getItemBooks();
-    }
-  }
-
   @override
   void initState() {
     getItemBooks();
-    initConnectivity();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     TabController _tabController = TabController(length: 3, vsync: this);
-    // final provider = Provider.of<BookmarkProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 138, 175, 52),
@@ -189,7 +170,8 @@ class _DetailBookPageState extends State<DetailBookPage>
               icon: Icon(Icons.download_for_offline))
         ],
       ),
-      body: isLoading && dataBook == null && listReponse == null
+      body: isLoading
+          // && dataBook == null && listReponse == null
           ? Center(
               child: LoadingAnimationWidget.discreteCircle(
               color: Color.fromARGB(255, 138, 175, 52),

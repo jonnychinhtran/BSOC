@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus_windows
   modal_progress_hud_nsn
+  network_info_plus_windows
   url_launcher_windows
 )
 
