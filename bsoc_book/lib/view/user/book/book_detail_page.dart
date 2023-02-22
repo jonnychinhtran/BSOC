@@ -6,12 +6,14 @@ import 'package:bsoc_book/view/downloads/download_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:bsoc_book/view/widgets/charge_book.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -63,6 +65,7 @@ class _DetailBookPageState extends State<DetailBookPage>
         listReponse = dataBook!['chapters'];
         setState(() {
           isLoading = false;
+          initConnectivity();
         });
       } else {
         Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
@@ -70,10 +73,10 @@ class _DetailBookPageState extends State<DetailBookPage>
       // print("res: ${response.data}");
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {
-        Get.dialog(DialogLogout());
+        // Get.dialog(DialogLogout());
       }
       if (e.isNoConnectionError) {
-        Get.dialog(DialogLogout());
+        Get.dialog(DialogError());
       } else {
         Get.snackbar("error", e.toString());
         print(e);
@@ -110,9 +113,22 @@ class _DetailBookPageState extends State<DetailBookPage>
     }
   }
 
+  Future<void> initConnectivity() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    print(connectivityResult);
+    if (connectivityResult == ConnectivityResult.mobile) {
+      // I am connected to a mobile network.
+      getItemBooks();
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      // I am connected to a wifi network.
+      getItemBooks();
+    }
+  }
+
   @override
   void initState() {
     getItemBooks();
+    initConnectivity();
     super.initState();
   }
 
@@ -173,15 +189,14 @@ class _DetailBookPageState extends State<DetailBookPage>
               icon: Icon(Icons.download_for_offline))
         ],
       ),
-      body: isLoading
+      body: isLoading && dataBook == null && listReponse == null
           ? Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  CircularProgressIndicator(),
-                ],
-              ),
-            )
+              child: LoadingAnimationWidget.discreteCircle(
+              color: Color.fromARGB(255, 138, 175, 52),
+              secondRingColor: Colors.black,
+              thirdRingColor: Colors.purple,
+              size: 30,
+            ))
           : Column(
               children: [
                 const SizedBox(
@@ -613,7 +628,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
         Get.dialog(DialogLogout());
       }
       if (e.isNoConnectionError) {
-        Get.dialog(DialogLogout());
+        Get.snackbar('Opps', 'Mất kết nối mạng, vui lòng thử lại');
       } else {
         Get.snackbar("error", e.toString());
         print(e);
@@ -730,7 +745,12 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                     ],
                   )),
                 )
-              : const Center(child: CircularProgressIndicator()),
+              : LoadingAnimationWidget.discreteCircle(
+                  color: Color.fromARGB(255, 138, 175, 52),
+                  secondRingColor: Colors.black,
+                  thirdRingColor: Colors.purple,
+                  size: 30,
+                ),
           Container(
             height: .10 * MediaQuery.of(context).size.height,
             child: Padding(
@@ -1578,6 +1598,41 @@ class DialogLogout extends StatelessWidget {
               Get.offAll(LoginPage());
             },
             child: Text('Đăng nhập lại'),
+          ),
+        ],
+      )),
+    );
+  }
+}
+
+class DialogError extends StatelessWidget {
+  DialogError({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Thông báo'),
+      content: Container(
+          child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Mất kết nối mạng internet/4G, vui lòng thử lại'),
+          SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 2,
+              primary: Colors.blueAccent,
+              minimumSize: const Size.fromHeight(35),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            onPressed: () {
+              Get.off(() => const HomePage());
+            },
+            child: Text('Trở về trang chủ'),
           ),
         ],
       )),

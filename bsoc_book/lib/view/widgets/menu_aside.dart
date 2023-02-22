@@ -56,13 +56,13 @@ class _MenuAsideState extends State<MenuAside> {
       print("res: ${response.data}");
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {
-        Get.dialog(DialogLogout());
+        // Get.dialog(DialogLogout());
       }
       if (e.response?.statusCode == 401) {
         Get.offAll(LoginPage());
       }
       if (e.isNoConnectionError) {
-        Get.dialog(DialogLogout());
+        // Get.dialog(DialogError());
       } else {
         Get.snackbar("error", e.toString());
         print(e);
@@ -272,7 +272,7 @@ class _MenuAsideState extends State<MenuAside> {
               padding: const EdgeInsets.all(25.0),
               child: Align(
                   alignment: FractionalOffset.bottomLeft,
-                  child: Text('Phiên bản: 1.0.5')),
+                  child: Text('Phiên bản: 1.0.6')),
             ),
           ),
         ],

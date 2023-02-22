@@ -7,6 +7,7 @@ import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:bsoc_book/view/widgets/updatedialog.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -47,6 +48,7 @@ class _HomePageState extends State<HomePage> {
               }))
           .timeout(Duration(seconds: 3));
       if (response.statusCode == 200) {
+        initConnectivity();
         setState(() {
           mapDemo = response.data;
           listReponse = mapDemo!['content'];
@@ -62,13 +64,13 @@ class _HomePageState extends State<HomePage> {
       print("res: ${response.data}");
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {
-        Get.dialog(DialogLogout());
+        // Get.dialog(DialogLogout());
       }
       if (e.response?.statusCode == 401) {
         Get.offAll(LoginPage());
       }
       if (e.isNoConnectionError) {
-        Get.dialog(DialogLogout());
+        Get.dialog(DialogError());
       } else {
         Get.snackbar("error", e.toString());
         print(e);
@@ -91,6 +93,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         listTop = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
         isLoading = false;
+        initConnectivity();
       });
     } else {
       throw Exception('Lỗi tải hệ thống');
@@ -102,11 +105,21 @@ class _HomePageState extends State<HomePage> {
     return prefs.getString('accessToken') ?? '';
   }
 
+  Future<void> initConnectivity() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      getAllBooks();
+      ;
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      getAllBooks();
+    }
+  }
+
   @override
   void initState() {
     getAllBooks();
     getTopBook();
-
+    initConnectivity();
     final newVersion = NewVersion(
       iOSId: 'com.b4usolution.app.bsoc',
       androidId: 'com.b4usolution.b4u_bsoc',
@@ -142,14 +155,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    isLoading
-        ? LoadingAnimationWidget.discreteCircle(
-            color: Colors.blue,
-            secondRingColor: Colors.black,
-            thirdRingColor: Colors.purple,
-            size: 50,
-          )
-        : Text(listReponse?.toString() ?? "");
+    // isLoading
+    //     ? LoadingAnimationWidget.discreteCircle(
+    //         color: Colors.blue,
+    //         secondRingColor: Colors.black,
+    //         thirdRingColor: Colors.purple,
+    //         size: 50,
+    //       )
+    //     : Text(listReponse?.toString() ?? "");
     return WillPopScope(
       onWillPop: () {
         return Future.value(false);
@@ -243,15 +256,14 @@ class _HomePageState extends State<HomePage> {
                         ])),
           ],
         ),
-        body: listTop == null && listReponse == null
+        body: isLoading && listTop == null && listReponse == null
             ? Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    CircularProgressIndicator(),
-                  ],
-                ),
-              )
+                child: LoadingAnimationWidget.discreteCircle(
+                color: Color.fromARGB(255, 138, 175, 52),
+                secondRingColor: Colors.black,
+                thirdRingColor: Colors.purple,
+                size: 30,
+              ))
             : SafeArea(
                 child: SingleChildScrollView(
                   physics: ScrollPhysics(),
@@ -470,6 +482,41 @@ class DialogLogout extends StatelessWidget {
               Get.offAll(LoginPage());
             },
             child: Text('Đăng nhập lại'),
+          ),
+        ],
+      )),
+    );
+  }
+}
+
+class DialogError extends StatelessWidget {
+  DialogError({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Thông báo'),
+      content: Container(
+          child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Mất kết nối mạng internet/4G, vui lòng thử lại'),
+          SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 2,
+              primary: Colors.blueAccent,
+              minimumSize: const Size.fromHeight(35),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Thoát'),
           ),
         ],
       )),
