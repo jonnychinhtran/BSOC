@@ -1,10 +1,12 @@
 import 'package:bsoc_book/controller/changepass/changepass_controller.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/update/update_infor.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Map? datauser;
@@ -17,6 +19,7 @@ class InforPage extends StatefulWidget {
 }
 
 class _InforPageState extends State<InforPage> {
+  ConnectivityResult connectivity = ConnectivityResult.none;
   bool isLoading = true;
   String? token;
 
@@ -45,14 +48,26 @@ class _InforPageState extends State<InforPage> {
       }
       print("res: ${response.data}");
     } catch (e) {
-      Get.snackbar("error", e.toString());
+      // Get.snackbar("error", e.toString());
       print(e);
+    }
+  }
+
+  Future<void> callback() async {
+    if (connectivity == ConnectivityResult.none) {
+      isLoading = true;
+    } else {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => InforPage()),
+          (Route<dynamic> route) => false);
     }
   }
 
   @override
   void initState() {
     getUserDetail();
+    callback();
     super.initState();
   }
 
@@ -65,186 +80,227 @@ class _InforPageState extends State<InforPage> {
           centerTitle: true,
           title: Text('Cài đặt tài khoản'),
         ),
-        body: isLoading
-            ? Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    CircularProgressIndicator(),
-                  ],
-                ),
-              )
-            : SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Thông tin',
-                        style: TextStyle(color: Colors.blue, fontSize: 16),
+        body: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              if (connectivity == ConnectivityResult.none) {
+                return Container(
+                  color: Colors.white70,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/images/wifi.png'),
+                          Text(
+                            'Không có kết nối Internet',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'Vui lòng kiểm tra kết nối internet và thử lại',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: size.height * 0.01),
-                      Card(
-                        color: Colors.white,
-                        child: Column(
-                          children: [
-                            ListTile(
-                              title: Text(
-                                'Mã tài khoản:',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                              trailing: Text(datauser!['id'].toString()),
-                            ),
-                            Divider(
-                              height: 2,
-                              endIndent: 0,
-                              color: Color.fromARGB(255, 87, 87, 87),
-                            ),
-                            ListTile(
-                              title: Text(
-                                'Họ Tên:',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                              trailing: Text(datauser!['fullname']),
-                            ),
-                            Divider(
-                              height: 2,
-                              endIndent: 0,
-                              color: Color.fromARGB(255, 87, 87, 87),
-                            ),
-                            ListTile(
-                              title: Text(
-                                'Tên đăng nhập:',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                              trailing: Text(datauser!['username']),
-                            ),
-                            Divider(
-                              height: 2,
-                              endIndent: 0,
-                              color: Color.fromARGB(255, 87, 87, 87),
-                            ),
-                            ListTile(
-                              title: Text(
-                                'Email:',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                              trailing: Text(datauser!['email']),
-                            ),
-                            Divider(
-                              height: 2,
-                              endIndent: 0,
-                              color: Color.fromARGB(255, 87, 87, 87),
-                            ),
-                            ListTile(
-                              title: Text(
-                                'Số điện thoại:',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                              trailing: Text(datauser!['phone']),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: size.height * 0.04),
-                      Text(
-                        'Cài đặt chung',
-                        style: TextStyle(color: Colors.blue, fontSize: 16),
-                      ),
-                      SizedBox(height: size.height * 0.01),
-                      Card(
-                        color: Colors.white,
-                        child: Column(
-                          children: [
-                            ListTile(
-                              leading: Icon(Icons.info),
-                              title: Text(
-                                'Cập nhật thông tin',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                              trailing: Icon(Icons.keyboard_arrow_right),
-                              onTap: () async {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const UpdateUser()));
-                              },
-                            ),
-                            Divider(
-                              height: 2,
-                              endIndent: 0,
-                              color: Color.fromARGB(255, 87, 87, 87),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.shield),
-                              title: Text(
-                                'Đổi mật khẩu',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                              trailing: Icon(Icons.keyboard_arrow_right),
-                              onTap: () async {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ChangePassword()));
-                              },
-                            ),
-                            Divider(
-                              height: 2,
-                              endIndent: 0,
-                              color: Color.fromARGB(255, 87, 87, 87),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.delete),
-                              title: Text(
-                                'Xóa tài khoản',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                              trailing: Icon(Icons.keyboard_arrow_right),
-                              onTap: () async {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => DialogDelete(),
-                                );
-                              },
-                            ),
-                            Divider(
-                              height: 2,
-                              endIndent: 0,
-                              color: Color.fromARGB(255, 87, 87, 87),
-                            ),
-                            ListTile(
-                              leading: Icon(
-                                Icons.logout,
-                                color: Colors.red,
-                              ),
-                              title: Text(
-                                'Đăng xuất',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.red),
-                              ),
-                              trailing: Icon(
-                                Icons.keyboard_arrow_right,
-                                color: Colors.red,
-                              ),
-                              onTap: () async {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => DialogLogout(),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ));
+                );
+              } else {
+                return child;
+              }
+            },
+            child: callback == ConnectivityResult.none
+                ? Center(
+                    child: LoadingAnimationWidget.discreteCircle(
+                    color: Color.fromARGB(255, 138, 175, 52),
+                    secondRingColor: Colors.black,
+                    thirdRingColor: Colors.purple,
+                    size: 30,
+                  ))
+                : SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Thông tin',
+                            style: TextStyle(color: Colors.blue, fontSize: 16),
+                          ),
+                          SizedBox(height: size.height * 0.01),
+                          Card(
+                            color: Colors.white,
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                    'Mã tài khoản:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: Text(datauser!['id'].toString()),
+                                ),
+                                Divider(
+                                  height: 2,
+                                  endIndent: 0,
+                                  color: Color.fromARGB(255, 87, 87, 87),
+                                ),
+                                ListTile(
+                                  title: Text(
+                                    'Họ Tên:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: Text(datauser!['fullname']),
+                                ),
+                                Divider(
+                                  height: 2,
+                                  endIndent: 0,
+                                  color: Color.fromARGB(255, 87, 87, 87),
+                                ),
+                                ListTile(
+                                  title: Text(
+                                    'Tên đăng nhập:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: Text(datauser!['username']),
+                                ),
+                                Divider(
+                                  height: 2,
+                                  endIndent: 0,
+                                  color: Color.fromARGB(255, 87, 87, 87),
+                                ),
+                                ListTile(
+                                  title: Text(
+                                    'Email:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: Text(datauser!['email']),
+                                ),
+                                Divider(
+                                  height: 2,
+                                  endIndent: 0,
+                                  color: Color.fromARGB(255, 87, 87, 87),
+                                ),
+                                ListTile(
+                                  title: Text(
+                                    'Số điện thoại:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: Text(datauser!['phone']),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: size.height * 0.04),
+                          Text(
+                            'Cài đặt chung',
+                            style: TextStyle(color: Colors.blue, fontSize: 16),
+                          ),
+                          SizedBox(height: size.height * 0.01),
+                          Card(
+                            color: Colors.white,
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Icon(Icons.info),
+                                  title: Text(
+                                    'Cập nhật thông tin',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: Icon(Icons.keyboard_arrow_right),
+                                  onTap: () async {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const UpdateUser()));
+                                  },
+                                ),
+                                Divider(
+                                  height: 2,
+                                  endIndent: 0,
+                                  color: Color.fromARGB(255, 87, 87, 87),
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.shield),
+                                  title: Text(
+                                    'Đổi mật khẩu',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: Icon(Icons.keyboard_arrow_right),
+                                  onTap: () async {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const ChangePassword()));
+                                  },
+                                ),
+                                Divider(
+                                  height: 2,
+                                  endIndent: 0,
+                                  color: Color.fromARGB(255, 87, 87, 87),
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.delete),
+                                  title: Text(
+                                    'Xóa tài khoản',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: Icon(Icons.keyboard_arrow_right),
+                                  onTap: () async {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => DialogDelete(),
+                                    );
+                                  },
+                                ),
+                                Divider(
+                                  height: 2,
+                                  endIndent: 0,
+                                  color: Color.fromARGB(255, 87, 87, 87),
+                                ),
+                                ListTile(
+                                  leading: Icon(
+                                    Icons.logout,
+                                    color: Colors.red,
+                                  ),
+                                  title: Text(
+                                    'Đăng xuất',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.red),
+                                  ),
+                                  trailing: Icon(
+                                    Icons.keyboard_arrow_right,
+                                    color: Colors.red,
+                                  ),
+                                  onTap: () async {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => DialogLogout(),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )));
   }
 }
 

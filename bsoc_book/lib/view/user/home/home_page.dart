@@ -32,6 +32,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ConnectivityResult connectivity = ConnectivityResult.none;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
   List<Content> id = [];
@@ -66,7 +67,7 @@ class _HomePageState extends State<HomePage> {
         Get.offAll(LoginPage());
       }
       if (e.isNoConnectionError) {
-        Get.dialog(DialogError());
+        // Get.dialog(DialogError());
       } else {
         Get.snackbar("error", e.toString());
         print(e);
@@ -100,11 +101,22 @@ class _HomePageState extends State<HomePage> {
     return prefs.getString('accessToken') ?? '';
   }
 
+  Future<void> callback() async {
+    if (connectivity == ConnectivityResult.none) {
+      isLoading = true;
+    } else {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+          (Route<dynamic> route) => false);
+    }
+  }
+
   @override
   void initState() {
     getAllBooks();
     getTopBook();
-
+    callback();
     final newVersion = NewVersion(
       iOSId: 'com.b4usolution.app.bsoc',
       androidId: 'com.b4usolution.b4u_bsoc',
@@ -239,10 +251,33 @@ class _HomePageState extends State<HomePage> {
               if (connectivity == ConnectivityResult.none) {
                 return Container(
                   color: Colors.white70,
-                  child: const Center(
-                    child: Text(
-                      'Oops, \n\nWe experienced a Delayed Offline!',
-                      style: TextStyle(color: Colors.black),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/images/wifi.png'),
+                          Text(
+                            'Không có kết nối Internet',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'Vui lòng kiểm tra kết nối internet và thử lại',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          // TextButton(
+                          //     onPressed: () {
+                          //       Navigator.pushAndRemoveUntil(
+                          //           context,
+                          //           MaterialPageRoute(
+                          //               builder: (context) => HomePage()),
+                          //           (Route<dynamic> route) => false);
+                          //     },
+                          //     child: Text('Thử lại'))
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -250,8 +285,7 @@ class _HomePageState extends State<HomePage> {
                 return child;
               }
             },
-            child: isLoading
-                // listTop == null && listReponse == null
+            child: callback == ConnectivityResult.none
                 ? Center(
                     child: LoadingAnimationWidget.discreteCircle(
                     color: Color.fromARGB(255, 138, 175, 52),

@@ -8,6 +8,7 @@ import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:bsoc_book/view/widgets/charge_book.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
@@ -40,7 +41,7 @@ class DetailBookPage extends StatefulWidget {
 class _DetailBookPageState extends State<DetailBookPage>
     with TickerProviderStateMixin {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
+  ConnectivityResult connectivity = ConnectivityResult.none;
   bool isLoading = true;
   String? token;
   String? idchap;
@@ -56,7 +57,7 @@ class _DetailBookPageState extends State<DetailBookPage>
               options: Options(headers: {
                 'Authorization': 'Bearer $token',
               }))
-          .timeout(Duration(seconds: 3));
+          .timeout(Duration(seconds: 2));
       ;
       print(widget.id);
       if (response.statusCode == 200) {
@@ -71,7 +72,7 @@ class _DetailBookPageState extends State<DetailBookPage>
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {}
       if (e.isNoConnectionError) {
-        Get.dialog(DialogError());
+        // Get.dialog(DialogError());
       } else {
         Get.snackbar("error", e.toString());
         print(e);
@@ -108,444 +109,502 @@ class _DetailBookPageState extends State<DetailBookPage>
     }
   }
 
+  Future<void> callback() async {
+    if (connectivity == ConnectivityResult.none) {
+      isLoading = true;
+    } else {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => DetailBookPage(id: idbooks!)),
+          (Route<dynamic> route) => false);
+    }
+  }
+
   @override
   void initState() {
     getItemBooks();
+    callback();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     TabController _tabController = TabController(length: 3, vsync: this);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 138, 175, 52),
-        title: Text('Chi tiết sách'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () async {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.remove('idbook');
-            await prefs.remove('idchapter');
-            await prefs.remove('sttchapter');
-            Navigator.pushAndRemoveUntil<dynamic>(
-              context,
-              MaterialPageRoute<dynamic>(
-                builder: (BuildContext context) => HomePage(),
-              ),
-              (Route<dynamic> route) =>
-                  false, //if you want to disable back feature set to false
-            );
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.share,
-              color: Colors.white,
+    return WillPopScope(
+        onWillPop: () {
+          callback();
+          print(callback());
+          isLoading = true;
+          return Future.value(false);
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color.fromARGB(255, 138, 175, 52),
+            title: Text('Chi tiết sách'),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: (() {
+                // Get.to(HomePage());
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                    (Route<dynamic> route) => false);
+              }),
             ),
-            onPressed: () {
-              Share.share('Đọc ngay: ' +
-                  dataBook!['bookName'].toString() +
-                  ' trên ứng dụng B4U BSOC '
-                      '- Cài ứng dụng B4U BSOC tại AppStore: https://apps.apple.com/us/app/b4u-bsoc/id6444538062 ' +
-                  ' - PlayStore: https://play.google.com/store/apps/details?id=com.b4usolution.b4u_bsoc');
-            },
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.share,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Share.share('Đọc ngay: ' +
+                      dataBook!['bookName'].toString() +
+                      ' trên ứng dụng B4U BSOC '
+                          '- Cài ứng dụng B4U BSOC tại AppStore: https://apps.apple.com/us/app/b4u-bsoc/id6444538062 ' +
+                      ' - PlayStore: https://play.google.com/store/apps/details?id=com.b4usolution.b4u_bsoc');
+                },
+              ),
+              IconButton(
+                  onPressed: () {
+                    print('id bookmark: ${dataBook!['id'].toString()}');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              BookmarkPage(id: dataBook!['id'].toString())),
+                    );
+                  },
+                  icon: Icon(Icons.bookmark_sharp)),
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DownloadPage()),
+                    );
+                  },
+                  icon: Icon(Icons.download_for_offline))
+            ],
           ),
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const BookmarkPage()),
-                );
-              },
-              icon: Icon(Icons.bookmark_sharp)),
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DownloadPage()),
-                );
-              },
-              icon: Icon(Icons.download_for_offline))
-        ],
-      ),
-      body: isLoading
-          // && dataBook == null && listReponse == null
-          ? Center(
-              child: LoadingAnimationWidget.discreteCircle(
-              color: Color.fromARGB(255, 138, 175, 52),
-              secondRingColor: Colors.black,
-              thirdRingColor: Colors.purple,
-              size: 30,
-            ))
-          : Column(
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                Hero(
-                  tag: 'cover',
-                  child: Container(
-                      height: 195,
-                      width: 150,
-                      child: Material(
-                        child: dataBook == null
-                            ? Text('Đang tải dữ liệu')
-                            : Image.network(
-                                'http://103.77.166.202' + dataBook?['image'],
-                                fit: BoxFit.fill,
-                              ),
-                      )),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  child: Hero(
-                    tag: 'title',
+          body: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              if (connectivity == ConnectivityResult.none) {
+                return Container(
+                  color: Colors.white70,
+                  child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(dataBook?['bookName'],
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                                '(Mã sách: ' + dataBook!['id'].toString() + ')',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              dataBook?['author'],
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                          ],
-                        ),
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/images/wifi.png'),
+                          Text(
+                            'Không có kết nối Internet',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'Vui lòng kiểm tra kết nối internet và thử lại',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          // TextButton(
+                          //     onPressed: () {
+                          //       Navigator.pushAndRemoveUntil(
+                          //           context,
+                          //           MaterialPageRoute(
+                          //               builder: (context) =>
+                          //                   DetailBookPage(id: idbooks!)),
+                          //           (Route<dynamic> route) => false);
+                          //     },
+                          //     child: Text('Thử lại'))
+                        ],
                       ),
                     ),
                   ),
-                ),
-                TabBar(
-                    controller: _tabController,
-                    labelColor: Colors.black,
-                    unselectedLabelColor: Colors.grey,
-                    tabs: const [
-                      Tab(
-                        text: "Chương sách",
+                );
+              } else {
+                return child;
+              }
+            },
+            child: isLoading
+                ? Center(
+                    child: LoadingAnimationWidget.discreteCircle(
+                    color: Color.fromARGB(255, 138, 175, 52),
+                    secondRingColor: Colors.black,
+                    thirdRingColor: Colors.purple,
+                    size: 30,
+                  ))
+                : Column(
+                    children: [
+                      const SizedBox(
+                        height: 10,
                       ),
-                      Tab(
-                        text: "Giới thiệu",
-                      ),
-                      Tab(
-                        text: "Đánh giá",
-                      ),
-                    ]),
-                Expanded(
-                    child: Container(
-                  child:
-                      TabBarView(controller: _tabController, children: <Widget>[
-                    Container(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 242, 254, 255),
-                        ),
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const ScrollPhysics(),
-                            itemCount:
-                                listReponse == null ? 0 : listReponse!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () async {
-                                  final SharedPreferences? prefs = await _prefs;
-                                  await prefs?.setInt(
-                                      'idchapter', listReponse![index]['id']);
-                                  await prefs?.setInt('sttchapter',
-                                      listReponse![index]['chapterId']);
-                                  await prefs?.setString(
-                                      'titleChapter',
-                                      listReponse![index]['chapterTitle']
-                                          .toString());
-                                  await prefs?.setString(
-                                      'filePathChapter',
-                                      listReponse![index]['filePath']
-                                          .toString());
-                                  print(
-                                      'ChapterID Click: ${listReponse![index]['id'].toString()}');
-
-                                  if (listReponse![index]['allow'] == true) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute<dynamic>(
-                                          builder: (context) => PdfViewerPage(
-                                              idb: dataBook!['id'].toString())),
-                                    );
-                                  } else {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => ChargeDialog(),
-                                    );
-                                  }
-                                },
-                                child: Card(
-                                  color: Color.fromARGB(255, 255, 255, 255),
-                                  elevation: 10,
-                                  margin: EdgeInsets.all(10),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                'Chương: ' +
-                                                    listReponse![index]
-                                                            ['chapterId']
-                                                        .toString() +
-                                                    ' ',
-                                                style: TextStyle(
-                                                  color: Colors.blue.shade900,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                              Icon(
-                                                listReponse![index]['allow'] ==
-                                                        true
-                                                    ? Icons.remove_red_eye
-                                                    : Icons.lock_sharp,
-                                                color: Colors.yellow.shade800,
-                                                size: 16,
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Flexible(
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      listReponse?[index]
-                                                          ['chapterTitle'],
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      maxLines: 2,
-                                                      softWrap: false,
-                                                      style: TextStyle(
-                                                        color: Colors
-                                                            .blue.shade900,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Column(
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      listReponse![index]
-                                                                  ['allow'] ==
-                                                              true
-                                                          ? IconButton(
-                                                              onPressed:
-                                                                  () async {
-                                                                final SharedPreferences?
-                                                                    prefs =
-                                                                    await _prefs;
-                                                                await prefs?.setString(
-                                                                    'idchapter',
-                                                                    listReponse![index]
-                                                                            [
-                                                                            'id']
-                                                                        .toString());
-
-                                                                print(
-                                                                    'ChapterID Click: ${listReponse![index]['id'].toString()}');
-
-                                                                addBookmark();
-                                                                Get.snackbar(
-                                                                    'Chương: ' +
-                                                                        listReponse![index]['chapterTitle']
-                                                                            .toString(),
-                                                                    "Thêm đánh dấu trang thành công.");
-                                                              },
-                                                              icon: listReponse![
-                                                                              index]
-                                                                          [
-                                                                          'bookmark'] ==
-                                                                      true
-                                                                  ? Icon(
-                                                                      Icons
-                                                                          .bookmark_added_sharp,
-                                                                      color: Color.fromARGB(
-                                                                          255,
-                                                                          253,
-                                                                          135,
-                                                                          0),
-                                                                    )
-                                                                  : Icon(
-                                                                      Icons
-                                                                          .bookmark_add_sharp,
-                                                                      color: Color.fromARGB(
-                                                                          255,
-                                                                          51,
-                                                                          182,
-                                                                          61),
-                                                                    ))
-                                                          : IconButton(
-                                                              onPressed: () {},
-                                                              icon: Icon(Icons
-                                                                  .lock_person_sharp)),
-                                                      listReponse![index]
-                                                                  ['allow'] ==
-                                                              true
-                                                          ? IconButton(
-                                                              onPressed:
-                                                                  () async {
-                                                                final SharedPreferences?
-                                                                    prefs =
-                                                                    await _prefs;
-                                                                await prefs?.setString(
-                                                                    'idchapter',
-                                                                    listReponse![index]
-                                                                            [
-                                                                            'id']
-                                                                        .toString());
-                                                                await prefs?.setString(
-                                                                    'filePath',
-                                                                    listReponse![index]
-                                                                            [
-                                                                            'filePath']
-                                                                        .toString());
-                                                                print(
-                                                                    'ChapterID Click: ${listReponse![index]['id'].toString()}');
-
-                                                                listReponse![index]
-                                                                            [
-                                                                            'downloaded'] ==
-                                                                        true
-                                                                    ? showDialog(
-                                                                        context:
-                                                                            context,
-                                                                        builder: (context) => AlertDialog(
-                                                                            title: Text("Thông báo"),
-                                                                            content: Column(
-                                                                              mainAxisSize: MainAxisSize.min,
-                                                                              children: [
-                                                                                Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
-                                                                              ],
-                                                                            ),
-                                                                            actions: <Widget>[
-                                                                              TextButton(
-                                                                                onPressed: () {
-                                                                                  Navigator.pop(context, 'Thoát');
-                                                                                },
-                                                                                child: const Text('Thoát'),
-                                                                              ),
-                                                                              TextButton(
-                                                                                onPressed: () {
-                                                                                  showDialog(
-                                                                                    context: context,
-                                                                                    useRootNavigator: false,
-                                                                                    builder: (context) => const DownloadingDialog(),
-                                                                                  );
-                                                                                  // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
-                                                                                },
-                                                                                child: const Text('Tải về'),
-                                                                              ),
-                                                                            ]),
-                                                                      )
-                                                                    : showDialog(
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (context) =>
-                                                                                const DownloadingDialog(),
-                                                                      );
-                                                                setState(() {
-                                                                  getItemBooks();
-                                                                  isLoading =
-                                                                      false;
-                                                                });
-                                                                isLoading =
-                                                                    true;
-                                                              },
-                                                              icon: listReponse![
-                                                                              index]
-                                                                          [
-                                                                          'downloaded'] ==
-                                                                      true
-                                                                  ? Icon(
-                                                                      Icons
-                                                                          .download_sharp,
-                                                                      color: Colors
-                                                                          .blue)
-                                                                  : Icon(
-                                                                      Icons
-                                                                          .download_outlined,
-                                                                      color: Colors
-                                                                          .blue))
-                                                          : IconButton(
-                                                              onPressed: () {},
-                                                              icon: Icon(Icons
-                                                                  .lock_person_sharp))
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ]),
-                                  ),
-                                ),
-                              );
-                            }),
-                      ),
-                    ),
-                    Container(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 242, 254, 255),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: ListView(
-                            children: [
-                              dataBook == null
-                                  ? Text('Đang tải dữ liệu')
-                                  : Text(
-                                      dataBook?['description'],
-                                      softWrap: true,
-                                      textAlign: TextAlign.justify,
-                                      style: const TextStyle(
-                                          fontSize: 17, height: 1.5),
+                      Hero(
+                        tag: 'cover',
+                        child: Container(
+                            height: 195,
+                            width: 150,
+                            child: Material(
+                              child: dataBook!['image'] == null
+                                  ? Image.asset('assets/images/avatar.png',
+                                      fit: BoxFit.fill)
+                                  : Image.network(
+                                      'http://103.77.166.202' +
+                                          dataBook?['image'],
+                                      fit: BoxFit.fill,
                                     ),
-                            ],
+                            )),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        child: Hero(
+                          tag: 'title',
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(dataBook!['bookName'].toString(),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                      '(Mã sách: ' +
+                                          dataBook!['id'].toString() +
+                                          ')',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    dataBook?['author'],
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    ReviewBook(id: dataBook!['id'].toString()),
-                  ]),
-                ))
-              ],
-            ),
-    );
+                      TabBar(
+                          controller: _tabController,
+                          labelColor: Colors.black,
+                          unselectedLabelColor: Colors.grey,
+                          tabs: const [
+                            Tab(
+                              text: "Chương sách",
+                            ),
+                            Tab(
+                              text: "Giới thiệu",
+                            ),
+                            Tab(
+                              text: "Đánh giá",
+                            ),
+                          ]),
+                      Expanded(
+                          child: Container(
+                        child: TabBarView(
+                            controller: _tabController,
+                            children: <Widget>[
+                              Container(
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: Color.fromARGB(255, 242, 254, 255),
+                                  ),
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const ScrollPhysics(),
+                                      itemCount: listReponse == null
+                                          ? 0
+                                          : listReponse!.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return GestureDetector(
+                                          onTap: () async {
+                                            final SharedPreferences? prefs =
+                                                await _prefs;
+                                            await prefs?.setInt('idchapter',
+                                                listReponse![index]['id']);
+                                            await prefs?.setInt(
+                                                'sttchapter',
+                                                listReponse![index]
+                                                    ['chapterId']);
+                                            await prefs?.setString(
+                                                'titleChapter',
+                                                listReponse![index]
+                                                        ['chapterTitle']
+                                                    .toString());
+                                            await prefs?.setString(
+                                                'filePathChapter',
+                                                listReponse![index]['filePath']
+                                                    .toString());
+                                            print(
+                                                'ChapterID Click: ${listReponse![index]['id'].toString()}');
+
+                                            if (listReponse![index]['allow'] ==
+                                                true) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute<dynamic>(
+                                                    builder: (context) =>
+                                                        PdfViewerPage(
+                                                            idb: dataBook!['id']
+                                                                .toString())),
+                                              );
+                                            } else {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    ChargeDialog(),
+                                              );
+                                            }
+                                          },
+                                          child: Card(
+                                            color: Color.fromARGB(
+                                                255, 255, 255, 255),
+                                            elevation: 10,
+                                            margin: EdgeInsets.all(10),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          'Chương: ' +
+                                                              listReponse![
+                                                                          index]
+                                                                      [
+                                                                      'chapterId']
+                                                                  .toString() +
+                                                              ' ',
+                                                          style: TextStyle(
+                                                            color: Colors
+                                                                .blue.shade900,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                        Icon(
+                                                          listReponse![index][
+                                                                      'allow'] ==
+                                                                  true
+                                                              ? Icons
+                                                                  .remove_red_eye
+                                                              : Icons
+                                                                  .lock_sharp,
+                                                          color: Colors
+                                                              .yellow.shade800,
+                                                          size: 16,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Flexible(
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                listReponse?[
+                                                                        index][
+                                                                    'chapterTitle'],
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                maxLines: 2,
+                                                                softWrap: false,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .blue
+                                                                      .shade900,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Column(
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                listReponse![index]
+                                                                            [
+                                                                            'allow'] ==
+                                                                        true
+                                                                    ? IconButton(
+                                                                        onPressed:
+                                                                            () async {
+                                                                          final SharedPreferences?
+                                                                              prefs =
+                                                                              await _prefs;
+                                                                          await prefs?.setString(
+                                                                              'idchapter',
+                                                                              listReponse![index]['id'].toString());
+
+                                                                          print(
+                                                                              'ChapterID Click: ${listReponse![index]['id'].toString()}');
+
+                                                                          addBookmark();
+                                                                          Get.snackbar(
+                                                                              'Chương: ' + listReponse![index]['chapterTitle'].toString(),
+                                                                              "Thêm đánh dấu trang thành công.");
+                                                                        },
+                                                                        icon: listReponse![index]['bookmark'] ==
+                                                                                true
+                                                                            ? Icon(
+                                                                                Icons.bookmark_added_sharp,
+                                                                                color: Color.fromARGB(255, 253, 135, 0),
+                                                                              )
+                                                                            : Icon(
+                                                                                Icons.bookmark_add_sharp,
+                                                                                color: Color.fromARGB(255, 51, 182, 61),
+                                                                              ))
+                                                                    : IconButton(
+                                                                        onPressed:
+                                                                            () {},
+                                                                        icon: Icon(
+                                                                            Icons.lock_person_sharp)),
+                                                                listReponse![index]
+                                                                            [
+                                                                            'allow'] ==
+                                                                        true
+                                                                    ? IconButton(
+                                                                        onPressed:
+                                                                            () async {
+                                                                          final SharedPreferences?
+                                                                              prefs =
+                                                                              await _prefs;
+                                                                          await prefs?.setString(
+                                                                              'idchapter',
+                                                                              listReponse![index]['id'].toString());
+                                                                          await prefs?.setString(
+                                                                              'filePath',
+                                                                              listReponse![index]['filePath'].toString());
+                                                                          print(
+                                                                              'ChapterID Click: ${listReponse![index]['id'].toString()}');
+
+                                                                          listReponse![index]['downloaded'] == true
+                                                                              ? showDialog(
+                                                                                  context: context,
+                                                                                  builder: (context) => AlertDialog(
+                                                                                      title: Text("Thông báo"),
+                                                                                      content: Column(
+                                                                                        mainAxisSize: MainAxisSize.min,
+                                                                                        children: [
+                                                                                          Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
+                                                                                        ],
+                                                                                      ),
+                                                                                      actions: <Widget>[
+                                                                                        TextButton(
+                                                                                          onPressed: () {
+                                                                                            Navigator.pop(context, 'Thoát');
+                                                                                          },
+                                                                                          child: const Text('Thoát'),
+                                                                                        ),
+                                                                                        TextButton(
+                                                                                          onPressed: () {
+                                                                                            showDialog(
+                                                                                              context: context,
+                                                                                              useRootNavigator: false,
+                                                                                              builder: (context) => const DownloadingDialog(),
+                                                                                            );
+                                                                                            // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
+                                                                                          },
+                                                                                          child: const Text('Tải về'),
+                                                                                        ),
+                                                                                      ]),
+                                                                                )
+                                                                              : showDialog(
+                                                                                  context: context,
+                                                                                  builder: (context) => const DownloadingDialog(),
+                                                                                );
+                                                                          setState(
+                                                                              () {
+                                                                            getItemBooks();
+                                                                            isLoading =
+                                                                                false;
+                                                                          });
+                                                                          isLoading =
+                                                                              true;
+                                                                        },
+                                                                        icon: listReponse![index]['downloaded'] ==
+                                                                                true
+                                                                            ? Icon(Icons.download_sharp,
+                                                                                color: Colors
+                                                                                    .blue)
+                                                                            : Icon(Icons.download_outlined,
+                                                                                color: Colors
+                                                                                    .blue))
+                                                                    : IconButton(
+                                                                        onPressed:
+                                                                            () {},
+                                                                        icon: Icon(
+                                                                            Icons.lock_person_sharp))
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ]),
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                ),
+                              ),
+                              Container(
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: Color.fromARGB(255, 242, 254, 255),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: ListView(
+                                      children: [
+                                        dataBook == null
+                                            ? Text('Đang tải dữ liệu')
+                                            : Text(
+                                                dataBook?['description'],
+                                                softWrap: true,
+                                                textAlign: TextAlign.justify,
+                                                style: const TextStyle(
+                                                    fontSize: 17, height: 1.5),
+                                              ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              ReviewBook(id: dataBook!['id'].toString()),
+                            ]),
+                      ))
+                    ],
+                  ),
+          ),
+        ));
   }
 }
 
@@ -1382,7 +1441,8 @@ class _DialogCommentState extends State<DialogComment> {
 }
 
 class BookmarkPage extends StatefulWidget {
-  const BookmarkPage({super.key});
+  const BookmarkPage({super.key, required this.id});
+  final String id;
 
   @override
   State<BookmarkPage> createState() => _BookmarkPageState();
@@ -1390,6 +1450,7 @@ class BookmarkPage extends StatefulWidget {
 
 class _BookmarkPageState extends State<BookmarkPage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  ConnectivityResult connectivity = ConnectivityResult.none;
   String? chap;
   void readBookmark() async {
     final prefs = await SharedPreferences.getInstance();
@@ -1407,17 +1468,17 @@ class _BookmarkPageState extends State<BookmarkPage> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
-      id = prefs.getString('idbook');
+      // id = prefs.getString('idbook');
       setState(() {
         isLoading = true;
       });
 
-      var response = await Dio()
-          .get('http://103.77.166.202/api/chapter/list-bookmark?bookId=$id',
-              options: Options(headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer $token',
-              }));
+      var response = await Dio().get(
+          'http://103.77.166.202/api/chapter/list-bookmark?bookId=${widget.id}',
+          options: Options(headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          }));
       if (response.statusCode == 200) {
         bookmark = response.data;
         setState(() {
@@ -1428,7 +1489,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
       }
       print("res: ${response.data}");
     } catch (e) {
-      Get.snackbar("error", e.toString());
+      // Get.snackbar("error", e.toString());
       print(e);
     }
   }
@@ -1460,10 +1521,22 @@ class _BookmarkPageState extends State<BookmarkPage> {
     }
   }
 
+  Future<void> callback() async {
+    if (connectivity == ConnectivityResult.none) {
+      isLoading = true;
+    } else {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => BookmarkPage(id: widget.id)),
+          (Route<dynamic> route) => false);
+    }
+  }
+
   @override
   void initState() {
     readBookmark();
     getBookmarkDetail();
+    callback();
     super.initState();
   }
 
@@ -1482,68 +1555,109 @@ class _BookmarkPageState extends State<BookmarkPage> {
               // await prefs.remove('idchapter');
               // await prefs.remove('sttchapter');
               // await prefs.remove('chapterTitle');
-              Navigator.push<dynamic>(
-                context,
-                MaterialPageRoute<dynamic>(
-                  builder: (BuildContext context) => DetailBookPage(id: id!),
-                ),
-                // (route) => false,
-              );
+              Navigator.pop(context);
+              // push<dynamic>(
+              //   context,
+              //   MaterialPageRoute<dynamic>(
+              //     builder: (BuildContext context) => DetailBookPage(id: idBook),
+              //   ),
+              //   // (route) => false,
+              // );
             },
           ),
         ),
-        body: isLoading
-            ? Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    CircularProgressIndicator(),
-                  ],
-                ),
-              )
-            : ListView.builder(
-                itemCount: bookmark == null ? null : bookmark!.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () async {
-                      final SharedPreferences? prefs = await _prefs;
-                      await prefs?.setInt(
-                          'idchapter',
-                          int.parse(
-                              bookmark![index]['chapter']['id'].toString()));
-                      await prefs?.setInt('sttchapter',
-                          bookmark![index]['chapter']['chapterId']);
-                      await prefs?.setString(
-                          'titleChapter',
-                          bookmark![index]['chapter']['chapterTitle']
-                              .toString());
-                      await prefs?.setString('filePathChapter',
-                          bookmark![index]['chapter']['filePath'].toString());
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => PdfViewerPage(idb: id!)));
-                    },
-                    child: ListTile(
-                      title: Text(bookmark![index] == null
-                          ? 'Không có tên'
-                          : 'Chương: ' +
-                              bookmark![index]['chapter']['chapterId']
-                                  .toString()),
-                      subtitle: Text(bookmark![index] == null
-                          ? 'Không có tên'
-                          : bookmark![index]['chapter']['chapterTitle']
-                              .toString()),
-                      trailing: IconButton(
-                          onPressed: () async {
-                            final SharedPreferences? prefs = await _prefs;
-                            await prefs?.setString('idchapter',
-                                bookmark![index]['chapter']['id'].toString());
-                            removeBookmark();
-                            // Navigator.pop(context);
-                          },
-                          icon: Icon(Icons.bookmark_remove, color: Colors.red)),
+        body: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              if (connectivity == ConnectivityResult.none) {
+                return Container(
+                  color: Colors.white70,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/images/wifi.png'),
+                          Text(
+                            'Không có kết nối Internet',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'Vui lòng kiểm tra kết nối internet và thử lại',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ],
+                      ),
                     ),
-                  );
-                }));
+                  ),
+                );
+              } else {
+                return child;
+              }
+            },
+            child: callback == ConnectivityResult.none
+                ? Center(
+                    child: LoadingAnimationWidget.discreteCircle(
+                    color: Color.fromARGB(255, 138, 175, 52),
+                    secondRingColor: Colors.black,
+                    thirdRingColor: Colors.purple,
+                    size: 30,
+                  ))
+                : ListView.builder(
+                    itemCount: bookmark == null ? null : bookmark!.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () async {
+                          final SharedPreferences? prefs = await _prefs;
+                          await prefs?.setInt(
+                              'idchapter',
+                              int.parse(bookmark![index]['chapter']['id']
+                                  .toString()));
+                          await prefs?.setInt('sttchapter',
+                              bookmark![index]['chapter']['chapterId']);
+                          await prefs?.setString(
+                              'titleChapter',
+                              bookmark![index]['chapter']['chapterTitle']
+                                  .toString());
+                          await prefs?.setString(
+                              'filePathChapter',
+                              bookmark![index]['chapter']['filePath']
+                                  .toString());
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PdfViewerPage(idb: id!)));
+                        },
+                        child: ListTile(
+                          title: Text(bookmark?[index].toString() == null
+                              ? 'Không có tên'
+                              : 'Chương: ' +
+                                  bookmark![index]['chapter']['chapterId']
+                                      .toString()),
+                          subtitle: Text(bookmark?[index].toString() == null
+                              ? 'Không có tên'
+                              : bookmark![index]['chapter']['chapterTitle']
+                                  .toString()),
+                          trailing: IconButton(
+                              onPressed: () async {
+                                final SharedPreferences? prefs = await _prefs;
+                                await prefs?.setString(
+                                    'idchapter',
+                                    bookmark![index]['chapter']['id']
+                                        .toString());
+                                removeBookmark();
+                                // Navigator.pop(context);
+                              },
+                              icon: Icon(Icons.bookmark_remove,
+                                  color: Colors.red)),
+                        ),
+                      );
+                    })));
   }
 }
 
