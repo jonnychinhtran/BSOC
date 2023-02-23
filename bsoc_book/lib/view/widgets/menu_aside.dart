@@ -128,6 +128,9 @@ class _MenuAsideState extends State<MenuAside> {
                         ),
                         TextButton(
                             onPressed: () async {
+                              final SharedPreferences? prefs = await _prefs;
+                              await prefs?.setString(
+                                  'id', mapDemo!['id'].toString());
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(

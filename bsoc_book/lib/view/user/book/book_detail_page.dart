@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:auto_reload/auto_reload.dart';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/view/downloads/download_page.dart';
@@ -30,6 +31,11 @@ String? ipchapter;
 String? datapdf;
 List? listComment;
 Map? dataBook;
+
+enum RequestStatus {
+  success,
+  error,
+}
 
 class DetailBookPage extends StatefulWidget {
   const DetailBookPage({super.key, required this.id});
@@ -120,10 +126,22 @@ class _DetailBookPageState extends State<DetailBookPage>
     }
   }
 
+  final _autoRequestManager = AutoRequestManager(minReloadDurationSeconds: 3);
+  late List<RequestStatus> _requestStatuses;
+
   @override
   void initState() {
     getItemBooks();
     callback();
+
+    _requestStatuses = List.generate(3, (idx) {
+      _autoRequestManager.autoReload(
+        id: idx.toString(),
+        toReload: getItemBooks,
+      );
+      return RequestStatus.error;
+    });
+
     super.initState();
   }
 

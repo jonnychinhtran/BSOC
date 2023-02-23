@@ -143,7 +143,9 @@ class _InforPageState extends State<InforPage> {
                                     style:
                                         TextStyle(fontWeight: FontWeight.w500),
                                   ),
-                                  trailing: Text(datauser!['id'].toString()),
+                                  trailing: Text(datauser == null
+                                      ? ""
+                                      : datauser!['id'].toString()),
                                 ),
                                 Divider(
                                   height: 2,
@@ -156,7 +158,9 @@ class _InforPageState extends State<InforPage> {
                                     style:
                                         TextStyle(fontWeight: FontWeight.w500),
                                   ),
-                                  trailing: Text(datauser!['fullname']),
+                                  trailing: Text(datauser == null
+                                      ? ""
+                                      : datauser!['fullname'].toString()),
                                 ),
                                 Divider(
                                   height: 2,
@@ -169,7 +173,9 @@ class _InforPageState extends State<InforPage> {
                                     style:
                                         TextStyle(fontWeight: FontWeight.w500),
                                   ),
-                                  trailing: Text(datauser!['username']),
+                                  trailing: Text(datauser == null
+                                      ? ""
+                                      : datauser!['username'].toString()),
                                 ),
                                 Divider(
                                   height: 2,
@@ -182,7 +188,9 @@ class _InforPageState extends State<InforPage> {
                                     style:
                                         TextStyle(fontWeight: FontWeight.w500),
                                   ),
-                                  trailing: Text(datauser!['email']),
+                                  trailing: Text(datauser == null
+                                      ? ""
+                                      : datauser!['email'].toString()),
                                 ),
                                 Divider(
                                   height: 2,
@@ -195,7 +203,9 @@ class _InforPageState extends State<InforPage> {
                                     style:
                                         TextStyle(fontWeight: FontWeight.w500),
                                   ),
-                                  trailing: Text(datauser!['phone']),
+                                  trailing: Text(datauser == null
+                                      ? ""
+                                      : datauser!['phone'].toString()),
                                 ),
                               ],
                             ),

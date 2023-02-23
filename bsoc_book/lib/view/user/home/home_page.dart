@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:auto_reload/auto_reload.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/data/model/books/book_model.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
@@ -23,6 +24,16 @@ Map? mapDemo;
 Map? demoReponse;
 List? listReponse;
 List? listTop;
+
+enum RequestStatus {
+  success,
+  error,
+}
+
+enum Content {
+  success,
+  error,
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -78,23 +89,62 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getTopBook() async {
     String? token;
-    final prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
 
-    var url = Uri.parse('http://103.77.166.202/api/book/top-book');
-    http.Response response = await http.get(url, headers: {
-      'Authorization': 'Bearer $token',
-    });
-
-    if (response.statusCode == 200) {
-      setState(() {
-        listTop = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
-        isLoading = false;
-      });
-    } else {
-      throw Exception('Lỗi tải hệ thống');
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      var response = await Dio()
+          .get('http://103.77.166.202/api/book/top-book',
+              options: Options(headers: {
+                'Authorization': 'Bearer $token',
+              }))
+          .timeout(Duration(seconds: 3));
+      if (response.statusCode == 200) {
+        setState(() {
+          listTop = response.data;
+          print('topbok: $listTop ');
+          isLoading = false;
+        });
+      } else {
+        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 400) {
+        // Get.dialog(DialogLogout());
+      }
+      if (e.response?.statusCode == 401) {
+        Get.offAll(LoginPage());
+      }
+      if (e.isNoConnectionError) {
+        // Get.dialog(DialogError());
+      } else {
+        Get.snackbar("error", e.toString());
+        print(e);
+        rethrow;
+      }
     }
   }
+
+  // Future<void> getTopBook() async {
+  //   String? token;
+  //   final prefs = await SharedPreferences.getInstance();
+  //   token = prefs.getString('accessToken');
+
+  //   var url = Uri.parse('http://103.77.166.202/api/book/top-book');
+  //   http.Response response = await http.get(url, headers: {
+  //     'Authorization': 'Bearer $token',
+  //   });
+
+  //   if (response.statusCode == 200) {
+  //     listTop = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   } else {
+  //     throw Exception('Lỗi tải hệ thống');
+  //   }
+  // }
 
   Future<String> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -112,11 +162,33 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  final _autoRequestManager = AutoRequestManager(minReloadDurationSeconds: 5);
+  final _autoRequestManager2 = AutoRequestManager(minReloadDurationSeconds: 5);
+  late List<RequestStatus> _requestStatuses;
+  late List<Content> _requestApi;
+
   @override
   void initState() {
     getAllBooks();
     getTopBook();
     callback();
+
+    _requestStatuses = List.generate(5, (idx) {
+      _autoRequestManager.autoReload(
+        id: idx.toString(),
+        toReload: getTopBook,
+      );
+      return RequestStatus.error;
+    });
+
+    _requestApi = List.generate(5, (idx) {
+      _autoRequestManager2.autoReload(
+        id: idx.toString(),
+        toReload: getAllBooks,
+      );
+      return Content.error;
+    });
+
     final newVersion = NewVersion(
       iOSId: 'com.b4usolution.app.bsoc',
       androidId: 'com.b4usolution.b4u_bsoc',
@@ -267,15 +339,6 @@ class _HomePageState extends State<HomePage> {
                             'Vui lòng kiểm tra kết nối internet và thử lại',
                             style: TextStyle(color: Colors.black),
                           ),
-                          // TextButton(
-                          //     onPressed: () {
-                          //       Navigator.pushAndRemoveUntil(
-                          //           context,
-                          //           MaterialPageRoute(
-                          //               builder: (context) => HomePage()),
-                          //           (Route<dynamic> route) => false);
-                          //     },
-                          //     child: Text('Thử lại'))
                         ],
                       ),
                     ),
@@ -285,7 +348,7 @@ class _HomePageState extends State<HomePage> {
                 return child;
               }
             },
-            child: callback == ConnectivityResult.none
+            child: callback == ConnectivityResult.none && listTop == null
                 ? Center(
                     child: LoadingAnimationWidget.discreteCircle(
                     color: Color.fromARGB(255, 138, 175, 52),
@@ -341,7 +404,7 @@ class _HomePageState extends State<HomePage> {
                                       child: SizedBox(
                                         child: Image.network(
                                             'http://103.77.166.202' +
-                                                listTop?[index]['image']),
+                                                listTop![index]['image']),
                                       ),
                                     ),
                                   );
@@ -418,9 +481,11 @@ class _HomePageState extends State<HomePage> {
                                                 height: 155,
                                                 width: 120,
                                                 child: Image.network(
-                                                  'http://103.77.166.202' +
-                                                      listReponse?[index]
-                                                          ['image'],
+                                                  listReponse == null
+                                                      ? ""
+                                                      : 'http://103.77.166.202' +
+                                                          listReponse?[index]
+                                                              ['image'],
                                                   fit: BoxFit.fill,
                                                 ),
                                               ),
@@ -429,7 +494,10 @@ class _HomePageState extends State<HomePage> {
                                           SizedBox(height: size.height * 0.01),
                                           Center(
                                             child: Text(
-                                              listReponse?[index]['bookName'],
+                                              listReponse == null
+                                                  ? ""
+                                                  : listReponse?[index]
+                                                      ['bookName'],
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
@@ -440,7 +508,7 @@ class _HomePageState extends State<HomePage> {
                                           Expanded(
                                             child: Center(
                                               child: Text(
-                                                'bởi ${listReponse?[index]['author']}',
+                                                'bởi ${listReponse == null ? "" : listReponse?[index]['author']}',
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
                                                     fontSize: 12),
