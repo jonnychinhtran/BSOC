@@ -126,26 +126,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Future<void> getTopBook() async {
-  //   String? token;
-  //   final prefs = await SharedPreferences.getInstance();
-  //   token = prefs.getString('accessToken');
-
-  //   var url = Uri.parse('http://103.77.166.202/api/book/top-book');
-  //   http.Response response = await http.get(url, headers: {
-  //     'Authorization': 'Bearer $token',
-  //   });
-
-  //   if (response.statusCode == 200) {
-  //     listTop = jsonDecode(Utf8Decoder().convert(response.bodyBytes));
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   } else {
-  //     throw Exception('Lỗi tải hệ thống');
-  //   }
-  // }
-
   Future<String> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('accessToken') ?? '';

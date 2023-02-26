@@ -18,12 +18,13 @@ class CommentController extends GetxController {
     idBook = prefs.getString('idbook');
     idUser = prefs.getString('idInforUser');
     rating = prefs.getDouble('rating');
+    int min = rating!.toInt();
     print(rating);
     // int value1 = int.parse(ratingController.text);
     final formData = {
       "userId": idUser,
       "bookId": idBook,
-      "rating": rating,
+      "rating": min,
       "content": contentController.text,
     };
     try {
@@ -33,9 +34,9 @@ class CommentController extends GetxController {
       if (response.statusCode == 200) {
         final jsondata = response.data;
         print(jsondata);
-        Get.snackbar("Thành công", "Đánh giá thành công.");
         ratingController.clear();
         contentController.clear();
+        Get.snackbar("Thành công", "Đánh giá thành công.");
       } else {
         Get.snackbar("Lỗi", "Đánh giá thất bại. Thử lại.");
       }

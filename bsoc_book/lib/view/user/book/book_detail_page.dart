@@ -37,6 +37,11 @@ enum RequestStatus {
   error,
 }
 
+enum RequestReview {
+  success,
+  error,
+}
+
 class DetailBookPage extends StatefulWidget {
   const DetailBookPage({super.key, required this.id});
   final String id;
@@ -1089,8 +1094,10 @@ class ReviewBook extends StatefulWidget {
 }
 
 class _ReviewBookState extends State<ReviewBook> {
+  final _autoRequestManager = AutoRequestManager(minReloadDurationSeconds: 1);
   bool isLoading = true;
   String? token;
+  late List<RequestReview> _requestReview;
 
   Future<void> getComment() async {
     try {
@@ -1125,24 +1132,48 @@ class _ReviewBookState extends State<ReviewBook> {
     }
   }
 
+  ConnectivityResult connectivity = ConnectivityResult.none;
+
+  Future<void> callback() async {
+    if (connectivity == ConnectivityResult.none) {
+      isLoading = true;
+    } else {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => ReviewBook(id: widget.id)),
+          (Route<dynamic> route) => false);
+    }
+  }
+
   @override
   void initState() {
     getComment();
+    callback();
+
+    _requestReview = List.generate(1, (idx) {
+      _autoRequestManager.autoReload(
+        id: idx.toString(),
+        toReload: getComment,
+      );
+      return RequestReview.error;
+    });
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isLoading
+      body: isLoading &&
+              callback == ConnectivityResult.none &&
+              listComment == null
           ? Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  CircularProgressIndicator(),
-                ],
-              ),
-            )
+              child: LoadingAnimationWidget.discreteCircle(
+              color: Color.fromARGB(255, 138, 175, 52),
+              secondRingColor: Colors.black,
+              thirdRingColor: Colors.purple,
+              size: 30,
+            ))
           : SingleChildScrollView(
               child: Column(
                 children: [
@@ -1204,7 +1235,7 @@ class _ReviewBookState extends State<ReviewBook> {
                                   RatingBars(
                                     rating:
                                         listComment![index]['rating'] == null
-                                            ? 0.0
+                                            ? 0
                                             : listComment![index]['rating']
                                                 .toDouble(),
                                     // ratingCount: 5,
@@ -1313,9 +1344,12 @@ class _DialogCommentState extends State<DialogComment> {
 
   CommentController cmtcontroller = Get.put(CommentController());
   String? idbooks;
+  String? token;
+
   getIdbook() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     idbooks = prefs.getString('idbook');
+    token = prefs.getString('accessToken');
   }
 
   late final _ratingController;
@@ -1382,13 +1416,11 @@ class _DialogCommentState extends State<DialogComment> {
                                           Icons.star,
                                           color: Colors.amber,
                                         ),
-                                        onRatingUpdate: (rating) async {
-                                          SharedPreferences prefs =
-                                              await SharedPreferences
-                                                  .getInstance();
+                                        onRatingUpdate: (rating) {
                                           setState(() {
                                             _rating = rating;
-                                            prefs.setDouble('rating', _rating);
+
+                                            print('SAO: $_rating');
                                           });
                                         },
                                         updateOnDrag: true,
@@ -1438,18 +1470,20 @@ class _DialogCommentState extends State<DialogComment> {
                       child: const Text('Huỷ'),
                     ),
                     TextButton(
-                        onPressed: () => {
-                              if (_formKey.currentState!.validate())
-                                {
-                                  cmtcontroller.commentUserBook(),
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              DetailBookPage(id: idbooks!)),
-                                      (Route<dynamic> route) => false),
-                                },
-                            },
+                        onPressed: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          prefs.setDouble('rating', _rating);
+                          if (_formKey.currentState!.validate()) {
+                            cmtcontroller.commentUserBook();
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        DetailBookPage(id: idbooks!)),
+                                (Route<dynamic> route) => false);
+                          }
+                        },
                         child: Text('Gửi'))
                   ],
                 )),
@@ -1568,19 +1602,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              // SharedPreferences prefs = await SharedPreferences.getInstance();
-              // await prefs.remove('idbook');
-              // await prefs.remove('idchapter');
-              // await prefs.remove('sttchapter');
-              // await prefs.remove('chapterTitle');
               Navigator.pop(context);
-              // push<dynamic>(
-              //   context,
-              //   MaterialPageRoute<dynamic>(
-              //     builder: (BuildContext context) => DetailBookPage(id: idBook),
-              //   ),
-              //   // (route) => false,
-              // );
             },
           ),
         ),
