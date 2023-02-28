@@ -85,7 +85,7 @@ class _DetailBookPageState extends State<DetailBookPage>
       if (e.isNoConnectionError) {
         // Get.dialog(DialogError());
       } else {
-        Get.snackbar("error", e.toString());
+        // Get.snackbar("error", e.toString());
         print(e);
         rethrow;
       }
@@ -115,7 +115,7 @@ class _DetailBookPageState extends State<DetailBookPage>
       }
       print("res: ${response.data}");
     } catch (e) {
-      Get.snackbar("error", e.toString());
+      // Get.snackbar("error", e.toString());
       print(e);
     }
   }
@@ -272,7 +272,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                             height: 195,
                             width: 150,
                             child: Material(
-                              child: dataBook!['image'] == null
+                              child: dataBook?['image'] == null
                                   ? Image.asset('assets/images/avatar.png',
                                       fit: BoxFit.fill)
                                   : Image.network(
@@ -294,7 +294,10 @@ class _DetailBookPageState extends State<DetailBookPage>
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(dataBook!['bookName'].toString(),
+                                  Text(
+                                      dataBook?['bookName'] == null
+                                          ? "Đang tải..."
+                                          : dataBook?['bookName'],
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                           fontSize: 16,
@@ -314,7 +317,9 @@ class _DetailBookPageState extends State<DetailBookPage>
                                     height: 10,
                                   ),
                                   Text(
-                                    dataBook?['author'],
+                                    dataBook?['author'] == null
+                                        ? "Đang tải..."
+                                        : dataBook?['author'],
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(fontSize: 14),
                                   ),
@@ -1251,7 +1256,7 @@ class _ReviewBookState extends State<ReviewBook> {
                   SizedBox(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: DialogComment(),
+                      child: DialogComment(id: widget.id),
                     ),
                   )
                 ],
@@ -1333,8 +1338,9 @@ class _Clipper extends CustomClipper<Rect> {
 }
 
 class DialogComment extends StatefulWidget {
-  DialogComment({super.key});
-
+  // DialogComment({super.key});
+  DialogComment({super.key, required this.id});
+  final String id;
   @override
   State<DialogComment> createState() => _DialogCommentState();
 }
@@ -1394,7 +1400,6 @@ class _DialogCommentState extends State<DialogComment> {
                         children: [
                           Row(
                             children: [
-                              // Text("Số điểm: "),
                               ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 40, maxHeight: 50),
@@ -1409,7 +1414,7 @@ class _DialogCommentState extends State<DialogComment> {
                                         unratedColor:
                                             Colors.amber.withAlpha(50),
                                         itemCount: 5,
-                                        itemSize: 40.0,
+                                        itemSize: 35.5,
                                         itemPadding: EdgeInsets.symmetric(
                                             horizontal: 4.0),
                                         itemBuilder: (context, _) => Icon(
@@ -1430,7 +1435,7 @@ class _DialogCommentState extends State<DialogComment> {
                             ],
                           ),
                           SizedBox(
-                            height: 25,
+                            height: 20,
                           ),
                           Text("Nội dung:"),
                           SizedBox(
@@ -1476,12 +1481,14 @@ class _DialogCommentState extends State<DialogComment> {
                           prefs.setDouble('rating', _rating);
                           if (_formKey.currentState!.validate()) {
                             cmtcontroller.commentUserBook();
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        DetailBookPage(id: idbooks!)),
-                                (Route<dynamic> route) => false);
+                            setState(() {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          DetailBookPage(id: widget.id)),
+                                  (Route<dynamic> route) => false);
+                            });
                           }
                         },
                         child: Text('Gửi'))
