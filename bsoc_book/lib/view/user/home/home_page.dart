@@ -4,6 +4,8 @@ import 'package:auto_reload/auto_reload.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/data/model/books/book_model.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
+import 'package:bsoc_book/view/quiz/practice.dart';
+import 'package:bsoc_book/view/quiz/quiz.dart';
 import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
@@ -342,12 +344,16 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         children: [
                           SizedBox(height: size.height * 0.02),
-                          Center(
-                            child: Text(
-                              'TOP 5 SÁCH HAY',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 13.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Top 5 sách hay',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
@@ -391,27 +397,384 @@ class _HomePageState extends State<HomePage> {
                                 }),
                           ),
                           SizedBox(height: size.height * 0.04),
-                          const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10, bottom: 4),
-                              child: Center(
-                                child: Text(
-                                  'THƯ VIỆN SÁCH',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 14.0, right: 14.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Luyện thi IELTS - TOEIC - TOEFL',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PracticePage()));
+                                    },
+                                    child: Text(
+                                      'Xem thêm',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        color: Colors.blue,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: 200,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: ListView(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 16.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    QuizPage()));
+                                      },
+                                      child: Container(
+                                        width: 150,
+                                        decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              offset: Offset(0, 1),
+                                              blurRadius: 5,
+                                              color:
+                                                  Colors.black.withOpacity(0.3),
+                                            ),
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                height: 70,
+                                                width: 150,
+                                                decoration: BoxDecoration(
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        offset: Offset(0, 1),
+                                                        blurRadius: 1,
+                                                        color: Colors.black
+                                                            .withOpacity(0.1),
+                                                      ),
+                                                    ],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    image: DecorationImage(
+                                                        fit: BoxFit.fill,
+                                                        image: AssetImage(
+                                                            "assets/images/luyenthi.jpg"))),
+                                              ),
+                                              SizedBox(
+                                                  height: size.height * 0.01),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Color.fromARGB(
+                                                            255, 213, 247, 250),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6.0)),
+                                                    child: Padding(
+                                                        padding:
+                                                            EdgeInsets.all(6.0),
+                                                        child: Text("IELTS",
+                                                            style: TextStyle(
+                                                                fontSize: 8.0,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500)))),
+                                              ),
+                                              SizedBox(
+                                                  height: size.height * 0.01),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                    'FUILL TEST - ALL PART 1',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                              ),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text('200 Questions',
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                              ),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text('ETS 2019',
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 16.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    QuizPage()));
+                                      },
+                                      child: Container(
+                                        width: 150,
+                                        decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              offset: Offset(0, 1),
+                                              blurRadius: 5,
+                                              color:
+                                                  Colors.black.withOpacity(0.3),
+                                            ),
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                height: 70,
+                                                width: 150,
+                                                decoration: BoxDecoration(
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        offset: Offset(0, 1),
+                                                        blurRadius: 5,
+                                                        color: Colors.black
+                                                            .withOpacity(0.3),
+                                                      ),
+                                                    ],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    image: DecorationImage(
+                                                        fit: BoxFit.fill,
+                                                        image: AssetImage(
+                                                            "assets/images/luyenthi.jpg"))),
+                                              ),
+                                              SizedBox(
+                                                  height: size.height * 0.01),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Color.fromARGB(
+                                                            255, 213, 247, 250),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6.0)),
+                                                    child: Padding(
+                                                        padding:
+                                                            EdgeInsets.all(6.0),
+                                                        child: Text("IELTS",
+                                                            style: TextStyle(
+                                                                fontSize: 8.0,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500)))),
+                                              ),
+                                              SizedBox(
+                                                  height: size.height * 0.01),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                    'FUILL TEST - ALL PART 1',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                              ),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text('200 Questions',
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                              ),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text('ETS 2019',
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 16.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    QuizPage()));
+                                      },
+                                      child: Container(
+                                        width: 150,
+                                        decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              offset: Offset(0, 1),
+                                              blurRadius: 5,
+                                              color:
+                                                  Colors.black.withOpacity(0.3),
+                                            ),
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                height: 70,
+                                                width: 150,
+                                                decoration: BoxDecoration(
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        offset: Offset(0, 1),
+                                                        blurRadius: 5,
+                                                        color: Colors.black
+                                                            .withOpacity(0.3),
+                                                      ),
+                                                    ],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    image: DecorationImage(
+                                                        fit: BoxFit.fill,
+                                                        image: AssetImage(
+                                                            "assets/images/luyenthi.jpg"))),
+                                              ),
+                                              SizedBox(
+                                                  height: size.height * 0.01),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Color.fromARGB(
+                                                            255, 213, 247, 250),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6.0)),
+                                                    child: Padding(
+                                                        padding:
+                                                            EdgeInsets.all(6.0),
+                                                        child: Text("IELTS",
+                                                            style: TextStyle(
+                                                                fontSize: 8.0,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500)))),
+                                              ),
+                                              SizedBox(
+                                                  height: size.height * 0.01),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                    'FUILL TEST - ALL PART 1',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                              ),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text('200 Questions',
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                              ),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text('ETS 2019',
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                           SizedBox(height: size.height * 0.02),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 14.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Thư viện sách',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
                           Container(
-                            // height: 500,
                             child: Padding(
-                              padding: const EdgeInsets.all(12.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: GridView.builder(
                                 physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
@@ -419,90 +782,91 @@ class _HomePageState extends State<HomePage> {
                                     ? 0
                                     : listReponse!.length,
                                 gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                    SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 2,
-                                        childAspectRatio: 0.8,
-                                        crossAxisSpacing: 35,
-                                        mainAxisSpacing: 40),
+                                        childAspectRatio: 2 / 3.5),
                                 itemBuilder: (BuildContext context, int index) {
                                   return InkWell(
-                                    child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () async {
-                                              listReponse![index]['id']
-                                                  .toString();
-                                              final SharedPreferences? prefs =
-                                                  await _prefs;
-                                              await prefs?.setString(
-                                                  'idbook',
-                                                  listReponse![index]['id']
-                                                      .toString());
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () async {
+                                                listReponse![index]['id']
+                                                    .toString();
+                                                final SharedPreferences? prefs =
+                                                    await _prefs;
+                                                await prefs?.setString(
+                                                    'idbook',
+                                                    listReponse![index]['id']
+                                                        .toString());
 
-                                              print(
-                                                  'idBook: ${listReponse![index]['id'].toString()}');
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          DetailBookPage(
-                                                              id: listReponse![
-                                                                          index]
-                                                                      ['id']
-                                                                  .toString())));
-                                            },
-                                            child: Center(
-                                              child: SizedBox(
-                                                height: 155,
-                                                width: 120,
-                                                child: Image.network(
-                                                  listReponse == null
-                                                      ? ""
-                                                      : 'http://103.77.166.202' +
-                                                          listReponse?[index]
-                                                              ['image'],
-                                                  fit: BoxFit.fill,
+                                                print(
+                                                    'idBook: ${listReponse![index]['id'].toString()}');
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            DetailBookPage(
+                                                                id: listReponse![
+                                                                            index]
+                                                                        ['id']
+                                                                    .toString())));
+                                              },
+                                              child: Container(
+                                                height: size.height * 0.25,
+                                                width: size.width * 0.4,
+                                                decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                        fit: BoxFit.fitHeight,
+                                                        image: NetworkImage(listReponse ==
+                                                                null
+                                                            ? ""
+                                                            : 'http://103.77.166.202' +
+                                                                listReponse?[
+                                                                        index][
+                                                                    'image']))),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                                height: size.height * 0.02),
+                                            Container(
+                                              child: Text(
+                                                listReponse == null
+                                                    ? ""
+                                                    : listReponse?[index]
+                                                        ['bookName'],
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 4,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14,
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          SizedBox(height: size.height * 0.01),
-                                          Center(
-                                            child: Text(
-                                              listReponse == null
-                                                  ? ""
-                                                  : listReponse?[index]
-                                                      ['bookName'],
+                                            SizedBox(
+                                                height: size.height * 0.01),
+                                            Text(
+                                              'bởi ${listReponse == null ? "" : listReponse?[index]['author']}',
                                               overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 14,
-                                              ),
+                                              maxLines: 2,
+                                              style:
+                                                  const TextStyle(fontSize: 12),
                                             ),
-                                          ),
-                                          Expanded(
-                                            child: Center(
-                                              child: Text(
-                                                'bởi ${listReponse == null ? "" : listReponse?[index]['author']}',
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                    fontSize: 12),
-                                              ),
-                                            ),
-                                          ),
-                                        ]),
+                                          ]),
+                                    ),
                                   );
                                 },
                               ),
                             ),
                           ),
                           Container(
-                            height: 80,
                             color: Colors.grey.shade800,
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),

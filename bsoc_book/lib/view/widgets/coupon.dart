@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class ChargeDialog extends StatefulWidget {
-  ChargeDialog({super.key});
+class CouponDialog extends StatefulWidget {
+  CouponDialog({super.key});
 
   @override
-  State<ChargeDialog> createState() => _ChargeDialogState();
+  State<CouponDialog> createState() => _CouponDialogState();
 }
 
-class _ChargeDialogState extends State<ChargeDialog> {
+class _CouponDialogState extends State<CouponDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
