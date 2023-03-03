@@ -7,6 +7,7 @@ import 'package:bsoc_book/view/downloads/download_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:bsoc_book/view/widgets/charge_book.dart';
+import 'package:bsoc_book/view/widgets/coupon.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -398,7 +399,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                               showDialog(
                                                 context: context,
                                                 builder: (context) =>
-                                                    ChargeDialog(),
+                                                    CouponDialog(),
                                               );
                                             }
                                           },

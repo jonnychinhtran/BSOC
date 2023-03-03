@@ -1,4 +1,6 @@
+import 'package:bsoc_book/view/widgets/charge_book.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CouponDialog extends StatefulWidget {
   CouponDialog({super.key});
@@ -8,110 +10,45 @@ class CouponDialog extends StatefulWidget {
 }
 
 class _CouponDialogState extends State<CouponDialog> {
+  var _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Thông báo'),
+      title: Align(alignment: Alignment.center, child: Text('Platform Coupon')),
       content: Container(
           child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Sách bản quyền của B4U BSOC',
-            style: TextStyle(fontSize: 16, height: 1.5),
-          ),
-          Text(
-            'Vui lòng thanh toán để mở khóa.',
-            style: TextStyle(fontSize: 16, height: 1.5),
-          ),
-          Row(
-            children: [
-              Text(
-                'Giá bán: ',
-                style: TextStyle(fontSize: 17, height: 1.5),
+          TextField(
+            controller: _controller,
+            decoration: InputDecoration(
+              hintText: 'Nhập mã coupon của bạn',
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 3, color: Colors.blueAccent),
               ),
-              Text(
-                '59.000VNĐ',
-                style: TextStyle(
-                    fontSize: 18,
-                    height: 1.5,
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 3, color: Colors.blueAccent),
               ),
-            ],
+            ),
           ),
           SizedBox(
             height: 10,
           ),
-          Text(
-            'Thông tin chuyển khoản',
-            style: TextStyle(fontSize: 16, height: 1.5),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 2,
+              primary: Colors.deepOrange[600],
+              minimumSize: const Size.fromHeight(35),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            onPressed: () {
+              // Navigator.pop(context, 'Không')
+            },
+            child: Text('Áp dụng mã'),
           ),
-          Text(
-            'Ngân hàng Vietcombank',
-            style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-                height: 1.5,
-                color: Colors.green.shade800),
-          ),
-          Text(
-            'Chủ tài khoản: Lê Thị Bích Hòa',
-            style: TextStyle(fontSize: 16, height: 1.5),
-          ),
-          Text(
-            'Số tài khoản: 0071003095741',
-            style: TextStyle(fontSize: 16, height: 1.5),
-          ),
-          Text(
-            'Chi nhánh Kỳ Đồng, Q.3, HCMC ',
-            style: TextStyle(fontSize: 16, height: 1.5),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            'Nội dung chuyển khoản:',
-            style: TextStyle(
-                fontSize: 16, height: 1.5, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            'USER<Mã Tài khoản> + BOOK<Mã Sách>',
-            style: TextStyle(fontSize: 13, height: 1.5),
-          ),
-          Text(
-            'Ví dụ: USER 3 BOOK 10',
-            style: TextStyle(fontSize: 13, height: 1.5),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Text(
-            '*Lưu ý: Mã user trong cài đặt tài khoản, Mã sách trong chi tiết sách',
-            style: TextStyle(fontSize: 12.5, height: 1.5, color: Colors.blue),
-          ),
-          Text(
-            'Mọi thắc mắc vui lòng liên hệ Email: info@b4usolution.com ; Zalo: 0989214285',
-            style: TextStyle(
-                fontSize: 12, height: 1.5, color: Colors.orange.shade700),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-
-          // ElevatedButton(
-          //   style: ElevatedButton.styleFrom(
-          //     elevation: 2,
-          //     primary: Colors.blueAccent,
-          //     minimumSize: const Size.fromHeight(35),
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(10.0),
-          //     ),
-          //   ),
-          //   onPressed: () {},
-          //   child: Text('Đăng nhập lại'),
-          // ),
           OutlinedButton(
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size.fromHeight(35),
@@ -120,9 +57,13 @@ class _CouponDialogState extends State<CouponDialog> {
                 ),
                 backgroundColor: Colors.blue,
               ),
-              onPressed: () => Navigator.pop(context, 'Không'),
+              onPressed: () {
+                Navigator.pop(context, 'Không');
+
+                Get.dialog(ChargeDialog());
+              },
               child: Text(
-                'Đóng',
+                'Bỏ qua',
                 style: TextStyle(color: Colors.white),
               )),
         ],
