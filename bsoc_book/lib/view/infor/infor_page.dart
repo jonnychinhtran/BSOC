@@ -1,4 +1,5 @@
 import 'package:bsoc_book/controller/changepass/changepass_controller.dart';
+import 'package:bsoc_book/view/admin/coupon_management/coupon_manager.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/update/update_infor.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -209,6 +210,43 @@ class _InforPageState extends State<InforPage> {
                                 ),
                               ],
                             ),
+                          ),
+                          SizedBox(height: size.height * 0.04),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Quản lý',
+                                style:
+                                    TextStyle(color: Colors.blue, fontSize: 16),
+                              ),
+                              SizedBox(height: size.height * 0.01),
+                              Card(
+                                color: Colors.white,
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      leading:
+                                          Icon(Icons.confirmation_number_sharp),
+                                      title: Text(
+                                        'Platform Coupon',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      trailing:
+                                          Icon(Icons.keyboard_arrow_right),
+                                      onTap: () async {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const CouponManagementPage()));
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                           SizedBox(height: size.height * 0.04),
                           Text(
