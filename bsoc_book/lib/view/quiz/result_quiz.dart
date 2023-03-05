@@ -183,7 +183,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(1.0),
                                     child: Container(
                                       height: 100,
                                       width: 100,
@@ -229,7 +229,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(1.0),
                                     child: Container(
                                       height: 100,
                                       width: 100,
@@ -275,7 +275,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(1.0),
                                     child: Container(
                                       height: 100,
                                       width: 100,
