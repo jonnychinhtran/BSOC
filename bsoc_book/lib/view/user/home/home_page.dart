@@ -784,7 +784,7 @@ class _HomePageState extends State<HomePage> {
                                 gridDelegate:
                                     SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 2,
-                                        childAspectRatio: 2 / 3.5),
+                                        childAspectRatio: 2 / 3.7),
                                 itemBuilder: (BuildContext context, int index) {
                                   return InkWell(
                                     child: Padding(
