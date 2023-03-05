@@ -1,5 +1,8 @@
+import 'package:bsoc_book/view/quiz/topic_practice.dart';
+import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:get/get.dart';
 
 class PracticePage extends StatefulWidget {
   const PracticePage({super.key});
@@ -39,11 +42,22 @@ class _PracticePageState extends State<PracticePage> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           centerTitle: true,
-          // title: Text('Quản lý Coupon'),
           title: Image.asset(
             'assets/images/logo-b4usolution.png',
             fit: BoxFit.contain,
             height: 32,
+          ),
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(
+                    Icons.arrow_back), // Put icon of your preference.
+                onPressed: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => HomePage()));
+                },
+              );
+            },
           ),
         ),
         body: OfflineBuilder(
@@ -150,21 +164,27 @@ class _PracticePageState extends State<PracticePage> {
                               children: [
                                 IconButton(
                                   iconSize: 75,
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Get.to(TopicPracticePage());
+                                  },
                                   icon: Ink.image(
                                       image:
                                           AssetImage('assets/images/btn1.png')),
                                 ),
                                 IconButton(
                                   iconSize: 75,
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Get.to(TopicPracticePage());
+                                  },
                                   icon: Ink.image(
                                       image:
                                           AssetImage('assets/images/btn2.png')),
                                 ),
                                 IconButton(
-                                  iconSize: 75,
-                                  onPressed: () {},
+                                  iconSize: 80,
+                                  onPressed: () {
+                                    Get.to(TopicPracticePage());
+                                  },
                                   icon: Ink.image(
                                       image:
                                           AssetImage('assets/images/btn3.png')),
