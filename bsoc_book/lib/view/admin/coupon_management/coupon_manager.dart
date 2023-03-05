@@ -186,7 +186,7 @@ class _CouponManagementPageState extends State<CouponManagementPage> {
                                         MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
                                       Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(1.0),
                                         child: Container(
                                           height: 100,
                                           child: ElevatedButton(
@@ -206,7 +206,7 @@ class _CouponManagementPageState extends State<CouponManagementPage> {
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(1.0),
                                         child: Container(
                                           height: 100,
                                           child: ElevatedButton(
@@ -303,7 +303,7 @@ class _CouponManagementPageState extends State<CouponManagementPage> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
                                     Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(1.0),
                                       child: Container(
                                         height: 100,
                                         child: ElevatedButton(
@@ -323,7 +323,7 @@ class _CouponManagementPageState extends State<CouponManagementPage> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(1.0),
                                       child: Container(
                                         height: 100,
                                         child: ElevatedButton(

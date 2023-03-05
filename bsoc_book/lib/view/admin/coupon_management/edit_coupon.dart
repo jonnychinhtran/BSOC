@@ -148,22 +148,26 @@ class EditCouponPage extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: ElevatedButton(
-                                  onPressed: () => {},
-                                  style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.all(1.0),
+                                child: Container(
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed: () => {},
+                                    style: ElevatedButton.styleFrom(
                                       primary:
                                           Color.fromARGB(255, 153, 195, 59),
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(10)),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 40, vertical: 15)),
-                                  child: const Text(
-                                    "Cập nhật",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                                      // padding: const EdgeInsets.symmetric(
+                                      //     horizontal: 40, vertical: 15)
+                                    ),
+                                    child: const Text(
+                                      "Cập nhật",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
