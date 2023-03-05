@@ -406,7 +406,7 @@ class _HomePageState extends State<HomePage> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Luyện thi IELTS - TOEIC - TOEFL',
+                                    'Luyện thi IELTS - TOEIC - IT',
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                       fontSize: 18,
