@@ -14,6 +14,7 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   ConnectivityResult connectivity = ConnectivityResult.none;
+  late AnimationController controller;
   bool isLoading = true;
 
   int seconds = 60;
@@ -144,150 +145,189 @@ class _QuizPageState extends State<QuizPage> {
                           ),
                         ]),
                         SizedBox(height: size.height * 0.04),
-                        Stack(children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Color.fromARGB(255, 193, 255, 114),
-                              border: Border(
-                                left: BorderSide(
-                                  color: Colors.green,
-                                  width: 3,
+                        Column(
+                          children: [
+                            Stack(children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Color.fromARGB(255, 193, 255, 114),
+                                  border: Border(
+                                    left: BorderSide(
+                                      color: Colors.green,
+                                      width: 3,
+                                    ),
+                                  ),
                                 ),
+                                height: 500,
+                                width: double.infinity,
                               ),
-                            ),
-                            height: 500,
-                            width: double.infinity,
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 22.0, top: 2.0),
-                            child: Column(
-                              children: [
-                                SizedBox(height: size.height * 0.02),
-                                Text(
-                                  'What is the worlds longest venomous snake?',
-                                  style: TextStyle(
-                                      // color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                SizedBox(height: size.height * 0.02),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      bottom: 12.0, right: 16.0),
-                                  child: GestureDetector(
-                                    onTap: () {},
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Text(
-                                        'King Cobra',
-                                        style: TextStyle(
-                                            // color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600),
-                                      ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 22.0, top: 2.0),
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: size.height * 0.02),
+                                    Text(
+                                      'What is the worlds longest venomous snake?',
+                                      style: TextStyle(
+                                          // color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600),
                                     ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      bottom: 12.0, right: 16.0),
-                                  child: GestureDetector(
-                                    onTap: () {},
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Text(
-                                        'Green Anaconda',
-                                        style: TextStyle(
-                                            // color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      bottom: 12.0, right: 16.0),
-                                  child: GestureDetector(
-                                    onTap: () {},
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Text(
-                                        'Inland Taipan',
-                                        style: TextStyle(
-                                            // color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      bottom: 100.0, right: 16.0),
-                                  child: GestureDetector(
-                                    onTap: () {},
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Text(
-                                        'Yellow Bellied Sea Snake',
-                                        style: TextStyle(
-                                            // color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      bottom: 12.0, right: 16.0),
-                                  child: Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        elevation: 2,
-                                        primary: Colors.deepOrange[600],
-                                        minimumSize: const Size.fromHeight(35),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
+                                    SizedBox(height: size.height * 0.02),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 12.0, right: 16.0),
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          padding: const EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
+                                            'King Cobra',
+                                            style: TextStyle(
+                                                // color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600),
+                                          ),
                                         ),
                                       ),
-                                      onPressed: () {
-                                        // Navigator.pop(context, 'Không')
-                                        Get.to(ResultQuizPage());
-                                      },
-                                      child: Text('Kết thúc và xem kết quả'),
                                     ),
-                                  ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 12.0, right: 16.0),
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          padding: const EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
+                                            'Green Anaconda',
+                                            style: TextStyle(
+                                                // color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 12.0, right: 16.0),
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          padding: const EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
+                                            'Inland Taipan',
+                                            style: TextStyle(
+                                                // color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 100.0, right: 16.0),
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          padding: const EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
+                                            'Yellow Bellied Sea Snake',
+                                            style: TextStyle(
+                                                // color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 12.0, right: 16.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: 140,
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                elevation: 2,
+                                                primary: Colors.deepOrange[600],
+                                                minimumSize:
+                                                    const Size.fromHeight(35),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                // Navigator.pop(context, 'Không')
+                                                // Get.to(ResultQuizPage());
+                                              },
+                                              child: Text('<< Câu trước'),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: 140,
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                elevation: 2,
+                                                primary: Colors.deepOrange[600],
+                                                minimumSize:
+                                                    const Size.fromHeight(35),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                // Navigator.pop(context, 'Không')
+                                                // Get.to(ResultQuizPage());
+                                              },
+                                              child: Text('Câu tiếp theo >>'),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ]),
+                              ),
+                            ]),
+                          ],
+                        ),
                       ],
                     ),
                   ),
