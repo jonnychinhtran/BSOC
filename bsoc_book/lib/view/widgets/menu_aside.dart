@@ -50,17 +50,11 @@ class _MenuAsideState extends State<MenuAside> {
         setState(() {
           isLoading = false;
         });
-      } else {
-        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        Get.offAll(LoginPage());
       }
       print("res: ${response.data}");
     } on DioError catch (e) {
-      if (e.response?.statusCode == 400) {
-        // Get.dialog(DialogLogout());
-      }
-      if (e.response?.statusCode == 401) {
-        Get.offAll(LoginPage());
-      }
       if (e.isNoConnectionError) {
         // Get.dialog(DialogError());
       } else {
@@ -272,7 +266,7 @@ class _MenuAsideState extends State<MenuAside> {
               padding: const EdgeInsets.all(25.0),
               child: Align(
                   alignment: FractionalOffset.bottomLeft,
-                  child: Text('Phiên bản: 1.0.8')),
+                  child: Text('Phiên bản: 1.0.9')),
             ),
           ),
         ],

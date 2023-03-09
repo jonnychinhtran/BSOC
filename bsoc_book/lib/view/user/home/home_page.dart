@@ -66,17 +66,11 @@ class _HomePageState extends State<HomePage> {
           listReponse = mapDemo!['content'];
           isLoading = false;
         });
-      } else {
-        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      } else if (response.statusCode == 401) {
+        Get.offAll(LoginPage());
       }
       print("res: ${response.data}");
     } on DioError catch (e) {
-      if (e.response?.statusCode == 400) {
-        // Get.dialog(DialogLogout());
-      }
-      if (e.response?.statusCode == 401) {
-        Get.offAll(LoginPage());
-      }
       if (e.isNoConnectionError) {
         // Get.dialog(DialogError());
       } else {
@@ -105,17 +99,11 @@ class _HomePageState extends State<HomePage> {
           print('topbok: $listTop ');
           isLoading = false;
         });
-      } else {
-        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        Get.offAll(LoginPage());
       }
       print("res: ${response.data}");
     } on DioError catch (e) {
-      if (e.response?.statusCode == 400) {
-        // Get.dialog(DialogLogout());
-      }
-      if (e.response?.statusCode == 401) {
-        Get.offAll(LoginPage());
-      }
       if (e.isNoConnectionError) {
         // Get.dialog(DialogError());
       } else {
@@ -202,10 +190,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return WillPopScope(
-      onWillPop: () {
-        return Future.value(false);
-      },
-      child: Scaffold(
+        onWillPop: () {
+          return Future.value(false);
+        },
+        child: Scaffold(
           drawer: MenuAside(),
           appBar: AppBar(
             backgroundColor: Color.fromARGB(255, 138, 175, 52),
@@ -295,241 +283,254 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           body: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              if (connectivity == ConnectivityResult.none) {
-                return Container(
-                  color: Colors.white70,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Image.asset('assets/images/wifi.png'),
-                          Text(
-                            'Không có kết nối Internet',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            'Vui lòng kiểm tra kết nối internet và thử lại',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                if (connectivity == ConnectivityResult.none) {
+                  return Container(
+                    color: Colors.white70,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Image.asset('assets/images/wifi.png'),
+                            Text(
+                              'Không có kết nối Internet',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Vui lòng kiểm tra kết nối internet và thử lại',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              } else {
-                return child;
-              }
-            },
-            child: callback == ConnectivityResult.none && listTop == null
-                ? Center(
-                    child: LoadingAnimationWidget.discreteCircle(
-                    color: Color.fromARGB(255, 138, 175, 52),
-                    secondRingColor: Colors.black,
-                    thirdRingColor: Colors.purple,
-                    size: 30,
-                  ))
-                : SafeArea(
-                    child: SingleChildScrollView(
-                      physics: ScrollPhysics(),
-                      child: Column(
-                        children: [
-                          SizedBox(height: size.height * 0.02),
-                          Center(
-                            child: Text(
-                              'TOP 5 SÁCH HAY',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 200,
-                            margin: EdgeInsets.only(left: 10, right: 10),
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount:
-                                    listTop == null ? 0 : listTop!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        final SharedPreferences? prefs =
-                                            await _prefs;
-                                        await prefs?.setString('idbook',
-                                            listTop![index]['id'].toString());
-
-                                        print(
-                                            'idBook: ${listTop![index]['id'].toString()}');
-
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    DetailBookPage(
-                                                        id: listTop![index]
-                                                                ['id']
-                                                            .toString())));
-                                      },
-                                      child: SizedBox(
-                                        child: Image.network(
-                                            'http://103.77.166.202' +
-                                                listTop![index]['image']),
-                                      ),
-                                    ),
-                                  );
-                                }),
-                          ),
-                          SizedBox(height: size.height * 0.04),
-                          const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10, bottom: 4),
-                              child: Center(
+                  );
+                } else {
+                  return child;
+                }
+              },
+              child: callback == ConnectivityResult.none && listTop == null
+                  ? Center(
+                      child: LoadingAnimationWidget.discreteCircle(
+                      color: Color.fromARGB(255, 138, 175, 52),
+                      secondRingColor: Colors.black,
+                      thirdRingColor: Colors.purple,
+                      size: 30,
+                    ))
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        getAllBooks();
+                        getTopBook();
+                      },
+                      child: SafeArea(
+                        child: SingleChildScrollView(
+                          physics: ScrollPhysics(),
+                          child: Column(
+                            children: [
+                              SizedBox(height: size.height * 0.02),
+                              Center(
                                 child: Text(
-                                  'THƯ VIỆN SÁCH',
-                                  textAlign: TextAlign.left,
+                                  'TOP 5 SÁCH HAY',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                          SizedBox(height: size.height * 0.02),
-                          Container(
-                            // height: 500,
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: GridView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: listReponse == null
-                                    ? 0
-                                    : listReponse!.length,
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        childAspectRatio: 0.8,
-                                        crossAxisSpacing: 35,
-                                        mainAxisSpacing: 40),
-                                itemBuilder: (BuildContext context, int index) {
-                                  return InkWell(
-                                    child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () async {
-                                              listReponse![index]['id']
-                                                  .toString();
-                                              final SharedPreferences? prefs =
-                                                  await _prefs;
-                                              await prefs?.setString(
-                                                  'idbook',
-                                                  listReponse![index]['id']
-                                                      .toString());
+                              Container(
+                                height: 200,
+                                margin: EdgeInsets.only(left: 10, right: 10),
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount:
+                                        listTop == null ? 0 : listTop!.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            final SharedPreferences? prefs =
+                                                await _prefs;
+                                            await prefs?.setString(
+                                                'idbook',
+                                                listTop![index]['id']
+                                                    .toString());
 
-                                              print(
-                                                  'idBook: ${listReponse![index]['id'].toString()}');
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          DetailBookPage(
-                                                              id: listReponse![
-                                                                          index]
-                                                                      ['id']
-                                                                  .toString())));
-                                            },
-                                            child: Center(
-                                              child: SizedBox(
-                                                height: 155,
-                                                width: 120,
-                                                child: Image.network(
-                                                  listReponse == null
-                                                      ? ""
-                                                      : 'http://103.77.166.202' +
-                                                          listReponse?[index]
-                                                              ['image'],
-                                                  fit: BoxFit.fill,
+                                            print(
+                                                'idBook: ${listTop![index]['id'].toString()}');
+
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DetailBookPage(
+                                                            id: listTop![index]
+                                                                    ['id']
+                                                                .toString())));
+                                          },
+                                          child: SizedBox(
+                                            child: Image.network(
+                                                'http://103.77.166.202' +
+                                                    listTop![index]['image']),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                              ),
+                              SizedBox(height: size.height * 0.04),
+                              const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 10, bottom: 4),
+                                  child: Center(
+                                    child: Text(
+                                      'THƯ VIỆN SÁCH',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: size.height * 0.02),
+                              Container(
+                                // height: 500,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: GridView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: listReponse == null
+                                        ? 0
+                                        : listReponse!.length,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            childAspectRatio: 0.8,
+                                            crossAxisSpacing: 35,
+                                            mainAxisSpacing: 40),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return InkWell(
+                                        child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  listReponse![index]['id']
+                                                      .toString();
+                                                  final SharedPreferences?
+                                                      prefs = await _prefs;
+                                                  await prefs?.setString(
+                                                      'idbook',
+                                                      listReponse![index]['id']
+                                                          .toString());
+
+                                                  print(
+                                                      'idBook: ${listReponse![index]['id'].toString()}');
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              DetailBookPage(
+                                                                  id: listReponse![
+                                                                              index]
+                                                                          ['id']
+                                                                      .toString())));
+                                                },
+                                                child: Center(
+                                                  child: SizedBox(
+                                                    height: 155,
+                                                    width: 120,
+                                                    child: Image.network(
+                                                      listReponse == null
+                                                          ? ""
+                                                          : 'http://103.77.166.202' +
+                                                              listReponse?[
+                                                                      index]
+                                                                  ['image'],
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          SizedBox(height: size.height * 0.01),
-                                          Center(
-                                            child: Text(
-                                              listReponse == null
-                                                  ? ""
-                                                  : listReponse?[index]
-                                                      ['bookName'],
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 14,
+                                              SizedBox(
+                                                  height: size.height * 0.01),
+                                              Center(
+                                                child: Text(
+                                                  listReponse == null
+                                                      ? ""
+                                                      : listReponse?[index]
+                                                          ['bookName'],
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Center(
-                                              child: Text(
-                                                'bởi ${listReponse == null ? "" : listReponse?[index]['author']}',
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                    fontSize: 12),
+                                              Expanded(
+                                                child: Center(
+                                                  child: Text(
+                                                    'bởi ${listReponse == null ? "" : listReponse?[index]['author']}',
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: const TextStyle(
+                                                        fontSize: 12),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                        ]),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 80,
-                            color: Colors.grey.shade800,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Center(
-                                  child: Column(
-                                children: [
-                                  Text(
-                                    "© B4USOLUTION. All Rights Reserved.",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
+                                            ]),
+                                      );
+                                    },
                                   ),
-                                  SizedBox(height: 3),
-                                  Text(
-                                    "Privacy Policy Designed by B4USOLUTION",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
-                                  )
-                                ],
-                              )),
-                            ),
-                          )
-                        ],
+                                ),
+                              ),
+                              Container(
+                                height: 80,
+                                color: Colors.grey.shade800,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Center(
+                                      child: Column(
+                                    children: [
+                                      Text(
+                                        "© B4USOLUTION. All Rights Reserved.",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 16),
+                                      ),
+                                      SizedBox(height: 3),
+                                      Text(
+                                        "Privacy Policy Designed by B4USOLUTION",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 16),
+                                      )
+                                    ],
+                                  )),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-          )),
-    );
+                    )),
+        ));
   }
 }
 
