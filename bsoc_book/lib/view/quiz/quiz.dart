@@ -1,12 +1,13 @@
 import 'dart:async';
-
+import 'package:bsoc_book/data/model/quiz/question.dart';
 import 'package:bsoc_book/view/quiz/result_quiz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 
 class QuizPage extends StatefulWidget {
-  const QuizPage({super.key});
+  final List<Question> questions;
+  const QuizPage({Key? key, required this.questions}) : super(key: key);
 
   @override
   State<QuizPage> createState() => _QuizPageState();
@@ -24,10 +25,10 @@ class _QuizPageState extends State<QuizPage> {
     if (connectivity == ConnectivityResult.none) {
       isLoading = true;
     } else {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => QuizPage()),
-          (Route<dynamic> route) => false);
+      // Navigator.pushAndRemoveUntil(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => QuizPage()),
+      //     (Route<dynamic> route) => false);
     }
   }
 
