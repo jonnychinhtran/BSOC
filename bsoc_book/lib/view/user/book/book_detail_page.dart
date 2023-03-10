@@ -63,17 +63,15 @@ class _DetailBookPageState extends State<DetailBookPage>
     token = prefs.getString('accessToken');
     idbooks = prefs.getString('idbook');
     try {
-      var response = await Dio()
-          .get('http://103.77.166.202/api/book/${widget.id}',
+      var response =
+          await Dio().get('http://103.77.166.202/api/book/${widget.id}',
               options: Options(headers: {
                 'Authorization': 'Bearer $token',
-              }))
-          .timeout(Duration(seconds: 2));
-      ;
-      print(widget.id);
+              }));
       if (response.statusCode == 200) {
         dataBook = response.data;
         listReponse = dataBook!['chapters'];
+        print('ID REVIEW: ${dataBook!['id'].toString()} ');
         setState(() {
           isLoading = false;
         });
@@ -96,14 +94,12 @@ class _DetailBookPageState extends State<DetailBookPage>
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
       idchap = prefs.getString('idchapter');
-      var response = await Dio()
-          .post(
-              'http://103.77.166.202/api/chapter/add-bookmark?chapterId=$idchap',
-              options: Options(headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer $token',
-              }))
-          .timeout(Duration(seconds: 3));
+      var response = await Dio().post(
+          'http://103.77.166.202/api/chapter/add-bookmark?chapterId=$idchap',
+          options: Options(headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          }));
       if (response.statusCode == 200) {
         setState(() {
           getItemBooks();
@@ -119,24 +115,12 @@ class _DetailBookPageState extends State<DetailBookPage>
     }
   }
 
-  Future<void> callback() async {
-    if (connectivity == ConnectivityResult.none) {
-      isLoading = true;
-    } else {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => DetailBookPage(id: idbooks!)),
-          (Route<dynamic> route) => false);
-    }
-  }
-
   final _autoRequestManager = AutoRequestManager(minReloadDurationSeconds: 3);
   late List<RequestStatus> _requestStatuses;
 
   @override
   void initState() {
     getItemBooks();
-    callback();
 
     _requestStatuses = List.generate(3, (idx) {
       _autoRequestManager.autoReload(
@@ -154,9 +138,6 @@ class _DetailBookPageState extends State<DetailBookPage>
     TabController _tabController = TabController(length: 3, vsync: this);
     return WillPopScope(
         onWillPop: () {
-          callback();
-          print(callback());
-          isLoading = true;
           return Future.value(false);
         },
         child: Scaffold(
@@ -252,7 +233,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                   return child;
                 }
               },
-              child: isLoading && callback == ConnectivityResult.none
+              child: isLoading
                   ? Center(
                       child: LoadingAnimationWidget.discreteCircle(
                       color: Color.fromARGB(255, 138, 175, 52),
@@ -275,14 +256,13 @@ class _DetailBookPageState extends State<DetailBookPage>
                                 height: 195,
                                 width: 150,
                                 child: Material(
-                                  child: dataBook?['image'] == null
-                                      ? Image.asset('assets/images/avatar.png',
-                                          fit: BoxFit.fill)
-                                      : Image.network(
-                                          'http://103.77.166.202' +
-                                              dataBook?['image'],
-                                          fit: BoxFit.fill,
-                                        ),
+                                  child: Image.network(
+                                    dataBook?['image'] == null
+                                        ? "Đang tải..."
+                                        : 'http://103.77.166.202' +
+                                            dataBook?['image'],
+                                    fit: BoxFit.fill,
+                                  ),
                                 )),
                           ),
                           const SizedBox(
@@ -310,9 +290,11 @@ class _DetailBookPageState extends State<DetailBookPage>
                                         height: 10,
                                       ),
                                       Text(
-                                          '(Mã sách: ' +
-                                              dataBook!['id'].toString() +
-                                              ')',
+                                          dataBook?['id'] == null
+                                              ? ""
+                                              : '(Mã sách: ' +
+                                                  dataBook!['id'].toString() +
+                                                  ')',
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                               fontSize: 16,
@@ -598,23 +580,21 @@ class _DetailBookPageState extends State<DetailBookPage>
                                         padding: const EdgeInsets.all(16.0),
                                         child: ListView(
                                           children: [
-                                            dataBook == null
-                                                ? Text('Đang tải dữ liệu')
-                                                : Text(
-                                                    dataBook?['description'],
-                                                    softWrap: true,
-                                                    textAlign:
-                                                        TextAlign.justify,
-                                                    style: const TextStyle(
-                                                        fontSize: 17,
-                                                        height: 1.5),
-                                                  ),
+                                            Text(
+                                              dataBook?['description'] == null
+                                                  ? "Đang tải..."
+                                                  : dataBook?['description'],
+                                              softWrap: true,
+                                              textAlign: TextAlign.justify,
+                                              style: const TextStyle(
+                                                  fontSize: 17, height: 1.5),
+                                            ),
                                           ],
                                         ),
                                       ),
                                     ),
                                   ),
-                                  ReviewBook(id: dataBook!['id'].toString()),
+                                  ReviewBook(id: widget.id),
                                 ]),
                           ))
                         ],

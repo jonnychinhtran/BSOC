@@ -54,19 +54,17 @@ class _HomePageState extends State<HomePage> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
-      var response = await Dio()
-          .get('http://103.77.166.202/api/book/all-book',
-              options: Options(headers: {
-                'Authorization': 'Bearer $token',
-              }))
-          .timeout(Duration(seconds: 3));
+      var response = await Dio().get('http://103.77.166.202/api/book/all-book',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }));
       if (response.statusCode == 200) {
+        mapDemo = response.data;
+        listReponse = mapDemo!['content'];
         setState(() {
-          mapDemo = response.data;
-          listReponse = mapDemo!['content'];
           isLoading = false;
         });
-      } else if (response.statusCode == 401) {
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
         Get.offAll(LoginPage());
       }
       print("res: ${response.data}");
@@ -87,12 +85,10 @@ class _HomePageState extends State<HomePage> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
-      var response = await Dio()
-          .get('http://103.77.166.202/api/book/top-book',
-              options: Options(headers: {
-                'Authorization': 'Bearer $token',
-              }))
-          .timeout(Duration(seconds: 3));
+      var response = await Dio().get('http://103.77.166.202/api/book/top-book',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }));
       if (response.statusCode == 200) {
         setState(() {
           listTop = response.data;
@@ -119,17 +115,6 @@ class _HomePageState extends State<HomePage> {
     return prefs.getString('accessToken') ?? '';
   }
 
-  Future<void> callback() async {
-    if (connectivity == ConnectivityResult.none) {
-      isLoading = true;
-    } else {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-          (Route<dynamic> route) => false);
-    }
-  }
-
   final _autoRequestManager = AutoRequestManager(minReloadDurationSeconds: 5);
   final _autoRequestManager2 = AutoRequestManager(minReloadDurationSeconds: 5);
   late List<RequestStatus> _requestStatuses;
@@ -139,7 +124,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     getAllBooks();
     getTopBook();
-    callback();
 
     _requestStatuses = List.generate(5, (idx) {
       _autoRequestManager.autoReload(
@@ -316,7 +300,7 @@ class _HomePageState extends State<HomePage> {
                   return child;
                 }
               },
-              child: callback == ConnectivityResult.none && listTop == null
+              child: isLoading
                   ? Center(
                       child: LoadingAnimationWidget.discreteCircle(
                       color: Color.fromARGB(255, 138, 175, 52),
@@ -379,8 +363,11 @@ class _HomePageState extends State<HomePage> {
                                           },
                                           child: SizedBox(
                                             child: Image.network(
-                                                'http://103.77.166.202' +
-                                                    listTop![index]['image']),
+                                                listTop![index]['image'] == null
+                                                    ? "Đang tải..."
+                                                    : 'http://103.77.166.202' +
+                                                        listTop![index]
+                                                            ['image']),
                                           ),
                                         ),
                                       );
@@ -449,8 +436,8 @@ class _HomePageState extends State<HomePage> {
                                                           builder: (context) =>
                                                               DetailBookPage(
                                                                   id: listReponse![
-                                                                              index]
-                                                                          ['id']
+                                                                              index]![
+                                                                          'id']
                                                                       .toString())));
                                                 },
                                                 child: Center(
@@ -458,8 +445,10 @@ class _HomePageState extends State<HomePage> {
                                                     height: 155,
                                                     width: 120,
                                                     child: Image.network(
-                                                      listReponse == null
-                                                          ? ""
+                                                      listReponse?[index]
+                                                                  ['image'] ==
+                                                              null
+                                                          ? "Đang tải..."
                                                           : 'http://103.77.166.202' +
                                                               listReponse?[
                                                                       index]
@@ -473,8 +462,10 @@ class _HomePageState extends State<HomePage> {
                                                   height: size.height * 0.01),
                                               Center(
                                                 child: Text(
-                                                  listReponse == null
-                                                      ? ""
+                                                  listReponse?[index]
+                                                              ['bookName'] ==
+                                                          null
+                                                      ? "Đang tải..."
                                                       : listReponse?[index]
                                                           ['bookName'],
                                                   overflow:
@@ -488,7 +479,7 @@ class _HomePageState extends State<HomePage> {
                                               Expanded(
                                                 child: Center(
                                                   child: Text(
-                                                    'bởi ${listReponse == null ? "" : listReponse?[index]['author']}',
+                                                    'bởi ${listReponse?[index]['author'] == null ? "" : listReponse?[index]['author']}',
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     style: const TextStyle(
