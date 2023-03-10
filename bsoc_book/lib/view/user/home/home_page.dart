@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:auto_reload/auto_reload.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/data/model/books/book_model.dart';
+import 'package:bsoc_book/data/model/quiz/question.dart';
+import 'package:bsoc_book/data/network/api_question.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/quiz/practice.dart';
 import 'package:bsoc_book/view/quiz/quiz.dart';
@@ -49,6 +51,7 @@ class _HomePageState extends State<HomePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
   List<Content> id = [];
+  int? _noOfQuestions;
 
   Future<void> getAllBooks() async {
     String? token;
@@ -126,7 +129,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     getAllBooks();
     getTopBook();
-
+    _noOfQuestions = 10;
     _requestStatuses = List.generate(5, (idx) {
       _autoRequestManager.autoReload(
         id: idx.toString(),
@@ -436,12 +439,12 @@ class _HomePageState extends State<HomePage> {
                                         padding:
                                             const EdgeInsets.only(right: 16.0),
                                         child: GestureDetector(
-                                          onTap: () {
-                                            // Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(
-                                            //         builder: (context) =>
-                                            //             QuizPage()));
+                                          onTap: () async {
+                                            List<Question> questions =
+                                                await getQuestions(
+                                                    _noOfQuestions);
+                                            Get.to(
+                                                QuizPage(questions: questions));
                                           },
                                           child: Container(
                                             width: 150,
@@ -552,12 +555,12 @@ class _HomePageState extends State<HomePage> {
                                         padding:
                                             const EdgeInsets.only(right: 16.0),
                                         child: GestureDetector(
-                                          onTap: () {
-                                            // Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(
-                                            //         builder: (context) =>
-                                            //             QuizPage()));
+                                          onTap: () async {
+                                            List<Question> questions =
+                                                await getQuestions(
+                                                    _noOfQuestions);
+                                            Get.to(
+                                                QuizPage(questions: questions));
                                           },
                                           child: Container(
                                             width: 150,
@@ -668,12 +671,12 @@ class _HomePageState extends State<HomePage> {
                                         padding:
                                             const EdgeInsets.only(right: 16.0),
                                         child: GestureDetector(
-                                          onTap: () {
-                                            // Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(
-                                            //         builder: (context) =>
-                                            //             QuizPage()));
+                                          onTap: () async {
+                                            List<Question> questions =
+                                                await getQuestions(
+                                                    _noOfQuestions);
+                                            Get.to(
+                                                QuizPage(questions: questions));
                                           },
                                           child: Container(
                                             width: 150,

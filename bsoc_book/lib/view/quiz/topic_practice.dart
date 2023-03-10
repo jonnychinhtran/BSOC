@@ -1,3 +1,5 @@
+import 'package:bsoc_book/data/model/quiz/question.dart';
+import 'package:bsoc_book/data/network/api_question.dart';
 import 'package:bsoc_book/view/quiz/quiz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -13,7 +15,7 @@ class TopicPracticePage extends StatefulWidget {
 class _TopicPracticePageState extends State<TopicPracticePage> {
   ConnectivityResult connectivity = ConnectivityResult.none;
   bool isLoading = true;
-
+  int? _noOfQuestions;
   Future<void> callback() async {
     if (connectivity == ConnectivityResult.none) {
       isLoading = true;
@@ -28,6 +30,7 @@ class _TopicPracticePageState extends State<TopicPracticePage> {
   @override
   void initState() {
     callback();
+    _noOfQuestions = 10;
     super.initState();
   }
 
@@ -123,8 +126,10 @@ class _TopicPracticePageState extends State<TopicPracticePage> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 45.0),
                               child: GestureDetector(
-                                onTap: () {
-                                  // Get.to(QuizPage());
+                                onTap: () async {
+                                  List<Question> questions =
+                                      await getQuestions(_noOfQuestions);
+                                  Get.to(QuizPage(questions: questions));
                                 },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -242,8 +247,10 @@ class _TopicPracticePageState extends State<TopicPracticePage> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 45.0),
                               child: GestureDetector(
-                                onTap: () {
-                                  // Get.to(QuizPage());
+                                onTap: () async {
+                                  List<Question> questions =
+                                      await getQuestions(_noOfQuestions);
+                                  Get.to(QuizPage(questions: questions));
                                 },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -330,8 +337,10 @@ class _TopicPracticePageState extends State<TopicPracticePage> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 45.0),
                               child: GestureDetector(
-                                onTap: () {
-                                  // Get.to(QuizPage());
+                                onTap: () async {
+                                  List<Question> questions =
+                                      await getQuestions(_noOfQuestions);
+                                  Get.to(QuizPage(questions: questions));
                                 },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -418,8 +427,10 @@ class _TopicPracticePageState extends State<TopicPracticePage> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 20.0),
                               child: GestureDetector(
-                                onTap: () {
-                                  // Get.to(QuizPage());
+                                onTap: () async {
+                                  List<Question> questions =
+                                      await getQuestions(_noOfQuestions);
+                                  Get.to(QuizPage(questions: questions));
                                 },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
