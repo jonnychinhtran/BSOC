@@ -33,13 +33,11 @@ class _MenuAsideState extends State<MenuAside> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
-      var response = await Dio()
-          .get('http://103.77.166.202/api/user/infor',
-              options: Options(headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer $token',
-              }))
-          .timeout(Duration(seconds: 2));
+      var response = await Dio().get('http://103.77.166.202/api/user/infor',
+          options: Options(headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          }));
       if (response.statusCode == 200) {
         mapDemo = response.data;
         var phoneuser = mapDemo!['phone'].toString();
@@ -50,17 +48,11 @@ class _MenuAsideState extends State<MenuAside> {
         setState(() {
           isLoading = false;
         });
-      } else {
-        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        Get.offAll(LoginPage());
       }
       print("res: ${response.data}");
     } on DioError catch (e) {
-      if (e.response?.statusCode == 400) {
-        // Get.dialog(DialogLogout());
-      }
-      if (e.response?.statusCode == 401) {
-        Get.offAll(LoginPage());
-      }
       if (e.isNoConnectionError) {
         // Get.dialog(DialogError());
       } else {
@@ -110,8 +102,10 @@ class _MenuAsideState extends State<MenuAside> {
                           : CircleAvatar(
                               radius: 60.0,
                               backgroundImage: NetworkImage(
-                                  'http://103.77.166.202' +
-                                      mapDemo!['avatar'].toString()),
+                                  mapDemo?['avatar'] == null
+                                      ? "Đang tải..."
+                                      : 'http://103.77.166.202' +
+                                          mapDemo?['avatar']),
                               backgroundColor: Colors.transparent,
                             ),
                     )),
@@ -137,9 +131,9 @@ class _MenuAsideState extends State<MenuAside> {
                                       builder: (context) => InforPage()));
                             },
                             child: Text(
-                              mapDemo == null
+                              mapDemo?['fullname'] == null
                                   ? 'Đang tải dữ liệu'
-                                  : mapDemo!['fullname'],
+                                  : mapDemo?['fullname'],
                               textAlign: TextAlign.center,
                               style: TextStyle(color: Colors.red, fontSize: 18),
                             )),
@@ -272,7 +266,7 @@ class _MenuAsideState extends State<MenuAside> {
               padding: const EdgeInsets.all(25.0),
               child: Align(
                   alignment: FractionalOffset.bottomLeft,
-                  child: Text('Phiên bản: 2.0.0')),
+                  child: Text('Phiên bản: 1.0.10')),
             ),
           ),
         ],

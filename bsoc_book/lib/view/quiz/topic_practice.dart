@@ -124,7 +124,7 @@ class _TopicPracticePageState extends State<TopicPracticePage> {
                               padding: const EdgeInsets.only(bottom: 45.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  Get.to(QuizPage());
+                                  // Get.to(QuizPage());
                                 },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -243,7 +243,7 @@ class _TopicPracticePageState extends State<TopicPracticePage> {
                               padding: const EdgeInsets.only(bottom: 45.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  Get.to(QuizPage());
+                                  // Get.to(QuizPage());
                                 },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -331,7 +331,7 @@ class _TopicPracticePageState extends State<TopicPracticePage> {
                               padding: const EdgeInsets.only(bottom: 45.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  Get.to(QuizPage());
+                                  // Get.to(QuizPage());
                                 },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -419,7 +419,7 @@ class _TopicPracticePageState extends State<TopicPracticePage> {
                               padding: const EdgeInsets.only(bottom: 20.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  Get.to(QuizPage());
+                                  // Get.to(QuizPage());
                                 },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
