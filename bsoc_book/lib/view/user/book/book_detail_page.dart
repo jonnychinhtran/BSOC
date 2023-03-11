@@ -21,6 +21,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:bsoc_book/view/widgets/coupon.dart';
 
 String? demo;
 Map? mapDemo;
@@ -388,7 +389,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                   showDialog(
                                                     context: context,
                                                     builder: (context) =>
-                                                        ChargeDialog(),
+                                                        CouponDialog(),
                                                   );
                                                 }
                                               },
