@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
       if (e.isNoConnectionError) {
         // Get.dialog(DialogError());
       } else {
-        // Get.snackbar("error", e.toString());
+        Get.snackbar("error", e.toString());
         print(e);
         rethrow;
       }

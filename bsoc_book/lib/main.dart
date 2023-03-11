@@ -66,7 +66,13 @@ class _CheckPageState extends State<CheckPage> {
 
   void checkiflogged() {
     userdate.read('isLogged')
-        ? Get.offAll(HomePage())
-        : Get.offAll(LoginPage());
+        ? Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+            (Route<dynamic> route) => false)
+        : Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginPage()),
+            (Route<dynamic> route) => false);
   }
 }
