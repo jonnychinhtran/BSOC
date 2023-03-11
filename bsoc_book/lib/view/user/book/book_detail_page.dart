@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:auto_reload/auto_reload.dart';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/view/downloads/download_page.dart';
@@ -115,21 +114,9 @@ class _DetailBookPageState extends State<DetailBookPage>
     }
   }
 
-  final _autoRequestManager = AutoRequestManager(minReloadDurationSeconds: 3);
-  late List<RequestStatus> _requestStatuses;
-
   @override
   void initState() {
     getItemBooks();
-
-    _requestStatuses = List.generate(3, (idx) {
-      _autoRequestManager.autoReload(
-        id: idx.toString(),
-        toReload: getItemBooks,
-      );
-      return RequestStatus.error;
-    });
-
     super.initState();
   }
 
@@ -233,7 +220,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                   return child;
                 }
               },
-              child: isLoading
+              child: isLoading && dataBook == null
                   ? Center(
                       child: LoadingAnimationWidget.discreteCircle(
                       color: Color.fromARGB(255, 138, 175, 52),
@@ -1067,10 +1054,8 @@ class ReviewBook extends StatefulWidget {
 }
 
 class _ReviewBookState extends State<ReviewBook> {
-  final _autoRequestManager = AutoRequestManager(minReloadDurationSeconds: 1);
   bool isLoading = true;
   String? token;
-  late List<RequestReview> _requestReview;
 
   Future<void> getComment() async {
     try {
@@ -1120,18 +1105,9 @@ class _ReviewBookState extends State<ReviewBook> {
 
   @override
   void initState() {
-    getComment();
-    callback();
-
-    _requestReview = List.generate(1, (idx) {
-      _autoRequestManager.autoReload(
-        id: idx.toString(),
-        toReload: getComment,
-      );
-      return RequestReview.error;
-    });
-
     super.initState();
+    callback();
+    getComment();
   }
 
   @override

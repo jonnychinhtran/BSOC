@@ -38,7 +38,7 @@ class LoginController extends GetxController {
         await prefs?.setString('emailuser', email);
 
         Get.snackbar("Thành công", "Đăng nhập thành công.");
-        Get.offAll(HomePage());
+        Get.to(HomePage());
         usernameController.clear();
         passwordController.clear();
       } else {

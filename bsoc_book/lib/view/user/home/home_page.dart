@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:auto_reload/auto_reload.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
-import 'package:bsoc_book/data/model/books/book_model.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
@@ -16,7 +13,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:new_version/new_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'package:social_media_flutter/social_media_flutter.dart';
 
 String? demo;
@@ -24,16 +20,6 @@ Map? mapDemo;
 Map? demoReponse;
 List? listReponse;
 List? listTop;
-
-enum RequestStatus {
-  success,
-  error,
-}
-
-enum Content {
-  success,
-  error,
-}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -46,7 +32,6 @@ class _HomePageState extends State<HomePage> {
   ConnectivityResult connectivity = ConnectivityResult.none;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
-  List<Content> id = [];
 
   Future<void> getAllBooks() async {
     String? token;
@@ -59,20 +44,20 @@ class _HomePageState extends State<HomePage> {
             'Authorization': 'Bearer $token',
           }));
       if (response.statusCode == 200) {
-        mapDemo = response.data;
-        listReponse = mapDemo!['content'];
         setState(() {
+          mapDemo = response.data;
+          listReponse = mapDemo!['content'];
           isLoading = false;
         });
       } else if (response.statusCode == 401 || response.statusCode == 403) {
         Get.offAll(LoginPage());
       }
-      print("res: ${response.data}");
+      // print("res: ${response.data}");
     } on DioError catch (e) {
       if (e.isNoConnectionError) {
         // Get.dialog(DialogError());
       } else {
-        // Get.snackbar("error", e.toString());
+        Get.snackbar("error", e.toString());
         print(e);
         rethrow;
       }
@@ -90,9 +75,8 @@ class _HomePageState extends State<HomePage> {
             'Authorization': 'Bearer $token',
           }));
       if (response.statusCode == 200) {
+        listTop = response.data;
         setState(() {
-          listTop = response.data;
-          print('topbok: $listTop ');
           isLoading = false;
         });
       } else if (response.statusCode == 401 || response.statusCode == 403) {
@@ -115,38 +99,27 @@ class _HomePageState extends State<HomePage> {
     return prefs.getString('accessToken') ?? '';
   }
 
-  final _autoRequestManager = AutoRequestManager(minReloadDurationSeconds: 5);
-  final _autoRequestManager2 = AutoRequestManager(minReloadDurationSeconds: 5);
-  late List<RequestStatus> _requestStatuses;
-  late List<Content> _requestApi;
+  Future<void> callback() async {
+    if (connectivity == ConnectivityResult.none) {
+      isLoading = true;
+    } else {
+      getAllBooks();
+      getTopBook();
+    }
+  }
 
   @override
   void initState() {
+    super.initState();
+    callback();
     getAllBooks();
     getTopBook();
-
-    _requestStatuses = List.generate(5, (idx) {
-      _autoRequestManager.autoReload(
-        id: idx.toString(),
-        toReload: getTopBook,
-      );
-      return RequestStatus.error;
-    });
-
-    _requestApi = List.generate(5, (idx) {
-      _autoRequestManager2.autoReload(
-        id: idx.toString(),
-        toReload: getAllBooks,
-      );
-      return Content.error;
-    });
 
     final newVersion = NewVersion(
       iOSId: 'com.b4usolution.app.bsoc',
       androidId: 'com.b4usolution.b4u_bsoc',
     );
     checkNewVersion(newVersion);
-    super.initState();
   }
 
   void checkNewVersion(NewVersion newVersion) async {
@@ -272,33 +245,46 @@ class _HomePageState extends State<HomePage> {
                 ConnectivityResult connectivity,
                 Widget child,
               ) {
-                if (connectivity == ConnectivityResult.none) {
-                  return Container(
-                    color: Colors.white70,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            Image.asset('assets/images/wifi.png'),
-                            Text(
-                              'Không có kết nối Internet',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              'Vui lòng kiểm tra kết nối internet và thử lại',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ],
+                final connected = connectivity != ConnectivityResult.none;
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    child,
+                    Positioned(
+                      height: 0.0,
+                      left: 0.0,
+                      right: 0.0,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 350),
+                        color: connected
+                            ? const Color(0xFF00EE44)
+                            : const Color(0xFFEE4400),
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 350),
+                          child: connected
+                              ? const Text('ONLINE')
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const <Widget>[
+                                    Text('OFFLINE'),
+                                    SizedBox(width: 8.0),
+                                    SizedBox(
+                                      width: 12.0,
+                                      height: 12.0,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.0,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                         ),
                       ),
                     ),
-                  );
-                } else {
-                  return child;
-                }
+                  ],
+                );
               },
               child: isLoading
                   ? Center(

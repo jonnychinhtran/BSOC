@@ -70,8 +70,8 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   flutter_offline: ^2.1.0
   external_path: ^1.0.3
-  auto_reload: ^1.1.0
   flutter_phoenix: ^1.1.0
+  flutter_no_internet_widget: ^0.0.8+16
 
 dev_dependencies:
   flutter_test:
