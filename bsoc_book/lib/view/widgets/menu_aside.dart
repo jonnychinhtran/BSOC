@@ -305,7 +305,10 @@ class DialogLogout extends StatelessWidget {
               await prefs.remove('accessToken');
               await prefs.clear();
               userdata.write('isLogged', false);
-              Get.offAll(LoginPage());
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  (Route<dynamic> route) => false);
             },
             child: Text('Có'),
           ),
