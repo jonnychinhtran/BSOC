@@ -201,16 +201,6 @@ class _DetailBookPageState extends State<DetailBookPage>
                               'Vui lòng kiểm tra kết nối internet và thử lại',
                               style: TextStyle(color: Colors.black),
                             ),
-                            // TextButton(
-                            //     onPressed: () {
-                            //       Navigator.pushAndRemoveUntil(
-                            //           context,
-                            //           MaterialPageRoute(
-                            //               builder: (context) =>
-                            //                   DetailBookPage(id: idbooks!)),
-                            //           (Route<dynamic> route) => false);
-                            //     },
-                            //     child: Text('Thử lại'))
                           ],
                         ),
                       ),
@@ -220,7 +210,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                   return child;
                 }
               },
-              child: isLoading && dataBook == null
+              child: isLoading
                   ? Center(
                       child: LoadingAnimationWidget.discreteCircle(
                       color: Color.fromARGB(255, 138, 175, 52),
