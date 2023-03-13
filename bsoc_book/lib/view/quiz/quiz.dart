@@ -17,37 +17,44 @@ class QuizPage extends StatefulWidget {
   State<QuizPage> createState() => _QuizPageState();
 }
 
-class _QuizPageState extends State<QuizPage> {
+class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   final TextStyle _questionStyle = TextStyle(
       fontSize: 18.0, fontWeight: FontWeight.w500, color: Colors.white);
 
   ConnectivityResult connectivity = ConnectivityResult.none;
   late AnimationController controller;
   bool isLoading = true;
+  bool isPlaying = false;
+  // int seconds = 3600;
+  // Timer? timer;
 
-  int seconds = 60;
-  Timer? timer;
+  double progress = 1.0;
 
   Future<void> callback() async {
     if (connectivity == ConnectivityResult.none) {
       isLoading = true;
-    } else {
-      // Navigator.pushAndRemoveUntil(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => QuizPage()),
-      //     (Route<dynamic> route) => false);
+    } else {}
+  }
+
+  String get countText {
+    Duration count = controller.duration! * controller.value;
+    return controller.isDismissed
+        ? '${controller.duration!.inHours}:${(controller.duration!.inMinutes % 60).toString().padLeft(2, '0')}:${(controller.duration!.inSeconds % 60).toString().padLeft(2, '0')}'
+        : '${count.inHours}:${(count.inMinutes % 60).toString().padLeft(2, '0')}:${(count.inSeconds % 60).toString().padLeft(2, '0')}';
+  }
+
+  void notify() {
+    if (countText == '0:00:00') {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) =>
+              ResultQuizPage(questions: widget.questions, answers: _answers)));
     }
   }
 
   startTimer() {
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (seconds > 0) {
-          seconds--;
-        } else {
-          // gotoNextQuestion();
-        }
-      });
+    controller.reverse(from: controller.value == 0 ? 1.0 : controller.value);
+    setState(() {
+      isPlaying = true;
     });
   }
 
@@ -59,7 +66,34 @@ class _QuizPageState extends State<QuizPage> {
   void initState() {
     callback();
     super.initState();
-    // startTimer();
+
+    // TÙY CHỈNH THỜI GIAN CÂU HỎI Ở PHẦN DURATION
+    controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 180),
+    );
+
+    controller.addListener(() {
+      notify();
+      if (controller.isAnimating) {
+        setState(() {
+          progress = controller.value;
+          print(progress);
+        });
+      } else {
+        setState(() {
+          progress = 1.0;
+          isPlaying = true;
+        });
+      }
+    });
+    startTimer();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -80,7 +114,6 @@ class _QuizPageState extends State<QuizPage> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           centerTitle: true,
-          // title: Text('Quản lý Coupon'),
           title: Image.asset(
             'assets/images/logo-b4usolution.png',
             fit: BoxFit.contain,
@@ -134,14 +167,6 @@ class _QuizPageState extends State<QuizPage> {
                 ),
                 body: Stack(
                   children: <Widget>[
-                    // ClipPath(
-                    //   clipper: WaveClipperTwo(),
-                    //   child: Container(
-                    //     decoration: BoxDecoration(
-                    //         color: Theme.of(context).primaryColor),
-                    //     height: 200,
-                    //   ),
-                    // ),
                     Container(
                         width: double.infinity,
                         height: double.infinity,
@@ -154,21 +179,23 @@ class _QuizPageState extends State<QuizPage> {
                     Padding(
                       padding: const EdgeInsets.only(
                           top: 200, left: 16.0, right: 16.0),
-                      child: new LinearPercentIndicator(
-                        width: 295,
-                        animation: true,
-                        animationDuration: 2000,
-                        lineHeight: 20.0,
-                        trailing: new Text(
-                          "Thời gian",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                      child: AnimatedBuilder(
+                        animation: controller,
+                        builder: (context, child) => LinearPercentIndicator(
+                          width: 295,
+                          animateFromLastPercent: true,
+                          lineHeight: 20.0,
+                          trailing: Text(
+                            countText,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          percent: progress,
+                          progressColor: Color.fromARGB(244, 193, 255, 114),
                         ),
-                        // trailing:  Text("right content"),
-                        percent: 0.2,
-                        // center: Text("20.0%"),
-                        // linearStrokeCap: LinearStrokeCap.butt,
-                        progressColor: Color.fromARGB(244, 193, 255, 114),
                       ),
                     ),
                     Padding(
@@ -287,340 +314,13 @@ class _QuizPageState extends State<QuizPage> {
               ),
             )));
   }
-  //           child: WillPopScope(
-  //             onWillPop: _onWillPop,
-  //             child: Stack(children: [
-  //               Container(
-  //                   width: double.infinity,
-  //                   height: double.infinity,
-  //                   decoration: BoxDecoration(
-  //                     image: DecorationImage(
-  //                       image: AssetImage('assets/images/bg2.png'),
-  //                       fit: BoxFit.cover,
-  //                     ),
-  //                   )),
-  //               SafeArea(
-  //                 child: Align(
-  //                   alignment: Alignment.center,
-  //                   child: Padding(
-  //                     padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-  //                     child: Column(
-  //                       crossAxisAlignment: CrossAxisAlignment.center,
-  //                       children: [
-  //                         SizedBox(height: size.height * 0.01),
-  //                         Text(
-  //                           'TIME FOR QUIZ',
-  //                           style: TextStyle(
-  //                               color: Colors.white,
-  //                               fontSize: 24,
-  //                               fontWeight: FontWeight.w600),
-  //                         ),
-  //                         SizedBox(height: size.height * 0.02),
-  //                         Stack(alignment: Alignment.center, children: [
-  //                           // Text(
-  //                           //   seconds.toString(),
-  //                           //   style:
-  //                           //       TextStyle(color: Colors.white, fontSize: 24),
-  //                           // ),
-  //                           // SizedBox(
-  //                           //   width: 80,
-  //                           //   height: 80,
-  //                           //   child: CircularProgressIndicator(
-  //                           //     value: seconds / 60,
-  //                           //     valueColor:
-  //                           //         const AlwaysStoppedAnimation(Colors.white),
-  //                           //   ),
-  //                           // ),
-  //                           ClipPath(
-  //                             clipper: WaveClipperTwo(),
-  //                             child: Container(
-  //                               decoration: BoxDecoration(
-  //                                   color: Theme.of(context).primaryColor),
-  //                               height: 200,
-  //                             ),
-  //                           ),
-  //                         ]),
-  //                         SizedBox(height: size.height * 0.04),
-  //                         Column(
-  //                           children: [
-  //                             Stack(children: [
-  //                               Container(
-  //                                 decoration: BoxDecoration(
-  //                                   borderRadius: BorderRadius.circular(10),
-  //                                   color: Color.fromARGB(255, 193, 255, 114),
-  //                                   border: Border(
-  //                                     left: BorderSide(
-  //                                       color: Colors.green,
-  //                                       width: 3,
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //                                 height: 500,
-  //                                 width: double.infinity,
-  //                               ),
-  //                               Row(
-  //                                 children: <Widget>[
-  //                                   CircleAvatar(
-  //                                     backgroundColor: Colors.white70,
-  //                                     child: Text("${_currentIndex + 1}"),
-  //                                   ),
-  //                                   SizedBox(width: 16.0),
-  //                                   Expanded(
-  //                                     child: Text(
-  //                                       HtmlUnescape().convert(widget
-  //                                           .questions[_currentIndex]
-  //                                           .question!),
-  //                                       softWrap: true,
-  //                                       style:
-  //                                           MediaQuery.of(context).size.width >
-  //                                                   800
-  //                                               ? _questionStyle.copyWith(
-  //                                                   fontSize: 30.0)
-  //                                               : _questionStyle,
-  //                                     ),
-  //                                   ),
-  //                                 ],
-  //                               ),
-  //                               Padding(
-  //                                 padding: const EdgeInsets.only(
-  //                                     left: 22.0, top: 2.0),
-  //                                 child: Column(
-  //                                   children: [
-  //                                     SizedBox(height: size.height * 0.02),
-  //                                     Card(
-  //                                       child: Column(
-  //                                         mainAxisSize: MainAxisSize.min,
-  //                                         children: <Widget>[
-  //                                           ...options.map((option) =>
-  //                                               RadioListTile(
-  //                                                 title: Text(
-  //                                                   HtmlUnescape()
-  //                                                       .convert("$option"),
-  //                                                   style:
-  //                                                       MediaQuery.of(context)
-  //                                                                   .size
-  //                                                                   .width >
-  //                                                               800
-  //                                                           ? TextStyle(
-  //                                                               fontSize: 30.0)
-  //                                                           : null,
-  //                                                 ),
-  //                                                 groupValue:
-  //                                                     _answers[_currentIndex],
-  //                                                 value: option,
-  //                                                 onChanged: (dynamic value) {
-  //                                                   setState(() {
-  //                                                     _answers[_currentIndex] =
-  //                                                         option;
-  //                                                   });
-  //                                                 },
-  //                                               )),
-  //                                         ],
-  //                                       ),
-  //                                     ),
-  //                                     // Text(
-  //                                     //   'What is the worlds longest venomous snake?',
-  //                                     //   style: TextStyle(
-  //                                     //       // color: Colors.white,
-  //                                     //       fontSize: 18,
-  //                                     //       fontWeight: FontWeight.w600),
-  //                                     // ),
-  //                                     // SizedBox(height: size.height * 0.02),
-  //                                     // Padding(
-  //                                     //   padding: const EdgeInsets.only(
-  //                                     //       bottom: 12.0, right: 16.0),
-  //                                     //   child: GestureDetector(
-  //                                     //     onTap: () {},
-  //                                     //     child: Container(
-  //                                     //       alignment: Alignment.centerLeft,
-  //                                     //       padding: const EdgeInsets.all(16),
-  //                                     //       decoration: BoxDecoration(
-  //                                     //         color: Colors.white,
-  //                                     //         borderRadius:
-  //                                     //             BorderRadius.circular(12),
-  //                                     //       ),
-  //                                     //       child: Text(
-  //                                     //         'King Cobra',
-  //                                     //         style: TextStyle(
-  //                                     //             // color: Colors.white,
-  //                                     //             fontSize: 16,
-  //                                     //             fontWeight: FontWeight.w600),
-  //                                     //       ),
-  //                                     //     ),
-  //                                     //   ),
-  //                                     // ),
-  //                                     // Padding(
-  //                                     //   padding: const EdgeInsets.only(
-  //                                     //       bottom: 12.0, right: 16.0),
-  //                                     //   child: GestureDetector(
-  //                                     //     onTap: () {},
-  //                                     //     child: Container(
-  //                                     //       alignment: Alignment.centerLeft,
-  //                                     //       padding: const EdgeInsets.all(16),
-  //                                     //       decoration: BoxDecoration(
-  //                                     //         color: Colors.white,
-  //                                     //         borderRadius:
-  //                                     //             BorderRadius.circular(12),
-  //                                     //       ),
-  //                                     //       child: Text(
-  //                                     //         'Green Anaconda',
-  //                                     //         style: TextStyle(
-  //                                     //             // color: Colors.white,
-  //                                     //             fontSize: 16,
-  //                                     //             fontWeight: FontWeight.w600),
-  //                                     //       ),
-  //                                     //     ),
-  //                                     //   ),
-  //                                     // ),
-  //                                     // Padding(
-  //                                     //   padding: const EdgeInsets.only(
-  //                                     //       bottom: 12.0, right: 16.0),
-  //                                     //   child: GestureDetector(
-  //                                     //     onTap: () {},
-  //                                     //     child: Container(
-  //                                     //       alignment: Alignment.centerLeft,
-  //                                     //       padding: const EdgeInsets.all(16),
-  //                                     //       decoration: BoxDecoration(
-  //                                     //         color: Colors.white,
-  //                                     //         borderRadius:
-  //                                     //             BorderRadius.circular(12),
-  //                                     //       ),
-  //                                     //       child: Text(
-  //                                     //         'Inland Taipan',
-  //                                     //         style: TextStyle(
-  //                                     //             // color: Colors.white,
-  //                                     //             fontSize: 16,
-  //                                     //             fontWeight: FontWeight.w600),
-  //                                     //       ),
-  //                                     //     ),
-  //                                     //   ),
-  //                                     // ),
-  //                                     // Padding(
-  //                                     //   padding: const EdgeInsets.only(
-  //                                     //       bottom: 100.0, right: 16.0),
-  //                                     //   child: GestureDetector(
-  //                                     //     onTap: () {},
-  //                                     //     child: Container(
-  //                                     //       alignment: Alignment.centerLeft,
-  //                                     //       padding: const EdgeInsets.all(16),
-  //                                     //       decoration: BoxDecoration(
-  //                                     //         color: Colors.white,
-  //                                     //         borderRadius:
-  //                                     //             BorderRadius.circular(12),
-  //                                     //       ),
-  //                                     //       child: Text(
-  //                                     //         'Yellow Bellied Sea Snake',
-  //                                     //         style: TextStyle(
-  //                                     //             // color: Colors.white,
-  //                                     //             fontSize: 16,
-  //                                     //             fontWeight: FontWeight.w600),
-  //                                     //       ),
-  //                                     //     ),
-  //                                     //   ),
-  //                                     // ),
-  //                                     Padding(
-  //                                       padding: const EdgeInsets.only(
-  //                                           bottom: 12.0, right: 16.0),
-  //                                       child: Row(
-  //                                         crossAxisAlignment:
-  //                                             CrossAxisAlignment.center,
-  //                                         mainAxisAlignment:
-  //                                             MainAxisAlignment.spaceBetween,
-  //                                         children: [
-  //                                           Container(
-  //                                             width: 140,
-  //                                             child: ElevatedButton(
-  //                                               style: ElevatedButton.styleFrom(
-  //                                                 elevation: 2,
-  //                                                 primary:
-  //                                                     Colors.deepOrange[600],
-  //                                                 minimumSize:
-  //                                                     const Size.fromHeight(35),
-  //                                                 shape: RoundedRectangleBorder(
-  //                                                   borderRadius:
-  //                                                       BorderRadius.circular(
-  //                                                           10.0),
-  //                                                 ),
-  //                                               ),
-  //                                               onPressed: () {
-  //                                                 // Navigator.pop(context, 'Không')
-  //                                                 // Get.to(ResultQuizPage());
-  //                                               },
-  //                                               child: Text('<< Câu trước'),
-  //                                             ),
-  //                                           ),
-  //                                           Container(
-  //                                             width: 140,
-  //                                             child: ElevatedButton(
-  //                                               style: ElevatedButton.styleFrom(
-  //                                                 elevation: 2,
-  //                                                 primary:
-  //                                                     Colors.deepOrange[600],
-  //                                                 minimumSize:
-  //                                                     const Size.fromHeight(35),
-  //                                                 shape: RoundedRectangleBorder(
-  //                                                   borderRadius:
-  //                                                       BorderRadius.circular(
-  //                                                           10.0),
-  //                                                 ),
-  //                                               ),
-  //                                               onPressed: () {
-  //                                                 // Navigator.pop(context, 'Không')
-  //                                                 // Get.to(ResultQuizPage());
-  //                                                 _nextSubmit;
-  //                                               },
-  //                                               child: Text(
-  //                                                 _currentIndex ==
-  //                                                         (widget.questions
-  //                                                                 .length -
-  //                                                             1)
-  //                                                     ? "Gửi bài thi"
-  //                                                     : "Câu tiếp theo >>",
-  //                                                 style: MediaQuery.of(context)
-  //                                                             .size
-  //                                                             .width >
-  //                                                         800
-  //                                                     ? TextStyle(
-  //                                                         fontSize: 30.0)
-  //                                                     : null,
-  //                                               ),
-  //                                             ),
-  //                                           ),
-  //                                         ],
-  //                                       ),
-  //                                     ),
-  //                                   ],
-  //                                 ),
-  //                               ),
-  //                             ]),
-  //                           ],
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ),
-  //               )
-  //             ]),
-  //           )));
-  // }
 
   void _backSubmit() {
-    // if (_answers[_currentIndex] == (widget.questions.length + 1)) {
-    //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //     content: Text("You must select an answer to continue."),
-    //   ));
-    //   return;
-    // }
     if (_currentIndex < (widget.questions.length + 1)) {
       setState(() {
         _currentIndex--;
       });
     }
-    // else {
-    // Navigator.of(context).pushReplacement(MaterialPageRoute(
-    //     builder: (_) => ResultQuizPage(
-    //         questions: widget.questions, answers: _answers)));
-    // }
   }
 
   void _nextSubmit() {
