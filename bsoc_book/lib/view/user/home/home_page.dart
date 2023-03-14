@@ -418,7 +418,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               Container(
-                                height: 200,
+                                height: 230,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: ListView(
@@ -439,14 +439,14 @@ class _HomePageState extends State<HomePage> {
                                           child: Container(
                                             width: 150,
                                             decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  offset: Offset(0, 1),
-                                                  blurRadius: 5,
-                                                  color: Colors.black
-                                                      .withOpacity(0.3),
-                                                ),
-                                              ],
+                                              // boxShadow: [
+                                              //   BoxShadow(
+                                              //     offset: Offset(0, 1),
+                                              //     blurRadius: 5,
+                                              //     color: Colors.black
+                                              //         .withOpacity(0.3),
+                                              //   ),
+                                              // ],
                                               borderRadius:
                                                   BorderRadius.circular(14),
                                               color: Colors.white,
@@ -460,16 +460,14 @@ class _HomePageState extends State<HomePage> {
                                                     height: 70,
                                                     width: 150,
                                                     decoration: BoxDecoration(
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            offset:
-                                                                Offset(0, 1),
-                                                            blurRadius: 1,
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.1),
-                                                          ),
-                                                        ],
+                                                        // boxShadow: [
+                                                        //   BoxShadow(
+                                                        //     offset: Offset(0, 1),
+                                                        //     blurRadius: 1,
+                                                        //     color: Colors.black
+                                                        //         .withOpacity(0.1),
+                                                        //   ),
+                                                        // ],
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10),
@@ -515,6 +513,9 @@ class _HomePageState extends State<HomePage> {
                                                                 FontWeight
                                                                     .w600)),
                                                   ),
+                                                  SizedBox(
+                                                      height:
+                                                          size.height * 0.01),
                                                   Align(
                                                     alignment:
                                                         Alignment.centerLeft,
@@ -525,6 +526,9 @@ class _HomePageState extends State<HomePage> {
                                                                 FontWeight
                                                                     .w600)),
                                                   ),
+                                                  SizedBox(
+                                                      height:
+                                                          size.height * 0.01),
                                                   Align(
                                                     alignment:
                                                         Alignment.centerLeft,
@@ -555,14 +559,14 @@ class _HomePageState extends State<HomePage> {
                                           child: Container(
                                             width: 150,
                                             decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  offset: Offset(0, 1),
-                                                  blurRadius: 5,
-                                                  color: Colors.black
-                                                      .withOpacity(0.3),
-                                                ),
-                                              ],
+                                              // boxShadow: [
+                                              //   BoxShadow(
+                                              //     offset: Offset(0, 1),
+                                              //     blurRadius: 5,
+                                              //     color: Colors.black
+                                              //         .withOpacity(0.3),
+                                              //   ),
+                                              // ],
                                               borderRadius:
                                                   BorderRadius.circular(14),
                                               color: Colors.white,
@@ -631,6 +635,9 @@ class _HomePageState extends State<HomePage> {
                                                                 FontWeight
                                                                     .w600)),
                                                   ),
+                                                  SizedBox(
+                                                      height:
+                                                          size.height * 0.01),
                                                   Align(
                                                     alignment:
                                                         Alignment.centerLeft,
@@ -641,6 +648,9 @@ class _HomePageState extends State<HomePage> {
                                                                 FontWeight
                                                                     .w600)),
                                                   ),
+                                                  SizedBox(
+                                                      height:
+                                                          size.height * 0.01),
                                                   Align(
                                                     alignment:
                                                         Alignment.centerLeft,
@@ -671,14 +681,14 @@ class _HomePageState extends State<HomePage> {
                                           child: Container(
                                             width: 150,
                                             decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  offset: Offset(0, 1),
-                                                  blurRadius: 5,
-                                                  color: Colors.black
-                                                      .withOpacity(0.3),
-                                                ),
-                                              ],
+                                              // boxShadow: [
+                                              //   BoxShadow(
+                                              //     offset: Offset(0, 1),
+                                              //     blurRadius: 5,
+                                              //     color: Colors.black
+                                              //         .withOpacity(0.3),
+                                              //   ),
+                                              // ],
                                               borderRadius:
                                                   BorderRadius.circular(14),
                                               color: Colors.white,
@@ -692,16 +702,14 @@ class _HomePageState extends State<HomePage> {
                                                     height: 70,
                                                     width: 150,
                                                     decoration: BoxDecoration(
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            offset:
-                                                                Offset(0, 1),
-                                                            blurRadius: 5,
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.3),
-                                                          ),
-                                                        ],
+                                                        // boxShadow: [
+                                                        //   BoxShadow(
+                                                        //     offset: Offset(0, 1),
+                                                        //     blurRadius: 5,
+                                                        //     color: Colors.black
+                                                        //         .withOpacity(0.3),
+                                                        //   ),
+                                                        // ],
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10),
@@ -747,6 +755,9 @@ class _HomePageState extends State<HomePage> {
                                                                 FontWeight
                                                                     .w600)),
                                                   ),
+                                                  SizedBox(
+                                                      height:
+                                                          size.height * 0.01),
                                                   Align(
                                                     alignment:
                                                         Alignment.centerLeft,
@@ -757,6 +768,9 @@ class _HomePageState extends State<HomePage> {
                                                                 FontWeight
                                                                     .w600)),
                                                   ),
+                                                  SizedBox(
+                                                      height:
+                                                          size.height * 0.01),
                                                   Align(
                                                     alignment:
                                                         Alignment.centerLeft,

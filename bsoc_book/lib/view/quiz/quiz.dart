@@ -126,33 +126,45 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
               ConnectivityResult connectivity,
               Widget child,
             ) {
-              if (connectivity == ConnectivityResult.none) {
-                return Container(
-                  color: Colors.white70,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Image.asset('assets/images/wifi.png'),
-                          Text(
-                            'Không có kết nối Internet',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            'Vui lòng kiểm tra kết nối internet và thử lại',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
+              final connected = connectivity != ConnectivityResult.none;
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  child,
+                  Positioned(
+                    height: 0.0,
+                    left: 0.0,
+                    right: 0.0,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 350),
+                      color: connected
+                          ? const Color(0xFF00EE44)
+                          : const Color(0xFFEE4400),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 350),
+                        child: connected
+                            ? const Text('ONLINE')
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const <Widget>[
+                                  Text('OFFLINE'),
+                                  SizedBox(width: 8.0),
+                                  SizedBox(
+                                    width: 12.0,
+                                    height: 12.0,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.0,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
                   ),
-                );
-              } else {
-                return child;
-              }
+                ],
+              );
             },
             child: WillPopScope(
               onWillPop: _onWillPop,
@@ -335,6 +347,10 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
         _currentIndex++;
       });
     } else {
+      controller.reset();
+      setState(() {
+        isPlaying = false;
+      });
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) =>
               ResultQuizPage(questions: widget.questions, answers: _answers)));

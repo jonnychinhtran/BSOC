@@ -57,33 +57,45 @@ class _TopicPracticePageState extends State<TopicPracticePage> {
               ConnectivityResult connectivity,
               Widget child,
             ) {
-              if (connectivity == ConnectivityResult.none) {
-                return Container(
-                  color: Colors.white70,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Image.asset('assets/images/wifi.png'),
-                          Text(
-                            'Không có kết nối Internet',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            'Vui lòng kiểm tra kết nối internet và thử lại',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
+              final connected = connectivity != ConnectivityResult.none;
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  child,
+                  Positioned(
+                    height: 0.0,
+                    left: 0.0,
+                    right: 0.0,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 350),
+                      color: connected
+                          ? const Color(0xFF00EE44)
+                          : const Color(0xFFEE4400),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 350),
+                        child: connected
+                            ? const Text('ONLINE')
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const <Widget>[
+                                  Text('OFFLINE'),
+                                  SizedBox(width: 8.0),
+                                  SizedBox(
+                                    width: 12.0,
+                                    height: 12.0,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.0,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
                   ),
-                );
-              } else {
-                return child;
-              }
+                ],
+              );
             },
             child: Stack(children: [
               Container(
@@ -175,37 +187,6 @@ class _TopicPracticePageState extends State<TopicPracticePage> {
                                                     fontWeight:
                                                         FontWeight.w500),
                                               ),
-                                              // Stack(children: [
-                                              //   Container(
-                                              //     decoration: BoxDecoration(
-                                              //       borderRadius:
-                                              //           BorderRadius.circular(
-                                              //               10),
-                                              //       color: Colors.white,
-                                              //       border: Border(
-                                              //         left: BorderSide(
-                                              //           color: Colors.green,
-                                              //           width: 3,
-                                              //         ),
-                                              //       ),
-                                              //     ),
-                                              //     width: 100,
-                                              //     height: 20,
-                                              //   ),
-                                              //   Padding(
-                                              //     padding:
-                                              //         const EdgeInsets.only(
-                                              //             left: 22.0, top: 2.0),
-                                              //     child: Text(
-                                              //       'ETS 2019',
-                                              //       style: TextStyle(
-                                              //           color: Colors.black,
-                                              //           fontSize: 13,
-                                              //           fontWeight:
-                                              //               FontWeight.w600),
-                                              //     ),
-                                              //   ),
-                                              // ]),
                                               Stack(children: [
                                                 Container(
                                                   decoration: BoxDecoration(
