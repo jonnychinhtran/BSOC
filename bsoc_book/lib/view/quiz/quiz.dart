@@ -78,7 +78,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       if (controller.isAnimating) {
         setState(() {
           progress = controller.value;
-          print(progress);
+          // print(progress);
         });
       } else {
         setState(() {
@@ -190,18 +190,18 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                         )),
                     Padding(
                       padding: const EdgeInsets.only(
-                          top: 200, left: 16.0, right: 16.0),
+                          top: 200, left: 8.0, right: 16.0),
                       child: AnimatedBuilder(
                         animation: controller,
                         builder: (context, child) => LinearPercentIndicator(
-                          width: 295,
+                          width: 280,
                           animateFromLastPercent: true,
                           lineHeight: 20.0,
                           trailing: Text(
                             countText,
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
