@@ -493,7 +493,7 @@ class _InforPageState extends State<InforPage> {
                         SizedBox(height: size.height * 0.02),
                         Center(
                           child: Text(
-                            '1.0.11',
+                            '1.0.12',
                             style: TextStyle(fontSize: 16),
                           ),
                         ),

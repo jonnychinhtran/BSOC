@@ -178,7 +178,8 @@ class _DetailBookPageState extends State<DetailBookPage>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DownloadPage()),
+                              builder: (context) =>
+                                  DownloadPage(id: dataBook!['id'].toString())),
                         );
                       } else {
                         showDialog(
@@ -725,15 +726,6 @@ class _PdfViewerPageState extends State<PdfViewerPage>
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // Navigator.pushAndRemoveUntil<dynamic>(
-            //   context,
-            //   MaterialPageRoute<dynamic>(
-            //     builder: (BuildContext context) => DetailBookPage(id: idbooks!),
-            //   ),
-            //   (route) =>
-            //       true, //if you want to disable back feature set to false
-            // );
-            print(widget.idb);
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -1012,7 +1004,8 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => DetailBookPage(id: idbooks!)));
+            builder: (BuildContext context) =>
+                DetailBookPage(id: dataBook!['id'].toString())));
     await OpenFilex.open(path);
     setState(() {
       isLoading = false;

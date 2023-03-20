@@ -16,7 +16,8 @@ Map? demoReponse;
 List? listReponse;
 
 class DownloadPage extends StatefulWidget {
-  const DownloadPage({super.key});
+  const DownloadPage({super.key, required this.id});
+  final String id;
 
   @override
   State<DownloadPage> createState() => _DownloadPageState();
@@ -30,12 +31,12 @@ class _DownloadPageState extends State<DownloadPage> {
   String? path;
   void getItemBooks() async {
     String? token;
-    String? id;
+    // String? id;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
-    id = prefs.getString('idbook');
+    // id = prefs.getString('idbook');
 
-    var url = Uri.parse('http://103.77.166.202/api/book/$id');
+    var url = Uri.parse('http://103.77.166.202/api/book/${widget.id}');
     http.Response response =
         await http.get(url, headers: {'Authorization': 'Bearer $token'});
 
@@ -61,10 +62,7 @@ class _DownloadPageState extends State<DownloadPage> {
     if (connectivity == ConnectivityResult.none) {
       isLoading = true;
     } else {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => DownloadPage()),
-          (Route<dynamic> route) => false);
+      getItemBooks();
     }
   }
 
