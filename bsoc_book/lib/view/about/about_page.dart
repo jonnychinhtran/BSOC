@@ -1,4 +1,3 @@
-import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:flutter/material.dart';
 
 class AboutPage extends StatelessWidget {
@@ -13,7 +12,7 @@ class AboutPage extends StatelessWidget {
         centerTitle: true,
         title: Text("Giới thiệu"),
       ),
-      drawer: const MenuAside(),
+      // drawer: const MenuAside(),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(16.0),
