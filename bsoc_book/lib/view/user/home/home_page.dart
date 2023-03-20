@@ -466,7 +466,7 @@ class _HomePageState extends State<HomePage> {
                                                             .toString(),
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    maxLines: 3,
+                                                    maxLines: 2,
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.w600,

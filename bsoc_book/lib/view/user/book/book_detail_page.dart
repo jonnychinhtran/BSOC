@@ -137,10 +137,8 @@ class _DetailBookPageState extends State<DetailBookPage>
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
                 onPressed: (() {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      (Route<dynamic> route) => false);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePage()));
                 }),
               ),
               actions: [
@@ -347,7 +345,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                 final SharedPreferences? prefs =
                                                     await _prefs;
                                                 await prefs?.setInt('idchapter',
-                                                    listReponse![index]['id']);
+                                                    listReponse?[index]['id']);
                                                 await prefs?.setInt(
                                                     'sttchapter',
                                                     listReponse![index]
@@ -373,9 +371,8 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                     MaterialPageRoute<dynamic>(
                                                         builder: (context) =>
                                                             PdfViewerPage(
-                                                                idb: listReponse![
-                                                                            index]
-                                                                        ['id']
+                                                                idb: dataBook![
+                                                                        'id']
                                                                     .toString())),
                                                   );
                                                 } else if (authController
@@ -645,7 +642,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
       sttchap = prefs.getInt('sttchapter') ?? 0;
       titleChapter = prefs.getString('titleChapter');
       var response =
-          await Dio().get('http://103.77.166.202/api/book/${widget.idb}',
+          await Dio().get('http://103.77.166.202/api/book/' + widget.idb,
               options: Options(headers: {
                 'Authorization': 'Bearer $token',
               }));
@@ -728,15 +725,19 @@ class _PdfViewerPageState extends State<PdfViewerPage>
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // Navigator.pop(context);
-            Navigator.pushAndRemoveUntil<dynamic>(
-              context,
-              MaterialPageRoute<dynamic>(
-                builder: (BuildContext context) => DetailBookPage(id: idbooks!),
-              ),
-              (route) =>
-                  true, //if you want to disable back feature set to false
-            );
+            // Navigator.pushAndRemoveUntil<dynamic>(
+            //   context,
+            //   MaterialPageRoute<dynamic>(
+            //     builder: (BuildContext context) => DetailBookPage(id: idbooks!),
+            //   ),
+            //   (route) =>
+            //       true, //if you want to disable back feature set to false
+            // );
+            print(widget.idb);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DetailBookPage(id: widget.idb)));
           },
         ),
       ),

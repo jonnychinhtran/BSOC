@@ -63,17 +63,14 @@ class _InforPageState extends State<InforPage> {
     if (connectivity == ConnectivityResult.none) {
       isLoading = true;
     } else {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => InforPage()),
-          (Route<dynamic> route) => false);
+      getUserDetail();
     }
   }
 
   @override
   void initState() {
-    getUserDetail();
     callback();
+    getUserDetail();
     super.initState();
   }
 
@@ -93,32 +90,45 @@ class _InforPageState extends State<InforPage> {
             ConnectivityResult connectivity,
             Widget child,
           ) {
-            if (connectivity == ConnectivityResult.none) {
-              return Container(
-                color: Colors.white70,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Image.asset('assets/images/wifi.png'),
-                        Text(
-                          'Không có kết nối Internet',
-                          style: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          'Vui lòng kiểm tra kết nối internet và thử lại',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
+            final connected = connectivity != ConnectivityResult.none;
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                child,
+                Positioned(
+                  height: 0.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 350),
+                    color: connected
+                        ? const Color(0xFF00EE44)
+                        : const Color(0xFFEE4400),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 350),
+                      child: connected
+                          ? const Text('ONLINE')
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const <Widget>[
+                                Text('OFFLINE'),
+                                SizedBox(width: 8.0),
+                                SizedBox(
+                                  width: 12.0,
+                                  height: 12.0,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.0,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
                     ),
                   ),
                 ),
-              );
-            } else {
-              return child;
-            }
+              ],
+            );
           },
           child: callback == ConnectivityResult.none
               ? Center(
@@ -389,49 +399,45 @@ class _InforPageState extends State<InforPage> {
                     )
                   : Column(
                       children: [
-                        Obx(() => authController.isLoggedIn.value
-                            ? Container()
-                            : Padding(
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 50, bottom: 50, left: 16, right: 16),
+                          child: Column(
+                            children: [
+                              Padding(
                                 padding: const EdgeInsets.only(
-                                    top: 50, bottom: 50, left: 16, right: 16),
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20.0, right: 20.0),
-                                      child: Text(
-                                        'Bạn cần đăng nhập hoặc đăng ký để xem thông tin tài khoản.',
-                                        style: TextStyle(fontSize: 16),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                    SizedBox(height: size.height * 0.02),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  LoginPage()),
-                                        );
-                                      },
-                                      child: Container(
-                                        width: 150,
-                                        height: 50,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(50.0),
-                                        ),
-                                        child: Text(
-                                          'Đăng nhập/đăng ký',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                    left: 20.0, right: 20.0),
+                                child: Text(
+                                  'Bạn cần đăng nhập hoặc đăng ký để xem thông tin tài khoản.',
+                                  style: TextStyle(fontSize: 16),
+                                  textAlign: TextAlign.center,
                                 ),
-                              )),
+                              ),
+                              SizedBox(height: size.height * 0.02),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginPage()),
+                                  );
+                                },
+                                child: Container(
+                                  width: 150,
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50.0),
+                                  ),
+                                  child: Text(
+                                    'Đăng nhập/đăng ký',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         Container(
                           decoration: BoxDecoration(
                               color: Colors.white,
@@ -647,6 +653,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
 class DialogLogout extends StatelessWidget {
   DialogLogout({super.key});
+  final AuthController authController = Get.put(AuthController());
   final box = GetStorage();
 
   @override
@@ -671,10 +678,11 @@ class DialogLogout extends StatelessWidget {
               ),
             ),
             onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.remove('accessToken');
-              await prefs.clear();
-              box.write('isLoggedIn', false);
+              // SharedPreferences prefs = await SharedPreferences.getInstance();
+              // await prefs.remove('accessToken');
+              // await prefs.clear();
+              // box.write('isLoggedIn', false);
+              authController.logout();
               Get.offAll(HomePage());
             },
             child: Text('Có'),

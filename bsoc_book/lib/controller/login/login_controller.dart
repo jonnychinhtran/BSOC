@@ -31,8 +31,6 @@ class LoginController extends GetxController {
         var user = json['data']['username'];
         var email = json['data']['email'];
         var idUser = json['data']['id'].toString();
-        box.write('isLoggedIn', true);
-        isLoggedIn.value = true;
         final SharedPreferences? prefs = await _prefs;
         await prefs?.setString('accessToken', token);
         await prefs?.setString('username', user);
@@ -40,6 +38,8 @@ class LoginController extends GetxController {
         await prefs?.setString('emailuser', email);
         Get.snackbar("Thành công", "Đăng nhập thành công.");
         Get.to(HomePage());
+        box.write('isLoggedIn', true);
+        isLoggedIn.value = true;
         usernameController.clear();
         passwordController.clear();
       } else {

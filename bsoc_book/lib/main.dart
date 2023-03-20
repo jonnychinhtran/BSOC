@@ -26,9 +26,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: CheckPage(),
-      initialRoute: Routes.home,
-      getPages: PageRoutes.pages,
+      home: CheckPage(),
+      // initialRoute: Routes.home,
+      // getPages: PageRoutes.pages,
     );
   }
 }
@@ -41,11 +41,11 @@ class CheckPage extends StatefulWidget {
 }
 
 class _CheckPageState extends State<CheckPage> {
-  final userdate = GetStorage();
+  final box = GetStorage();
   @override
   void initState() {
     super.initState();
-    userdate.writeIfNull('isLogged', false);
+    box.writeIfNull('isLoggedIn', false);
 
     Future.delayed(Duration.zero, () async {
       checkiflogged();
@@ -63,14 +63,14 @@ class _CheckPageState extends State<CheckPage> {
   }
 
   void checkiflogged() {
-    userdate.read('isLogged')
+    box.read('isLoggedIn')
         ? Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
             (Route<dynamic> route) => false)
         : Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
+            MaterialPageRoute(builder: (context) => HomePage()),
             (Route<dynamic> route) => false);
   }
 }
