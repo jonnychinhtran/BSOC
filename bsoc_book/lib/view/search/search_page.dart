@@ -83,8 +83,17 @@ class _SearchPageState extends State<SearchPage> {
                     TextField(
                   controller: controller,
                   focusNode: node,
-                  decoration:
-                      InputDecoration(hintText: 'Nhập tên sách tại đây...'),
+                  decoration: InputDecoration(
+                    hintText: "Nhập tên sách tại đây",
+                    fillColor: Colors.grey[300],
+                    filled: true,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    ),
+                  ),
                 ),
                 displayStringForOption: (Content d) =>
                     '${d.bookName} ${d.author} ${d.description}',

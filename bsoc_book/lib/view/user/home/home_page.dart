@@ -1,9 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
+import 'package:bsoc_book/data/model/bookmark/bookmark_model.dart';
+import 'package:bsoc_book/data/model/books/allbook_model.dart';
+import 'package:bsoc_book/data/model/books/book_model.dart';
+import 'package:bsoc_book/data/model/books/topbook_model.dart';
+import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
-import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:bsoc_book/view/widgets/updatedialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +20,8 @@ import 'package:new_version/new_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media_flutter/social_media_flutter.dart';
 
-String? demo;
-Map? mapDemo;
-Map? demoReponse;
-List? listReponse;
-List? listTop;
+Map? databook;
+List? bookList;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,12 +32,47 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ConnectivityResult connectivity = ConnectivityResult.none;
+  List<AllBookModel> listbook = [];
+  List<TopbookModel> topbook = [];
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
 
+  @override
+  void initState() {
+    super.initState();
+    getAllBooks();
+    getTopBook();
+
+    final newVersion = NewVersion(
+      iOSId: 'com.b4usolution.app.bsoc',
+      androidId: 'com.b4usolution.b4u_bsoc',
+    );
+    checkNewVersion(newVersion);
+  }
+
+  void checkNewVersion(NewVersion newVersion) async {
+    final status = await newVersion.getVersionStatus();
+    if (status != null) {
+      if (status.canUpdate) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return UpdateDialog(
+              allowDismissal: true,
+              description: status.releaseNotes!,
+              version: status.storeVersion,
+              appLink: status.appStoreLink,
+            );
+          },
+        );
+      }
+      print(status.appStoreLink);
+      print(status.storeVersion);
+    }
+  }
+
   Future<void> getAllBooks() async {
     String? token;
-
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
@@ -44,15 +81,15 @@ class _HomePageState extends State<HomePage> {
             'Authorization': 'Bearer $token',
           }));
       if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['content'];
         setState(() {
-          mapDemo = response.data;
-          listReponse = mapDemo!['content'];
+          listbook = data.map((json) => AllBookModel.fromJson(json)).toList();
           isLoading = false;
         });
       } else if (response.statusCode == 401 || response.statusCode == 403) {
         Get.offAll(LoginPage());
       }
-      // print("res: ${response.data}");
+      print("res: ${response.data}");
     } on DioError catch (e) {
       if (e.isNoConnectionError) {
         // Get.dialog(DialogError());
@@ -75,8 +112,9 @@ class _HomePageState extends State<HomePage> {
             'Authorization': 'Bearer $token',
           }));
       if (response.statusCode == 200) {
-        listTop = response.data;
+        List<dynamic> data = response.data;
         setState(() {
+          topbook = data.map((json) => TopbookModel.fromJson(json)).toList();
           isLoading = false;
         });
       } else if (response.statusCode == 401 || response.statusCode == 403) {
@@ -109,41 +147,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    callback();
-    getAllBooks();
-    getTopBook();
-
-    final newVersion = NewVersion(
-      iOSId: 'com.b4usolution.app.bsoc',
-      androidId: 'com.b4usolution.b4u_bsoc',
-    );
-    checkNewVersion(newVersion);
-  }
-
-  void checkNewVersion(NewVersion newVersion) async {
-    final status = await newVersion.getVersionStatus();
-    if (status != null) {
-      if (status.canUpdate) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return UpdateDialog(
-              allowDismissal: true,
-              description: status.releaseNotes!,
-              version: status.storeVersion,
-              appLink: status.appStoreLink,
-            );
-          },
-        );
-      }
-      print(status.appStoreLink);
-      print(status.storeVersion);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return WillPopScope(
@@ -151,29 +154,29 @@ class _HomePageState extends State<HomePage> {
           return Future.value(false);
         },
         child: Scaffold(
-          drawer: MenuAside(),
+          // drawer: MenuAside(),
           appBar: AppBar(
-            backgroundColor: Color.fromARGB(255, 138, 175, 52),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
             centerTitle: true,
-            title: const Text('B4U BSOC'),
+            title: const Text(
+              'B4U BSOC',
+              style: TextStyle(color: Colors.black),
+            ),
+            leading: IconButton(
+              icon: Icon(Icons.person_outline_rounded),
+              color: Colors.black,
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => InforPage()));
+              },
+            ),
             actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SearchPage()));
-                },
-              ),
               Theme(
                   data: Theme.of(context).copyWith(
-                    dividerColor: Colors.white,
-                    iconTheme: IconThemeData(color: Colors.white),
-                    textTheme: TextTheme().apply(bodyColor: Colors.white),
+                    dividerColor: Colors.black,
+                    iconTheme: IconThemeData(color: Colors.black),
+                    textTheme: TextTheme().apply(bodyColor: Colors.black),
                   ),
                   child: PopupMenuButton<int>(
                       color: Colors.white,
@@ -286,7 +289,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 );
               },
-              child: isLoading
+              child: isLoading && topbook.length == 0
                   ? Center(
                       child: LoadingAnimationWidget.discreteCircle(
                       color: Color.fromARGB(255, 138, 175, 52),
@@ -304,13 +307,50 @@ class _HomePageState extends State<HomePage> {
                           physics: ScrollPhysics(),
                           child: Column(
                             children: [
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Container(
+                                  height: 40,
+                                  child: TextField(
+                                    showCursor: true,
+                                    readOnly: true,
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SearchPage()));
+                                    },
+                                    decoration: InputDecoration(
+                                      hintText: "Tìm kiếm sách",
+                                      fillColor: Colors.grey[300],
+                                      filled: true,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 6, horizontal: 12),
+                                      prefixIcon: Icon(
+                                        Icons.search,
+                                        color: Colors.grey,
+                                      ),
+                                      focusedBorder: InputBorder.none,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20.0)),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                               SizedBox(height: size.height * 0.02),
-                              Center(
-                                child: Text(
-                                  'TOP 5 SÁCH HAY',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                              Padding(
+                                padding: const EdgeInsets.only(left: 13.0),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Top 5 sách hay',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -320,160 +360,136 @@ class _HomePageState extends State<HomePage> {
                                 child: ListView.builder(
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
-                                    itemCount:
-                                        listTop == null ? 0 : listTop!.length,
+                                    itemCount: topbook.length,
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       return Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: GestureDetector(
-                                          onTap: () async {
-                                            final SharedPreferences? prefs =
-                                                await _prefs;
-                                            await prefs?.setString(
-                                                'idbook',
-                                                listTop![index]['id']
-                                                    .toString());
-
-                                            print(
-                                                'idBook: ${listTop![index]['id'].toString()}');
-
+                                          onTap: () {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         DetailBookPage(
-                                                            id: listTop![index]
-                                                                    ['id']
+                                                            id: topbook[index]
+                                                                .id
                                                                 .toString())));
                                           },
                                           child: SizedBox(
                                             child: Image.network(
-                                                listTop![index]['image'] == null
+                                                topbook[index].image == null
                                                     ? "Đang tải..."
                                                     : 'http://103.77.166.202' +
-                                                        listTop![index]
-                                                            ['image']),
+                                                        topbook[index]
+                                                            .image
+                                                            .toString()),
                                           ),
                                         ),
                                       );
                                     }),
                               ),
                               SizedBox(height: size.height * 0.04),
-                              const Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 10, bottom: 4),
-                                  child: Center(
-                                    child: Text(
-                                      'THƯ VIỆN SÁCH',
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 14.0),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Thư viện sách',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ),
                               ),
                               SizedBox(height: size.height * 0.02),
                               Container(
-                                // height: 500,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
+                                  padding: const EdgeInsets.all(10.0),
                                   child: GridView.builder(
                                     physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
-                                    itemCount: listReponse == null
-                                        ? 0
-                                        : listReponse!.length,
+                                    itemCount: listbook.length,
                                     gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                        SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 2,
-                                            childAspectRatio: 0.8,
-                                            crossAxisSpacing: 35,
-                                            mainAxisSpacing: 40),
+                                            childAspectRatio: 2 / 3.3),
                                     itemBuilder:
                                         (BuildContext context, int index) {
+                                      final book = listbook[index];
                                       return InkWell(
-                                        child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () async {
-                                                  listReponse![index]['id']
-                                                      .toString();
-                                                  final SharedPreferences?
-                                                      prefs = await _prefs;
-                                                  await prefs?.setString(
-                                                      'idbook',
-                                                      listReponse![index]['id']
-                                                          .toString());
-
-                                                  print(
-                                                      'idBook: ${listReponse![index]['id'].toString()}');
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              DetailBookPage(
-                                                                  id: listReponse![
-                                                                              index]![
-                                                                          'id']
-                                                                      .toString())));
-                                                },
-                                                child: Center(
-                                                  child: SizedBox(
-                                                    height: 155,
-                                                    width: 120,
-                                                    child: Image.network(
-                                                      listReponse?[index]
-                                                                  ['image'] ==
-                                                              null
-                                                          ? "Đang tải..."
-                                                          : 'http://103.77.166.202' +
-                                                              listReponse?[
-                                                                      index]
-                                                                  ['image'],
-                                                      fit: BoxFit.fill,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                // Text(book.bookName.toString()),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                DetailBookPage(
+                                                                    id: book.id
+                                                                        .toString())));
+                                                  },
+                                                  child: Container(
+                                                    height: size.height * 0.25,
+                                                    width: size.width * 0.4,
+                                                    decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                            fit: BoxFit
+                                                                .fitHeight,
+                                                            image: NetworkImage(
+                                                              book.image == null
+                                                                  ? "Đang tải..."
+                                                                  : 'http://103.77.166.202' +
+                                                                      book.image
+                                                                          .toString(),
+                                                            ))),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                    height: size.height * 0.02),
+                                                Container(
+                                                  child: Text(
+                                                    book.bookName == null
+                                                        ? "Đang tải..."
+                                                        : book.bookName
+                                                            .toString(),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 3,
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 14,
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                  height: size.height * 0.01),
-                                              Center(
-                                                child: Text(
-                                                  listReponse?[index]
-                                                              ['bookName'] ==
-                                                          null
+                                                SizedBox(
+                                                    height: size.height * 0.01),
+                                                Text(
+                                                  book.author == null
                                                       ? "Đang tải..."
-                                                      : listReponse?[index]
-                                                          ['bookName'],
+                                                      : 'bởi :' +
+                                                          book.author
+                                                              .toString(),
                                                   overflow:
                                                       TextOverflow.ellipsis,
+                                                  maxLines: 2,
                                                   style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 14,
-                                                  ),
+                                                      fontSize: 12),
                                                 ),
-                                              ),
-                                              Expanded(
-                                                child: Center(
-                                                  child: Text(
-                                                    'bởi ${listReponse?[index]['author'] == null ? "" : listReponse?[index]['author']}',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                        fontSize: 12),
-                                                  ),
-                                                ),
-                                              ),
-                                            ]),
+                                              ]),
+                                        ),
                                       );
                                     },
                                   ),

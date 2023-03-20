@@ -1,12 +1,12 @@
-import 'package:bsoc_book/provider/bookmark_provider.dart';
+import 'package:bsoc_book/controller/authen/authen_controller.dart';
+import 'package:bsoc_book/routes/app_pages.dart';
+import 'package:bsoc_book/routes/app_routes.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:provider/provider.dart';
-// import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,23 +15,20 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+  MyApp({Key? key}) : super(key: key);
+  final AuthController authController = Get.put(AuthController());
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => BookmarkProvider(),
-      child: GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'B4U BSOC',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: CheckPage(),
-        // initialRoute: Routes.login,
-        // getPages: PageRoutes.pages,
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'B4U BSOC',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      // home: CheckPage(),
+      initialRoute: Routes.home,
+      getPages: PageRoutes.pages,
     );
   }
 }

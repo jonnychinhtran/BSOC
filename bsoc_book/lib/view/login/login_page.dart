@@ -148,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                               onPressed: () => {
                                 if (_formKey.currentState!.validate())
                                   {
-                                    userdata.write('isLogged', true),
+                                    // userdata.write('isLogged', true),
                                     loginController.loginWithUsername(),
                                   }
                                 else

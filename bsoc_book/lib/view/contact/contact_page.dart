@@ -47,7 +47,7 @@ class _ContactPageState extends State<ContactPage> {
           centerTitle: true,
           title: Text("Thông tin liên hệ"),
         ),
-        drawer: const MenuAside(),
+        // drawer: const MenuAside(),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(14.0),

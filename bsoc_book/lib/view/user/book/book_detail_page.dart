@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:bsoc_book/controller/authen/authen_controller.dart';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/view/downloads/download_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
+import 'package:bsoc_book/view/widgets/alert_dailog.dart';
 import 'package:bsoc_book/view/widgets/charge_book.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +52,7 @@ class DetailBookPage extends StatefulWidget {
 
 class _DetailBookPageState extends State<DetailBookPage>
     with TickerProviderStateMixin {
+  final AuthController authController = Get.find();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   ConnectivityResult connectivity = ConnectivityResult.none;
   bool isLoading = true;
@@ -63,7 +66,7 @@ class _DetailBookPageState extends State<DetailBookPage>
     idbooks = prefs.getString('idbook');
     try {
       var response =
-          await Dio().get('http://103.77.166.202/api/book/${widget.id}',
+          await Dio().get('http://103.77.166.202/api/book/getBook/${widget.id}',
               options: Options(headers: {
                 'Authorization': 'Bearer $token',
               }));
@@ -134,7 +137,6 @@ class _DetailBookPageState extends State<DetailBookPage>
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
                 onPressed: (() {
-                  // Get.to(HomePage());
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => HomePage()),
@@ -157,21 +159,35 @@ class _DetailBookPageState extends State<DetailBookPage>
                 ),
                 IconButton(
                     onPressed: () {
-                      print('id bookmark: ${dataBook!['id'].toString()}');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                BookmarkPage(id: dataBook!['id'].toString())),
-                      );
+                      if (authController.isLoggedIn.value) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  BookmarkPage(id: dataBook!['id'].toString())),
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertPageDialog(),
+                        );
+                      }
                     },
                     icon: Icon(Icons.bookmark_sharp)),
                 IconButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => DownloadPage()),
-                      );
+                      if (authController.isLoggedIn.value) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DownloadPage()),
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertPageDialog(),
+                        );
+                      }
                     },
                     icon: Icon(Icons.download_for_offline))
               ],
@@ -357,15 +373,23 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                     MaterialPageRoute<dynamic>(
                                                         builder: (context) =>
                                                             PdfViewerPage(
-                                                                idb: dataBook![
-                                                                        'id']
+                                                                idb: listReponse![
+                                                                            index]
+                                                                        ['id']
                                                                     .toString())),
+                                                  );
+                                                } else if (authController
+                                                    .isLoggedIn.value) {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        ChargeDialog(),
                                                   );
                                                 } else {
                                                   showDialog(
                                                     context: context,
                                                     builder: (context) =>
-                                                        ChargeDialog(),
+                                                        AlertPageDialog(),
                                                   );
                                                 }
                                               },
@@ -644,7 +668,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
       if (e.isNoConnectionError) {
         Get.snackbar('Opps', 'Mất kết nối mạng, vui lòng thử lại');
       } else {
-        Get.snackbar("error", e.toString());
+        // Get.snackbar("error", e.toString());
         print(e);
         rethrow;
       }
@@ -659,7 +683,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
     idchap = prefs.getInt('idchapter') ?? 0;
     filename = prefs.getString('filePathChapter');
 
-    var url = Uri.parse('http://103.77.166.202/api/chapter/download/$idchap');
+    var url = Uri.parse('http://103.77.166.202/api/chapter/download/${idchap}');
     http.Response response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
       'Accept': 'application/pdf'
@@ -703,18 +727,15 @@ class _PdfViewerPageState extends State<PdfViewerPage>
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () async {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.remove('idchapter');
-            await prefs.remove('sttchapter');
-            await prefs.remove('chapterTitle');
+          onPressed: () {
+            // Navigator.pop(context);
             Navigator.pushAndRemoveUntil<dynamic>(
               context,
               MaterialPageRoute<dynamic>(
                 builder: (BuildContext context) => DetailBookPage(id: idbooks!),
               ),
               (route) =>
-                  false, //if you want to disable back feature set to false
+                  true, //if you want to disable back feature set to false
             );
           },
         ),
@@ -1044,6 +1065,7 @@ class ReviewBook extends StatefulWidget {
 }
 
 class _ReviewBookState extends State<ReviewBook> {
+  final AuthController authController = Get.find();
   bool isLoading = true;
   String? token;
 
@@ -1189,9 +1211,10 @@ class _ReviewBookState extends State<ReviewBook> {
                   ),
                   SizedBox(
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: DialogComment(id: widget.id),
-                    ),
+                        padding: const EdgeInsets.all(16.0),
+                        child: Obx(() => authController.isLoggedIn.value
+                            ? DialogComment(id: widget.id)
+                            : Container())),
                   )
                 ],
               ),

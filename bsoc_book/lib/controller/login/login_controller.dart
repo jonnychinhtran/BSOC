@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 
 class LoginController extends GetxController {
+  final box = GetStorage();
+  RxBool isLoggedIn = false.obs;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -28,15 +31,13 @@ class LoginController extends GetxController {
         var user = json['data']['username'];
         var email = json['data']['email'];
         var idUser = json['data']['id'].toString();
-        print(response.body);
-        // print(token);
+        box.write('isLoggedIn', true);
+        isLoggedIn.value = true;
         final SharedPreferences? prefs = await _prefs;
-
         await prefs?.setString('accessToken', token);
         await prefs?.setString('username', user);
         await prefs?.setString('idInforUser', idUser);
         await prefs?.setString('emailuser', email);
-
         Get.snackbar("Thành công", "Đăng nhập thành công.");
         Get.to(HomePage());
         usernameController.clear();
