@@ -12,11 +12,21 @@ class AlertPageDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Vui lòng đăng nhập để có trải nghiệm tốt hơn',
-            style: TextStyle(
-                fontSize: 17, height: 1.5, fontWeight: FontWeight.w500),
-            textAlign: TextAlign.center,
+          Center(
+            child: Text(
+              'Vui lòng đăng nhập để có',
+              style: TextStyle(
+                  fontSize: 17, height: 1.5, fontWeight: FontWeight.w500),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Center(
+            child: Text(
+              'trải nghiệm tốt hơn',
+              style: TextStyle(
+                  fontSize: 17, height: 1.5, fontWeight: FontWeight.w500),
+              textAlign: TextAlign.center,
+            ),
           ),
           SizedBox(
             height: 10,

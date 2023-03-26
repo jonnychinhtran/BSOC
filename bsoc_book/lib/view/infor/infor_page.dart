@@ -5,6 +5,7 @@ import 'package:bsoc_book/view/contact/contact_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/terms/terms_page.dart';
 import 'package:bsoc_book/view/update/update_infor.dart';
+import 'package:bsoc_book/view/update/uploadavt_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
@@ -145,6 +146,35 @@ class _InforPageState extends State<InforPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(height: size.height * 0.02),
+                            Center(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const UploadAvatar()));
+                                },
+                                child: datauser == null
+                                    ? const CircleAvatar(
+                                        radius: 50.0,
+                                        backgroundImage: AssetImage(
+                                            'assets/images/avatar.png'),
+                                        backgroundColor: Colors.transparent,
+                                      )
+                                    : CircleAvatar(
+                                        radius: 60.0,
+                                        backgroundImage: NetworkImage(
+                                            datauser!['avatar'] == null
+                                                ? 'assets/images/avatar.png'
+                                                : 'http://103.77.166.202' +
+                                                    datauser!['avatar']
+                                                        .toString()),
+                                        backgroundColor: Colors.transparent,
+                                      ),
+                              ),
+                            ),
                             Text(
                               'Thông tin',
                               style:
@@ -423,14 +453,14 @@ class _InforPageState extends State<InforPage> {
                                   );
                                 },
                                 child: Container(
-                                  width: 150,
+                                  width: 190,
                                   height: 50,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50.0),
                                   ),
                                   child: Text(
-                                    'Đăng nhập/đăng ký',
+                                    'Đăng nhập hoặc Đăng ký',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),

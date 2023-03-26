@@ -431,8 +431,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                       true
                                                                   ? Icons
                                                                       .remove_red_eye
-                                                                  : Icons
-                                                                      .lock_sharp,
+                                                                  : Icons.error,
                                                               color: Colors
                                                                   .yellow
                                                                   .shade800,
@@ -486,8 +485,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                               addBookmark();
                                                                               Get.snackbar('Chương: ' + listReponse![index]['chapterTitle'].toString(), "Thêm đánh dấu trang thành công.");
                                                                             },
-                                                                            icon: listReponse![index]['bookmark'] ==
-                                                                                    true
+                                                                            icon: listReponse![index]['bookmark'] == true
                                                                                 ? Icon(
                                                                                     Icons.bookmark_added_sharp,
                                                                                     color: Color.fromARGB(255, 253, 135, 0),
@@ -497,10 +495,11 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                                     color: Color.fromARGB(255, 51, 182, 61),
                                                                                   ))
                                                                         : IconButton(
-                                                                            onPressed:
-                                                                                () {},
-                                                                            icon:
-                                                                                Icon(Icons.lock_person_sharp)),
+                                                                            onPressed: () {},
+                                                                            icon: Icon(
+                                                                              Icons.error,
+                                                                              color: Color.fromARGB(255, 51, 182, 61),
+                                                                            )),
                                                                     listReponse![index]['allow'] ==
                                                                             true
                                                                         ? IconButton(
@@ -555,7 +554,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                             icon: listReponse![index]['downloaded'] == true
                                                                                 ? Icon(Icons.download_sharp, color: Colors.blue)
                                                                                 : Icon(Icons.download_outlined, color: Colors.blue))
-                                                                        : IconButton(onPressed: () {}, icon: Icon(Icons.lock_person_sharp))
+                                                                        : IconButton(onPressed: () {}, icon: Icon(Icons.error, color: Colors.blue))
                                                                   ],
                                                                 ),
                                                               ],
