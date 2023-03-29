@@ -341,230 +341,230 @@ class _DetailBookPageState extends State<DetailBookPage>
                                               : listReponse!.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
-                                            return GestureDetector(
-                                              onTap: () async {
-                                                final SharedPreferences? prefs =
-                                                    await _prefs;
-                                                await prefs?.setInt('idchapter',
-                                                    listReponse?[index]['id']);
-                                                await prefs?.setInt(
-                                                    'sttchapter',
-                                                    listReponse![index]
-                                                        ['chapterId']);
-                                                await prefs?.setString(
-                                                    'titleChapter',
-                                                    listReponse![index]
-                                                            ['chapterTitle']
-                                                        .toString());
-                                                await prefs?.setString(
-                                                    'filePathChapter',
-                                                    listReponse![index]
-                                                            ['filePath']
-                                                        .toString());
-                                                print(
-                                                    'ChapterID Click: ${listReponse![index]['id'].toString()}');
-
-                                                if (listReponse![index]
+                                            return listReponse![index]
                                                         ['allow'] ==
-                                                    true) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute<dynamic>(
-                                                        builder: (context) =>
-                                                            PdfViewerPage(
-                                                                idb: dataBook![
-                                                                        'id']
-                                                                    .toString())),
-                                                  );
-                                                } else if (authController
-                                                    .isLoggedIn.value) {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        ChargeDialog(),
-                                                  );
-                                                } else {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        AlertPageDialog(),
-                                                  );
-                                                }
-                                              },
-                                              child: Card(
-                                                color: Color.fromARGB(
-                                                    255, 255, 255, 255),
-                                                elevation: 10,
-                                                margin: EdgeInsets.all(10),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      10.0),
-                                                  child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Text(
-                                                              'Chương: ' +
-                                                                  listReponse![
-                                                                              index]
-                                                                          [
-                                                                          'chapterId']
-                                                                      .toString() +
-                                                                  ' ',
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .blue
-                                                                    .shade900,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 16,
-                                                              ),
-                                                            ),
-                                                            Icon(
-                                                              listReponse![index]
-                                                                          [
-                                                                          'allow'] ==
-                                                                      true
-                                                                  ? Icons
-                                                                      .remove_red_eye
-                                                                  : Icons.error,
-                                                              color: Colors
-                                                                  .yellow
-                                                                  .shade800,
-                                                              size: 16,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Flexible(
-                                                              child: Column(
+                                                    true
+                                                ? GestureDetector(
+                                                    onTap: () async {
+                                                      final SharedPreferences?
+                                                          prefs = await _prefs;
+                                                      await prefs?.setInt(
+                                                          'idchapter',
+                                                          listReponse?[index]
+                                                              ['id']);
+                                                      await prefs?.setInt(
+                                                          'sttchapter',
+                                                          listReponse![index]
+                                                              ['chapterId']);
+                                                      await prefs?.setString(
+                                                          'titleChapter',
+                                                          listReponse![index][
+                                                                  'chapterTitle']
+                                                              .toString());
+                                                      await prefs?.setString(
+                                                          'filePathChapter',
+                                                          listReponse![index]
+                                                                  ['filePath']
+                                                              .toString());
+                                                      print(
+                                                          'ChapterID Click: ${listReponse![index]['id'].toString()}');
+
+                                                      if (listReponse![index]
+                                                              ['allow'] ==
+                                                          true) {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute<
+                                                                  dynamic>(
+                                                              builder: (context) =>
+                                                                  PdfViewerPage(
+                                                                      idb: dataBook![
+                                                                              'id']
+                                                                          .toString())),
+                                                        );
+                                                      } else if (authController
+                                                          .isLoggedIn.value) {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (context) =>
+                                                              ChargeDialog(),
+                                                        );
+                                                      } else {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (context) =>
+                                                              AlertPageDialog(),
+                                                        );
+                                                      }
+                                                    },
+                                                    child: Card(
+                                                      color: Color.fromARGB(
+                                                          255, 255, 255, 255),
+                                                      elevation: 10,
+                                                      margin:
+                                                          EdgeInsets.all(10),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10.0),
+                                                        child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Row(
                                                                 children: [
                                                                   Text(
-                                                                    listReponse?[
-                                                                            index]
-                                                                        [
-                                                                        'chapterTitle'],
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    maxLines: 2,
-                                                                    softWrap:
-                                                                        false,
+                                                                    'Chương: ' +
+                                                                        listReponse![index]['chapterId']
+                                                                            .toString() +
+                                                                        ' ',
                                                                     style:
                                                                         TextStyle(
                                                                       color: Colors
                                                                           .blue
                                                                           .shade900,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          16,
                                                                     ),
+                                                                  ),
+                                                                  Icon(
+                                                                    listReponse![index]['allow'] ==
+                                                                            true
+                                                                        ? Icons
+                                                                            .remove_red_eye
+                                                                        : Icons
+                                                                            .error,
+                                                                    color: Colors
+                                                                        .yellow
+                                                                        .shade800,
+                                                                    size: 16,
                                                                   ),
                                                                 ],
                                                               ),
-                                                            ),
-                                                            Column(
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    listReponse![index]['allow'] ==
-                                                                            true
-                                                                        ? IconButton(
-                                                                            onPressed:
-                                                                                () async {
-                                                                              final SharedPreferences? prefs = await _prefs;
-                                                                              await prefs?.setString('idchapter', listReponse![index]['id'].toString());
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Flexible(
+                                                                    child:
+                                                                        Column(
+                                                                      children: [
+                                                                        Text(
+                                                                          listReponse?[index]
+                                                                              [
+                                                                              'chapterTitle'],
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          maxLines:
+                                                                              2,
+                                                                          softWrap:
+                                                                              false,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.blue.shade900,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  Column(
+                                                                    children: [
+                                                                      Row(
+                                                                        children: [
+                                                                          listReponse![index]['allow'] == true
+                                                                              ? IconButton(
+                                                                                  onPressed: () async {
+                                                                                    final SharedPreferences? prefs = await _prefs;
+                                                                                    await prefs?.setString('idchapter', listReponse![index]['id'].toString());
 
-                                                                              print('ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                                                    print('ChapterID Click: ${listReponse![index]['id'].toString()}');
 
-                                                                              addBookmark();
-                                                                              Get.snackbar('Chương: ' + listReponse![index]['chapterTitle'].toString(), "Thêm đánh dấu trang thành công.");
-                                                                            },
-                                                                            icon: listReponse![index]['bookmark'] == true
-                                                                                ? Icon(
-                                                                                    Icons.bookmark_added_sharp,
-                                                                                    color: Color.fromARGB(255, 253, 135, 0),
-                                                                                  )
-                                                                                : Icon(
-                                                                                    Icons.bookmark_add_sharp,
+                                                                                    addBookmark();
+                                                                                    Get.snackbar('Chương: ' + listReponse![index]['chapterTitle'].toString(), "Thêm đánh dấu trang thành công.");
+                                                                                  },
+                                                                                  icon: listReponse![index]['bookmark'] == true
+                                                                                      ? Icon(
+                                                                                          Icons.bookmark_added_sharp,
+                                                                                          color: Color.fromARGB(255, 253, 135, 0),
+                                                                                        )
+                                                                                      : Icon(
+                                                                                          Icons.bookmark_add_sharp,
+                                                                                          color: Color.fromARGB(255, 51, 182, 61),
+                                                                                        ))
+                                                                              : IconButton(
+                                                                                  onPressed: () {},
+                                                                                  icon: Icon(
+                                                                                    Icons.error,
                                                                                     color: Color.fromARGB(255, 51, 182, 61),
-                                                                                  ))
-                                                                        : IconButton(
-                                                                            onPressed: () {},
-                                                                            icon: Icon(
-                                                                              Icons.error,
-                                                                              color: Color.fromARGB(255, 51, 182, 61),
-                                                                            )),
-                                                                    listReponse![index]['allow'] ==
-                                                                            true
-                                                                        ? IconButton(
-                                                                            onPressed:
-                                                                                () async {
-                                                                              final SharedPreferences? prefs = await _prefs;
-                                                                              await prefs?.setString('idchapter', listReponse![index]['id'].toString());
-                                                                              await prefs?.setString('filePath', listReponse![index]['filePath'].toString());
-                                                                              print('ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                                                  )),
+                                                                          listReponse![index]['allow'] == true
+                                                                              ? IconButton(
+                                                                                  onPressed: () async {
+                                                                                    final SharedPreferences? prefs = await _prefs;
+                                                                                    await prefs?.setString('idchapter', listReponse![index]['id'].toString());
+                                                                                    await prefs?.setString('filePath', listReponse![index]['filePath'].toString());
+                                                                                    print('ChapterID Click: ${listReponse![index]['id'].toString()}');
 
-                                                                              listReponse![index]['downloaded'] == true
-                                                                                  ? showDialog(
-                                                                                      context: context,
-                                                                                      builder: (context) => AlertDialog(
-                                                                                          title: Text("Thông báo"),
-                                                                                          content: Column(
-                                                                                            mainAxisSize: MainAxisSize.min,
-                                                                                            children: [
-                                                                                              Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
-                                                                                            ],
-                                                                                          ),
-                                                                                          actions: <Widget>[
-                                                                                            TextButton(
-                                                                                              onPressed: () {
-                                                                                                Navigator.pop(context, 'Thoát');
-                                                                                              },
-                                                                                              child: const Text('Thoát'),
-                                                                                            ),
-                                                                                            TextButton(
-                                                                                              onPressed: () {
-                                                                                                showDialog(
-                                                                                                  context: context,
-                                                                                                  useRootNavigator: false,
-                                                                                                  builder: (context) => const DownloadingDialog(),
-                                                                                                );
-                                                                                                // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
-                                                                                              },
-                                                                                              child: const Text('Tải về'),
-                                                                                            ),
-                                                                                          ]),
-                                                                                    )
-                                                                                  : showDialog(
-                                                                                      context: context,
-                                                                                      builder: (context) => const DownloadingDialog(),
-                                                                                    );
-                                                                              setState(() {
-                                                                                getItemBooks();
-                                                                                isLoading = false;
-                                                                              });
-                                                                              isLoading = true;
-                                                                            },
-                                                                            icon: listReponse![index]['downloaded'] == true
-                                                                                ? Icon(Icons.download_sharp, color: Colors.blue)
-                                                                                : Icon(Icons.download_outlined, color: Colors.blue))
-                                                                        : IconButton(onPressed: () {}, icon: Icon(Icons.error, color: Colors.blue))
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ]),
-                                                ),
-                                              ),
-                                            );
+                                                                                    listReponse![index]['downloaded'] == true
+                                                                                        ? showDialog(
+                                                                                            context: context,
+                                                                                            builder: (context) => AlertDialog(
+                                                                                                title: Text("Thông báo"),
+                                                                                                content: Column(
+                                                                                                  mainAxisSize: MainAxisSize.min,
+                                                                                                  children: [
+                                                                                                    Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
+                                                                                                  ],
+                                                                                                ),
+                                                                                                actions: <Widget>[
+                                                                                                  TextButton(
+                                                                                                    onPressed: () {
+                                                                                                      Navigator.pop(context, 'Thoát');
+                                                                                                    },
+                                                                                                    child: const Text('Thoát'),
+                                                                                                  ),
+                                                                                                  TextButton(
+                                                                                                    onPressed: () {
+                                                                                                      showDialog(
+                                                                                                        context: context,
+                                                                                                        useRootNavigator: false,
+                                                                                                        builder: (context) => const DownloadingDialog(),
+                                                                                                      );
+                                                                                                      // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
+                                                                                                    },
+                                                                                                    child: const Text('Tải về'),
+                                                                                                  ),
+                                                                                                ]),
+                                                                                          )
+                                                                                        : showDialog(
+                                                                                            context: context,
+                                                                                            builder: (context) => const DownloadingDialog(),
+                                                                                          );
+                                                                                    setState(() {
+                                                                                      getItemBooks();
+                                                                                      isLoading = false;
+                                                                                    });
+                                                                                    isLoading = true;
+                                                                                  },
+                                                                                  icon: listReponse![index]['downloaded'] == true ? Icon(Icons.download_sharp, color: Colors.blue) : Icon(Icons.download_outlined, color: Colors.blue))
+                                                                              : IconButton(onPressed: () {}, icon: Icon(Icons.error, color: Colors.blue))
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ]),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Container();
                                           }),
                                     ),
                                   ),
@@ -842,58 +842,63 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                       shrinkWrap: true,
                       itemCount: listReponse!.length,
                       itemBuilder: (context, index) {
-                        // if (listReponse!.last != true)
-                        //   return Text(listReponse!.last);
-                        // return SizedBox();
-                        return Container(
-                          margin: EdgeInsets.only(right: 5, left: 5),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                              setState(() {
-                                prefs.setInt(
-                                    'idchapter', listReponse![index]['id']);
-                                prefs.setInt('sttchapter',
-                                    listReponse![index]['chapterId']);
-                                prefs.setString(
-                                    'titleChapter',
-                                    listReponse![index]['chapterTitle']
-                                        .toString());
-                                listReponse![index]['allow'] == true
-                                    ? Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                            builder: (context) => PdfViewerPage(
-                                                idb: dataBook!['id']
-                                                    .toString())))
-                                    : showDialog(
-                                        context: context,
-                                        builder: (context) => ChargeDialog(),
-                                      );
-                              });
-                            },
-                            child: Text(
-                              listReponse![index]['chapterId'].toString(),
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                (Set<MaterialState> states) {
-                                  if (states.contains(MaterialState.pressed))
-                                    return Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.5);
-                                  else if (states
-                                      .contains(MaterialState.disabled))
-                                    return Colors.black;
-                                  return Color.fromARGB(255, 138, 175, 52);
-                                },
-                              ),
-                            ),
-                          ),
-                        );
+                        return listReponse![index]['allow'] == true
+                            ? Container(
+                                margin: EdgeInsets.only(right: 5, left: 5),
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    setState(() {
+                                      prefs.setInt('idchapter',
+                                          listReponse![index]['id']);
+                                      prefs.setInt('sttchapter',
+                                          listReponse![index]['chapterId']);
+                                      prefs.setString(
+                                          'titleChapter',
+                                          listReponse![index]['chapterTitle']
+                                              .toString());
+                                      listReponse![index]['allow'] == true
+                                          ? Navigator.of(context)
+                                              .pushReplacement(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          PdfViewerPage(
+                                                              idb: dataBook![
+                                                                      'id']
+                                                                  .toString())))
+                                          : showDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  ChargeDialog(),
+                                            );
+                                    });
+                                  },
+                                  child: Text(
+                                    listReponse![index]['chapterId'].toString(),
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty
+                                        .resolveWith<Color>(
+                                      (Set<MaterialState> states) {
+                                        if (states
+                                            .contains(MaterialState.pressed))
+                                          return Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                              .withOpacity(0.5);
+                                        else if (states
+                                            .contains(MaterialState.disabled))
+                                          return Colors.black;
+                                        return Color.fromARGB(
+                                            255, 138, 175, 52);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container();
                       },
                     ),
                   )),
@@ -919,10 +924,12 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                                 builder: (context) => PdfViewerPage(
                                     idb: dataBook!['id'].toString())));
                           } else {
-                            showDialog(
-                              context: context,
-                              builder: (context) => ChargeDialog(),
-                            );
+                            listReponse![sttchap!]['allow'] == false
+                                ? Container()
+                                : showDialog(
+                                    context: context,
+                                    builder: (context) => ChargeDialog(),
+                                  );
                           }
                         });
                       },
