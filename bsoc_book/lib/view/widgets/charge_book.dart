@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 
-class ChargeDialog extends StatefulWidget {
+class ChargeDialog extends StatelessWidget {
   ChargeDialog({super.key});
 
-  @override
-  State<ChargeDialog> createState() => _ChargeDialogState();
-}
-
-class _ChargeDialogState extends State<ChargeDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -18,81 +13,95 @@ class _ChargeDialogState extends State<ChargeDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Sách bản quyền của B4U BSOC',
+            'Bạn muốn đọc chương tiếp theo ?',
             style: TextStyle(fontSize: 16, height: 1.5),
           ),
-          Text(
-            'Vui lòng thanh toán để mở khóa.',
-            style: TextStyle(fontSize: 16, height: 1.5),
-          ),
-          Row(
-            children: [
-              Text(
-                'Giá bán: ',
-                style: TextStyle(fontSize: 17, height: 1.5),
-              ),
-              Text(
-                '59.000VNĐ',
-                style: TextStyle(
-                    fontSize: 18,
-                    height: 1.5,
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
+          // Text(
+          //   'Sách bản quyền của B4U BSOC',
+          //   style: TextStyle(fontSize: 16, height: 1.5),
+          // ),
+          // Text(
+          //   'Vui lòng thanh toán để mở khóa.',
+          //   style: TextStyle(fontSize: 16, height: 1.5),
+          // ),
+          // Row(
+          //   children: [
+          //     Text(
+          //       'Giá bán: ',
+          //       style: TextStyle(fontSize: 17, height: 1.5),
+          //     ),
+          //     Text(
+          //       '59.000VNĐ',
+          //       style: TextStyle(
+          //           fontSize: 18,
+          //           height: 1.5,
+          //           color: Colors.red,
+          //           fontWeight: FontWeight.bold),
+          //     ),
+          //   ],
+          // ),
+          // SizedBox(
+          //   height: 10,
+          // ),
+          // Text(
+          //   'Thông tin chuyển khoản',
+          //   style: TextStyle(fontSize: 16, height: 1.5),
+          // ),
+          // Text(
+          //   'Ngân hàng Vietcombank',
+          //   style: TextStyle(
+          //       fontSize: 17,
+          //       fontWeight: FontWeight.bold,
+          //       height: 1.5,
+          //       color: Colors.green.shade800),
+          // ),
+          // Text(
+          //   'Chủ tài khoản: Lê Thị Bích Hòa',
+          //   style: TextStyle(fontSize: 16, height: 1.5),
+          // ),
+          // Text(
+          //   'Số tài khoản: 0071003095741',
+          //   style: TextStyle(fontSize: 16, height: 1.5),
+          // ),
+          // Text(
+          //   'Chi nhánh Kỳ Đồng, Q.3, HCMC ',
+          //   style: TextStyle(fontSize: 16, height: 1.5),
+          // ),
+          // SizedBox(
+          //   height: 10,
+          // ),
+          // Text(
+          //   'Nội dung chuyển khoản:',
+          //   style: TextStyle(
+          //       fontSize: 16, height: 1.5, fontWeight: FontWeight.bold),
+          // ),
+          // Text(
+          //   'USER<Mã Tài khoản> + BOOK<Mã Sách>',
+          //   style: TextStyle(fontSize: 13, height: 1.5),
+          // ),
+          // Text(
+          //   'Ví dụ: USER 3 BOOK 10',
+          //   style: TextStyle(fontSize: 13, height: 1.5),
+          // ),
           SizedBox(
             height: 10,
           ),
+          // Text(
+          //   '*Lưu ý: Mã user trong cài đặt tài khoản, Mã sách trong chi tiết sách',
+          //   style: TextStyle(fontSize: 12.5, height: 1.5, color: Colors.blue),
+          // ),
+          // Text(
+          //   'Mọi thắc mắc vui lòng liên hệ Email: info@b4usolution.com ; Zalo: 0989214285',
+          //   style: TextStyle(
+          //       fontSize: 12, height: 1.5, color: Colors.orange.shade700),
+          // ),
           Text(
-            'Thông tin chuyển khoản',
-            style: TextStyle(fontSize: 16, height: 1.5),
-          ),
-          Text(
-            'Ngân hàng Vietcombank',
+            'Vui lòng liên hệ: info@b4usolution.com',
             style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-                height: 1.5,
-                color: Colors.green.shade800),
+                fontSize: 12, height: 1.5, color: Colors.orange.shade700),
           ),
           Text(
-            'Chủ tài khoản: Lê Thị Bích Hòa',
-            style: TextStyle(fontSize: 16, height: 1.5),
-          ),
-          Text(
-            'Số tài khoản: 0071003095741',
-            style: TextStyle(fontSize: 16, height: 1.5),
-          ),
-          Text(
-            'Chi nhánh Kỳ Đồng, Q.3, HCMC ',
-            style: TextStyle(fontSize: 16, height: 1.5),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            'Nội dung chuyển khoản:',
-            style: TextStyle(
-                fontSize: 16, height: 1.5, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            'USER<Mã Tài khoản> + BOOK<Mã Sách>',
-            style: TextStyle(fontSize: 13, height: 1.5),
-          ),
-          Text(
-            'Ví dụ: USER 3 BOOK 10',
-            style: TextStyle(fontSize: 13, height: 1.5),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Text(
-            '*Lưu ý: Mã user trong cài đặt tài khoản, Mã sách trong chi tiết sách',
-            style: TextStyle(fontSize: 12.5, height: 1.5, color: Colors.blue),
-          ),
-          Text(
-            'Mọi thắc mắc vui lòng liên hệ Email: info@b4usolution.com ; Zalo: 0989214285',
+            'Zalo: (+84) 0989214285',
             style: TextStyle(
                 fontSize: 12, height: 1.5, color: Colors.orange.shade700),
           ),

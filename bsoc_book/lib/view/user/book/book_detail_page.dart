@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:auto_reload/auto_reload.dart';
+import 'package:bsoc_book/controller/authen/authen_controller.dart';
 import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/view/downloads/download_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
+import 'package:bsoc_book/view/widgets/alert_dailog.dart';
 import 'package:bsoc_book/view/widgets/charge_book.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,7 @@ class DetailBookPage extends StatefulWidget {
 
 class _DetailBookPageState extends State<DetailBookPage>
     with TickerProviderStateMixin {
+  final AuthController authController = Get.find();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   ConnectivityResult connectivity = ConnectivityResult.none;
   bool isLoading = true;
@@ -65,7 +67,7 @@ class _DetailBookPageState extends State<DetailBookPage>
     idbooks = prefs.getString('idbook');
     try {
       var response =
-          await Dio().get('http://103.77.166.202/api/book/${widget.id}',
+          await Dio().get('http://103.77.166.202/api/book/getBook/${widget.id}',
               options: Options(headers: {
                 'Authorization': 'Bearer $token',
               }));
@@ -116,21 +118,9 @@ class _DetailBookPageState extends State<DetailBookPage>
     }
   }
 
-  final _autoRequestManager = AutoRequestManager(minReloadDurationSeconds: 3);
-  late List<RequestStatus> _requestStatuses;
-
   @override
   void initState() {
     getItemBooks();
-
-    _requestStatuses = List.generate(3, (idx) {
-      _autoRequestManager.autoReload(
-        id: idx.toString(),
-        toReload: getItemBooks,
-      );
-      return RequestStatus.error;
-    });
-
     super.initState();
   }
 
@@ -148,11 +138,8 @@ class _DetailBookPageState extends State<DetailBookPage>
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
                 onPressed: (() {
-                  // Get.to(HomePage());
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      (Route<dynamic> route) => false);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePage()));
                 }),
               ),
               actions: [
@@ -171,21 +158,36 @@ class _DetailBookPageState extends State<DetailBookPage>
                 ),
                 IconButton(
                     onPressed: () {
-                      print('id bookmark: ${dataBook!['id'].toString()}');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                BookmarkPage(id: dataBook!['id'].toString())),
-                      );
+                      if (authController.isLoggedIn.value) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  BookmarkPage(id: dataBook!['id'].toString())),
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertPageDialog(),
+                        );
+                      }
                     },
                     icon: Icon(Icons.bookmark_sharp)),
                 IconButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => DownloadPage()),
-                      );
+                      if (authController.isLoggedIn.value) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  DownloadPage(id: dataBook!['id'].toString())),
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertPageDialog(),
+                        );
+                      }
                     },
                     icon: Icon(Icons.download_for_offline))
               ],
@@ -353,224 +355,218 @@ class _DetailBookPageState extends State<DetailBookPage>
                                               : listReponse!.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
-                                            return GestureDetector(
-                                              onTap: () async {
-                                                final SharedPreferences? prefs =
-                                                    await _prefs;
-                                                await prefs?.setInt('idchapter',
-                                                    listReponse![index]['id']);
-                                                await prefs?.setInt(
-                                                    'sttchapter',
-                                                    listReponse![index]
-                                                        ['chapterId']);
-                                                await prefs?.setString(
-                                                    'titleChapter',
-                                                    listReponse![index]
-                                                            ['chapterTitle']
-                                                        .toString());
-                                                await prefs?.setString(
-                                                    'filePathChapter',
-                                                    listReponse![index]
-                                                            ['filePath']
-                                                        .toString());
-                                                print(
-                                                    'ChapterID Click: ${listReponse![index]['id'].toString()}');
-
-                                                if (listReponse![index]
+                                            return listReponse![index]
                                                         ['allow'] ==
-                                                    true) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute<dynamic>(
-                                                        builder: (context) =>
-                                                            PdfViewerPage(
-                                                                idb: dataBook![
-                                                                        'id']
-                                                                    .toString())),
-                                                  );
-                                                } else {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        CouponDialog(),
-                                                  );
-                                                }
-                                              },
-                                              child: Card(
-                                                color: Color.fromARGB(
-                                                    255, 255, 255, 255),
-                                                elevation: 10,
-                                                margin: EdgeInsets.all(10),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      10.0),
-                                                  child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Text(
-                                                              'Chương: ' +
-                                                                  listReponse![
-                                                                              index]
-                                                                          [
-                                                                          'chapterId']
-                                                                      .toString() +
-                                                                  ' ',
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .blue
-                                                                    .shade900,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 16,
-                                                              ),
-                                                            ),
-                                                            Icon(
-                                                              listReponse![index]
-                                                                          [
-                                                                          'allow'] ==
-                                                                      true
-                                                                  ? Icons
-                                                                      .remove_red_eye
-                                                                  : Icons
-                                                                      .lock_sharp,
-                                                              color: Colors
-                                                                  .yellow
-                                                                  .shade800,
-                                                              size: 16,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Flexible(
-                                                              child: Column(
+                                                    true
+                                                ? GestureDetector(
+                                                    onTap: () async {
+                                                      final SharedPreferences?
+                                                          prefs = await _prefs;
+                                                      await prefs?.setInt(
+                                                          'idchapter',
+                                                          listReponse![index]
+                                                              ['id']);
+                                                      await prefs?.setInt(
+                                                          'sttchapter',
+                                                          listReponse![index]
+                                                              ['chapterId']);
+                                                      await prefs?.setString(
+                                                          'titleChapter',
+                                                          listReponse![index][
+                                                                  'chapterTitle']
+                                                              .toString());
+                                                      await prefs?.setString(
+                                                          'filePathChapter',
+                                                          listReponse![index]
+                                                                  ['filePath']
+                                                              .toString());
+                                                      print(
+                                                          'ChapterID Click: ${listReponse![index]['id'].toString()}');
+
+                                                      if (listReponse![index]
+                                                              ['allow'] ==
+                                                          true) {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute<
+                                                                  dynamic>(
+                                                              builder: (context) =>
+                                                                  PdfViewerPage(
+                                                                      idb: dataBook![
+                                                                              'id']
+                                                                          .toString())),
+                                                        );
+                                                      } else {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (context) =>
+                                                              CouponDialog(),
+                                                        );
+                                                      }
+                                                    },
+                                                    child: Card(
+                                                      color: Color.fromARGB(
+                                                          255, 255, 255, 255),
+                                                      elevation: 10,
+                                                      margin:
+                                                          EdgeInsets.all(10),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10.0),
+                                                        child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Row(
                                                                 children: [
                                                                   Text(
-                                                                    listReponse?[
-                                                                            index]
-                                                                        [
-                                                                        'chapterTitle'],
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    maxLines: 2,
-                                                                    softWrap:
-                                                                        false,
+                                                                    'Chương: ' +
+                                                                        listReponse![index]['chapterId']
+                                                                            .toString() +
+                                                                        ' ',
                                                                     style:
                                                                         TextStyle(
                                                                       color: Colors
                                                                           .blue
                                                                           .shade900,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          16,
                                                                     ),
+                                                                  ),
+                                                                  Icon(
+                                                                    listReponse![index]['allow'] ==
+                                                                            true
+                                                                        ? Icons
+                                                                            .remove_red_eye
+                                                                        : Icons
+                                                                            .lock_sharp,
+                                                                    color: Colors
+                                                                        .yellow
+                                                                        .shade800,
+                                                                    size: 16,
                                                                   ),
                                                                 ],
                                                               ),
-                                                            ),
-                                                            Column(
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    listReponse![index]['allow'] ==
-                                                                            true
-                                                                        ? IconButton(
-                                                                            onPressed:
-                                                                                () async {
-                                                                              final SharedPreferences? prefs = await _prefs;
-                                                                              await prefs?.setString('idchapter', listReponse![index]['id'].toString());
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Flexible(
+                                                                    child:
+                                                                        Column(
+                                                                      children: [
+                                                                        Text(
+                                                                          listReponse?[index]
+                                                                              [
+                                                                              'chapterTitle'],
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          maxLines:
+                                                                              2,
+                                                                          softWrap:
+                                                                              false,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.blue.shade900,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  Column(
+                                                                    children: [
+                                                                      Row(
+                                                                        children: [
+                                                                          listReponse![index]['allow'] == true
+                                                                              ? IconButton(
+                                                                                  onPressed: () async {
+                                                                                    final SharedPreferences? prefs = await _prefs;
+                                                                                    await prefs?.setString('idchapter', listReponse![index]['id'].toString());
 
-                                                                              print('ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                                                    print('ChapterID Click: ${listReponse![index]['id'].toString()}');
 
-                                                                              addBookmark();
-                                                                              Get.snackbar('Chương: ' + listReponse![index]['chapterTitle'].toString(), "Thêm đánh dấu trang thành công.");
-                                                                            },
-                                                                            icon: listReponse![index]['bookmark'] ==
-                                                                                    true
-                                                                                ? Icon(
-                                                                                    Icons.bookmark_added_sharp,
-                                                                                    color: Color.fromARGB(255, 253, 135, 0),
-                                                                                  )
-                                                                                : Icon(
-                                                                                    Icons.bookmark_add_sharp,
-                                                                                    color: Color.fromARGB(255, 51, 182, 61),
-                                                                                  ))
-                                                                        : IconButton(
-                                                                            onPressed:
-                                                                                () {},
-                                                                            icon:
-                                                                                Icon(Icons.lock_person_sharp)),
-                                                                    listReponse![index]['allow'] ==
-                                                                            true
-                                                                        ? IconButton(
-                                                                            onPressed:
-                                                                                () async {
-                                                                              final SharedPreferences? prefs = await _prefs;
-                                                                              await prefs?.setString('idchapter', listReponse![index]['id'].toString());
-                                                                              await prefs?.setString('filePath', listReponse![index]['filePath'].toString());
-                                                                              print('ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                                                    addBookmark();
+                                                                                    Get.snackbar('Chương: ' + listReponse![index]['chapterTitle'].toString(), "Thêm đánh dấu trang thành công.");
+                                                                                  },
+                                                                                  icon: listReponse![index]['bookmark'] == true
+                                                                                      ? Icon(
+                                                                                          Icons.bookmark_added_sharp,
+                                                                                          color: Color.fromARGB(255, 253, 135, 0),
+                                                                                        )
+                                                                                      : Icon(
+                                                                                          Icons.bookmark_add_sharp,
+                                                                                          color: Color.fromARGB(255, 51, 182, 61),
+                                                                                        ))
+                                                                              : IconButton(onPressed: () {}, icon: Icon(Icons.lock_person_sharp)),
+                                                                          listReponse![index]['allow'] == true
+                                                                              ? IconButton(
+                                                                                  onPressed: () async {
+                                                                                    final SharedPreferences? prefs = await _prefs;
+                                                                                    await prefs?.setString('idchapter', listReponse![index]['id'].toString());
+                                                                                    await prefs?.setString('filePath', listReponse![index]['filePath'].toString());
+                                                                                    print('ChapterID Click: ${listReponse![index]['id'].toString()}');
 
-                                                                              listReponse![index]['downloaded'] == true
-                                                                                  ? showDialog(
-                                                                                      context: context,
-                                                                                      builder: (context) => AlertDialog(
-                                                                                          title: Text("Thông báo"),
-                                                                                          content: Column(
-                                                                                            mainAxisSize: MainAxisSize.min,
-                                                                                            children: [
-                                                                                              Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
-                                                                                            ],
-                                                                                          ),
-                                                                                          actions: <Widget>[
-                                                                                            TextButton(
-                                                                                              onPressed: () {
-                                                                                                Navigator.pop(context, 'Thoát');
-                                                                                              },
-                                                                                              child: const Text('Thoát'),
-                                                                                            ),
-                                                                                            TextButton(
-                                                                                              onPressed: () {
-                                                                                                showDialog(
-                                                                                                  context: context,
-                                                                                                  useRootNavigator: false,
-                                                                                                  builder: (context) => const DownloadingDialog(),
-                                                                                                );
-                                                                                                // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
-                                                                                              },
-                                                                                              child: const Text('Tải về'),
-                                                                                            ),
-                                                                                          ]),
-                                                                                    )
-                                                                                  : showDialog(
-                                                                                      context: context,
-                                                                                      builder: (context) => const DownloadingDialog(),
-                                                                                    );
-                                                                              setState(() {
-                                                                                getItemBooks();
-                                                                                isLoading = false;
-                                                                              });
-                                                                              isLoading = true;
-                                                                            },
-                                                                            icon: listReponse![index]['downloaded'] == true
-                                                                                ? Icon(Icons.download_sharp, color: Colors.blue)
-                                                                                : Icon(Icons.download_outlined, color: Colors.blue))
-                                                                        : IconButton(onPressed: () {}, icon: Icon(Icons.lock_person_sharp))
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ]),
-                                                ),
-                                              ),
-                                            );
+                                                                                    listReponse![index]['downloaded'] == true
+                                                                                        ? showDialog(
+                                                                                            context: context,
+                                                                                            builder: (context) => AlertDialog(
+                                                                                                title: Text("Thông báo"),
+                                                                                                content: Column(
+                                                                                                  mainAxisSize: MainAxisSize.min,
+                                                                                                  children: [
+                                                                                                    Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
+                                                                                                  ],
+                                                                                                ),
+                                                                                                actions: <Widget>[
+                                                                                                  TextButton(
+                                                                                                    onPressed: () {
+                                                                                                      Navigator.pop(context, 'Thoát');
+                                                                                                    },
+                                                                                                    child: const Text('Thoát'),
+                                                                                                  ),
+                                                                                                  TextButton(
+                                                                                                    onPressed: () {
+                                                                                                      showDialog(
+                                                                                                        context: context,
+                                                                                                        useRootNavigator: false,
+                                                                                                        builder: (context) => const DownloadingDialog(),
+                                                                                                      );
+                                                                                                      // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
+                                                                                                    },
+                                                                                                    child: const Text('Tải về'),
+                                                                                                  ),
+                                                                                                ]),
+                                                                                          )
+                                                                                        : showDialog(
+                                                                                            context: context,
+                                                                                            builder: (context) => const DownloadingDialog(),
+                                                                                          );
+                                                                                    setState(() {
+                                                                                      getItemBooks();
+                                                                                      isLoading = false;
+                                                                                    });
+                                                                                    isLoading = true;
+                                                                                  },
+                                                                                  icon: listReponse![index]['downloaded'] == true ? Icon(Icons.download_sharp, color: Colors.blue) : Icon(Icons.download_outlined, color: Colors.blue))
+                                                                              : IconButton(onPressed: () {}, icon: Icon(Icons.lock_person_sharp))
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ]),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Container();
                                           }),
                                     ),
                                   ),
@@ -648,7 +644,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
       sttchap = prefs.getInt('sttchapter') ?? 0;
       titleChapter = prefs.getString('titleChapter');
       var response =
-          await Dio().get('http://103.77.166.202/api/book/${widget.idb}',
+          await Dio().get('http://103.77.166.202/api/book/' + widget.idb,
               options: Options(headers: {
                 'Authorization': 'Bearer $token',
               }));
@@ -671,7 +667,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
       if (e.isNoConnectionError) {
         Get.snackbar('Opps', 'Mất kết nối mạng, vui lòng thử lại');
       } else {
-        Get.snackbar("error", e.toString());
+        // Get.snackbar("error", e.toString());
         print(e);
         rethrow;
       }
@@ -730,19 +726,11 @@ class _PdfViewerPageState extends State<PdfViewerPage>
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () async {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.remove('idchapter');
-            await prefs.remove('sttchapter');
-            await prefs.remove('chapterTitle');
-            Navigator.pushAndRemoveUntil<dynamic>(
-              context,
-              MaterialPageRoute<dynamic>(
-                builder: (BuildContext context) => DetailBookPage(id: idbooks!),
-              ),
-              (route) =>
-                  false, //if you want to disable back feature set to false
-            );
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DetailBookPage(id: widget.idb)));
           },
         ),
       ),
@@ -933,10 +921,12 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                                 builder: (context) => PdfViewerPage(
                                     idb: dataBook!['id'].toString())));
                           } else {
-                            showDialog(
-                              context: context,
-                              builder: (context) => ChargeDialog(),
-                            );
+                            listReponse![sttchap!]['allow'] == false
+                                ? Container()
+                                : showDialog(
+                                    context: context,
+                                    builder: (context) => ChargeDialog(),
+                                  );
                           }
                         });
                       },
@@ -1071,10 +1061,9 @@ class ReviewBook extends StatefulWidget {
 }
 
 class _ReviewBookState extends State<ReviewBook> {
-  final _autoRequestManager = AutoRequestManager(minReloadDurationSeconds: 1);
+  final AuthController authController = Get.find();
   bool isLoading = true;
   String? token;
-  late List<RequestReview> _requestReview;
 
   Future<void> getComment() async {
     try {
@@ -1124,18 +1113,9 @@ class _ReviewBookState extends State<ReviewBook> {
 
   @override
   void initState() {
-    getComment();
-    callback();
-
-    _requestReview = List.generate(1, (idx) {
-      _autoRequestManager.autoReload(
-        id: idx.toString(),
-        toReload: getComment,
-      );
-      return RequestReview.error;
-    });
-
     super.initState();
+    callback();
+    getComment();
   }
 
   @override
@@ -1227,9 +1207,10 @@ class _ReviewBookState extends State<ReviewBook> {
                   ),
                   SizedBox(
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: DialogComment(id: widget.id),
-                    ),
+                        padding: const EdgeInsets.all(16.0),
+                        child: Obx(() => authController.isLoggedIn.value
+                            ? DialogComment(id: widget.id)
+                            : Container())),
                   )
                 ],
               ),

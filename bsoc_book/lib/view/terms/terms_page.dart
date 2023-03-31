@@ -13,7 +13,7 @@ class TermsPage extends StatelessWidget {
         centerTitle: true,
         title: Text('Điều khoản sử dụng'),
       ),
-      drawer: MenuAside(),
+      // drawer: MenuAside(),
       body: SafeArea(
           child: Padding(
         padding: EdgeInsets.all(16.0),

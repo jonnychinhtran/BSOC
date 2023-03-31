@@ -1,19 +1,31 @@
-import 'dart:convert';
 import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:flutter/material.dart';
 
-class LoginController extends GetxController {
-  final box = GetStorage();
+class AuthController extends GetxController {
   RxBool isLoggedIn = false.obs;
+  final box = GetStorage();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  Future<void> loginWithUsername() async {
+
+  @override
+  void onInit() {
+    super.onInit();
+    checkIsLoggedIn();
+  }
+
+  void checkIsLoggedIn() {
+    bool loggedIn = box.read('isLoggedIn') ?? false;
+    isLoggedIn.value = loggedIn;
+  }
+
+  void login(String username, String password) async {
     var headers = {'content-type': 'application/json'};
     try {
       var url = Uri.parse(
@@ -49,5 +61,12 @@ class LoginController extends GetxController {
       Get.snackbar("Lỗi đăng nhập", "Tên đăng nhập hoặc mật khẩu không đúng");
       print(e);
     }
+  }
+
+  void logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken');
+    box.write('isLoggedIn', false);
+    isLoggedIn.value = false;
   }
 }

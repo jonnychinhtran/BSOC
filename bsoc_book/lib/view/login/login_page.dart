@@ -1,3 +1,4 @@
+import 'package:bsoc_book/controller/authen/authen_controller.dart';
 import 'package:bsoc_book/controller/login/login_controller.dart';
 import 'package:bsoc_book/view/register/register_page.dart';
 import 'package:bsoc_book/view/resetpassword/reset_pass_page.dart';
@@ -16,7 +17,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   LoginController loginController = Get.put(LoginController());
+  final AuthController authController = Get.put(AuthController());
   final userdata = GetStorage();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       TextFormField(
-                        controller: loginController.usernameController,
+                        controller: authController.usernameController,
                         validator: (value) {
                           return (value == null || value.isEmpty)
                               ? 'Vui lòng nhập tên đăng nhập'
@@ -105,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       TextFormField(
                         obscureText: true,
-                        controller: loginController.passwordController,
+                        controller: authController.passwordController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Vui lòng nhập mật khẩu";
@@ -148,8 +152,12 @@ class _LoginPageState extends State<LoginPage> {
                               onPressed: () => {
                                 if (_formKey.currentState!.validate())
                                   {
-                                    userdata.write('isLogged', true),
-                                    loginController.loginWithUsername(),
+                                    // userdata.write('isLogged', true),
+                                    // loginController.loginWithUsername(),
+                                    authController.login(
+                                      _usernameController.text,
+                                      _passwordController.text,
+                                    )
                                   }
                                 else
                                   {

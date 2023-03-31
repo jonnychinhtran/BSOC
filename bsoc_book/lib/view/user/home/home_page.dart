@@ -1,8 +1,13 @@
 import 'dart:async';
-import 'package:auto_reload/auto_reload.dart';
+import 'dart:convert';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
 import 'package:bsoc_book/data/network/api_question.dart';
+import 'package:bsoc_book/data/model/bookmark/bookmark_model.dart';
+import 'package:bsoc_book/data/model/books/allbook_model.dart';
+import 'package:bsoc_book/data/model/books/book_model.dart';
+import 'package:bsoc_book/data/model/books/topbook_model.dart';
+import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/quiz/practice.dart';
 import 'package:bsoc_book/view/quiz/quiz.dart';
@@ -20,11 +25,8 @@ import 'package:new_version/new_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media_flutter/social_media_flutter.dart';
 
-String? demo;
-Map? mapDemo;
-Map? demoReponse;
-List? listReponse;
-List? listTop;
+Map? databook;
+List? bookList;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -35,86 +37,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ConnectivityResult connectivity = ConnectivityResult.none;
+  List<AllBookModel> listbook = [];
+  List<TopbookModel> topbook = [];
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
 
   int? _noOfQuestions;
-
-  Future<void> getAllBooks() async {
-    String? token;
-
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      token = prefs.getString('accessToken');
-      var response = await Dio().get('http://103.77.166.202/api/book/all-book',
-          options: Options(headers: {
-            'Authorization': 'Bearer $token',
-          }));
-      if (response.statusCode == 200) {
-        mapDemo = response.data;
-        listReponse = mapDemo!['content'];
-        setState(() {
-          isLoading = false;
-        });
-      } else if (response.statusCode == 401 || response.statusCode == 403) {
-        Get.offAll(LoginPage());
-      }
-      print("res: ${response.data}");
-    } on DioError catch (e) {
-      if (e.isNoConnectionError) {
-        // Get.dialog(DialogError());
-      } else {
-        // Get.snackbar("error", e.toString());
-        print(e);
-        rethrow;
-      }
-    }
-  }
-
-  Future<void> getTopBook() async {
-    String? token;
-
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      token = prefs.getString('accessToken');
-      var response = await Dio().get('http://103.77.166.202/api/book/top-book',
-          options: Options(headers: {
-            'Authorization': 'Bearer $token',
-          }));
-      if (response.statusCode == 200) {
-        setState(() {
-          listTop = response.data;
-          print('topbok: $listTop ');
-          isLoading = false;
-        });
-      } else if (response.statusCode == 401 || response.statusCode == 403) {
-        Get.offAll(LoginPage());
-      }
-      print("res: ${response.data}");
-    } on DioError catch (e) {
-      if (e.isNoConnectionError) {
-        // Get.dialog(DialogError());
-      } else {
-        // Get.snackbar("error", e.toString());
-        print(e);
-        rethrow;
-      }
-    }
-  }
-
-  Future<String> getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('accessToken') ?? '';
-  }
-
-  Future<void> callback() async {
-    if (connectivity == ConnectivityResult.none) {
-      isLoading = true;
-    } else {
-      getAllBooks();
-      getTopBook();
-    }
-  }
 
   @override
   void initState() {
@@ -152,6 +80,81 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> getAllBooks() async {
+    String? token;
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      var response = await Dio().get('http://103.77.166.202/api/book/all-book',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['content'];
+        setState(() {
+          listbook = data.map((json) => AllBookModel.fromJson(json)).toList();
+          isLoading = false;
+        });
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        Get.offAll(LoginPage());
+      }
+      print("res: ${response.data}");
+    } on DioError catch (e) {
+      if (e.isNoConnectionError) {
+        // Get.dialog(DialogError());
+      } else {
+        Get.snackbar("error", e.toString());
+        print(e);
+        rethrow;
+      }
+    }
+  }
+
+  Future<void> getTopBook() async {
+    String? token;
+
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      var response = await Dio().get('http://103.77.166.202/api/book/top-book',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }));
+      if (response.statusCode == 200) {
+        List<dynamic> data = response.data;
+        setState(() {
+          topbook = data.map((json) => TopbookModel.fromJson(json)).toList();
+          isLoading = false;
+        });
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        Get.offAll(LoginPage());
+      }
+      print("res: ${response.data}");
+    } on DioError catch (e) {
+      if (e.isNoConnectionError) {
+        // Get.dialog(DialogError());
+      } else {
+        Get.snackbar("error", e.toString());
+        print(e);
+        rethrow;
+      }
+    }
+  }
+
+  Future<String> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('accessToken') ?? '';
+  }
+
+  Future<void> callback() async {
+    if (connectivity == ConnectivityResult.none) {
+      isLoading = true;
+    } else {
+      getAllBooks();
+      getTopBook();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -162,22 +165,22 @@ class _HomePageState extends State<HomePage> {
         child: Scaffold(
           drawer: MenuAside(),
           appBar: AppBar(
-            backgroundColor: Color.fromARGB(255, 138, 175, 52),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
             centerTitle: true,
-            title: const Text('B4U BSOC'),
+            title: const Text(
+              'B4U BSOC',
+              style: TextStyle(color: Colors.black),
+            ),
+            leading: IconButton(
+              icon: Icon(Icons.person_outline_rounded),
+              color: Colors.black,
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => InforPage()));
+              },
+            ),
             actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SearchPage()));
-                },
-              ),
               Theme(
                   data: Theme.of(context).copyWith(
                     dividerColor: Colors.white,
@@ -295,7 +298,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 );
               },
-              child: isLoading
+              child: isLoading && topbook.length == 0
                   ? Center(
                       child: LoadingAnimationWidget.discreteCircle(
                       color: Color.fromARGB(255, 138, 175, 52),
@@ -313,6 +316,39 @@ class _HomePageState extends State<HomePage> {
                           physics: ScrollPhysics(),
                           child: Column(
                             children: [
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Container(
+                                  height: 40,
+                                  child: TextField(
+                                    showCursor: true,
+                                    readOnly: true,
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SearchPage()));
+                                    },
+                                    decoration: InputDecoration(
+                                      hintText: "Tìm kiếm sách",
+                                      fillColor: Colors.grey[300],
+                                      filled: true,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 6, horizontal: 12),
+                                      prefixIcon: Icon(
+                                        Icons.search,
+                                        color: Colors.grey,
+                                      ),
+                                      focusedBorder: InputBorder.none,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20.0)),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                               SizedBox(height: size.height * 0.02),
                               Padding(
                                 padding: const EdgeInsets.only(left: 13.0),
@@ -333,40 +369,30 @@ class _HomePageState extends State<HomePage> {
                                 child: ListView.builder(
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
-                                    itemCount:
-                                        listTop == null ? 0 : listTop!.length,
+                                    itemCount: topbook.length,
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       return Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: GestureDetector(
-                                          onTap: () async {
-                                            final SharedPreferences? prefs =
-                                                await _prefs;
-                                            await prefs?.setString(
-                                                'idbook',
-                                                listTop![index]['id']
-                                                    .toString());
-
-                                            print(
-                                                'idBook: ${listTop![index]['id'].toString()}');
-
+                                          onTap: () {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         DetailBookPage(
-                                                            id: listTop![index]
-                                                                    ['id']
+                                                            id: topbook[index]
+                                                                .id
                                                                 .toString())));
                                           },
                                           child: SizedBox(
                                             child: Image.network(
-                                                listTop![index]['image'] == null
+                                                topbook[index].image == null
                                                     ? "Đang tải..."
                                                     : 'http://103.77.166.202' +
-                                                        listTop![index]
-                                                            ['image']),
+                                                        topbook[index]
+                                                            .image
+                                                            .toString()),
                                           ),
                                         ),
                                       );
@@ -812,15 +838,14 @@ class _HomePageState extends State<HomePage> {
                                   child: GridView.builder(
                                     physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
-                                    itemCount: listReponse == null
-                                        ? 0
-                                        : listReponse!.length,
+                                    itemCount: listbook.length,
                                     gridDelegate:
                                         SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 2,
-                                            childAspectRatio: 2 / 3.7),
+                                            childAspectRatio: 2 / 3.3),
                                     itemBuilder:
                                         (BuildContext context, int index) {
+                                      final book = listbook[index];
                                       return InkWell(
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
@@ -832,27 +857,13 @@ class _HomePageState extends State<HomePage> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 GestureDetector(
-                                                  onTap: () async {
-                                                    listReponse![index]['id']
-                                                        .toString();
-                                                    final SharedPreferences?
-                                                        prefs = await _prefs;
-                                                    await prefs?.setString(
-                                                        'idbook',
-                                                        listReponse![index]
-                                                                ['id']
-                                                            .toString());
-
-                                                    print(
-                                                        'idBook: ${listReponse![index]['id'].toString()}');
+                                                  onTap: () {
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
                                                             builder: (context) =>
                                                                 DetailBookPage(
-                                                                    id: listReponse![index]
-                                                                            [
-                                                                            'id']
+                                                                    id: book.id
                                                                         .toString())));
                                                   },
                                                   child: Container(
@@ -863,16 +874,11 @@ class _HomePageState extends State<HomePage> {
                                                             fit: BoxFit
                                                                 .fitHeight,
                                                             image: NetworkImage(
-                                                              listReponse?[index]
-                                                                          [
-                                                                          'image'] ==
-                                                                      null
+                                                              book.image == null
                                                                   ? "Đang tải..."
                                                                   : 'http://103.77.166.202' +
-                                                                      listReponse?[
-                                                                              index]
-                                                                          [
-                                                                          'image'],
+                                                                      book.image
+                                                                          .toString(),
                                                             ))),
                                                   ),
                                                 ),
@@ -880,15 +886,13 @@ class _HomePageState extends State<HomePage> {
                                                     height: size.height * 0.02),
                                                 Container(
                                                   child: Text(
-                                                    listReponse?[index]
-                                                                ['bookName'] ==
-                                                            null
+                                                    book.bookName == null
                                                         ? "Đang tải..."
-                                                        : listReponse?[index]
-                                                            ['bookName'],
+                                                        : book.bookName
+                                                            .toString(),
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    maxLines: 4,
+                                                    maxLines: 2,
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.w600,
@@ -899,13 +903,11 @@ class _HomePageState extends State<HomePage> {
                                                 SizedBox(
                                                     height: size.height * 0.01),
                                                 Text(
-                                                  listReponse?[index]
-                                                              ['author'] ==
-                                                          null
+                                                  book.author == null
                                                       ? "Đang tải..."
                                                       : 'bởi :' +
-                                                          listReponse?[index]
-                                                              ['author'],
+                                                          book.author
+                                                              .toString(),
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   maxLines: 2,

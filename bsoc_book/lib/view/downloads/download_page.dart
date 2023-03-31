@@ -16,7 +16,8 @@ Map? demoReponse;
 List? listReponse;
 
 class DownloadPage extends StatefulWidget {
-  const DownloadPage({super.key});
+  const DownloadPage({super.key, required this.id});
+  final String id;
 
   @override
   State<DownloadPage> createState() => _DownloadPageState();
@@ -30,12 +31,12 @@ class _DownloadPageState extends State<DownloadPage> {
   String? path;
   void getItemBooks() async {
     String? token;
-    String? id;
+    // String? id;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
-    id = prefs.getString('idbook');
+    // id = prefs.getString('idbook');
 
-    var url = Uri.parse('http://103.77.166.202/api/book/$id');
+    var url = Uri.parse('http://103.77.166.202/api/book/${widget.id}');
     http.Response response =
         await http.get(url, headers: {'Authorization': 'Bearer $token'});
 
@@ -61,10 +62,7 @@ class _DownloadPageState extends State<DownloadPage> {
     if (connectivity == ConnectivityResult.none) {
       isLoading = true;
     } else {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => DownloadPage()),
-          (Route<dynamic> route) => false);
+      getItemBooks();
     }
   }
 
@@ -145,72 +143,80 @@ class _DownloadPageState extends State<DownloadPage> {
                 : ListView.builder(
                     itemCount: listReponse == null ? 0 : listReponse!.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () async {
-                          String? namesave;
-                          namesave = listReponse![index]['filePath'].toString();
-                          Directory? dir = Platform.isAndroid
-                              ? await getExternalStorageDirectory()
-                              : await getApplicationDocumentsDirectory();
+                      return listReponse![index]['allow'] == true
+                          ? GestureDetector(
+                              onTap: () async {
+                                String? namesave;
+                                namesave =
+                                    listReponse![index]['filePath'].toString();
+                                Directory? dir = Platform.isAndroid
+                                    ? await getExternalStorageDirectory()
+                                    : await getApplicationDocumentsDirectory();
 
-                          listReponse![index]['downloaded'] == true
-                              ? await OpenFilex.open('${dir?.path}/$namesave')
-                              : Get.snackbar("Thông báo",
-                                  "File chưa tải hoặc mất file lưu, vui lòng tải lại");
+                                listReponse![index]['downloaded'] == true
+                                    ? await OpenFilex.open(
+                                        '${dir?.path}/$namesave')
+                                    : Get.snackbar("Thông báo",
+                                        "File chưa tải hoặc mất file lưu, vui lòng tải lại");
 
-                          // showDialog(
-                          //         context: context,
-                          //         builder: (context) => AlertDialog(
-                          //               title: Text("Thông báo"),
-                          //               content: Column(
-                          //                 mainAxisSize: MainAxisSize.min,
-                          //                 children: [
-                          //                   Text(
-                          //                       'Tập tin pdf bị mất hoặc trùng tên vui lòng tải lại trong phần chương sách!')
-                          //                 ],
-                          //               ),
-                          //             ));
-                        },
-                        child: Column(
-                          children: [
-                            ListTile(
-                              title: listReponse![index]['downloaded'] == true
-                                  ? Text(listReponse![index]['filePath']
-                                      .toString())
-                                  : Text(
-                                      listReponse![index]['filePath']
-                                              .toString() +
-                                          '- File chưa tải về',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                              subtitle: listReponse![index]['downloaded'] ==
-                                      true
-                                  ? Text(
-                                      listReponse![index]['chapterTitle']
-                                          .toString(),
-                                      style: TextStyle(
-                                          color:
-                                              Color.fromARGB(255, 255, 91, 91),
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16),
-                                    )
-                                  : Text(
-                                      listReponse![index]['chapterTitle']
-                                          .toString(),
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                            ),
-                            Divider(
-                              height: 2,
-                              endIndent: 0,
-                              color: Color.fromARGB(255, 87, 87, 87),
-                            ),
-                            SizedBox(
-                              height: 10,
+                                // showDialog(
+                                //         context: context,
+                                //         builder: (context) => AlertDialog(
+                                //               title: Text("Thông báo"),
+                                //               content: Column(
+                                //                 mainAxisSize: MainAxisSize.min,
+                                //                 children: [
+                                //                   Text(
+                                //                       'Tập tin pdf bị mất hoặc trùng tên vui lòng tải lại trong phần chương sách!')
+                                //                 ],
+                                //               ),
+                                //             ));
+                              },
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                    title: listReponse![index]['downloaded'] ==
+                                            true
+                                        ? Text(listReponse![index]['filePath']
+                                            .toString())
+                                        : Text(
+                                            listReponse![index]['filePath']
+                                                    .toString() +
+                                                '- File chưa tải về',
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          ),
+                                    subtitle: listReponse![index]
+                                                ['downloaded'] ==
+                                            true
+                                        ? Text(
+                                            listReponse![index]['chapterTitle']
+                                                .toString(),
+                                            style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 255, 91, 91),
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16),
+                                          )
+                                        : Text(
+                                            listReponse![index]['chapterTitle']
+                                                .toString(),
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          ),
+                                  ),
+                                  Divider(
+                                    height: 2,
+                                    endIndent: 0,
+                                    color: Color.fromARGB(255, 87, 87, 87),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  )
+                                ],
+                              ),
                             )
-                          ],
-                        ),
-                      );
+                          : Container();
                     })));
   }
 }
