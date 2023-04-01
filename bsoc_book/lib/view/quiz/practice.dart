@@ -1,8 +1,10 @@
 import 'package:bsoc_book/view/quiz/topic_practice.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
+import 'package:bsoc_book/view/widgets/alert_dailog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
+import 'package:bsoc_book/controller/authen/authen_controller.dart';
 
 class PracticePage extends StatefulWidget {
   const PracticePage({super.key});
@@ -12,6 +14,7 @@ class PracticePage extends StatefulWidget {
 }
 
 class _PracticePageState extends State<PracticePage> {
+  final AuthController authController = Get.find();
   ConnectivityResult connectivity = ConnectivityResult.none;
   bool isLoading = true;
 
@@ -177,7 +180,14 @@ class _PracticePageState extends State<PracticePage> {
                                 IconButton(
                                   iconSize: 75,
                                   onPressed: () {
-                                    Get.to(TopicPracticePage());
+                                    if (authController.isLoggedIn.value) {
+                                      Get.to(TopicPracticePage());
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertPageDialog(),
+                                      );
+                                    }
                                   },
                                   icon: Ink.image(
                                       image:
@@ -186,7 +196,14 @@ class _PracticePageState extends State<PracticePage> {
                                 IconButton(
                                   iconSize: 75,
                                   onPressed: () {
-                                    Get.to(TopicPracticePage());
+                                    if (authController.isLoggedIn.value) {
+                                      Get.to(TopicPracticePage());
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertPageDialog(),
+                                      );
+                                    }
                                   },
                                   icon: Ink.image(
                                       image:
@@ -195,7 +212,14 @@ class _PracticePageState extends State<PracticePage> {
                                 IconButton(
                                   iconSize: 80,
                                   onPressed: () {
-                                    Get.to(TopicPracticePage());
+                                    if (authController.isLoggedIn.value) {
+                                      Get.to(TopicPracticePage());
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertPageDialog(),
+                                      );
+                                    }
                                   },
                                   icon: Ink.image(
                                       image:
