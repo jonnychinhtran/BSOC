@@ -1,10 +1,21 @@
+import 'dart:convert';
+
+import 'package:bsoc_book/controller/quiz/category_controller.dart';
+import 'package:bsoc_book/data/model/quiz/category.dart';
+import 'package:bsoc_book/data/model/quiz/question.dart';
+import 'package:bsoc_book/data/network/api_question.dart';
+import 'package:bsoc_book/view/quiz/quiz.dart';
 import 'package:bsoc_book/view/quiz/topic_practice.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:bsoc_book/view/widgets/alert_dailog.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:bsoc_book/controller/authen/authen_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+String? dropdownValue;
 
 class PracticePage extends StatefulWidget {
   const PracticePage({super.key});
@@ -14,9 +25,12 @@ class PracticePage extends StatefulWidget {
 }
 
 class _PracticePageState extends State<PracticePage> {
+  // final CategoryController categoryController = Get.put(CategoryController());
   final AuthController authController = Get.find();
   ConnectivityResult connectivity = ConnectivityResult.none;
   bool isLoading = true;
+  String? token;
+  int? _noOfQuestions;
 
   Future<void> callback() async {
     if (connectivity == ConnectivityResult.none) {
@@ -29,9 +43,37 @@ class _PracticePageState extends State<PracticePage> {
     }
   }
 
+  List<Category> categoryList = <Category>[];
+
+  Future<void> fetchCategories() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      var response = await Dio().get(
+          'http://103.77.166.202:9999/api/quiz/list-subject',
+          options: Options(headers: {'Authorization': 'Bearer $token'}));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        setState(() {
+          categoryList = data.map((json) => Category.fromJson(json)).toList();
+          print(categoryList);
+          dropdownValue = categoryList[0].id.toString();
+          isLoading = false;
+        });
+      } else {
+        Get.snackbar("Lỗi", "Lấy dữ liệu thất bại. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } catch (e) {
+      Get.snackbar("error", e.toString());
+      print(e);
+    }
+  }
+
   @override
   void initState() {
     callback();
+    fetchCategories();
     super.initState();
   }
 
@@ -125,9 +167,10 @@ class _PracticePageState extends State<PracticePage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(height: size.height * 0.08),
+                        // SizedBox(height: size.height * 0.08),
                         Text(
                           'Favorites of the',
                           style: TextStyle(
@@ -140,7 +183,7 @@ class _PracticePageState extends State<PracticePage> {
                           'B4U',
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 48,
+                              fontSize: 40,
                               fontWeight: FontWeight.w900),
                         ),
                         SizedBox(height: size.height * 0.01),
@@ -148,7 +191,7 @@ class _PracticePageState extends State<PracticePage> {
                           'BSOC APP',
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 48,
+                              fontSize: 40,
                               fontWeight: FontWeight.w900),
                         ),
                         SizedBox(height: size.height * 0.04),
@@ -162,73 +205,53 @@ class _PracticePageState extends State<PracticePage> {
                             )),
                         SizedBox(height: size.height * 0.03),
                         Text(
-                          'CHOOSE THE WAY YOU PLAY:',
+                          'LỰA CHỌN CHỦ ĐỀ:',
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.w800),
                         ),
-                        Container(
-                          height: 150,
-                          child: Card(
-                            elevation: 0.0,
-                            color: Colors.transparent,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  iconSize: 75,
-                                  onPressed: () {
-                                    if (authController.isLoggedIn.value) {
-                                      Get.to(TopicPracticePage());
-                                    } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertPageDialog(),
-                                      );
-                                    }
-                                  },
-                                  icon: Ink.image(
-                                      image:
-                                          AssetImage('assets/images/btn1.png')),
-                                ),
-                                IconButton(
-                                  iconSize: 75,
-                                  onPressed: () {
-                                    if (authController.isLoggedIn.value) {
-                                      Get.to(TopicPracticePage());
-                                    } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertPageDialog(),
-                                      );
-                                    }
-                                  },
-                                  icon: Ink.image(
-                                      image:
-                                          AssetImage('assets/images/btn2.png')),
-                                ),
-                                IconButton(
-                                  iconSize: 80,
-                                  onPressed: () {
-                                    if (authController.isLoggedIn.value) {
-                                      Get.to(TopicPracticePage());
-                                    } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertPageDialog(),
-                                      );
-                                    }
-                                  },
-                                  icon: Ink.image(
-                                      image:
-                                          AssetImage('assets/images/btn3.png')),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
+                        Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: DropdownButton<String>(
+                              value: dropdownValue == null
+                                  ? ""
+                                  : dropdownValue, // create a variable named dropdownValue and set in onChange function
+                              icon: const Icon(Icons.arrow_downward),
+                              iconSize: 24,
+                              elevation: 16,
+                              style: const TextStyle(
+                                  color: Color(0xFF00EE44),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                              underline: Container(
+                                height: 2,
+                                color: Colors.green,
+                              ),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  dropdownValue = newValue!;
+                                });
+                              },
+                              items: categoryList.map<DropdownMenuItem<String>>(
+                                  (Category standard) {
+                                return DropdownMenuItem<String>(
+                                  value: standard.id.toString(),
+                                  child: Text(standard.name.toString()),
+                                );
+                              }).toList(),
+                            )),
+                        SizedBox(height: size.height * 0.01),
+                        ElevatedButton(
+                            onPressed: () async {
+                              _noOfQuestions =
+                                  int.parse(dropdownValue.toString());
+                              print(_noOfQuestions);
+                              List<Question> questions =
+                                  await getQuestions(_noOfQuestions);
+                              Get.to(QuizPage(questions: questions));
+                            },
+                            child: Text('Bắt đầu thi')),
                       ],
                     ),
                   ),

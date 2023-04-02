@@ -44,7 +44,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
     var size = MediaQuery.of(context).size;
     int correct = 0;
     this.widget.answers.forEach((index, value) {
-      if (this.widget.questions[index].correctAnswer == value) correct++;
+      // if (this.widget.questions[index].correctAnswer == value) correct++;
     });
     final TextStyle titleStyle = TextStyle(
         color: Colors.black87, fontSize: 16.0, fontWeight: FontWeight.w500);
@@ -384,15 +384,14 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                         ),
                                       ),
                                       onPressed: () {
-                                        // Navigator.pop(context, 'Không')
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    CheckAnswersPage(
-                                                      questions:
-                                                          widget.questions,
-                                                      answers: widget.answers,
-                                                    )));
+                                        // Navigator.of(context).push(
+                                        //     MaterialPageRoute(
+                                        //         builder: (_) =>
+                                        //             CheckAnswersPage(
+                                        //               questions:
+                                        //                   widget.questions,
+                                        //               answers: widget.answers,
+                                        //             )));
                                       },
                                       child: Text('Kiểm tra lại đáp án'),
                                     ),
