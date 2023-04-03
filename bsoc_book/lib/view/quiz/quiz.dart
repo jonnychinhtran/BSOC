@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
 import 'package:bsoc_book/view/quiz/result_quiz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -8,11 +10,13 @@ import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QuizPage extends StatefulWidget {
   final List<Question> questions;
-  const QuizPage({Key? key, required this.questions}) : super(key: key);
-
+  const QuizPage({Key? key, required this.questions, required this.total})
+      : super(key: key);
+  final int? total;
   @override
   State<QuizPage> createState() => _QuizPageState();
 }
@@ -25,8 +29,35 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   late AnimationController controller;
   bool isLoading = true;
   bool isPlaying = false;
-  // int seconds = 3600;
-  // Timer? timer;
+
+  List<Question> questions = [];
+
+  Future<void> getQuestions() async {
+    String? token;
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+      var response = await Dio().get(
+          'http://103.77.166.202:9999/api/quiz/list-question/${widget.total}',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['listQuestion'];
+        questions = data.map((json) => Question.fromJson(json)).toList();
+        print(questions);
+      }
+      print("res: ${response.data}");
+    } on DioError catch (e) {
+      if (e.isNoConnectionError) {
+        // Get.dialog(DialogError());
+      } else {
+        Get.snackbar("error", e.toString());
+        print(e);
+        rethrow;
+      }
+    }
+  }
 
   double progress = 1.0;
 
@@ -64,30 +95,31 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    getQuestions();
     callback();
     super.initState();
 
     // TÙY CHỈNH THỜI GIAN CÂU HỎI Ở PHẦN DURATION
-    controller = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 180),
-    );
+    // controller = AnimationController(
+    //   vsync: this,
+    //   duration: Duration(seconds: 180),
+    // );
 
-    controller.addListener(() {
-      notify();
-      if (controller.isAnimating) {
-        setState(() {
-          progress = controller.value;
-          // print(progress);
-        });
-      } else {
-        setState(() {
-          progress = 1.0;
-          isPlaying = true;
-        });
-      }
-    });
-    startTimer();
+    // controller.addListener(() {
+    //   notify();
+    //   if (controller.isAnimating) {
+    //     setState(() {
+    //       progress = controller.value;
+    //       // print(progress);
+    //     });
+    //   } else {
+    //     setState(() {
+    //       progress = 1.0;
+    //       isPlaying = true;
+    //     });
+    //   }
+    // });
+    // startTimer();
   }
 
   @override
@@ -99,12 +131,12 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    Question question = widget.questions[_currentIndex];
-    final List<dynamic> options = question.incorrectAnswers!;
-    if (!options.contains(question.correctAnswer)) {
-      options.add(question.correctAnswer);
-      options.shuffle();
-    }
+    // Question question = widget.questions[_currentIndex];
+    // final List<dynamic> options = question.incorrectAnswers!;
+    // if (!options.contains(question.correctAnswer)) {
+    //   options.add(question.correctAnswer);
+    //   options.shuffle();
+    // }
 
     return Scaffold(
         extendBodyBehindAppBar: true,
@@ -188,77 +220,77 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                             fit: BoxFit.cover,
                           ),
                         )),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 200, left: 8.0, right: 16.0),
-                      child: AnimatedBuilder(
-                        animation: controller,
-                        builder: (context, child) => LinearPercentIndicator(
-                          width: 280,
-                          animateFromLastPercent: true,
-                          lineHeight: 20.0,
-                          trailing: Text(
-                            countText,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          percent: progress,
-                          progressColor: Color.fromARGB(244, 193, 255, 114),
-                        ),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(
+                    //       top: 200, left: 8.0, right: 16.0),
+                    //   child: AnimatedBuilder(
+                    //     animation: controller,
+                    //     builder: (context, child) => LinearPercentIndicator(
+                    //       width: 280,
+                    //       animateFromLastPercent: true,
+                    //       lineHeight: 20.0,
+                    //       trailing: Text(
+                    //         countText,
+                    //         style: TextStyle(
+                    //           color: Colors.white,
+                    //           fontSize: 14,
+                    //           fontWeight: FontWeight.w400,
+                    //         ),
+                    //       ),
+                    //       percent: progress,
+                    //       progressColor: Color.fromARGB(244, 193, 255, 114),
+                    //     ),
+                    //   ),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.only(
                           top: 260.0, left: 16.0, right: 16.0, bottom: 16.0),
                       child: Column(
                         children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              CircleAvatar(
-                                backgroundColor: Colors.white70,
-                                child: Text("${_currentIndex + 1}"),
-                              ),
-                              SizedBox(width: 16.0),
-                              Expanded(
-                                child: Text(
-                                  HtmlUnescape().convert(widget
-                                      .questions[_currentIndex].question!),
-                                  softWrap: true,
-                                  style: MediaQuery.of(context).size.width > 800
-                                      ? _questionStyle.copyWith(fontSize: 30.0)
-                                      : _questionStyle,
-                                ),
-                              ),
-                            ],
-                          ),
+                          // Row(
+                          //   children: <Widget>[
+                          //     CircleAvatar(
+                          //       backgroundColor: Colors.white70,
+                          //       child: Text("${_currentIndex + 1}"),
+                          //     ),
+                          //     SizedBox(width: 16.0),
+                          //     Expanded(
+                          //       child: Text(
+                          //         HtmlUnescape().convert(widget
+                          //             .questions[_currentIndex].question!),
+                          //         softWrap: true,
+                          //         style: MediaQuery.of(context).size.width > 800
+                          //             ? _questionStyle.copyWith(fontSize: 30.0)
+                          //             : _questionStyle,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                           SizedBox(height: 20.0),
-                          Card(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ...options.map((option) => RadioListTile(
-                                      title: Text(
-                                        HtmlUnescape().convert("$option"),
-                                        style:
-                                            MediaQuery.of(context).size.width >
-                                                    800
-                                                ? TextStyle(fontSize: 30.0)
-                                                : null,
-                                      ),
-                                      groupValue: _answers[_currentIndex],
-                                      value: option,
-                                      onChanged: (dynamic value) {
-                                        setState(() {
-                                          _answers[_currentIndex] = option;
-                                        });
-                                      },
-                                    )),
-                              ],
-                            ),
-                          ),
+                          // Card(
+                          //   child: Column(
+                          //     mainAxisSize: MainAxisSize.min,
+                          //     children: <Widget>[
+                          //       ...options.map((option) => RadioListTile(
+                          //             title: Text(
+                          //               HtmlUnescape().convert("$option"),
+                          //               style:
+                          //                   MediaQuery.of(context).size.width >
+                          //                           800
+                          //                       ? TextStyle(fontSize: 30.0)
+                          //                       : null,
+                          //             ),
+                          //             groupValue: _answers[_currentIndex],
+                          //             value: option,
+                          //             onChanged: (dynamic value) {
+                          //               setState(() {
+                          //                 _answers[_currentIndex] = option;
+                          //               });
+                          //             },
+                          //           )),
+                          //     ],
+                          //   ),
+                          // ),
                           Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,

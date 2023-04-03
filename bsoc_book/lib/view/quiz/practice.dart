@@ -247,9 +247,12 @@ class _PracticePageState extends State<PracticePage> {
                               _noOfQuestions =
                                   int.parse(dropdownValue.toString());
                               print(_noOfQuestions);
-                              List<Question> questions =
-                                  await getQuestions(_noOfQuestions);
-                              Get.to(QuizPage(questions: questions));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => QuizPage(
+                                          questions: questions,
+                                          total: _noOfQuestions)));
                             },
                             child: Text('Bắt đầu thi')),
                       ],

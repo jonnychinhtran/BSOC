@@ -20,50 +20,50 @@
 //   }
 // }
 
-// class Question {
-//   int? totalQuestion;
-//   int? duration;
-//   List<ListQuestion>? listQuestion;
-
-//   Question({this.totalQuestion, this.duration, this.listQuestion});
-
-//   Question.fromJson(Map<String, dynamic> json) {
-//     totalQuestion = json['totalQuestion'];
-//     duration = json['duration'];
-//     if (json['listQuestion'] != null) {
-//       listQuestion = <ListQuestion>[];
-//       json['listQuestion'].forEach((v) {
-//         listQuestion!.add(new ListQuestion.fromJson(v));
-//       });
-//     }
-//   }
-
-//   Map<String, dynamic> toJson() {
-//     final Map<String, dynamic> data = new Map<String, dynamic>();
-//     data['totalQuestion'] = this.totalQuestion;
-//     data['duration'] = this.duration;
-//     if (this.listQuestion != null) {
-//       data['listQuestion'] = this.listQuestion!.map((v) => v.toJson()).toList();
-//     }
-//     return data;
-//   }
-// }
-// class ListQuestion {
 class Question {
+  int? totalQuestion;
+  int? duration;
+  List<ListQuestion>? listQuestion;
+
+  Question({this.totalQuestion, this.duration, this.listQuestion});
+
+  Question.fromJson(Map<String, dynamic> json) {
+    totalQuestion = json['totalQuestion'];
+    duration = json['duration'];
+    if (json['listQuestion'] != null) {
+      listQuestion = <ListQuestion>[];
+      json['listQuestion'].forEach((v) {
+        listQuestion!.add(new ListQuestion.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['totalQuestion'] = this.totalQuestion;
+    data['duration'] = this.duration;
+    if (this.listQuestion != null) {
+      data['listQuestion'] = this.listQuestion!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class ListQuestion {
   int? id;
   String? content;
   bool? isMultiChoice;
   int? totalAnswer;
   List<Answers>? answers;
 
-  Question(
+  ListQuestion(
       {this.id,
       this.content,
       this.isMultiChoice,
       this.totalAnswer,
       this.answers});
 
-  Question.fromJson(Map<String, dynamic> json) {
+  ListQuestion.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     content = json['content'];
     isMultiChoice = json['isMultiChoice'];
