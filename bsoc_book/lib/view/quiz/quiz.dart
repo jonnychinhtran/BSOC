@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
 import 'package:bsoc_book/view/quiz/result_quiz.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -10,82 +8,46 @@ import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class QuizPage extends StatefulWidget {
   final List<Question> questions;
-  const QuizPage({Key? key, required this.questions, required this.total})
-      : super(key: key);
-  final int? total;
+  const QuizPage({Key? key, required this.questions}) : super(key: key);
+
   @override
   State<QuizPage> createState() => _QuizPageState();
 }
 
-class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
+class _QuizPageState extends State<QuizPage> {
   final TextStyle _questionStyle = TextStyle(
       fontSize: 18.0, fontWeight: FontWeight.w500, color: Colors.white);
 
   ConnectivityResult connectivity = ConnectivityResult.none;
   late AnimationController controller;
   bool isLoading = true;
-  bool isPlaying = false;
 
-  List<Question> questions = [];
-
-  Future<void> getQuestions() async {
-    String? token;
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      token = prefs.getString('accessToken');
-      var response = await Dio().get(
-          'http://103.77.166.202:9999/api/quiz/list-question/${widget.total}',
-          options: Options(headers: {
-            'Authorization': 'Bearer $token',
-          }));
-      if (response.statusCode == 200) {
-        final List<dynamic> data = response.data['listQuestion'];
-        questions = data.map((json) => Question.fromJson(json)).toList();
-        print(questions);
-      }
-      print("res: ${response.data}");
-    } on DioError catch (e) {
-      if (e.isNoConnectionError) {
-        // Get.dialog(DialogError());
-      } else {
-        Get.snackbar("error", e.toString());
-        print(e);
-        rethrow;
-      }
-    }
-  }
-
-  double progress = 1.0;
+  int seconds = 60;
+  Timer? timer;
 
   Future<void> callback() async {
     if (connectivity == ConnectivityResult.none) {
       isLoading = true;
-    } else {}
-  }
-
-  String get countText {
-    Duration count = controller.duration! * controller.value;
-    return controller.isDismissed
-        ? '${controller.duration!.inHours}:${(controller.duration!.inMinutes % 60).toString().padLeft(2, '0')}:${(controller.duration!.inSeconds % 60).toString().padLeft(2, '0')}'
-        : '${count.inHours}:${(count.inMinutes % 60).toString().padLeft(2, '0')}:${(count.inSeconds % 60).toString().padLeft(2, '0')}';
-  }
-
-  void notify() {
-    if (countText == '0:00:00') {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_) =>
-              ResultQuizPage(questions: widget.questions, answers: _answers)));
+    } else {
+      // Navigator.pushAndRemoveUntil(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => QuizPage()),
+      //     (Route<dynamic> route) => false);
     }
   }
 
   startTimer() {
-    controller.reverse(from: controller.value == 0 ? 1.0 : controller.value);
-    setState(() {
-      isPlaying = true;
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (seconds > 0) {
+          seconds--;
+        } else {
+          // gotoNextQuestion();
+        }
+      });
     });
   }
 
@@ -95,48 +57,20 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    getQuestions();
     callback();
     super.initState();
-
-    // TÙY CHỈNH THỜI GIAN CÂU HỎI Ở PHẦN DURATION
-    // controller = AnimationController(
-    //   vsync: this,
-    //   duration: Duration(seconds: 180),
-    // );
-
-    // controller.addListener(() {
-    //   notify();
-    //   if (controller.isAnimating) {
-    //     setState(() {
-    //       progress = controller.value;
-    //       // print(progress);
-    //     });
-    //   } else {
-    //     setState(() {
-    //       progress = 1.0;
-    //       isPlaying = true;
-    //     });
-    //   }
-    // });
     // startTimer();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    // Question question = widget.questions[_currentIndex];
-    // final List<dynamic> options = question.incorrectAnswers!;
-    // if (!options.contains(question.correctAnswer)) {
-    //   options.add(question.correctAnswer);
-    //   options.shuffle();
-    // }
+    Question question = widget.questions[_currentIndex];
+    final List<dynamic> options = question.answers!;
+    if (!options.contains(question.correctAnswer)) {
+      options.add(question.correctAnswer);
+      options.shuffle();
+    }
 
     return Scaffold(
         extendBodyBehindAppBar: true,
@@ -146,6 +80,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
           elevation: 0,
           backgroundColor: Colors.transparent,
           centerTitle: true,
+          // title: Text('Quản lý Coupon'),
           title: Image.asset(
             'assets/images/logo-b4usolution.png',
             fit: BoxFit.contain,
@@ -158,45 +93,33 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
               ConnectivityResult connectivity,
               Widget child,
             ) {
-              final connected = connectivity != ConnectivityResult.none;
-              return Stack(
-                fit: StackFit.expand,
-                children: [
-                  child,
-                  Positioned(
-                    height: 0.0,
-                    left: 0.0,
-                    right: 0.0,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 350),
-                      color: connected
-                          ? const Color(0xFF00EE44)
-                          : const Color(0xFFEE4400),
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 350),
-                        child: connected
-                            ? const Text('ONLINE')
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const <Widget>[
-                                  Text('OFFLINE'),
-                                  SizedBox(width: 8.0),
-                                  SizedBox(
-                                    width: 12.0,
-                                    height: 12.0,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2.0,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                    ),
-                                  ),
-                                ],
-                              ),
+              if (connectivity == ConnectivityResult.none) {
+                return Container(
+                  color: Colors.white70,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/images/wifi.png'),
+                          Text(
+                            'Không có kết nối Internet',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'Vui lòng kiểm tra kết nối internet và thử lại',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              );
+                );
+              } else {
+                return child;
+              }
             },
             child: WillPopScope(
               onWillPop: _onWillPop,
@@ -211,6 +134,14 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                 ),
                 body: Stack(
                   children: <Widget>[
+                    // ClipPath(
+                    //   clipper: WaveClipperTwo(),
+                    //   child: Container(
+                    //     decoration: BoxDecoration(
+                    //         color: Theme.of(context).primaryColor),
+                    //     height: 200,
+                    //   ),
+                    // ),
                     Container(
                         width: double.infinity,
                         height: double.infinity,
@@ -220,77 +151,75 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                             fit: BoxFit.cover,
                           ),
                         )),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(
-                    //       top: 200, left: 8.0, right: 16.0),
-                    //   child: AnimatedBuilder(
-                    //     animation: controller,
-                    //     builder: (context, child) => LinearPercentIndicator(
-                    //       width: 280,
-                    //       animateFromLastPercent: true,
-                    //       lineHeight: 20.0,
-                    //       trailing: Text(
-                    //         countText,
-                    //         style: TextStyle(
-                    //           color: Colors.white,
-                    //           fontSize: 14,
-                    //           fontWeight: FontWeight.w400,
-                    //         ),
-                    //       ),
-                    //       percent: progress,
-                    //       progressColor: Color.fromARGB(244, 193, 255, 114),
-                    //     ),
-                    //   ),
-                    // ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 200, left: 16.0, right: 16.0),
+                      child: new LinearPercentIndicator(
+                        width: 295,
+                        animation: true,
+                        animationDuration: 2000,
+                        lineHeight: 20.0,
+                        trailing: new Text(
+                          "Thời gian",
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        // trailing:  Text("right content"),
+                        percent: 0.2,
+                        // center: Text("20.0%"),
+                        // linearStrokeCap: LinearStrokeCap.butt,
+                        progressColor: Color.fromARGB(244, 193, 255, 114),
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(
                           top: 260.0, left: 16.0, right: 16.0, bottom: 16.0),
                       child: Column(
                         children: <Widget>[
-                          // Row(
-                          //   children: <Widget>[
-                          //     CircleAvatar(
-                          //       backgroundColor: Colors.white70,
-                          //       child: Text("${_currentIndex + 1}"),
-                          //     ),
-                          //     SizedBox(width: 16.0),
-                          //     Expanded(
-                          //       child: Text(
-                          //         HtmlUnescape().convert(widget
-                          //             .questions[_currentIndex].question!),
-                          //         softWrap: true,
-                          //         style: MediaQuery.of(context).size.width > 800
-                          //             ? _questionStyle.copyWith(fontSize: 30.0)
-                          //             : _questionStyle,
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
+                          Row(
+                            children: <Widget>[
+                              CircleAvatar(
+                                backgroundColor: Colors.white70,
+                                child: Text("${_currentIndex + 1}"),
+                              ),
+                              SizedBox(width: 16.0),
+                              Expanded(
+                                child: Text(
+                                  HtmlUnescape().convert(
+                                      widget.questions[_currentIndex].content!),
+                                  softWrap: true,
+                                  style: MediaQuery.of(context).size.width > 800
+                                      ? _questionStyle.copyWith(fontSize: 30.0)
+                                      : _questionStyle,
+                                ),
+                              ),
+                            ],
+                          ),
                           SizedBox(height: 20.0),
-                          // Card(
-                          //   child: Column(
-                          //     mainAxisSize: MainAxisSize.min,
-                          //     children: <Widget>[
-                          //       ...options.map((option) => RadioListTile(
-                          //             title: Text(
-                          //               HtmlUnescape().convert("$option"),
-                          //               style:
-                          //                   MediaQuery.of(context).size.width >
-                          //                           800
-                          //                       ? TextStyle(fontSize: 30.0)
-                          //                       : null,
-                          //             ),
-                          //             groupValue: _answers[_currentIndex],
-                          //             value: option,
-                          //             onChanged: (dynamic value) {
-                          //               setState(() {
-                          //                 _answers[_currentIndex] = option;
-                          //               });
-                          //             },
-                          //           )),
-                          //     ],
-                          //   ),
-                          // ),
+                          Card(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ...options.map((option) => RadioListTile(
+                                      title: Text(
+                                        HtmlUnescape().convert("$option"),
+                                        style:
+                                            MediaQuery.of(context).size.width >
+                                                    800
+                                                ? TextStyle(fontSize: 30.0)
+                                                : null,
+                                      ),
+                                      groupValue: _answers[_currentIndex],
+                                      value: option,
+                                      onChanged: (dynamic value) {
+                                        setState(() {
+                                          _answers[_currentIndex] = option;
+                                        });
+                                      },
+                                    )),
+                              ],
+                            ),
+                          ),
                           Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -360,11 +289,22 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   }
 
   void _backSubmit() {
+    // if (_answers[_currentIndex] == (widget.questions.length + 1)) {
+    //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //     content: Text("You must select an answer to continue."),
+    //   ));
+    //   return;
+    // }
     if (_currentIndex < (widget.questions.length + 1)) {
       setState(() {
         _currentIndex--;
       });
     }
+    // else {
+    // Navigator.of(context).pushReplacement(MaterialPageRoute(
+    //     builder: (_) => ResultQuizPage(
+    //         questions: widget.questions, answers: _answers)));
+    // }
   }
 
   void _nextSubmit() {
@@ -379,10 +319,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
         _currentIndex++;
       });
     } else {
-      controller.reset();
-      setState(() {
-        isPlaying = false;
-      });
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) =>
               ResultQuizPage(questions: widget.questions, answers: _answers)));
