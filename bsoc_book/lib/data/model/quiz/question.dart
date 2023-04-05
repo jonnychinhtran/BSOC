@@ -26,25 +26,3 @@ class Question {
     return data.map((question) => Question.fromMap(question)).toList();
   }
 }
-
-class Answers {
-  int? id;
-  String? content;
-  bool? isCorrect;
-
-  Answers({this.id, this.content, this.isCorrect});
-
-  Answers.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    content = json['content'];
-    isCorrect = json['isCorrect'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['content'] = this.content;
-    data['isCorrect'] = this.isCorrect;
-    return data;
-  }
-}

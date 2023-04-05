@@ -67,10 +67,14 @@ class _QuizPageState extends State<QuizPage> {
     var size = MediaQuery.of(context).size;
     Question question = widget.questions[_currentIndex];
     final List<dynamic> options = question.answers!;
-    if (!options.contains(question.correctAnswer)) {
-      options.add(question.correctAnswer);
-      options.shuffle();
+    List<int> answerlist = [];
+    for (final answerlist in options) {
+      print(answerlist['content']);
     }
+    // if (!options.contains(question.correctAnswer)) {
+    //   options.add(question.correctAnswer);
+    //   options.shuffle();
+    // }
 
     return Scaffold(
         extendBodyBehindAppBar: true,
@@ -93,33 +97,45 @@ class _QuizPageState extends State<QuizPage> {
               ConnectivityResult connectivity,
               Widget child,
             ) {
-              if (connectivity == ConnectivityResult.none) {
-                return Container(
-                  color: Colors.white70,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Image.asset('assets/images/wifi.png'),
-                          Text(
-                            'Không có kết nối Internet',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            'Vui lòng kiểm tra kết nối internet và thử lại',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
+              final connected = connectivity != ConnectivityResult.none;
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  child,
+                  Positioned(
+                    height: 0.0,
+                    left: 0.0,
+                    right: 0.0,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 350),
+                      color: connected
+                          ? const Color(0xFF00EE44)
+                          : const Color(0xFFEE4400),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 350),
+                        child: connected
+                            ? const Text('ONLINE')
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const <Widget>[
+                                  Text('OFFLINE'),
+                                  SizedBox(width: 8.0),
+                                  SizedBox(
+                                    width: 12.0,
+                                    height: 12.0,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.0,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
                   ),
-                );
-              } else {
-                return child;
-              }
+                ],
+              );
             },
             child: WillPopScope(
               onWillPop: _onWillPop,
@@ -155,7 +171,7 @@ class _QuizPageState extends State<QuizPage> {
                       padding: const EdgeInsets.only(
                           top: 200, left: 16.0, right: 16.0),
                       child: new LinearPercentIndicator(
-                        width: 295,
+                        width: 280,
                         animation: true,
                         animationDuration: 2000,
                         lineHeight: 20.0,
@@ -200,9 +216,9 @@ class _QuizPageState extends State<QuizPage> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                ...options.map((option) => RadioListTile(
+                                ...options.map((answerlist) => RadioListTile(
                                       title: Text(
-                                        HtmlUnescape().convert("$option"),
+                                        HtmlUnescape().convert("$answerlist"),
                                         style:
                                             MediaQuery.of(context).size.width >
                                                     800
@@ -210,10 +226,11 @@ class _QuizPageState extends State<QuizPage> {
                                                 : null,
                                       ),
                                       groupValue: _answers[_currentIndex],
-                                      value: option,
+                                      value: answerlist,
                                       onChanged: (dynamic value) {
+                                        print(_answers[_currentIndex]);
                                         setState(() {
-                                          _answers[_currentIndex] = option;
+                                          _answers[_currentIndex] = answerlist;
                                         });
                                       },
                                     )),
