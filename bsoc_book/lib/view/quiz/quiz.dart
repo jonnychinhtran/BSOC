@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:bsoc_book/data/model/quiz/QuestionResult.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
 import 'package:bsoc_book/view/quiz/result_quiz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -8,6 +11,9 @@ import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get_connect/http/src/multipart/form_data.dart';
 
 class QuizPage extends StatefulWidget {
   final List<Question> questions;
@@ -31,12 +37,7 @@ class _QuizPageState extends State<QuizPage> {
   Future<void> callback() async {
     if (connectivity == ConnectivityResult.none) {
       isLoading = true;
-    } else {
-      // Navigator.pushAndRemoveUntil(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => QuizPage()),
-      //     (Route<dynamic> route) => false);
-    }
+    } else {}
   }
 
   startTimer() {
@@ -52,29 +53,37 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   int _currentIndex = 0;
-  final Map<int, dynamic> _answers = {};
+  List<Answers?> _answers = [];
+  List<QuestionResult>? _questionResults = [];
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     callback();
     super.initState();
-    // startTimer();
+    _answers = List<Answers?>.filled(widget.questions.length, null);
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     Question question = widget.questions[_currentIndex];
-    final List<dynamic> options = question.answers!;
-    List<int> answerlist = [];
-    for (final answerlist in options) {
-      print(answerlist['content']);
-    }
-    // if (!options.contains(question.correctAnswer)) {
-    //   options.add(question.correctAnswer);
+    // final List<dynamic> options = question.answers!;
+    final List<Answers>? options = question.answers;
+    // if (options != null) {
+    //   for (final option in options) {
+    //     // print(option.content);
+    //     options.add(question.answers);
+    //     options.shuffle();
+    //   }
+    // }
+    // if (options!.contains(question.answers)) {
+    //   options.add(question.answers);
     //   options.shuffle();
     // }
+    if (options != null && options.contains(question.answers)) {
+      options.addAll(question.answers!);
+    }
 
     return Scaffold(
         extendBodyBehindAppBar: true,
@@ -150,14 +159,6 @@ class _QuizPageState extends State<QuizPage> {
                 ),
                 body: Stack(
                   children: <Widget>[
-                    // ClipPath(
-                    //   clipper: WaveClipperTwo(),
-                    //   child: Container(
-                    //     decoration: BoxDecoration(
-                    //         color: Theme.of(context).primaryColor),
-                    //     height: 200,
-                    //   ),
-                    // ),
                     Container(
                         width: double.infinity,
                         height: double.infinity,
@@ -169,7 +170,7 @@ class _QuizPageState extends State<QuizPage> {
                         )),
                     Padding(
                       padding: const EdgeInsets.only(
-                          top: 200, left: 16.0, right: 16.0),
+                          top: 150, left: 16.0, right: 16.0),
                       child: new LinearPercentIndicator(
                         width: 280,
                         animation: true,
@@ -189,9 +190,9 @@ class _QuizPageState extends State<QuizPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
-                          top: 260.0, left: 16.0, right: 16.0, bottom: 16.0),
-                      child: Column(
-                        children: <Widget>[
+                          top: 200.0, left: 16.0, right: 16.0, bottom: 16.0),
+                      child: SingleChildScrollView(
+                        child: Column(children: [
                           Row(
                             children: <Widget>[
                               CircleAvatar(
@@ -216,48 +217,11 @@ class _QuizPageState extends State<QuizPage> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                ...options.map((answerlist) => RadioListTile(
-                                      title: Text(
-                                        HtmlUnescape().convert("$answerlist"),
-                                        style:
-                                            MediaQuery.of(context).size.width >
-                                                    800
-                                                ? TextStyle(fontSize: 30.0)
-                                                : null,
-                                      ),
-                                      groupValue: _answers[_currentIndex],
-                                      value: answerlist,
-                                      onChanged: (dynamic value) {
-                                        print(_answers[_currentIndex]);
-                                        setState(() {
-                                          _answers[_currentIndex] = answerlist;
-                                        });
-                                      },
-                                    )),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  alignment: Alignment.bottomLeft,
-                                  child: _currentIndex == 0
-                                      ? Container()
-                                      : ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            padding: MediaQuery.of(context)
-                                                        .size
-                                                        .width >
-                                                    800
-                                                ? const EdgeInsets.symmetric(
-                                                    vertical: 20.0,
-                                                    horizontal: 64.0)
-                                                : null,
-                                          ),
-                                          child: Text(
-                                            "Câu trước",
+                                ...options!
+                                    .map((answer) => RadioListTile<Answers>(
+                                          title: Text(
+                                            HtmlUnescape()
+                                                .convert("${answer.content}"),
                                             style: MediaQuery.of(context)
                                                         .size
                                                         .width >
@@ -265,40 +229,77 @@ class _QuizPageState extends State<QuizPage> {
                                                 ? TextStyle(fontSize: 30.0)
                                                 : null,
                                           ),
-                                          onPressed: _backSubmit,
-                                        ),
-                                ),
-                                Container(
-                                  alignment: Alignment.bottomRight,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      padding:
-                                          MediaQuery.of(context).size.width >
+                                          groupValue: _answers[_currentIndex],
+                                          value: answer,
+                                          onChanged: (Answers? value) {
+                                            setState(() {
+                                              _answers[_currentIndex] = value!;
+                                              print(_answers[_currentIndex]);
+                                            });
+                                          },
+                                        )),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                alignment: Alignment.bottomLeft,
+                                child: _currentIndex == 0
+                                    ? Container()
+                                    : ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          padding: MediaQuery.of(context)
+                                                      .size
+                                                      .width >
                                                   800
                                               ? const EdgeInsets.symmetric(
                                                   vertical: 20.0,
                                                   horizontal: 64.0)
                                               : null,
-                                    ),
-                                    child: Text(
-                                      _currentIndex ==
-                                              (widget.questions.length - 1)
-                                          ? "Gửi bài thi"
-                                          : "Câu tiếp theo",
-                                      style: MediaQuery.of(context).size.width >
-                                              800
-                                          ? TextStyle(fontSize: 30.0)
-                                          : null,
-                                    ),
-                                    onPressed: _nextSubmit,
+                                        ),
+                                        child: Text(
+                                          "Câu trước",
+                                          style: MediaQuery.of(context)
+                                                      .size
+                                                      .width >
+                                                  800
+                                              ? TextStyle(fontSize: 30.0)
+                                              : null,
+                                        ),
+                                        onPressed: _backSubmit,
+                                      ),
+                              ),
+                              Container(
+                                alignment: Alignment.bottomRight,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    padding:
+                                        MediaQuery.of(context).size.width > 800
+                                            ? const EdgeInsets.symmetric(
+                                                vertical: 20.0,
+                                                horizontal: 64.0)
+                                            : null,
                                   ),
+                                  child: Text(
+                                    _currentIndex ==
+                                            (widget.questions.length - 1)
+                                        ? "Gửi bài thi"
+                                        : "Câu tiếp theo",
+                                    style:
+                                        MediaQuery.of(context).size.width > 800
+                                            ? TextStyle(fontSize: 30.0)
+                                            : null,
+                                  ),
+                                  onPressed: _nextSubmit,
                                 ),
-                              ],
-                            ),
-                          )
-                        ],
+                              ),
+                            ],
+                          ),
+                        ]),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -324,21 +325,61 @@ class _QuizPageState extends State<QuizPage> {
     // }
   }
 
-  void _nextSubmit() {
+  // void _nextSubmit() {
+  //   if (_answers[_currentIndex] == null) {
+  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //       content: Text("Bạn phải chọn một câu trả lời để tiếp tục."),
+  //     ));
+  //     return;
+  //   }
+  //   if (_currentIndex < (widget.questions.length - 1)) {
+  //     setState(() {
+  //       _currentIndex++;
+  //     });
+  //   } else {
+  //     // Navigator.of(context).pushReplacement(MaterialPageRoute(
+  //     //     builder: (_) =>
+  //     //         ResultQuizPage(questions: widget.questions, answers: _answers)));
+  //   }
+  // }
+
+  void _nextSubmit() async {
     if (_answers[_currentIndex] == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Bạn phải chọn một câu trả lời để tiếp tục."),
       ));
       return;
     }
+
+    final answerId = _answers[_currentIndex]!.id;
+    print(answerId);
+    final questionId = widget.questions[_currentIndex].id;
+    print(questionId);
+    final questionResult =
+        QuestionResult(questionId: questionId, answerId: answerId);
+    _questionResults?.add(questionResult);
+    print(questionResult);
+
     if (_currentIndex < (widget.questions.length - 1)) {
       setState(() {
         _currentIndex++;
       });
     } else {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_) =>
-              ResultQuizPage(questions: widget.questions, answers: _answers)));
+      String? token;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
+
+      var formData =
+          _questionResults?.map((result) => result.toJson()).toList();
+
+      final dio = Dio(); // Create Dio instance
+      final response = await dio.post(
+          'http://103.77.166.202:9999/api/quiz/check-result',
+          options: Options(
+              contentType: 'application/json',
+              headers: {'Authorization': 'Bearer $token'}),
+          data: formData);
+      print(response.data);
     }
   }
 
