@@ -10,6 +10,7 @@ import 'package:bsoc_book/view/widgets/alert_dailog.dart';
 import 'package:bsoc_book/view/widgets/charge_book.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -74,6 +75,7 @@ class _DetailBookPageState extends State<DetailBookPage>
         dataBook = response.data;
         listReponse = dataBook!['chapters'];
         print('ID REVIEW: ${dataBook!['id'].toString()} ');
+        print(listReponse);
         setState(() {
           isLoading = false;
         });
@@ -515,27 +517,27 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                       Row(
                                                                         children: [
                                                                           listReponse![index]['allow'] == true
-                                                                              ? IconButton(
-                                                                                  onPressed: () async {
-                                                                                    final SharedPreferences? prefs = await _prefs;
-                                                                                    await prefs?.setString('idchapter', listReponse![index]['id'].toString());
+                                                                              ? listReponse![index]['chapterId'] != 999
+                                                                                  ? IconButton(
+                                                                                      onPressed: () async {
+                                                                                        final SharedPreferences? prefs = await _prefs;
+                                                                                        await prefs?.setString('idchapter', listReponse![index]['id'].toString());
 
-                                                                                    print('ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                                                        print('ChapterID Click: ${listReponse![index]['id'].toString()}');
 
-                                                                                    addBookmark();
-                                                                                    Get.snackbar('Chương: ' + listReponse![index]['chapterTitle'].toString(), "Thêm đánh dấu trang thành công.");
-                                                                                  },
-                                                                                  icon: listReponse![index]['bookmark'] == true
-                                                                                      ? Icon(
-                                                                                          Icons.bookmark_added_sharp,
-                                                                                          color: Color.fromARGB(255, 253, 135, 0),
-                                                                                        )
-                                                                                      : listReponse![index]['chapterId'] != 999
+                                                                                        addBookmark();
+                                                                                        Get.snackbar('Chương: ' + listReponse![index]['chapterTitle'].toString(), "Thêm đánh dấu trang thành công.");
+                                                                                      },
+                                                                                      icon: listReponse![index]['bookmark'] == true
                                                                                           ? Icon(
+                                                                                              Icons.bookmark_added_sharp,
+                                                                                              color: Color.fromARGB(255, 253, 135, 0),
+                                                                                            )
+                                                                                          : Icon(
                                                                                               Icons.bookmark_add_sharp,
                                                                                               color: Color.fromARGB(255, 51, 182, 61),
-                                                                                            )
-                                                                                          : Container())
+                                                                                            ))
+                                                                                  : Container()
                                                                               : listReponse![index]['chapterId'] != 999
                                                                                   ? IconButton(
                                                                                       onPressed: () {},
@@ -545,61 +547,59 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                                       ))
                                                                                   : Container(),
                                                                           listReponse![index]['allow'] == true
-                                                                              ? IconButton(
-                                                                                  onPressed: () async {
-                                                                                    final SharedPreferences? prefs = await _prefs;
-                                                                                    await prefs?.setString('idchapter', listReponse![index]['id'].toString());
-                                                                                    await prefs?.setString('filePath', listReponse![index]['filePath'].toString());
-                                                                                    print('ChapterID Click: ${listReponse![index]['id'].toString()}');
+                                                                              ? listReponse![index]['chapterId'] != 999
+                                                                                  ? IconButton(
+                                                                                      onPressed: () async {
+                                                                                        final SharedPreferences? prefs = await _prefs;
+                                                                                        await prefs?.setString('idchapter', listReponse![index]['id'].toString());
+                                                                                        await prefs?.setString('filePath', listReponse![index]['filePath'].toString());
+                                                                                        print('ChapterID Click: ${listReponse![index]['id'].toString()}');
 
-                                                                                    listReponse![index]['downloaded'] == true
-                                                                                        ? showDialog(
-                                                                                            context: context,
-                                                                                            builder: (context) => AlertDialog(
-                                                                                                title: Text("Thông báo"),
-                                                                                                content: Column(
-                                                                                                  mainAxisSize: MainAxisSize.min,
-                                                                                                  children: [
-                                                                                                    Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
-                                                                                                  ],
-                                                                                                ),
-                                                                                                actions: <Widget>[
-                                                                                                  TextButton(
-                                                                                                    onPressed: () {
-                                                                                                      Navigator.pop(context, 'Thoát');
-                                                                                                    },
-                                                                                                    child: const Text('Thoát'),
-                                                                                                  ),
-                                                                                                  TextButton(
-                                                                                                    onPressed: () {
-                                                                                                      showDialog(
-                                                                                                        context: context,
-                                                                                                        useRootNavigator: false,
-                                                                                                        builder: (context) => const DownloadingDialog(),
-                                                                                                      );
-                                                                                                      // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
-                                                                                                    },
-                                                                                                    child: const Text('Tải về'),
-                                                                                                  ),
-                                                                                                ]),
-                                                                                          )
-                                                                                        : showDialog(
-                                                                                            context: context,
-                                                                                            builder: (context) => const DownloadingDialog(),
-                                                                                          );
-                                                                                    setState(() {
-                                                                                      getItemBooks();
-                                                                                      isLoading = false;
-                                                                                    });
-                                                                                    isLoading = true;
-                                                                                  },
-                                                                                  icon: listReponse![index]['downloaded'] == true
-                                                                                      ? listReponse![index]['chapterId'] != 999
-                                                                                          ? Icon(Icons.download_sharp, color: Colors.blue)
-                                                                                          : Container()
-                                                                                      : listReponse![index]['chapterId'] != 999
-                                                                                          ? Icon(Icons.download_outlined, color: Colors.blue)
-                                                                                          : Container())
+                                                                                        listReponse![index]['downloaded'] == true
+                                                                                            ? showDialog(
+                                                                                                context: context,
+                                                                                                builder: (context) => AlertDialog(
+                                                                                                    title: Text("Thông báo"),
+                                                                                                    content: Column(
+                                                                                                      mainAxisSize: MainAxisSize.min,
+                                                                                                      children: [
+                                                                                                        Text('Bạn đã tải chương sách, bạn có muốn tải lại không?')
+                                                                                                      ],
+                                                                                                    ),
+                                                                                                    actions: <Widget>[
+                                                                                                      TextButton(
+                                                                                                        onPressed: () {
+                                                                                                          Navigator.pop(context, 'Thoát');
+                                                                                                        },
+                                                                                                        child: const Text('Thoát'),
+                                                                                                      ),
+                                                                                                      TextButton(
+                                                                                                        onPressed: () {
+                                                                                                          showDialog(
+                                                                                                            context: context,
+                                                                                                            useRootNavigator: false,
+                                                                                                            builder: (context) => const DownloadingDialog(),
+                                                                                                          );
+                                                                                                          // Timer(Duration(seconds: 10), () => Navigator.of(context).pop());
+                                                                                                        },
+                                                                                                        child: const Text('Tải về'),
+                                                                                                      ),
+                                                                                                    ]),
+                                                                                              )
+                                                                                            : showDialog(
+                                                                                                context: context,
+                                                                                                builder: (context) => const DownloadingDialog(),
+                                                                                              );
+                                                                                        setState(() {
+                                                                                          getItemBooks();
+                                                                                          isLoading = false;
+                                                                                        });
+                                                                                        isLoading = true;
+                                                                                      },
+                                                                                      icon: listReponse![index]['downloaded'] == true ? Icon(Icons.download_sharp, color: Colors.blue) : Icon(Icons.download_outlined, color: Colors.blue))
+                                                                                  : SizedBox(
+                                                                                      height: 40,
+                                                                                    )
                                                                               : listReponse![index]['chapterId'] != 999
                                                                                   ? IconButton(onPressed: () {}, icon: Icon(Icons.error, color: Colors.blue))
                                                                                   : Container()
@@ -675,7 +675,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
   String? titleChapter;
 
   bool isLoading = true;
-
+  bool shouldNavigate = true;
   String? token;
   int? idchap;
   int? sttchap;
@@ -896,58 +896,64 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                         return listReponse![index]['allow'] == true
                             ? Container(
                                 margin: EdgeInsets.only(right: 5, left: 5),
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    SharedPreferences prefs =
-                                        await SharedPreferences.getInstance();
-                                    setState(() {
-                                      prefs.setInt('idchapter',
-                                          listReponse![index]['id']);
-                                      prefs.setInt('sttchapter',
-                                          listReponse![index]['chapterId']);
-                                      prefs.setString(
-                                          'titleChapter',
-                                          listReponse![index]['chapterTitle']
-                                              .toString());
-                                      listReponse![index]['allow'] == true
-                                          ? Navigator.of(context)
-                                              .pushReplacement(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          PdfViewerPage(
-                                                              idb: dataBook![
-                                                                      'id']
-                                                                  .toString())))
-                                          : showDialog(
-                                              context: context,
-                                              builder: (context) =>
-                                                  ChargeDialog(),
-                                            );
-                                    });
-                                  },
-                                  child: Text(
-                                    listReponse![index]['chapterId'].toString(),
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty
-                                        .resolveWith<Color>(
-                                      (Set<MaterialState> states) {
-                                        if (states
-                                            .contains(MaterialState.pressed))
-                                          return Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                              .withOpacity(0.5);
-                                        else if (states
-                                            .contains(MaterialState.disabled))
-                                          return Colors.black;
-                                        return Color.fromARGB(
-                                            255, 138, 175, 52);
-                                      },
-                                    ),
-                                  ),
-                                ),
+                                child: listReponse![index]['chapterId'] != 999
+                                    ? ElevatedButton(
+                                        onPressed: () async {
+                                          SharedPreferences prefs =
+                                              await SharedPreferences
+                                                  .getInstance();
+                                          setState(() {
+                                            prefs.setInt('idchapter',
+                                                listReponse![index]['id']);
+                                            prefs.setInt(
+                                                'sttchapter',
+                                                listReponse![index]
+                                                    ['chapterId']);
+                                            prefs.setString(
+                                                'titleChapter',
+                                                listReponse![index]
+                                                        ['chapterTitle']
+                                                    .toString());
+                                            listReponse![index]['allow'] == true
+                                                ? Navigator.of(context)
+                                                    .pushReplacement(MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            PdfViewerPage(
+                                                                idb: dataBook![
+                                                                        'id']
+                                                                    .toString())))
+                                                : showDialog(
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        ChargeDialog(),
+                                                  );
+                                          });
+                                        },
+                                        child: Text(
+                                          listReponse![index]['chapterId']
+                                              .toString(),
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        style: ButtonStyle(
+                                          backgroundColor: MaterialStateProperty
+                                              .resolveWith<Color>(
+                                            (Set<MaterialState> states) {
+                                              if (states.contains(
+                                                  MaterialState.pressed))
+                                                return Theme.of(context)
+                                                    .colorScheme
+                                                    .primary
+                                                    .withOpacity(0.5);
+                                              else if (states.contains(
+                                                  MaterialState.disabled))
+                                                return Colors.black;
+                                              return Color.fromARGB(
+                                                  255, 138, 175, 52);
+                                            },
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
                               )
                             : Container();
                       },
@@ -970,7 +976,9 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                               'titleChapter',
                               listReponse![sttchap!]['chapterTitle']
                                   .toString());
-                          if (listReponse![sttchap!]['allow'] == true) {
+                          if (listReponse![sttchap!]['chapterId'] == 999) {
+                            return;
+                          } else if (listReponse![sttchap!]['allow'] == true) {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => PdfViewerPage(
                                     idb: dataBook!['id'].toString())));
