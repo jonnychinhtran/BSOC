@@ -5,11 +5,13 @@ import 'package:html_unescape/html_unescape.dart';
 
 class CheckAnswersPage extends StatelessWidget {
   final List<Question> questions;
-  final Map<int, dynamic> answers;
+  final List<Answers?> answers;
 
-  const CheckAnswersPage(
-      {Key? key, required this.questions, required this.answers})
-      : super(key: key);
+  const CheckAnswersPage({
+    Key? key,
+    required this.questions,
+    required this.answers,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,12 @@ class CheckAnswersPage extends StatelessWidget {
       );
     }
     Question question = questions[index];
-    bool correct = question.correctAnswer == answers[index];
+    bool correct = answers[index]?.isCorrect == true;
+    Answers? selectedAnswer = answers[index];
+
+    // Find the correct answer for the current question
+    Answers? correctAnswer =
+        question.answers?.firstWhere((answer) => answer.isCorrect == true);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -63,20 +70,21 @@ class CheckAnswersPage extends StatelessWidget {
             ),
             SizedBox(height: 5.0),
             Text(
-              HtmlUnescape().convert("${answers[index]}"),
+              HtmlUnescape().convert("${answers[index]?.content}"),
               style: TextStyle(
                   color: correct ? Colors.green : Colors.red,
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 5.0),
-            correct
+            correct || correctAnswer == null
                 ? Container()
                 : Text.rich(
                     TextSpan(children: [
-                      TextSpan(text: "Trả lời: "),
+                      TextSpan(text: "Đáp án đúng: "),
                       TextSpan(
-                          text: HtmlUnescape().convert(question.correctAnswer!),
+                          text: HtmlUnescape()
+                              .convert("${correctAnswer.content}"),
                           style: TextStyle(fontWeight: FontWeight.w500))
                     ]),
                     style: TextStyle(fontSize: 16.0),

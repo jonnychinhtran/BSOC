@@ -354,24 +354,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     // }
   }
 
-  // void _nextSubmit() {
-  //   if (_answers[_currentIndex] == null) {
-  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //       content: Text("Bạn phải chọn một câu trả lời để tiếp tục."),
-  //     ));
-  //     return;
-  //   }
-  //   if (_currentIndex < (widget.questions.length - 1)) {
-  //     setState(() {
-  //       _currentIndex++;
-  //     });
-  //   } else {
-  //     // Navigator.of(context).pushReplacement(MaterialPageRoute(
-  //     //     builder: (_) =>
-  //     //         ResultQuizPage(questions: widget.questions, answers: _answers)));
-  //   }
-  // }
-
   void _nextSubmit() async {
     if (_answers[_currentIndex] == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -410,9 +392,13 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
           data: formData);
       quizResult = response.data;
       print(quizResult);
+
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => ResultQuizPage(
-              questions: widget.questions, quizResult: quizResult)));
+                questions: widget.questions,
+                answers: _answers,
+                quizResult: quizResult,
+              )));
     }
   }
 

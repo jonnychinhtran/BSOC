@@ -8,9 +8,14 @@ import 'package:get/get.dart';
 
 class ResultQuizPage extends StatefulWidget {
   final List<Question> questions;
-  // final List<Answers>? answers;
+  final List<Answers?> answers;
   final Map<String, dynamic>? quizResult;
-  ResultQuizPage({Key? key, required this.questions, this.quizResult})
+
+  ResultQuizPage(
+      {Key? key,
+      required this.questions,
+      required this.answers,
+      this.quizResult})
       : super(key: key);
 
   @override
@@ -349,7 +354,6 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                         ),
                                       ),
                                       onPressed: () {
-                                        // Navigator.pop(context, 'Không')
                                         Get.to(PracticePage());
                                       },
                                       child: Text('Trở về trang chủ'),
@@ -372,14 +376,14 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                         ),
                                       ),
                                       onPressed: () {
-                                        // Navigator.of(context).push(
-                                        //     MaterialPageRoute(
-                                        //         builder: (_) =>
-                                        //             CheckAnswersPage(
-                                        //               questions:
-                                        //                   widget.questions,
-                                        //               answers: widget.answers,
-                                        //             )));
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    CheckAnswersPage(
+                                                      questions:
+                                                          widget.questions,
+                                                      answers: widget.answers,
+                                                    )));
                                       },
                                       child: Text('Kiểm tra lại đáp án'),
                                     ),

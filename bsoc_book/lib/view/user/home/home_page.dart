@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:bsoc_book/controller/authen/authen_controller.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
 import 'package:bsoc_book/data/network/api_question.dart';
@@ -13,6 +14,7 @@ import 'package:bsoc_book/view/quiz/practice.dart';
 import 'package:bsoc_book/view/quiz/quiz.dart';
 import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
+import 'package:bsoc_book/view/widgets/alert_dailog.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:bsoc_book/view/widgets/updatedialog.dart';
 import 'package:dio/dio.dart';
@@ -36,6 +38,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final AuthController authController = Get.find();
   ConnectivityResult connectivity = ConnectivityResult.none;
   List<AllBookModel> listbook = [];
   List<TopbookModel> topbook = [];
@@ -417,11 +420,18 @@ class _HomePageState extends State<HomePage> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: GestureDetector(
                                   onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                PracticePage()));
+                                    if (authController.isLoggedIn.value) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PracticePage()));
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertPageDialog(),
+                                      );
+                                    }
                                   },
                                   child:
                                       Image.asset('assets/images/practice.png'),
