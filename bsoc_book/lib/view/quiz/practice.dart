@@ -254,6 +254,7 @@ class _PracticePageState extends State<PracticePage> {
                                   MaterialPageRoute(
                                       builder: (context) => QuizPage(
                                             questions: questions,
+                                            headquestion: headquestion,
                                           )));
                             },
                             child: Text('Bắt đầu thi')),

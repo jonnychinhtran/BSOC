@@ -22,7 +22,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:bsoc_book/view/widgets/coupon.dart';
 
 String? demo;
 Map? mapDemo;
@@ -198,46 +197,33 @@ class _DetailBookPageState extends State<DetailBookPage>
                 ConnectivityResult connectivity,
                 Widget child,
               ) {
-                final connected = connectivity != ConnectivityResult.none;
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    child,
-                    Positioned(
-                      height: 0.0,
-                      left: 0.0,
-                      right: 0.0,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 350),
-                        color: connected
-                            ? const Color(0xFF00EE44)
-                            : const Color(0xFFEE4400),
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 350),
-                          child: connected
-                              ? const Text('ONLINE')
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const <Widget>[
-                                    Text('OFFLINE'),
-                                    SizedBox(width: 8.0),
-                                    SizedBox(
-                                      width: 12.0,
-                                      height: 12.0,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2.0,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.white),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                if (connectivity == ConnectivityResult.none) {
+                  return Container(
+                    color: Colors.white70,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Image.asset('assets/images/wifi.png'),
+                            Text(
+                              'Không có kết nối Internet',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Vui lòng kiểm tra kết nối internet và thử lại',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                );
+                  );
+                } else {
+                  return child;
+                }
               },
               child: isLoading
                   ? Center(
@@ -355,16 +341,40 @@ class _DetailBookPageState extends State<DetailBookPage>
                                               : listReponse!.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
-                                            return listReponse![index]
-                                                        ['allow'] ==
-                                                    true
-                                                ? GestureDetector(
+                                            bool shouldHide = false;
+                                            if (listReponse![index]
+                                                    ['chapterId'] ==
+                                                999) {
+                                              if (dataBook!['payment'] ==
+                                                  false) {
+                                                shouldHide =
+                                                    false; // show hide the container
+                                              }
+                                              if (dataBook!['payment'] ==
+                                                      true &&
+                                                  listReponse![index]
+                                                          ['allow'] ==
+                                                      true) {
+                                                shouldHide =
+                                                    true; // hide the container
+                                              }
+                                            } else if (listReponse![index]
+                                                ['allow']) {
+                                              shouldHide =
+                                                  false; // show the container
+                                            } else {
+                                              shouldHide =
+                                                  true; // hide the container
+                                            }
+                                            return shouldHide
+                                                ? Container()
+                                                : GestureDetector(
                                                     onTap: () async {
                                                       final SharedPreferences?
                                                           prefs = await _prefs;
                                                       await prefs?.setInt(
                                                           'idchapter',
-                                                          listReponse![index]
+                                                          listReponse?[index]
                                                               ['id']);
                                                       await prefs?.setInt(
                                                           'sttchapter',
@@ -396,11 +406,18 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                               'id']
                                                                           .toString())),
                                                         );
+                                                      } else if (authController
+                                                          .isLoggedIn.value) {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (context) =>
+                                                              ChargeDialog(),
+                                                        );
                                                       } else {
                                                         showDialog(
                                                           context: context,
                                                           builder: (context) =>
-                                                              CouponDialog(),
+                                                              AlertPageDialog(),
                                                         );
                                                       }
                                                     },
@@ -421,30 +438,43 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                             children: [
                                                               Row(
                                                                 children: [
-                                                                  Text(
-                                                                    'Chương: ' +
-                                                                        listReponse![index]['chapterId']
-                                                                            .toString() +
-                                                                        ' ',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .blue
-                                                                          .shade900,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontSize:
-                                                                          16,
-                                                                    ),
-                                                                  ),
+                                                                  listReponse![index]
+                                                                              [
+                                                                              'chapterId'] !=
+                                                                          999
+                                                                      ? Text(
+                                                                          'Chương: ' +
+                                                                              listReponse![index]['chapterId'].toString() +
+                                                                              ' ',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.blue.shade900,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            fontSize:
+                                                                                16,
+                                                                          ),
+                                                                        )
+                                                                      : Text(
+                                                                          'Thông báo',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.blue.shade900,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            fontSize:
+                                                                                16,
+                                                                          ),
+                                                                        ),
                                                                   Icon(
                                                                     listReponse![index]['allow'] ==
                                                                             true
                                                                         ? Icons
                                                                             .remove_red_eye
                                                                         : Icons
-                                                                            .lock_sharp,
+                                                                            .error,
                                                                     color: Colors
                                                                         .yellow
                                                                         .shade800,
@@ -500,11 +530,20 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                                           Icons.bookmark_added_sharp,
                                                                                           color: Color.fromARGB(255, 253, 135, 0),
                                                                                         )
-                                                                                      : Icon(
-                                                                                          Icons.bookmark_add_sharp,
-                                                                                          color: Color.fromARGB(255, 51, 182, 61),
-                                                                                        ))
-                                                                              : IconButton(onPressed: () {}, icon: Icon(Icons.lock_person_sharp)),
+                                                                                      : listReponse![index]['chapterId'] != 999
+                                                                                          ? Icon(
+                                                                                              Icons.bookmark_add_sharp,
+                                                                                              color: Color.fromARGB(255, 51, 182, 61),
+                                                                                            )
+                                                                                          : Container())
+                                                                              : listReponse![index]['chapterId'] != 999
+                                                                                  ? IconButton(
+                                                                                      onPressed: () {},
+                                                                                      icon: Icon(
+                                                                                        Icons.error,
+                                                                                        color: Color.fromARGB(255, 51, 182, 61),
+                                                                                      ))
+                                                                                  : Container(),
                                                                           listReponse![index]['allow'] == true
                                                                               ? IconButton(
                                                                                   onPressed: () async {
@@ -554,8 +593,16 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                                     });
                                                                                     isLoading = true;
                                                                                   },
-                                                                                  icon: listReponse![index]['downloaded'] == true ? Icon(Icons.download_sharp, color: Colors.blue) : Icon(Icons.download_outlined, color: Colors.blue))
-                                                                              : IconButton(onPressed: () {}, icon: Icon(Icons.lock_person_sharp))
+                                                                                  icon: listReponse![index]['downloaded'] == true
+                                                                                      ? listReponse![index]['chapterId'] != 999
+                                                                                          ? Icon(Icons.download_sharp, color: Colors.blue)
+                                                                                          : Container()
+                                                                                      : listReponse![index]['chapterId'] != 999
+                                                                                          ? Icon(Icons.download_outlined, color: Colors.blue)
+                                                                                          : Container())
+                                                                              : listReponse![index]['chapterId'] != 999
+                                                                                  ? IconButton(onPressed: () {}, icon: Icon(Icons.error, color: Colors.blue))
+                                                                                  : Container()
                                                                         ],
                                                                       ),
                                                                     ],
@@ -565,8 +612,8 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                             ]),
                                                       ),
                                                     ),
-                                                  )
-                                                : Container();
+                                                  );
+                                            // : Container();
                                           }),
                                     ),
                                   ),
@@ -682,7 +729,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
     idchap = prefs.getInt('idchapter') ?? 0;
     filename = prefs.getString('filePathChapter');
 
-    var url = Uri.parse('http://103.77.166.202/api/chapter/download/$idchap');
+    var url = Uri.parse('http://103.77.166.202/api/chapter/download/${idchap}');
     http.Response response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
       'Accept': 'application/pdf'
@@ -720,10 +767,12 @@ class _PdfViewerPageState extends State<PdfViewerPage>
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 138, 175, 52),
         centerTitle: true,
-        title: Text(
-          'Chương ' + sttchap.toString() + ': ' + titleChapter.toString(),
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-        ),
+        title: sttchap != 999
+            ? Text(
+                'Chương ' + sttchap.toString() + ': ' + titleChapter.toString(),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              )
+            : Text('Thông báo'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -844,58 +893,63 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                       shrinkWrap: true,
                       itemCount: listReponse!.length,
                       itemBuilder: (context, index) {
-                        // if (listReponse!.last != true)
-                        //   return Text(listReponse!.last);
-                        // return SizedBox();
-                        return Container(
-                          margin: EdgeInsets.only(right: 5, left: 5),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                              setState(() {
-                                prefs.setInt(
-                                    'idchapter', listReponse![index]['id']);
-                                prefs.setInt('sttchapter',
-                                    listReponse![index]['chapterId']);
-                                prefs.setString(
-                                    'titleChapter',
-                                    listReponse![index]['chapterTitle']
-                                        .toString());
-                                listReponse![index]['allow'] == true
-                                    ? Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                            builder: (context) => PdfViewerPage(
-                                                idb: dataBook!['id']
-                                                    .toString())))
-                                    : showDialog(
-                                        context: context,
-                                        builder: (context) => ChargeDialog(),
-                                      );
-                              });
-                            },
-                            child: Text(
-                              listReponse![index]['chapterId'].toString(),
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                (Set<MaterialState> states) {
-                                  if (states.contains(MaterialState.pressed))
-                                    return Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.5);
-                                  else if (states
-                                      .contains(MaterialState.disabled))
-                                    return Colors.black;
-                                  return Color.fromARGB(255, 138, 175, 52);
-                                },
-                              ),
-                            ),
-                          ),
-                        );
+                        return listReponse![index]['allow'] == true
+                            ? Container(
+                                margin: EdgeInsets.only(right: 5, left: 5),
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    setState(() {
+                                      prefs.setInt('idchapter',
+                                          listReponse![index]['id']);
+                                      prefs.setInt('sttchapter',
+                                          listReponse![index]['chapterId']);
+                                      prefs.setString(
+                                          'titleChapter',
+                                          listReponse![index]['chapterTitle']
+                                              .toString());
+                                      listReponse![index]['allow'] == true
+                                          ? Navigator.of(context)
+                                              .pushReplacement(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          PdfViewerPage(
+                                                              idb: dataBook![
+                                                                      'id']
+                                                                  .toString())))
+                                          : showDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  ChargeDialog(),
+                                            );
+                                    });
+                                  },
+                                  child: Text(
+                                    listReponse![index]['chapterId'].toString(),
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty
+                                        .resolveWith<Color>(
+                                      (Set<MaterialState> states) {
+                                        if (states
+                                            .contains(MaterialState.pressed))
+                                          return Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                              .withOpacity(0.5);
+                                        else if (states
+                                            .contains(MaterialState.disabled))
+                                          return Colors.black;
+                                        return Color.fromARGB(
+                                            255, 138, 175, 52);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container();
                       },
                     ),
                   )),
@@ -1007,7 +1061,8 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => DetailBookPage(id: idbooks!)));
+            builder: (BuildContext context) =>
+                DetailBookPage(id: dataBook!['id'].toString())));
     await OpenFilex.open(path);
     setState(() {
       isLoading = false;

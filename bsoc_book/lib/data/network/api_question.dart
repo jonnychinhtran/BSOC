@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String baseUrl = "http://103.77.166.202:9999/api/quiz/list-question";
 
+Map<String, dynamic>? headquestion;
+
 Future<List<Question>> getQuestions(int? total) async {
   String url = "$baseUrl/$total";
   // http.Response res = await http.get(Uri.parse(url));
@@ -15,6 +17,7 @@ Future<List<Question>> getQuestions(int? total) async {
   //     List<Map<String, dynamic>>.from(json.decode(res.body)["listQuestion"]);
   // return Question.fromData(questions);
   final response = await Dio().get(url);
+  headquestion = response.data;
   final questions =
       List<Map<String, dynamic>>.from(response.data["listQuestion"]);
   return Question.fromData(questions);

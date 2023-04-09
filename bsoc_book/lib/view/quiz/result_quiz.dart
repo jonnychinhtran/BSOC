@@ -8,9 +8,9 @@ import 'package:get/get.dart';
 
 class ResultQuizPage extends StatefulWidget {
   final List<Question> questions;
-  final List<Answers>? answers;
-
-  ResultQuizPage({Key? key, required this.questions, required this.answers})
+  // final List<Answers>? answers;
+  final Map<String, dynamic>? quizResult;
+  ResultQuizPage({Key? key, required this.questions, this.quizResult})
       : super(key: key);
 
   @override
@@ -21,18 +21,6 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
   ConnectivityResult connectivity = ConnectivityResult.none;
   bool isLoading = true;
   int? correctAnswers;
-
-  // startTimer() {
-  //   timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-  //     setState(() {
-  //       if (seconds > 0) {
-  //         seconds--;
-  //       } else {
-  //         // gotoNextQuestion();
-  //       }
-  //     });
-  //   });
-  // }
 
   @override
   void initState() {
@@ -269,7 +257,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  '$correct/${widget.questions.length}',
+                                                  '${widget.quizResult!['totalCorrect']}/${widget.questions.length}',
                                                   style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 20,
@@ -315,7 +303,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  '${widget.questions.length - correct}/${widget.questions.length}',
+                                                  '${widget.quizResult!['totalWrong']}/${widget.questions.length}',
                                                   style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 20,

@@ -15,24 +15,43 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get_connect/http/src/multipart/form_data.dart';
 
+Map<String, dynamic>? quizResult;
+
 class QuizPage extends StatefulWidget {
   final List<Question> questions;
-  const QuizPage({Key? key, required this.questions}) : super(key: key);
+  final Map<String, dynamic>? headquestion;
+  const QuizPage({Key? key, required this.questions, this.headquestion})
+      : super(key: key);
 
   @override
   State<QuizPage> createState() => _QuizPageState();
 }
 
-class _QuizPageState extends State<QuizPage> {
+class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   final TextStyle _questionStyle = TextStyle(
       fontSize: 18.0, fontWeight: FontWeight.w500, color: Colors.white);
 
   ConnectivityResult connectivity = ConnectivityResult.none;
   late AnimationController controller;
   bool isLoading = true;
+  bool isPlaying = false;
 
-  int seconds = 60;
-  Timer? timer;
+  double progress = 1.0;
+
+  String get countText {
+    Duration count = controller.duration! * controller.value;
+    return controller.isDismissed
+        ? '${controller.duration!.inHours}:${(controller.duration!.inMinutes % 60).toString().padLeft(2, '0')}:${(controller.duration!.inSeconds % 60).toString().padLeft(2, '0')}'
+        : '${count.inHours}:${(count.inMinutes % 60).toString().padLeft(2, '0')}:${(count.inSeconds % 60).toString().padLeft(2, '0')}';
+  }
+
+  void notify() {
+    if (countText == '0:00:00') {
+      // Navigator.of(context).pushReplacement(MaterialPageRoute(
+      //     builder: (_) =>
+      //         ResultQuizPage(questions: widget.questions, answers: _answers)));
+    }
+  }
 
   Future<void> callback() async {
     if (connectivity == ConnectivityResult.none) {
@@ -41,14 +60,9 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   startTimer() {
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (seconds > 0) {
-          seconds--;
-        } else {
-          // gotoNextQuestion();
-        }
-      });
+    controller.reverse(from: controller.value == 0 ? 1.0 : controller.value);
+    setState(() {
+      isPlaying = true;
     });
   }
 
@@ -62,25 +76,39 @@ class _QuizPageState extends State<QuizPage> {
     callback();
     super.initState();
     _answers = List<Answers?>.filled(widget.questions.length, null);
+
+    controller = AnimationController(
+      vsync: this,
+      duration: Duration(minutes: widget.headquestion!['duration']),
+    );
+
+    controller.addListener(() {
+      notify();
+      if (controller.isAnimating) {
+        setState(() {
+          progress = controller.value;
+        });
+      } else {
+        setState(() {
+          progress = 1.0;
+          isPlaying = true;
+        });
+      }
+    });
+    startTimer();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     Question question = widget.questions[_currentIndex];
-    // final List<dynamic> options = question.answers!;
     final List<Answers>? options = question.answers;
-    // if (options != null) {
-    //   for (final option in options) {
-    //     // print(option.content);
-    //     options.add(question.answers);
-    //     options.shuffle();
-    //   }
-    // }
-    // if (options!.contains(question.answers)) {
-    //   options.add(question.answers);
-    //   options.shuffle();
-    // }
     if (options != null && options.contains(question.answers)) {
       options.addAll(question.answers!);
     }
@@ -93,7 +121,6 @@ class _QuizPageState extends State<QuizPage> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           centerTitle: true,
-          // title: Text('Quản lý Coupon'),
           title: Image.asset(
             'assets/images/logo-b4usolution.png',
             fit: BoxFit.contain,
@@ -171,21 +198,23 @@ class _QuizPageState extends State<QuizPage> {
                     Padding(
                       padding: const EdgeInsets.only(
                           top: 150, left: 16.0, right: 16.0),
-                      child: new LinearPercentIndicator(
-                        width: 280,
-                        animation: true,
-                        animationDuration: 2000,
-                        lineHeight: 20.0,
-                        trailing: new Text(
-                          "Thời gian",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                      child: AnimatedBuilder(
+                        animation: controller,
+                        builder: (context, child) => LinearPercentIndicator(
+                          width: 280,
+                          animateFromLastPercent: true,
+                          lineHeight: 20.0,
+                          trailing: Text(
+                            countText,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          percent: progress,
+                          progressColor: Color.fromARGB(244, 193, 255, 114),
                         ),
-                        // trailing:  Text("right content"),
-                        percent: 0.2,
-                        // center: Text("20.0%"),
-                        // linearStrokeCap: LinearStrokeCap.butt,
-                        progressColor: Color.fromARGB(244, 193, 255, 114),
                       ),
                     ),
                     Padding(
@@ -379,7 +408,11 @@ class _QuizPageState extends State<QuizPage> {
               contentType: 'application/json',
               headers: {'Authorization': 'Bearer $token'}),
           data: formData);
-      print(response.data);
+      quizResult = response.data;
+      print(quizResult);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => ResultQuizPage(
+              questions: widget.questions, quizResult: quizResult)));
     }
   }
 
