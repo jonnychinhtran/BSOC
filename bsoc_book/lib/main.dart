@@ -27,8 +27,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: CheckPage(),
-      // initialRoute: Routes.home,
-      // getPages: PageRoutes.pages,
     );
   }
 }

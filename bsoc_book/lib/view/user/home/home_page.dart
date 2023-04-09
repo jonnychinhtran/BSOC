@@ -37,40 +37,6 @@ class _HomePageState extends State<HomePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
 
-  @override
-  void initState() {
-    super.initState();
-    getAllBooks();
-    getTopBook();
-
-    final newVersion = NewVersion(
-      iOSId: 'com.b4usolution.app.bsoc',
-      androidId: 'com.b4usolution.b4u_bsoc',
-    );
-    checkNewVersion(newVersion);
-  }
-
-  void checkNewVersion(NewVersion newVersion) async {
-    final status = await newVersion.getVersionStatus();
-    if (status != null) {
-      if (status.canUpdate) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return UpdateDialog(
-              allowDismissal: true,
-              description: status.releaseNotes!,
-              version: status.storeVersion,
-              appLink: status.appStoreLink,
-            );
-          },
-        );
-      }
-      print(status.appStoreLink);
-      print(status.storeVersion);
-    }
-  }
-
   Future<void> getAllBooks() async {
     String? token;
     try {
@@ -137,12 +103,37 @@ class _HomePageState extends State<HomePage> {
     return prefs.getString('accessToken') ?? '';
   }
 
-  Future<void> callback() async {
-    if (connectivity == ConnectivityResult.none) {
-      isLoading = true;
-    } else {
-      getAllBooks();
-      getTopBook();
+  @override
+  void initState() {
+    super.initState();
+    getAllBooks();
+    getTopBook();
+
+    final newVersion = NewVersion(
+      iOSId: 'com.b4usolution.app.bsoc',
+      androidId: 'com.b4usolution.b4u_bsoc',
+    );
+    checkNewVersion(newVersion);
+  }
+
+  void checkNewVersion(NewVersion newVersion) async {
+    final status = await newVersion.getVersionStatus();
+    if (status != null) {
+      if (status.canUpdate) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return UpdateDialog(
+              allowDismissal: true,
+              description: status.releaseNotes!,
+              version: status.storeVersion,
+              appLink: status.appStoreLink,
+            );
+          },
+        );
+      }
+      print(status.appStoreLink);
+      print(status.storeVersion);
     }
   }
 
