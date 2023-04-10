@@ -1,10 +1,7 @@
-import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:open_store/open_store.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UpdateDialog extends StatefulWidget {
   final String version;
@@ -32,7 +29,6 @@ class _UpdateDialogState extends State<UpdateDialog> {
   void dispose() {
     if (!widget.allowDismissal) {
       print("EXIT APP");
-      // SystemNavigator.pop(); this will close the app
     }
     super.dispose();
   }
@@ -155,16 +151,6 @@ class _UpdateDialogState extends State<UpdateDialog> {
                                 appStoreId: widget.appLink,
                                 androidAppBundleId: 'com.b4usolution.b4u_bsoc',
                               );
-                              // SharedPreferences prefs =
-                              //     await SharedPreferences.getInstance();
-                              // await prefs.remove('accessToken');
-                              // await prefs.clear();
-                              // userdata.write('isLogged', false);
-                              // Get.offAll(LoginPage());
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (context) => DialogLogout(),
-                              // );
                               Navigator.pop(context);
                             },
                             child: Container(
@@ -205,44 +191,3 @@ class _UpdateDialogState extends State<UpdateDialog> {
     );
   }
 }
-
-// class DialogLogout extends StatelessWidget {
-//   DialogLogout({super.key});
-//   final userdata = GetStorage();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AlertDialog(
-//       title: Text('Thông báo'),
-//       content: Container(
-//           child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           Text(
-//               'Vui lòng đăng nhập lại sau khi cập nhật ứng dụng, để sử dụng được tốt hơn.'),
-//           SizedBox(
-//             height: 10,
-//           ),
-//           ElevatedButton(
-//             style: ElevatedButton.styleFrom(
-//               elevation: 2,
-//               primary: Colors.blueAccent,
-//               minimumSize: const Size.fromHeight(35),
-//               shape: RoundedRectangleBorder(
-//                 borderRadius: BorderRadius.circular(10.0),
-//               ),
-//             ),
-//             onPressed: () async {
-//               SharedPreferences prefs = await SharedPreferences.getInstance();
-//               await prefs.remove('accessToken');
-//               await prefs.clear();
-//               userdata.write('isLogged', false);
-//               Get.offAll(LoginPage());
-//             },
-//             child: Text('Đăng nhập lại'),
-//           ),
-//         ],
-//       )),
-//     );
-//   }
-// }
