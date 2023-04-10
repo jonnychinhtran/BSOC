@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:bsoc_book/data/model/quiz/QuestionResult.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
+import 'package:bsoc_book/view/quiz/practice.dart';
 import 'package:bsoc_book/view/quiz/result_quiz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -121,6 +122,37 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
           elevation: 0,
           backgroundColor: Colors.transparent,
           centerTitle: true,
+          leading: GestureDetector(
+              child: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white,
+              ),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Thông báo'),
+                      content: Text(
+                          'Bạn có chắc chắn muốn thoát khỏi bài kiểm tra không? Tất cả tiến trình của bạn sẽ bị mất.'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('Không'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: Text('Có'),
+                          onPressed: () {
+                            Get.to(PracticePage());
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }),
           title: Image.asset(
             'assets/images/logo-b4usolution.png',
             fit: BoxFit.contain,
@@ -201,7 +233,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                       child: AnimatedBuilder(
                         animation: controller,
                         builder: (context, child) => LinearPercentIndicator(
-                          width: 280,
+                          width: 260,
                           animateFromLastPercent: true,
                           lineHeight: 20.0,
                           trailing: Text(
