@@ -378,7 +378,12 @@ class _HomePageState extends State<HomePage> {
                                       return Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: GestureDetector(
-                                          onTap: () {
+                                          onTap: () async {
+                                            final SharedPreferences? prefs =
+                                                await _prefs;
+                                            await prefs?.setString('idbook',
+                                                topbook[index].id.toString());
+
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -477,7 +482,12 @@ class _HomePageState extends State<HomePage> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 GestureDetector(
-                                                  onTap: () {
+                                                  onTap: () async {
+                                                    final SharedPreferences?
+                                                        prefs = await _prefs;
+                                                    await prefs?.setString(
+                                                        'idbook',
+                                                        book.id.toString());
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(

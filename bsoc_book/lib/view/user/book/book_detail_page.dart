@@ -199,33 +199,46 @@ class _DetailBookPageState extends State<DetailBookPage>
                 ConnectivityResult connectivity,
                 Widget child,
               ) {
-                if (connectivity == ConnectivityResult.none) {
-                  return Container(
-                    color: Colors.white70,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            Image.asset('assets/images/wifi.png'),
-                            Text(
-                              'Không có kết nối Internet',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              'Vui lòng kiểm tra kết nối internet và thử lại',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ],
+                final connected = connectivity != ConnectivityResult.none;
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    child,
+                    Positioned(
+                      height: 0.0,
+                      left: 0.0,
+                      right: 0.0,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 350),
+                        color: connected
+                            ? const Color(0xFF00EE44)
+                            : const Color(0xFFEE4400),
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 350),
+                          child: connected
+                              ? const Text('ONLINE')
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const <Widget>[
+                                    Text('OFFLINE'),
+                                    SizedBox(width: 8.0),
+                                    SizedBox(
+                                      width: 12.0,
+                                      height: 12.0,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.0,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                         ),
                       ),
                     ),
-                  );
-                } else {
-                  return child;
-                }
+                  ],
+                );
               },
               child: isLoading
                   ? Center(
@@ -470,18 +483,20 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                                 16,
                                                                           ),
                                                                         ),
-                                                                  Icon(
-                                                                    listReponse![index]['allow'] ==
-                                                                            true
-                                                                        ? Icons
-                                                                            .remove_red_eye
-                                                                        : Icons
-                                                                            .error,
-                                                                    color: Colors
-                                                                        .yellow
-                                                                        .shade800,
-                                                                    size: 16,
-                                                                  ),
+                                                                  listReponse![index]
+                                                                              [
+                                                                              'chapterId'] !=
+                                                                          999
+                                                                      ? Icon(
+                                                                          Icons
+                                                                              .remove_red_eye,
+                                                                          color: Colors
+                                                                              .yellow
+                                                                              .shade800,
+                                                                          size:
+                                                                              16,
+                                                                        )
+                                                                      : Container(),
                                                                 ],
                                                               ),
                                                               Row(
@@ -493,22 +508,18 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                     child:
                                                                         Column(
                                                                       children: [
-                                                                        Text(
-                                                                          listReponse?[index]
-                                                                              [
-                                                                              'chapterTitle'],
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                          maxLines:
-                                                                              2,
-                                                                          softWrap:
-                                                                              false,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            color:
-                                                                                Colors.blue.shade900,
-                                                                          ),
-                                                                        ),
+                                                                        listReponse![index]['chapterId'] !=
+                                                                                999
+                                                                            ? Text(
+                                                                                listReponse?[index]['chapterTitle'],
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                maxLines: 2,
+                                                                                softWrap: false,
+                                                                                style: TextStyle(
+                                                                                  color: Colors.blue.shade900,
+                                                                                ),
+                                                                              )
+                                                                            : Container(),
                                                                       ],
                                                                     ),
                                                                   ),
@@ -1365,14 +1376,14 @@ class _DialogCommentState extends State<DialogComment> {
   final _formKey = GlobalKey<FormState>();
 
   CommentController cmtcontroller = Get.put(CommentController());
-  String? idbooks;
+  int? idbooks;
   String? token;
 
-  getIdbook() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    idbooks = prefs.getString('idbook');
-    token = prefs.getString('accessToken');
-  }
+  // getIdbook() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   idbooks = prefs.setInt('idbook', widget.id);
+  //   token = prefs.getString('accessToken');
+  // }
 
   late final _ratingController;
   late double _rating;
@@ -1381,7 +1392,7 @@ class _DialogCommentState extends State<DialogComment> {
 
   @override
   void initState() {
-    getIdbook();
+    // getIdbook();
     _rating = _initialRating;
     super.initState();
   }
