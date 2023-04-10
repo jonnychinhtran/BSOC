@@ -470,18 +470,20 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                                 16,
                                                                           ),
                                                                         ),
-                                                                  Icon(
-                                                                    listReponse![index]['allow'] ==
-                                                                            true
-                                                                        ? Icons
-                                                                            .remove_red_eye
-                                                                        : Icons
-                                                                            .error,
-                                                                    color: Colors
-                                                                        .yellow
-                                                                        .shade800,
-                                                                    size: 16,
-                                                                  ),
+                                                                  listReponse![index]
+                                                                              [
+                                                                              'chapterId'] !=
+                                                                          999
+                                                                      ? Icon(
+                                                                          Icons
+                                                                              .remove_red_eye,
+                                                                          color: Colors
+                                                                              .yellow
+                                                                              .shade800,
+                                                                          size:
+                                                                              16,
+                                                                        )
+                                                                      : Container(),
                                                                 ],
                                                               ),
                                                               Row(
@@ -493,22 +495,18 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                                     child:
                                                                         Column(
                                                                       children: [
-                                                                        Text(
-                                                                          listReponse?[index]
-                                                                              [
-                                                                              'chapterTitle'],
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                          maxLines:
-                                                                              2,
-                                                                          softWrap:
-                                                                              false,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            color:
-                                                                                Colors.blue.shade900,
-                                                                          ),
-                                                                        ),
+                                                                        listReponse![index]['chapterId'] !=
+                                                                                999
+                                                                            ? Text(
+                                                                                listReponse?[index]['chapterTitle'],
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                maxLines: 2,
+                                                                                softWrap: false,
+                                                                                style: TextStyle(
+                                                                                  color: Colors.blue.shade900,
+                                                                                ),
+                                                                              )
+                                                                            : Container(),
                                                                       ],
                                                                     ),
                                                                   ),
@@ -1365,14 +1363,14 @@ class _DialogCommentState extends State<DialogComment> {
   final _formKey = GlobalKey<FormState>();
 
   CommentController cmtcontroller = Get.put(CommentController());
-  String? idbooks;
+  int? idbooks;
   String? token;
 
-  getIdbook() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    idbooks = prefs.getString('idbook');
-    token = prefs.getString('accessToken');
-  }
+  // getIdbook() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   idbooks = prefs.setInt('idbook', widget.id);
+  //   token = prefs.getString('accessToken');
+  // }
 
   late final _ratingController;
   late double _rating;
@@ -1381,7 +1379,7 @@ class _DialogCommentState extends State<DialogComment> {
 
   @override
   void initState() {
-    getIdbook();
+    // getIdbook();
     _rating = _initialRating;
     super.initState();
   }

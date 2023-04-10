@@ -9,21 +9,31 @@ class CommentController extends GetxController {
   TextEditingController contentController = TextEditingController();
   String? token;
   String? idUser;
-  String? idBook;
+  String? idbooks;
   double? rating;
+
+  // getIdbook() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   idbooks = prefs.getString('idbook');
+  //   print(idbooks);
+  //   token = prefs.getString('accessToken');
+  // }
 
   Future<void> commentUserBook() async {
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
-    idBook = prefs.getString('idbook');
+    idbooks = prefs.getString('idbook');
     idUser = prefs.getString('idInforUser');
     rating = prefs.getDouble('rating');
     int min = rating!.toInt();
+    print(token);
+    print(idUser);
+
     print(rating);
     // int value1 = int.parse(ratingController.text);
     final formData = {
       "userId": idUser,
-      "bookId": idBook,
+      "bookId": idbooks,
       "rating": min,
       "content": contentController.text,
     };
