@@ -46,11 +46,31 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
         : '${count.inHours}:${(count.inMinutes % 60).toString().padLeft(2, '0')}:${(count.inSeconds % 60).toString().padLeft(2, '0')}';
   }
 
-  void notify() {
+  void notify() async {
     if (countText == '0:00:00') {
-      // Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //     builder: (_) =>
-      //         ResultQuizPage(questions: widget.questions, answers: _answers)));
+      // String? token;
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // token = prefs.getString('accessToken');
+
+      // var formData =
+      //     _questionResults?.map((result) => result.toJson()).toList();
+
+      // final dio = Dio(); // Create Dio instance
+      // final response = await dio.post(
+      //     'http://103.77.166.202:9999/api/quiz/check-result',
+      //     options: Options(
+      //         contentType: 'application/json',
+      //         headers: {'Authorization': 'Bearer $token'}),
+      //     data: formData);
+      // quizResult = response.data;
+      // print(quizResult);
+
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => ResultQuizPage(
+                questions: widget.questions,
+                answers: _answers,
+                quizResult: quizResult,
+              )));
     }
   }
 
@@ -82,7 +102,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       vsync: this,
       duration: Duration(minutes: widget.headquestion!['duration']),
     );
-
+// widget.headquestion!['duration']
     controller.addListener(() {
       notify();
       if (controller.isAnimating) {

@@ -249,13 +249,34 @@ class _PracticePageState extends State<PracticePage> {
                               print(_noOfQuestions);
                               List<Question> questions =
                                   await getQuestions(_noOfQuestions);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => QuizPage(
-                                            questions: questions,
-                                            headquestion: headquestion,
-                                          )));
+                              if (headquestion!['totalQuestion'] == 0) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Thông báo"),
+                                      content:
+                                          Text("Đề thi đang được cập nhật"),
+                                      actions: [
+                                        TextButton(
+                                          child: Text("OK"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => QuizPage(
+                                              questions: questions,
+                                              headquestion: headquestion,
+                                            )));
+                              }
                             },
                             child: Text('Bắt đầu thi')),
                       ],
