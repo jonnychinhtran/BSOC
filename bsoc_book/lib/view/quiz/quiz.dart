@@ -232,7 +232,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                 extendBodyBehindAppBar: true,
                 appBar: AppBar(
                   automaticallyImplyLeading: false,
-                  title: Center(child: Text('TOEIC PRACTICE')),
+                  // title: Center(child: Text('TOEIC PRACTICE')),
                   elevation: 0,
                   backgroundColor: Colors.transparent,
                 ),
@@ -249,11 +249,11 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                         )),
                     Padding(
                       padding: const EdgeInsets.only(
-                          top: 150, left: 16.0, right: 16.0),
+                          top: 130, left: 16.0, right: 16.0),
                       child: AnimatedBuilder(
                         animation: controller,
                         builder: (context, child) => LinearPercentIndicator(
-                          width: 260,
+                          width: 270,
                           animateFromLastPercent: true,
                           lineHeight: 20.0,
                           trailing: Text(
@@ -271,7 +271,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
-                          top: 200.0, left: 16.0, right: 16.0, bottom: 16.0),
+                          top: 180.0, left: 16.0, right: 16.0, bottom: 16.0),
                       child: SingleChildScrollView(
                         child: Column(children: [
                           Row(
