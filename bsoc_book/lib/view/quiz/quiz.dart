@@ -48,22 +48,22 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
   void notify() async {
     if (countText == '0:00:00') {
-      // String? token;
-      // SharedPreferences prefs = await SharedPreferences.getInstance();
-      // token = prefs.getString('accessToken');
+      String? token;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('accessToken');
 
-      // var formData =
-      //     _questionResults?.map((result) => result.toJson()).toList();
+      var formData =
+          _questionResults?.map((result) => result.toJson()).toList();
 
-      // final dio = Dio(); // Create Dio instance
-      // final response = await dio.post(
-      //     'http://103.77.166.202:9999/api/quiz/check-result',
-      //     options: Options(
-      //         contentType: 'application/json',
-      //         headers: {'Authorization': 'Bearer $token'}),
-      //     data: formData);
-      // quizResult = response.data;
-      // print(quizResult);
+      final dio = Dio(); // Create Dio instance
+      final response = await dio.post(
+          'http://103.77.166.202:9999/api/quiz/check-result',
+          options: Options(
+              contentType: 'application/json',
+              headers: {'Authorization': 'Bearer $token'}),
+          data: formData);
+      quizResult = response.data;
+      print(quizResult);
 
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => ResultQuizPage(
@@ -101,6 +101,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     controller = AnimationController(
       vsync: this,
       duration: Duration(minutes: widget.headquestion!['duration']),
+      // duration: Duration(seconds: 100)
     );
 // widget.headquestion!['duration']
     controller.addListener(() {

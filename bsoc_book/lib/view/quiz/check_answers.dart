@@ -69,13 +69,21 @@ class CheckAnswersPage extends StatelessWidget {
                   fontSize: 16.0),
             ),
             SizedBox(height: 5.0),
-            Text(
-              HtmlUnescape().convert("${answers[index]?.content}"),
-              style: TextStyle(
-                  color: correct ? Colors.green : Colors.red,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold),
-            ),
+            answers[index]?.content != null
+                ? Text(
+                    HtmlUnescape().convert("${answers[index]?.content}"),
+                    style: TextStyle(
+                        color: correct ? Colors.green : Colors.red,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold),
+                  )
+                : Text(
+                    'Bạn chưa chọn đáp án nào',
+                    style: TextStyle(
+                        color: correct ? Colors.green : Colors.red,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold),
+                  ),
             SizedBox(height: 5.0),
             correct || correctAnswer == null
                 ? Container()
@@ -83,8 +91,10 @@ class CheckAnswersPage extends StatelessWidget {
                     TextSpan(children: [
                       TextSpan(text: "Đáp án đúng: "),
                       TextSpan(
-                          text: HtmlUnescape()
-                              .convert("${correctAnswer.content}"),
+                          text: HtmlUnescape().convert(
+                              answers[index]?.content != null
+                                  ? "${correctAnswer.content}"
+                                  : "Vui lòng làm bài thi"),
                           style: TextStyle(fontWeight: FontWeight.w500))
                     ]),
                     style: TextStyle(fontSize: 16.0),
