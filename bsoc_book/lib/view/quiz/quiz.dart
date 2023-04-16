@@ -36,7 +36,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   late AnimationController controller;
   bool isLoading = true;
   bool isPlaying = false;
-
+  bool _resultSent = false;
   double progress = 1.0;
 
   String get countText {
@@ -47,7 +47,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   }
 
   void notify() async {
-    if (countText == '0:00:00') {
+    if (countText == '0:00:00' && !_resultSent) {
+      _resultSent = true;
       String? token;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
@@ -428,7 +429,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       setState(() {
         _currentIndex++;
       });
-    } else {
+    } else if (!_resultSent) {
+      _resultSent = true;
       String? token;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');

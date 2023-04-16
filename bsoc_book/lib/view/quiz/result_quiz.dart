@@ -140,14 +140,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                               padding: const EdgeInsets.only(top: 100.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  // borderRadius: BorderRadius.circular(10),
                                   color: Color.fromARGB(255, 193, 255, 114),
-                                  // border: Border(
-                                  //   left: BorderSide(
-                                  //     color: Colors.green,
-                                  //     width: 3,
-                                  //   ),
-                                  // ),
                                 ),
                                 height: 420,
                                 width: double.infinity,
@@ -158,35 +151,6 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                               child: Container(
                                   child: Image.asset('assets/images/ico2.png')),
                             ),
-                            // Align(
-                            //   alignment: Alignment.center,
-                            //   child: Padding(
-                            //     padding: const EdgeInsets.only(top: 200.0),
-                            //     child: Row(
-                            //       crossAxisAlignment: CrossAxisAlignment.center,
-                            //       mainAxisAlignment: MainAxisAlignment.center,
-                            //       children: [
-                            //         Text(
-                            //           '${correct / widget.questions.length * 100}%',
-                            //           style: TextStyle(
-                            //               color: Colors.black,
-                            //               fontSize: 58,
-                            //               fontWeight: FontWeight.w600),
-                            //         ),
-                            //         Padding(
-                            //           padding: const EdgeInsets.only(top: 20.0),
-                            //           child: Text(
-                            //             ' scores',
-                            //             style: TextStyle(
-                            //                 color: Colors.black,
-                            //                 fontSize: 30,
-                            //                 fontWeight: FontWeight.w600),
-                            //           ),
-                            //         ),
-                            //       ],
-                            //     ),
-                            //   ),
-                            // ),
                             Padding(
                               padding: const EdgeInsets.only(top: 220.0),
                               child: Row(
