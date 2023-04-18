@@ -137,12 +137,12 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                         Stack(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(top: 100.0),
+                              padding: const EdgeInsets.only(top: 90.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 193, 255, 114),
+                                  color: Color.fromARGB(255, 245, 234, 217),
                                 ),
-                                height: 420,
+                                height: 400,
                                 width: double.infinity,
                               ),
                             ),
@@ -215,7 +215,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                             padding: const EdgeInsets.all(8),
                                             decoration: BoxDecoration(
                                               color: Color.fromARGB(
-                                                  255, 22, 223, 122),
+                                                  255, 0, 172, 86),
                                               borderRadius:
                                                   BorderRadius.circular(12),
                                             ),
@@ -299,7 +299,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                             ),
                             Padding(
                               padding:
-                                  const EdgeInsets.only(left: 22.0, top: 350.0),
+                                  const EdgeInsets.only(left: 22.0, top: 340.0),
                               child: Column(children: [
                                 SizedBox(height: size.height * 0.02),
                                 Padding(

@@ -438,8 +438,8 @@ class _HomePageState extends State<HomePage> {
                                       );
                                     }
                                   },
-                                  child:
-                                      Image.asset('assets/images/practice.png'),
+                                  child: Image.asset(
+                                      'assets/images/practice1.jpg'),
                                 ),
                               ),
                               SizedBox(height: size.height * 0.02),

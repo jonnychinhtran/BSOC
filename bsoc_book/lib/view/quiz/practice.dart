@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/cupertino.dart';
 import 'package:bsoc_book/controller/quiz/category_controller.dart';
 import 'package:bsoc_book/data/model/quiz/category.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
@@ -31,7 +31,6 @@ class _PracticePageState extends State<PracticePage> {
   bool isLoading = true;
   String? token;
   int? _noOfQuestions;
-
   Future<void> callback() async {
     if (connectivity == ConnectivityResult.none) {
       isLoading = true;
@@ -217,16 +216,17 @@ class _PracticePageState extends State<PracticePage> {
                               value: dropdownValue == null
                                   ? ""
                                   : dropdownValue, // create a variable named dropdownValue and set in onChange function
-                              icon: const Icon(Icons.arrow_downward),
+                              icon: const Icon(Icons.arrow_downward,
+                                  color: Colors.white),
                               iconSize: 24,
                               elevation: 16,
                               style: const TextStyle(
-                                  color: Color(0xFF00EE44),
+                                  color: Color.fromARGB(255, 226, 66, 66),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18),
                               underline: Container(
                                 height: 2,
-                                color: Colors.green,
+                                color: Colors.white,
                               ),
                               onChanged: (String? newValue) {
                                 setState(() {

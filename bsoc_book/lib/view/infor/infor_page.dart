@@ -38,11 +38,12 @@ class _InforPageState extends State<InforPage> {
       });
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
-      var response = await Dio().get('http://103.77.166.202/api/user/infor',
-          options: Options(headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
-          }));
+      var response =
+          await Dio().get('http://103.77.166.202:9999/api/user/infor',
+              options: Options(headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer $token',
+              }));
       if (response.statusCode == 200) {
         datauser = response.data;
         await prefs.setString('username', datauser!['username']);
@@ -254,6 +255,74 @@ class _InforPageState extends State<InforPage> {
                                     trailing: Text(datauser == null
                                         ? ""
                                         : datauser!['phone'].toString()),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: size.height * 0.04),
+                            Card(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 500,
+                                    height: 80,
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(8.0))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 15.0, right: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Điểm thưởng',
+                                            style: TextStyle(
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white),
+                                          ),
+                                          Container(
+                                              height: 70,
+                                              child: Image.asset(
+                                                  'assets/images/gift.png'))
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 500,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.vertical(
+                                            bottom: Radius.circular(8.0))),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 16.0, top: 20.0),
+                                      child: datauser?['pointForClaimBook'] ==
+                                              null
+                                          ? Text(
+                                              '0 Điểm',
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black),
+                                            )
+                                          : Text(
+                                              datauser!['pointForClaimBook'] +
+                                                  ' Điểm',
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black),
+                                            ),
+                                    ),
                                   ),
                                 ],
                               ),

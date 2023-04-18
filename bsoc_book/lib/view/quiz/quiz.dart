@@ -250,24 +250,36 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                           ),
                         )),
                     Padding(
+                      padding: const EdgeInsets.only(top: 100, left: 18.0),
+                      child: Container(
+                        color: Color.fromARGB(255, 0, 79, 143),
+                        child: Text('Time left: ' + countText,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            )),
+                      ),
+                    ),
+                    Padding(
                       padding: const EdgeInsets.only(
                           top: 130, left: 16.0, right: 16.0),
                       child: AnimatedBuilder(
                         animation: controller,
                         builder: (context, child) => LinearPercentIndicator(
-                          width: 270,
+                          width: 350,
                           animateFromLastPercent: true,
-                          lineHeight: 20.0,
-                          trailing: Text(
-                            countText,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
+                          lineHeight: 7.0,
+                          // trailing: Text(
+                          //   countText,
+                          //   style: TextStyle(
+                          //     color: Colors.white,
+                          //     fontSize: 16,
+                          //     fontWeight: FontWeight.w400,
+                          //   ),
+                          // ),
                           percent: progress,
-                          progressColor: Color.fromARGB(244, 193, 255, 114),
+                          progressColor: Color.fromARGB(244, 255, 145, 0),
                         ),
                       ),
                     ),
