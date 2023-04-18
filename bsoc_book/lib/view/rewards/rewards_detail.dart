@@ -208,7 +208,7 @@ class _RewardsDetailState extends State<RewardsDetail> {
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.blue,
-                      onPrimary: Colors.amber,
+                      onPrimary: Colors.white,
                       onSurface: Colors.amber, // Disable color
                     ),
                     child: const Text(

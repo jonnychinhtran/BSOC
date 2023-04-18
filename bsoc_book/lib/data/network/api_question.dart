@@ -17,6 +17,6 @@ Future<List<Question>> getQuestions(int? total) async {
   headquestion = response.data;
   final questions =
       List<Map<String, dynamic>>.from(response.data["listQuestion"]);
-  // debugPrint(questions.toString(), wrapWidth: 1024);
+  debugPrint(questions.toString(), wrapWidth: 1024);
   return Question.fromData(questions);
 }

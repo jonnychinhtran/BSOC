@@ -272,12 +272,33 @@ class _InforPageState extends State<InforPage> {
                             SizedBox(height: size.height * 0.04),
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const RewardsPage()),
-                                );
+                                if (datauser?['pointForClaimBook'] == 0) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('Thông báo'),
+                                        content: Text(
+                                            'Bạn vui lòng làm bài thi để thu thập điểm thưởng'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text('OK'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const RewardsPage()),
+                                  );
+                                }
                               },
                               child: Card(
                                 color: Colors.white,
