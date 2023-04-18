@@ -3,6 +3,7 @@ import 'package:bsoc_book/controller/changepass/changepass_controller.dart';
 import 'package:bsoc_book/view/about/about_page.dart';
 import 'package:bsoc_book/view/contact/contact_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
+import 'package:bsoc_book/view/rewards/rewards.dart';
 import 'package:bsoc_book/view/terms/terms_page.dart';
 import 'package:bsoc_book/view/update/update_infor.dart';
 import 'package:bsoc_book/view/update/uploadavt_page.dart';
@@ -39,7 +40,7 @@ class _InforPageState extends State<InforPage> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
       var response =
-          await Dio().get('http://103.77.166.202:9999/api/user/infor',
+          await Dio().get('http://103.77.166.202:9999/api/user/profile',
               options: Options(headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer $token',
@@ -85,6 +86,15 @@ class _InforPageState extends State<InforPage> {
           backgroundColor: Color.fromARGB(255, 138, 175, 52),
           centerTitle: true,
           title: Text('Cài đặt tài khoản'),
+          leading: GestureDetector(
+              child: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white,
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomePage()));
+              }),
         ),
         body: OfflineBuilder(
           connectivityBuilder: (
@@ -260,71 +270,94 @@ class _InforPageState extends State<InforPage> {
                               ),
                             ),
                             SizedBox(height: size.height * 0.04),
-                            Card(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 500,
-                                    height: 80,
-                                    decoration: BoxDecoration(
-                                        color: Colors.blue,
-                                        borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(8.0))),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 15.0, right: 8.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Điểm thưởng',
-                                            style: TextStyle(
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.white),
-                                          ),
-                                          Container(
-                                              height: 70,
-                                              child: Image.asset(
-                                                  'assets/images/gift.png'))
-                                        ],
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RewardsPage()),
+                                );
+                              },
+                              child: Card(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: 500,
+                                      height: 80,
+                                      decoration: BoxDecoration(
+                                          color: Colors.blue,
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(8.0))),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 15.0, right: 8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Điểm thưởng',
+                                              style: TextStyle(
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white),
+                                            ),
+                                            Container(
+                                                height: 70,
+                                                child: Image.asset(
+                                                    'assets/images/gift.png'))
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    width: 500,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.vertical(
-                                            bottom: Radius.circular(8.0))),
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 16.0, top: 20.0),
-                                      child: datauser?['pointForClaimBook'] ==
-                                              null
-                                          ? Text(
-                                              '0 Điểm',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.black),
-                                            )
-                                          : Text(
-                                              datauser!['pointForClaimBook'] +
-                                                  ' Điểm',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.black),
-                                            ),
+                                    Container(
+                                      width: 500,
+                                      height: 100,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.vertical(
+                                              bottom: Radius.circular(8.0))),
+                                      child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 16.0, top: 20.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              datauser?['pointForClaimBook'] ==
+                                                      null
+                                                  ? Text(
+                                                      '0 Điểm',
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.black),
+                                                    )
+                                                  : Text(
+                                                      datauser!['pointForClaimBook']
+                                                              .toString() +
+                                                          ' Điểm',
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.black),
+                                                    ),
+                                              SizedBox(
+                                                  height: size.height * 0.02),
+                                              Text(
+                                                'Mỗi bài thi đạt 100% sẽ được tặng 01 điểm',
+                                              )
+                                            ],
+                                          )),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                             SizedBox(height: size.height * 0.04),

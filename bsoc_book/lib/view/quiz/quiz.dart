@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:bsoc_book/data/model/quiz/QuestionResult.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
 import 'package:bsoc_book/view/quiz/practice.dart';
 import 'package:bsoc_book/view/quiz/result_quiz.dart';
+import 'package:bsoc_book/view/rewards/rewards.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
@@ -66,12 +68,54 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       quizResult = response.data;
       print(quizResult);
 
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_) => ResultQuizPage(
-                questions: widget.questions,
-                answers: _answers,
-                quizResult: quizResult,
-              )));
+      if (quizResult?['totalCorrect'] == 0 && quizResult?['totalWrong'] == 0) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (_) => ResultQuizPage(
+                  questions: widget.questions,
+                  answers: _answers,
+                  quizResult: quizResult,
+                )));
+      } else if (quizResult?['totalWrong'] == 0) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.info,
+          borderSide: const BorderSide(
+            color: Colors.green,
+            width: 2,
+          ),
+          width: 330,
+          buttonsBorderRadius: const BorderRadius.all(
+            Radius.circular(2),
+          ),
+          dismissOnTouchOutside: true,
+          dismissOnBackKeyPress: false,
+          headerAnimationLoop: false,
+          animType: AnimType.bottomSlide,
+          title: 'CHÚC MỪNG',
+          desc: 'Bạn đã nhận được 01 điểm thưởng',
+          btnCancelText: "Để sau",
+          btnOkText: "Đổi sách",
+          showCloseIcon: true,
+          btnCancelOnPress: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (_) => ResultQuizPage(
+                      questions: widget.questions,
+                      answers: _answers,
+                      quizResult: quizResult,
+                    )));
+          },
+          btnOkOnPress: () {
+            Get.to(RewardsPage());
+          },
+        ).show();
+      } else {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (_) => ResultQuizPage(
+                  questions: widget.questions,
+                  answers: _answers,
+                  quizResult: quizResult,
+                )));
+      }
     }
   }
 
@@ -98,7 +142,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     callback();
     super.initState();
     _answers = List<Answers?>.filled(widget.questions.length, null);
-
     controller = AnimationController(
       vsync: this,
       duration: Duration(minutes: widget.headquestion!['duration']),
@@ -267,7 +310,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                       child: AnimatedBuilder(
                         animation: controller,
                         builder: (context, child) => LinearPercentIndicator(
-                          width: 350,
+                          width: 310,
                           animateFromLastPercent: true,
                           lineHeight: 7.0,
                           // trailing: Text(
@@ -460,12 +503,50 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       quizResult = response.data;
       print(quizResult);
 
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_) => ResultQuizPage(
-                questions: widget.questions,
-                answers: _answers,
-                quizResult: quizResult,
-              )));
+      if (quizResult?['totalWrong'] == 0) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.info,
+          borderSide: const BorderSide(
+            color: Colors.green,
+            width: 2,
+          ),
+          width: 330,
+          buttonsBorderRadius: const BorderRadius.all(
+            Radius.circular(2),
+          ),
+          dismissOnTouchOutside: true,
+          dismissOnBackKeyPress: false,
+          headerAnimationLoop: false,
+          animType: AnimType.bottomSlide,
+          title: 'CHÚC MỪNG',
+          desc: 'Bạn đã nhận được 01 điểm thưởng',
+          btnCancelText: "Để sau",
+          btnOkText: "Đổi sách",
+          showCloseIcon: false,
+          btnCancelOnPress: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (_) => ResultQuizPage(
+                      questions: widget.questions,
+                      answers: _answers,
+                      quizResult: quizResult,
+                    )));
+          },
+          btnOkOnPress: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const RewardsPage()),
+            );
+          },
+        ).show();
+      } else {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (_) => ResultQuizPage(
+                  questions: widget.questions,
+                  answers: _answers,
+                  quizResult: quizResult,
+                )));
+      }
     }
   }
 
