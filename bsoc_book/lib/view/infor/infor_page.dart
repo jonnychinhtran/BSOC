@@ -279,7 +279,7 @@ class _InforPageState extends State<InforPage> {
                                       return AlertDialog(
                                         title: Text('Thông báo'),
                                         content: Text(
-                                            'Bạn vui lòng làm bài thi để thu thập điểm thưởng'),
+                                            'Bạn vui lòng làm bài thi để được thu thập điểm thưởng'),
                                         actions: <Widget>[
                                           TextButton(
                                             child: Text('OK'),
