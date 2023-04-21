@@ -231,56 +231,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
             height: 32,
           ),
         ),
-        body:
-            // OfflineBuilder(
-            //     connectivityBuilder: (
-            //       BuildContext context,
-            //       ConnectivityResult connectivity,
-            //       Widget child,
-            //     ) {
-            //       final connected = connectivity != ConnectivityResult.none;
-            //       return
-            //   Stack(
-            //     fit: StackFit.expand,
-            //     children: [
-            //       child,
-            //       Positioned(
-            //         height: 0.0,
-            //         left: 0.0,
-            //         right: 0.0,
-            //         child: AnimatedContainer(
-            //           duration: const Duration(milliseconds: 350),
-            //           color: connected
-            //               ? const Color(0xFF00EE44)
-            //               : const Color(0xFFEE4400),
-            //           child: AnimatedSwitcher(
-            //             duration: const Duration(milliseconds: 350),
-            //             child: connected
-            //                 ? const Text('ONLINE')
-            //                 : Row(
-            //                     mainAxisAlignment: MainAxisAlignment.center,
-            //                     children: const <Widget>[
-            //                       Text('OFFLINE'),
-            //                       SizedBox(width: 8.0),
-            //                       SizedBox(
-            //                         width: 12.0,
-            //                         height: 12.0,
-            //                         child: CircularProgressIndicator(
-            //                           strokeWidth: 2.0,
-            //                           valueColor: AlwaysStoppedAnimation<Color>(
-            //                               Colors.white),
-            //                         ),
-            //                       ),
-            //                     ],
-            //                   ),
-            //           ),
-            //         ),
-            //       ),
-            //     ],
-            //   );
-            // },
-            // child:
-            WillPopScope(
+        body: WillPopScope(
           onWillPop: _onWillPop,
           child: Scaffold(
             key: _key,
@@ -332,7 +283,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                       //   ),
                       // ),
                       percent: progress,
-                      progressColor: Color.fromARGB(244, 255, 145, 0),
+                      progressColor: Color.fromARGB(244, 255, 251, 42),
                     ),
                   ),
                 ),
@@ -423,7 +374,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                               ),
                               child: Text(
                                 _currentIndex == (widget.questions.length - 1)
-                                    ? "Gửi bài thi"
+                                    ? "Kết quả"
                                     : "Câu tiếp theo",
                                 style: MediaQuery.of(context).size.width > 800
                                     ? TextStyle(fontSize: 30.0)
