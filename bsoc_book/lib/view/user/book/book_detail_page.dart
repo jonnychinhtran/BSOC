@@ -124,8 +124,8 @@ class _DetailBookPageState extends State<DetailBookPage>
   @override
   void initState() {
     InternetPopup().initialize(context: context);
-    super.initState();
     getItemBooks();
+    super.initState();
   }
 
   @override
@@ -196,7 +196,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                   icon: Icon(Icons.download_for_offline))
             ],
           ),
-          body: isLoading
+          body: isLoading && listReponse == 0
               ? Center(
                   child: LoadingAnimationWidget.discreteCircle(
                   color: Color.fromARGB(255, 138, 175, 52),
@@ -220,7 +220,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                             width: 150,
                             child: Material(
                               child: Image.network(
-                                dataBook?['image'] == null
+                                dataBook!['image'] == null
                                     ? "Đang tải..."
                                     : 'http://103.77.166.202' +
                                         dataBook?['image'],
@@ -716,10 +716,10 @@ class _PdfViewerPageState extends State<PdfViewerPage>
   @override
   void initState() {
     InternetPopup().initialize(context: context);
-    super.initState();
     readData();
     getItemBooks();
     loadPDF();
+    super.initState();
 
     loadPDF().then((value) {
       setState(() {
@@ -1143,9 +1143,9 @@ class _ReviewBookState extends State<ReviewBook> {
 
   @override
   void initState() {
-    super.initState();
     callback();
     getComment();
+    super.initState();
   }
 
   @override
@@ -1577,10 +1577,10 @@ class _BookmarkPageState extends State<BookmarkPage> {
   @override
   void initState() {
     InternetPopup().initialize(context: context);
-    super.initState();
     readBookmark();
     getBookmarkDetail();
     callback();
+    super.initState();
   }
 
   @override
@@ -1597,7 +1597,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
             },
           ),
         ),
-        body: isLoading
+        body: callback == ConnectivityResult.none
             ? Center(
                 child: LoadingAnimationWidget.discreteCircle(
                 color: Color.fromARGB(255, 138, 175, 52),

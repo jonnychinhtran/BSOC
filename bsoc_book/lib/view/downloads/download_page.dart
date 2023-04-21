@@ -71,9 +71,9 @@ class _DownloadPageState extends State<DownloadPage> {
   @override
   void initState() {
     InternetPopup().initialize(context: context);
-    super.initState();
     getItemBooks();
     callback();
+    super.initState();
   }
 
   @override
@@ -101,128 +101,74 @@ class _DownloadPageState extends State<DownloadPage> {
             ),
           ],
         ),
-        body:
-            // OfflineBuilder(
-            //     connectivityBuilder: (
-            //       BuildContext context,
-            //       ConnectivityResult connectivity,
-            //       Widget child,
-            //     ) {
-            //       if (connectivity == ConnectivityResult.none) {
-            //         return Container(
-            //           color: Colors.white70,
-            //           child: Center(
-            //             child: Padding(
-            //               padding: const EdgeInsets.all(16.0),
-            //               child: Column(
-            //                 children: [
-            //                   Image.asset('assets/images/wifi.png'),
-            //                   Text(
-            //                     'Không có kết nối Internet',
-            //                     style: TextStyle(
-            //                         color: Colors.black,
-            //                         fontWeight: FontWeight.bold),
-            //                   ),
-            //                   Text(
-            //                     'Vui lòng kiểm tra kết nối internet và thử lại',
-            //                     style: TextStyle(color: Colors.black),
-            //                   ),
-            //                 ],
-            //               ),
-            //             ),
-            //           ),
-            //         );
-            //       } else {
-            //         return child;
-            //       }
-            //     },
-            //     child:
-            isLoading
-                ? Center(
-                    child: LoadingAnimationWidget.discreteCircle(
-                    color: Color.fromARGB(255, 138, 175, 52),
-                    secondRingColor: Colors.black,
-                    thirdRingColor: Colors.purple,
-                    size: 30,
-                  ))
-                : ListView.builder(
-                    itemCount: listReponse == null ? 0 : listReponse!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return listReponse![index]['allow'] == true
-                          ? GestureDetector(
-                              onTap: () async {
-                                String? namesave;
-                                namesave =
-                                    listReponse![index]['filePath'].toString();
-                                Directory? dir = Platform.isAndroid
-                                    ? await getExternalStorageDirectory()
-                                    : await getApplicationDocumentsDirectory();
+        body: callback == 0
+            ? Center(
+                child: LoadingAnimationWidget.discreteCircle(
+                color: Color.fromARGB(255, 138, 175, 52),
+                secondRingColor: Colors.black,
+                thirdRingColor: Colors.purple,
+                size: 30,
+              ))
+            : ListView.builder(
+                itemCount: listReponse == null ? 0 : listReponse!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return listReponse![index]['allow'] == true
+                      ? GestureDetector(
+                          onTap: () async {
+                            String? namesave;
+                            namesave =
+                                listReponse![index]['filePath'].toString();
+                            Directory? dir = Platform.isAndroid
+                                ? await getExternalStorageDirectory()
+                                : await getApplicationDocumentsDirectory();
 
-                                listReponse![index]['downloaded'] == true
-                                    ? await OpenFilex.open(
-                                        '${dir?.path}/$namesave')
-                                    : Get.snackbar("Thông báo",
-                                        "File chưa tải hoặc mất file lưu, vui lòng tải lại");
-
-                                // showDialog(
-                                //         context: context,
-                                //         builder: (context) => AlertDialog(
-                                //               title: Text("Thông báo"),
-                                //               content: Column(
-                                //                 mainAxisSize: MainAxisSize.min,
-                                //                 children: [
-                                //                   Text(
-                                //                       'Tập tin pdf bị mất hoặc trùng tên vui lòng tải lại trong phần chương sách!')
-                                //                 ],
-                                //               ),
-                                //             ));
-                              },
-                              child: Column(
-                                children: [
-                                  ListTile(
-                                    title: listReponse![index]['downloaded'] ==
-                                            true
-                                        ? Text(listReponse![index]['filePath']
-                                            .toString())
-                                        : Text(
-                                            listReponse![index]['filePath']
-                                                    .toString() +
-                                                '- File chưa tải về',
-                                            style:
-                                                TextStyle(color: Colors.grey),
-                                          ),
-                                    subtitle: listReponse![index]
-                                                ['downloaded'] ==
-                                            true
-                                        ? Text(
-                                            listReponse![index]['chapterTitle']
-                                                .toString(),
-                                            style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 255, 91, 91),
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 16),
-                                          )
-                                        : Text(
-                                            listReponse![index]['chapterTitle']
-                                                .toString(),
-                                            style:
-                                                TextStyle(color: Colors.grey),
-                                          ),
-                                  ),
-                                  Divider(
-                                    height: 2,
-                                    endIndent: 0,
-                                    color: Color.fromARGB(255, 87, 87, 87),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  )
-                                ],
+                            listReponse![index]['downloaded'] == true
+                                ? await OpenFilex.open('${dir?.path}/$namesave')
+                                : Get.snackbar("Thông báo",
+                                    "File chưa tải hoặc mất file lưu, vui lòng tải lại");
+                          },
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: listReponse![index]['downloaded'] == true
+                                    ? Text(listReponse![index]['filePath']
+                                        .toString())
+                                    : Text(
+                                        listReponse![index]['filePath']
+                                                .toString() +
+                                            '- File chưa tải về',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                subtitle: listReponse![index]['downloaded'] ==
+                                        true
+                                    ? Text(
+                                        listReponse![index]['chapterTitle']
+                                            .toString(),
+                                        style: TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 255, 91, 91),
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16),
+                                      )
+                                    : Text(
+                                        listReponse![index]['chapterTitle']
+                                            .toString(),
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
                               ),
-                            )
-                          : Container();
-                    })
+                              Divider(
+                                height: 2,
+                                endIndent: 0,
+                                color: Color.fromARGB(255, 87, 87, 87),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              )
+                            ],
+                          ),
+                        )
+                      : Container();
+                })
         // )
         );
   }

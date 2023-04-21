@@ -73,10 +73,10 @@ class _PracticePageState extends State<PracticePage> {
 
   @override
   void initState() {
-    InternetPopup().initialize(context: context);
-    super.initState();
     callback();
     fetchCategories();
+    super.initState();
+    InternetPopup().initialize(context: context);
   }
 
   @override

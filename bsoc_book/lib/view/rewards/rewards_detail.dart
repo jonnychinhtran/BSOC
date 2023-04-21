@@ -56,8 +56,8 @@ class _RewardsDetailState extends State<RewardsDetail> {
   @override
   void initState() {
     InternetPopup().initialize(context: context);
-    super.initState();
     getItemBooks();
+    super.initState();
   }
 
   @override

@@ -52,9 +52,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     InternetPopup().initialize(context: context);
-    super.initState();
+    callback();
     getAllBooks();
     getTopBook();
+    super.initState();
+
     _noOfQuestions = 10;
 
     final newVersion = NewVersion(
@@ -151,14 +153,14 @@ class _HomePageState extends State<HomePage> {
     return prefs.getString('accessToken') ?? '';
   }
 
-  // Future<void> callback() async {
-  //   if (connectivity == ConnectivityResult.none) {
-  //     isLoading = true;
-  //   } else {
-  //     getAllBooks();
-  //     getTopBook();
-  //   }
-  // }
+  Future<void> callback() async {
+    if (connectivity == ConnectivityResult.none) {
+      isLoading = true;
+    } else {
+      getAllBooks();
+      getTopBook();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -256,332 +258,272 @@ class _HomePageState extends State<HomePage> {
                           ])),
             ],
           ),
-          body:
-              //  OfflineBuilder(
-              //     connectivityBuilder: (
-              //       BuildContext context,
-              //       ConnectivityResult connectivity,
-              //       Widget child,
-              //     ) {
-              //       final connected = connectivity != ConnectivityResult.none;
-              //       return Stack(
-              //         fit: StackFit.expand,
-              //         children: [
-              //           child,
-              //           Positioned(
-              //             height: 0.0,
-              //             left: 0.0,
-              //             right: 0.0,
-              //             child: AnimatedContainer(
-              //               duration: const Duration(milliseconds: 350),
-              //               color: connected
-              //                   ? const Color(0xFF00EE44)
-              //                   : const Color(0xFFEE4400),
-              //               child: AnimatedSwitcher(
-              //                 duration: const Duration(milliseconds: 350),
-              //                 child: connected
-              //                     ? const Text('ONLINE')
-              //                     : Row(
-              //                         mainAxisAlignment: MainAxisAlignment.center,
-              //                         children: const <Widget>[
-              //                           Text('OFFLINE'),
-              //                           SizedBox(width: 8.0),
-              //                           SizedBox(
-              //                             width: 12.0,
-              //                             height: 12.0,
-              //                             child: CircularProgressIndicator(
-              //                               strokeWidth: 2.0,
-              //                               valueColor:
-              //                                   AlwaysStoppedAnimation<Color>(
-              //                                       Colors.white),
-              //                             ),
-              //                           ),
-              //                         ],
-              //                       ),
-              //               ),
-              //             ),
-              //           ),
-              //         ],
-              //       );
-              //     },
-              //     child:
-              isLoading && topbook.length == 0
-                  ? Center(
-                      child: LoadingAnimationWidget.discreteCircle(
-                      color: Color.fromARGB(255, 138, 175, 52),
-                      secondRingColor: Colors.black,
-                      thirdRingColor: Colors.purple,
-                      size: 30,
-                    ))
-                  : RefreshIndicator(
-                      onRefresh: () async {
-                        getAllBooks();
-                        getTopBook();
-                      },
-                      child: SafeArea(
-                        child: SingleChildScrollView(
-                          physics: ScrollPhysics(),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Container(
-                                  height: 40,
-                                  child: TextField(
-                                    showCursor: true,
-                                    readOnly: true,
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SearchPage()));
-                                    },
-                                    decoration: InputDecoration(
-                                      hintText: "Tìm kiếm sách",
-                                      fillColor: Colors.grey[300],
-                                      filled: true,
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 6, horizontal: 12),
-                                      prefixIcon: Icon(
-                                        Icons.search,
-                                        color: Colors.grey,
-                                      ),
-                                      focusedBorder: InputBorder.none,
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20.0)),
-                                      ),
-                                    ),
+          body: callback == 0 && topbook.length == 0
+              ? Center(
+                  child: LoadingAnimationWidget.discreteCircle(
+                  color: Color.fromARGB(255, 138, 175, 52),
+                  secondRingColor: Colors.black,
+                  thirdRingColor: Colors.purple,
+                  size: 30,
+                ))
+              : RefreshIndicator(
+                  onRefresh: () async {
+                    getAllBooks();
+                    getTopBook();
+                  },
+                  child: SafeArea(
+                    child: SingleChildScrollView(
+                      physics: ScrollPhysics(),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Container(
+                              height: 40,
+                              child: TextField(
+                                showCursor: true,
+                                readOnly: true,
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SearchPage()));
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Tìm kiếm sách",
+                                  fillColor: Colors.grey[300],
+                                  filled: true,
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 6, horizontal: 12),
+                                  prefixIcon: Icon(
+                                    Icons.search,
+                                    color: Colors.grey,
+                                  ),
+                                  focusedBorder: InputBorder.none,
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20.0)),
                                   ),
                                 ),
                               ),
-                              SizedBox(height: size.height * 0.02),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 13.0),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Top 5 sách hay',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                height: 200,
-                                margin: EdgeInsets.only(left: 10, right: 10),
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: topbook.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: GestureDetector(
-                                          onTap: () async {
-                                            final SharedPreferences? prefs =
-                                                await _prefs;
-                                            await prefs?.setString('idbook',
-                                                topbook[index].id.toString());
-
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        DetailBookPage(
-                                                            id: topbook[index]
-                                                                .id
-                                                                .toString())));
-                                          },
-                                          child: SizedBox(
-                                            child: Image.network(
-                                                topbook[index].image == null
-                                                    ? "Đang tải..."
-                                                    : 'http://103.77.166.202' +
-                                                        topbook[index]
-                                                            .image
-                                                            .toString()),
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                              SizedBox(height: size.height * 0.04),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 14.0),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Luyện thi IELTS - TOEIC - IT',
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (authController.isLoggedIn.value) {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  PracticePage()));
-                                    } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertPageDialog(),
-                                      );
-                                    }
-                                  },
-                                  child: Image.asset(
-                                      'assets/images/practice1.jpg'),
-                                ),
-                              ),
-                              SizedBox(height: size.height * 0.02),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 14.0),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Thư viện sách',
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: GridView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: listbook.length,
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 2,
-                                            childAspectRatio: 2 / 3.3),
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      final book = listbook[index];
-                                      return InkWell(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () async {
-                                                    final SharedPreferences?
-                                                        prefs = await _prefs;
-                                                    await prefs?.setString(
-                                                        'idbook',
-                                                        book.id.toString());
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                DetailBookPage(
-                                                                    id: book.id
-                                                                        .toString())));
-                                                  },
-                                                  child: Container(
-                                                    height: size.height * 0.25,
-                                                    width: size.width * 0.4,
-                                                    decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                            fit: BoxFit
-                                                                .fitHeight,
-                                                            image: NetworkImage(
-                                                              book.image == null
-                                                                  ? "Đang tải..."
-                                                                  : 'http://103.77.166.202' +
-                                                                      book.image
-                                                                          .toString(),
-                                                            ))),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                    height: size.height * 0.02),
-                                                Container(
-                                                  child: Text(
-                                                    book.bookName == null
-                                                        ? "Đang tải..."
-                                                        : book.bookName
-                                                            .toString(),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 2,
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                    height: size.height * 0.01),
-                                                Text(
-                                                  book.author == null
-                                                      ? "Đang tải..."
-                                                      : 'bởi :' +
-                                                          book.author
-                                                              .toString(),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 2,
-                                                  style: const TextStyle(
-                                                      fontSize: 12),
-                                                ),
-                                              ]),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                color: Colors.grey.shade800,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Center(
-                                      child: Column(
-                                    children: [
-                                      Text(
-                                        "© B4USOLUTION. All Rights Reserved.",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 16),
-                                      ),
-                                      SizedBox(height: 3),
-                                      Text(
-                                        "Privacy Policy Designed by B4USOLUTION",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 16),
-                                      )
-                                    ],
-                                  )),
-                                ),
-                              )
-                            ],
+                            ),
                           ),
-                        ),
+                          SizedBox(height: size.height * 0.02),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 13.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Top 5 sách hay',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 200,
+                            margin: EdgeInsets.only(left: 10, right: 10),
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: topbook.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        final SharedPreferences? prefs =
+                                            await _prefs;
+                                        await prefs?.setString('idbook',
+                                            topbook[index].id.toString());
+
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DetailBookPage(
+                                                        id: topbook[index]
+                                                            .id
+                                                            .toString())));
+                                      },
+                                      child: SizedBox(
+                                        child: Image.network(
+                                            topbook[index].image == null
+                                                ? "Đang tải..."
+                                                : 'http://103.77.166.202' +
+                                                    topbook[index]
+                                                        .image
+                                                        .toString()),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                          ),
+                          SizedBox(height: size.height * 0.04),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 14.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Luyện thi IELTS - TOEIC - IT',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (authController.isLoggedIn.value) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PracticePage()));
+                                } else {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertPageDialog(),
+                                  );
+                                }
+                              },
+                              child: Image.asset('assets/images/practice1.jpg'),
+                            ),
+                          ),
+                          SizedBox(height: size.height * 0.02),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 14.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Thư viện sách',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: GridView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: listbook.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 2 / 3.3),
+                                itemBuilder: (BuildContext context, int index) {
+                                  final book = listbook[index];
+                                  return InkWell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () async {
+                                                final SharedPreferences? prefs =
+                                                    await _prefs;
+                                                await prefs?.setString('idbook',
+                                                    book.id.toString());
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            DetailBookPage(
+                                                                id: book.id
+                                                                    .toString())));
+                                              },
+                                              child: Container(
+                                                height: size.height * 0.25,
+                                                width: size.width * 0.4,
+                                                decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                        fit: BoxFit.fitHeight,
+                                                        image: NetworkImage(
+                                                          book.image == null
+                                                              ? "Đang tải..."
+                                                              : 'http://103.77.166.202' +
+                                                                  book.image
+                                                                      .toString(),
+                                                        ))),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                                height: size.height * 0.02),
+                                            Container(
+                                              child: Text(
+                                                book.bookName == null
+                                                    ? "Đang tải..."
+                                                    : book.bookName.toString(),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                                height: size.height * 0.01),
+                                            Text(
+                                              book.author == null
+                                                  ? "Đang tải..."
+                                                  : 'bởi :' +
+                                                      book.author.toString(),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              style:
+                                                  const TextStyle(fontSize: 12),
+                                            ),
+                                          ]),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          Container(
+                            color: Colors.grey.shade800,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Center(
+                                  child: Column(
+                                children: [
+                                  Text(
+                                    "© B4USOLUTION. All Rights Reserved.",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  ),
+                                  SizedBox(height: 3),
+                                  Text(
+                                    "Privacy Policy Designed by B4USOLUTION",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  )
+                                ],
+                              )),
+                            ),
+                          )
+                        ],
                       ),
-                    )),
+                    ),
+                  ),
+                )),
       // )
     );
   }
