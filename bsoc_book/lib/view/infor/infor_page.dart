@@ -8,7 +8,8 @@ import 'package:bsoc_book/view/terms/terms_page.dart';
 import 'package:bsoc_book/view/update/update_infor.dart';
 import 'package:bsoc_book/view/update/uploadavt_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
-import 'package:flutter_offline/flutter_offline.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+// import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -62,17 +63,17 @@ class _InforPageState extends State<InforPage> {
     }
   }
 
-  Future<void> callback() async {
-    if (connectivity == ConnectivityResult.none) {
-      isLoading = true;
-    } else {
-      getUserDetail();
-    }
-  }
+  // Future<void> callback() async {
+  //   if (connectivity == ConnectivityResult.none) {
+  //     isLoading = true;
+  //   } else {
+  //     getUserDetail();
+  //   }
+  // }
 
   @override
   void initState() {
-    callback();
+    // callback();
     getUserDetail();
     super.initState();
   }
@@ -81,68 +82,70 @@ class _InforPageState extends State<InforPage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-        backgroundColor: Colors.grey[300],
-        appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 138, 175, 52),
-          centerTitle: true,
-          title: Text('Cài đặt tài khoản'),
-          leading: GestureDetector(
-              child: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-              ),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
-              }),
-        ),
-        body: OfflineBuilder(
-          connectivityBuilder: (
-            BuildContext context,
-            ConnectivityResult connectivity,
-            Widget child,
-          ) {
-            final connected = connectivity != ConnectivityResult.none;
-            return Stack(
-              fit: StackFit.expand,
-              children: [
-                child,
-                Positioned(
-                  height: 0.0,
-                  left: 0.0,
-                  right: 0.0,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 350),
-                    color: connected
-                        ? const Color(0xFF00EE44)
-                        : const Color(0xFFEE4400),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 350),
-                      child: connected
-                          ? const Text('ONLINE')
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const <Widget>[
-                                Text('OFFLINE'),
-                                SizedBox(width: 8.0),
-                                SizedBox(
-                                  width: 12.0,
-                                  height: 12.0,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.0,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white),
-                                  ),
-                                ),
-                              ],
-                            ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-          child: callback == ConnectivityResult.none
+      backgroundColor: Colors.grey[300],
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 138, 175, 52),
+        centerTitle: true,
+        title: Text('Cài đặt tài khoản'),
+        leading: GestureDetector(
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            ),
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => HomePage()));
+            }),
+      ),
+      body:
+          //  OfflineBuilder(
+          //   connectivityBuilder: (
+          //     BuildContext context,
+          //     ConnectivityResult connectivity,
+          //     Widget child,
+          //   ) {
+          //     final connected = connectivity != ConnectivityResult.none;
+          //     return Stack(
+          //       fit: StackFit.expand,
+          //       children: [
+          //         child,
+          //         Positioned(
+          //           height: 0.0,
+          //           left: 0.0,
+          //           right: 0.0,
+          //           child: AnimatedContainer(
+          //             duration: const Duration(milliseconds: 350),
+          //             color: connected
+          //                 ? const Color(0xFF00EE44)
+          //                 : const Color(0xFFEE4400),
+          //             child: AnimatedSwitcher(
+          //               duration: const Duration(milliseconds: 350),
+          //               child: connected
+          //                   ? const Text('ONLINE')
+          //                   : Row(
+          //                       mainAxisAlignment: MainAxisAlignment.center,
+          //                       children: const <Widget>[
+          //                         Text('OFFLINE'),
+          //                         SizedBox(width: 8.0),
+          //                         SizedBox(
+          //                           width: 12.0,
+          //                           height: 12.0,
+          //                           child: CircularProgressIndicator(
+          //                             strokeWidth: 2.0,
+          //                             valueColor: AlwaysStoppedAnimation<Color>(
+          //                                 Colors.white),
+          //                           ),
+          //                         ),
+          //                       ],
+          //                     ),
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     );
+          //   },
+          //   child:
+          isLoading
               ? Center(
                   child: LoadingAnimationWidget.discreteCircle(
                   color: Color.fromARGB(255, 138, 175, 52),
@@ -652,7 +655,8 @@ class _InforPageState extends State<InforPage> {
                         ),
                       ],
                     )),
-        ));
+      // )
+    );
   }
 }
 

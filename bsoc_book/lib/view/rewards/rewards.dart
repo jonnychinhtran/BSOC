@@ -2,9 +2,10 @@ import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/data/model/books/allbook_model.dart';
 import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/rewards/rewards_detail.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_offline/flutter_offline.dart';
+// import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -82,17 +83,17 @@ class _RewardsPageState extends State<RewardsPage> {
     }
   }
 
-  Future<void> callback() async {
-    if (connectivity == ConnectivityResult.none) {
-      isLoading = true;
-    } else {
-      getUserDetail();
-    }
-  }
+  // Future<void> callback() async {
+  //   if (connectivity == ConnectivityResult.none) {
+  //     isLoading = true;
+  //   } else {
+  //     getUserDetail();
+  //   }
+  // }
 
   @override
   void initState() {
-    callback();
+    // callback();
     getAllBooks();
     getUserDetail();
     super.initState();
@@ -132,53 +133,55 @@ class _RewardsPageState extends State<RewardsPage> {
                 ],
               )),
         ),
-        body: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              final connected = connectivity != ConnectivityResult.none;
-              return Stack(
-                fit: StackFit.expand,
-                children: [
-                  child,
-                  Positioned(
-                    height: 0.0,
-                    left: 0.0,
-                    right: 0.0,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 350),
-                      color: connected
-                          ? const Color(0xFF00EE44)
-                          : const Color(0xFFEE4400),
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 350),
-                        child: connected
-                            ? const Text('ONLINE')
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const <Widget>[
-                                  Text('OFFLINE'),
-                                  SizedBox(width: 8.0),
-                                  SizedBox(
-                                    width: 12.0,
-                                    height: 12.0,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2.0,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-            child: isLoading
+        body:
+            // OfflineBuilder(
+            //     connectivityBuilder: (
+            //       BuildContext context,
+            //       ConnectivityResult connectivity,
+            //       Widget child,
+            //     ) {
+            //       final connected = connectivity != ConnectivityResult.none;
+            //       return Stack(
+            //         fit: StackFit.expand,
+            //         children: [
+            //           child,
+            //           Positioned(
+            //             height: 0.0,
+            //             left: 0.0,
+            //             right: 0.0,
+            //             child: AnimatedContainer(
+            //               duration: const Duration(milliseconds: 350),
+            //               color: connected
+            //                   ? const Color(0xFF00EE44)
+            //                   : const Color(0xFFEE4400),
+            //               child: AnimatedSwitcher(
+            //                 duration: const Duration(milliseconds: 350),
+            //                 child: connected
+            //                     ? const Text('ONLINE')
+            //                     : Row(
+            //                         mainAxisAlignment: MainAxisAlignment.center,
+            //                         children: const <Widget>[
+            //                           Text('OFFLINE'),
+            //                           SizedBox(width: 8.0),
+            //                           SizedBox(
+            //                             width: 12.0,
+            //                             height: 12.0,
+            //                             child: CircularProgressIndicator(
+            //                               strokeWidth: 2.0,
+            //                               valueColor: AlwaysStoppedAnimation<Color>(
+            //                                   Colors.white),
+            //                             ),
+            //                           ),
+            //                         ],
+            //                       ),
+            //               ),
+            //             ),
+            //           ),
+            //         ],
+            //       );
+            //     },
+            //     child:
+            isLoading
                 ? Center(
                     child: LoadingAnimationWidget.discreteCircle(
                     color: Color.fromARGB(255, 138, 175, 52),
@@ -285,6 +288,8 @@ class _RewardsPageState extends State<RewardsPage> {
                             ),
                           );
                         }),
-                  )));
+                  )
+        // )
+        );
   }
 }

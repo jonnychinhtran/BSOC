@@ -6,12 +6,14 @@ import 'package:bsoc_book/data/model/quiz/question.dart';
 import 'package:bsoc_book/view/quiz/practice.dart';
 import 'package:bsoc_book/view/quiz/result_quiz.dart';
 import 'package:bsoc_book/view/rewards/rewards.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:flutter_offline/flutter_offline.dart';
+// import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:internet_popup/internet_popup.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:http/http.dart' as http;
@@ -33,8 +35,6 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   final TextStyle _questionStyle = TextStyle(
       fontSize: 18.0, fontWeight: FontWeight.w500, color: Colors.white);
-
-  ConnectivityResult connectivity = ConnectivityResult.none;
   late AnimationController controller;
   bool isLoading = true;
   bool isPlaying = false;
@@ -119,17 +119,20 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     }
   }
 
-  Future<void> callback() async {
-    if (connectivity == ConnectivityResult.none) {
-      isLoading = true;
-    } else {}
-  }
-
   startTimer() {
     controller.reverse(from: controller.value == 0 ? 1.0 : controller.value);
     setState(() {
       isPlaying = true;
     });
+  }
+
+  void checkConnect() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult != ConnectivityResult.mobile) {
+      startTimer();
+    } else if (connectivityResult != ConnectivityResult.wifi) {
+      startTimer();
+    }
   }
 
   int _currentIndex = 0;
@@ -139,20 +142,33 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    callback();
+    // InternetPopup().initialize(context: context);
     super.initState();
     _answers = List<Answers?>.filled(widget.questions.length, null);
     controller = AnimationController(
       vsync: this,
       duration: Duration(minutes: widget.headquestion!['duration']),
-      // duration: Duration(seconds: 100)
     );
-// widget.headquestion!['duration']
-    controller.addListener(() {
+    controller.addListener(() async {
+      final connectivityResult = await (Connectivity().checkConnectivity());
+
       notify();
       if (controller.isAnimating) {
         setState(() {
           progress = controller.value;
+        });
+      }
+      if (connectivityResult == ConnectivityResult.none) {
+        controller.stop();
+        setState(() {
+          isPlaying = false;
+        });
+      }
+      if (connectivityResult != ConnectivityResult.wifi) {
+        controller.reverse(from: controller.value);
+        print(controller.reverse);
+        setState(() {
+          isPlaying = true;
         });
       } else {
         setState(() {
@@ -161,6 +177,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
         });
       }
     });
+
     startTimer();
   }
 
@@ -224,224 +241,219 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
             height: 32,
           ),
         ),
-        body: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              final connected = connectivity != ConnectivityResult.none;
-              return Stack(
-                fit: StackFit.expand,
-                children: [
-                  child,
-                  Positioned(
-                    height: 0.0,
-                    left: 0.0,
-                    right: 0.0,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 350),
-                      color: connected
-                          ? const Color(0xFF00EE44)
-                          : const Color(0xFFEE4400),
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 350),
-                        child: connected
-                            ? const Text('ONLINE')
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const <Widget>[
-                                  Text('OFFLINE'),
-                                  SizedBox(width: 8.0),
-                                  SizedBox(
-                                    width: 12.0,
-                                    height: 12.0,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2.0,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                    ),
-                                  ),
-                                ],
-                              ),
+        body:
+            // OfflineBuilder(
+            //     connectivityBuilder: (
+            //       BuildContext context,
+            //       ConnectivityResult connectivity,
+            //       Widget child,
+            //     ) {
+            //       final connected = connectivity != ConnectivityResult.none;
+            //       return
+            //   Stack(
+            //     fit: StackFit.expand,
+            //     children: [
+            //       child,
+            //       Positioned(
+            //         height: 0.0,
+            //         left: 0.0,
+            //         right: 0.0,
+            //         child: AnimatedContainer(
+            //           duration: const Duration(milliseconds: 350),
+            //           color: connected
+            //               ? const Color(0xFF00EE44)
+            //               : const Color(0xFFEE4400),
+            //           child: AnimatedSwitcher(
+            //             duration: const Duration(milliseconds: 350),
+            //             child: connected
+            //                 ? const Text('ONLINE')
+            //                 : Row(
+            //                     mainAxisAlignment: MainAxisAlignment.center,
+            //                     children: const <Widget>[
+            //                       Text('OFFLINE'),
+            //                       SizedBox(width: 8.0),
+            //                       SizedBox(
+            //                         width: 12.0,
+            //                         height: 12.0,
+            //                         child: CircularProgressIndicator(
+            //                           strokeWidth: 2.0,
+            //                           valueColor: AlwaysStoppedAnimation<Color>(
+            //                               Colors.white),
+            //                         ),
+            //                       ),
+            //                     ],
+            //                   ),
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   );
+            // },
+            // child:
+            WillPopScope(
+          onWillPop: _onWillPop,
+          child: Scaffold(
+            key: _key,
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              // title: Center(child: Text('TOEIC PRACTICE')),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+            ),
+            body: Stack(
+              children: <Widget>[
+                Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/bg2.png'),
+                        fit: BoxFit.cover,
                       ),
+                    )),
+                Padding(
+                  padding: const EdgeInsets.only(top: 100, left: 18.0),
+                  child: Container(
+                    color: Color.fromARGB(255, 0, 79, 143),
+                    child: Text('Time left: ' + countText,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        )),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 130, left: 16.0, right: 16.0),
+                  child: AnimatedBuilder(
+                    animation: controller,
+                    builder: (context, child) => LinearPercentIndicator(
+                      width: 310,
+                      animateFromLastPercent: true,
+                      lineHeight: 7.0,
+                      // trailing: Text(
+                      //   countText,
+                      //   style: TextStyle(
+                      //     color: Colors.white,
+                      //     fontSize: 16,
+                      //     fontWeight: FontWeight.w400,
+                      //   ),
+                      // ),
+                      percent: progress,
+                      progressColor: Color.fromARGB(244, 255, 145, 0),
                     ),
                   ),
-                ],
-              );
-            },
-            child: WillPopScope(
-              onWillPop: _onWillPop,
-              child: Scaffold(
-                key: _key,
-                extendBodyBehindAppBar: true,
-                appBar: AppBar(
-                  automaticallyImplyLeading: false,
-                  // title: Center(child: Text('TOEIC PRACTICE')),
-                  elevation: 0,
-                  backgroundColor: Colors.transparent,
                 ),
-                body: Stack(
-                  children: <Widget>[
-                    Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/bg2.png'),
-                            fit: BoxFit.cover,
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 180.0, left: 16.0, right: 16.0, bottom: 16.0),
+                  child: SingleChildScrollView(
+                    child: Column(children: [
+                      Row(
+                        children: <Widget>[
+                          CircleAvatar(
+                            backgroundColor: Colors.white70,
+                            child: Text("${_currentIndex + 1}"),
                           ),
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 100, left: 18.0),
-                      child: Container(
-                        color: Color.fromARGB(255, 0, 79, 143),
-                        child: Text('Time left: ' + countText,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            )),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 130, left: 16.0, right: 16.0),
-                      child: AnimatedBuilder(
-                        animation: controller,
-                        builder: (context, child) => LinearPercentIndicator(
-                          width: 310,
-                          animateFromLastPercent: true,
-                          lineHeight: 7.0,
-                          // trailing: Text(
-                          //   countText,
-                          //   style: TextStyle(
-                          //     color: Colors.white,
-                          //     fontSize: 16,
-                          //     fontWeight: FontWeight.w400,
-                          //   ),
-                          // ),
-                          percent: progress,
-                          progressColor: Color.fromARGB(244, 255, 145, 0),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 180.0, left: 16.0, right: 16.0, bottom: 16.0),
-                      child: SingleChildScrollView(
-                        child: Column(children: [
-                          Row(
-                            children: <Widget>[
-                              CircleAvatar(
-                                backgroundColor: Colors.white70,
-                                child: Text("${_currentIndex + 1}"),
-                              ),
-                              SizedBox(width: 16.0),
-                              Expanded(
-                                child: Text(
-                                  HtmlUnescape().convert(
-                                      widget.questions[_currentIndex].content!),
-                                  softWrap: true,
-                                  style: MediaQuery.of(context).size.width > 800
-                                      ? _questionStyle.copyWith(fontSize: 30.0)
-                                      : _questionStyle,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20.0),
-                          Card(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ...options!
-                                    .map((answer) => RadioListTile<Answers>(
-                                          title: Text(
-                                            HtmlUnescape()
-                                                .convert("${answer.content}"),
-                                            style: MediaQuery.of(context)
-                                                        .size
-                                                        .width >
-                                                    800
-                                                ? TextStyle(fontSize: 30.0)
-                                                : null,
-                                          ),
-                                          groupValue: _answers[_currentIndex],
-                                          value: answer,
-                                          onChanged: (Answers? value) {
-                                            setState(() {
-                                              _answers[_currentIndex] = value!;
-                                              print(_answers[_currentIndex]);
-                                            });
-                                          },
-                                        )),
-                              ],
+                          SizedBox(width: 16.0),
+                          Expanded(
+                            child: Text(
+                              HtmlUnescape().convert(
+                                  widget.questions[_currentIndex].content!),
+                              softWrap: true,
+                              style: MediaQuery.of(context).size.width > 800
+                                  ? _questionStyle.copyWith(fontSize: 30.0)
+                                  : _questionStyle,
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                alignment: Alignment.bottomLeft,
-                                child: _currentIndex == 0
-                                    ? Container()
-                                    : ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          padding: MediaQuery.of(context)
-                                                      .size
-                                                      .width >
-                                                  800
-                                              ? const EdgeInsets.symmetric(
-                                                  vertical: 20.0,
-                                                  horizontal: 64.0)
-                                              : null,
-                                        ),
-                                        child: Text(
-                                          "Câu trước",
-                                          style: MediaQuery.of(context)
-                                                      .size
-                                                      .width >
-                                                  800
-                                              ? TextStyle(fontSize: 30.0)
-                                              : null,
-                                        ),
-                                        onPressed: _backSubmit,
-                                      ),
-                              ),
-                              Container(
-                                alignment: Alignment.bottomRight,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    padding:
-                                        MediaQuery.of(context).size.width > 800
-                                            ? const EdgeInsets.symmetric(
-                                                vertical: 20.0,
-                                                horizontal: 64.0)
-                                            : null,
-                                  ),
-                                  child: Text(
-                                    _currentIndex ==
-                                            (widget.questions.length - 1)
-                                        ? "Gửi bài thi"
-                                        : "Câu tiếp theo",
+                        ],
+                      ),
+                      SizedBox(height: 20.0),
+                      Card(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ...options!.map((answer) => RadioListTile<Answers>(
+                                  title: Text(
+                                    HtmlUnescape().convert("${answer.content}"),
                                     style:
                                         MediaQuery.of(context).size.width > 800
                                             ? TextStyle(fontSize: 30.0)
                                             : null,
                                   ),
-                                  onPressed: _nextSubmit,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ]),
+                                  groupValue: _answers[_currentIndex],
+                                  value: answer,
+                                  onChanged: (Answers? value) {
+                                    setState(() {
+                                      _answers[_currentIndex] = value!;
+                                      print(_answers[_currentIndex]);
+                                    });
+                                  },
+                                )),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            alignment: Alignment.bottomLeft,
+                            child: _currentIndex == 0
+                                ? Container()
+                                : ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      padding:
+                                          MediaQuery.of(context).size.width >
+                                                  800
+                                              ? const EdgeInsets.symmetric(
+                                                  vertical: 20.0,
+                                                  horizontal: 64.0)
+                                              : null,
+                                    ),
+                                    child: Text(
+                                      "Câu trước",
+                                      style: MediaQuery.of(context).size.width >
+                                              800
+                                          ? TextStyle(fontSize: 30.0)
+                                          : null,
+                                    ),
+                                    onPressed: _backSubmit,
+                                  ),
+                          ),
+                          Container(
+                            alignment: Alignment.bottomRight,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                padding: MediaQuery.of(context).size.width > 800
+                                    ? const EdgeInsets.symmetric(
+                                        vertical: 20.0, horizontal: 64.0)
+                                    : null,
+                              ),
+                              child: Text(
+                                _currentIndex == (widget.questions.length - 1)
+                                    ? "Gửi bài thi"
+                                    : "Câu tiếp theo",
+                                style: MediaQuery.of(context).size.width > 800
+                                    ? TextStyle(fontSize: 30.0)
+                                    : null,
+                              ),
+                              onPressed: _nextSubmit,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ]),
+                  ),
                 ),
-              ),
-            )));
+              ],
+            ),
+          ),
+        )
+        // )
+
+        );
   }
 
   void _backSubmit() {

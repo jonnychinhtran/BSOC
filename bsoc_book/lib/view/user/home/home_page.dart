@@ -17,9 +17,10 @@ import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:bsoc_book/view/widgets/alert_dailog.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:bsoc_book/view/widgets/updatedialog.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_offline/flutter_offline.dart';
+// import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -50,7 +51,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    callback();
+    // callback();
     getAllBooks();
     getTopBook();
     _noOfQuestions = 10;
@@ -149,23 +150,23 @@ class _HomePageState extends State<HomePage> {
     return prefs.getString('accessToken') ?? '';
   }
 
-  Future<void> callback() async {
-    if (connectivity == ConnectivityResult.none) {
-      isLoading = true;
-    } else {
-      getAllBooks();
-      getTopBook();
-    }
-  }
+  // Future<void> callback() async {
+  //   if (connectivity == ConnectivityResult.none) {
+  //     isLoading = true;
+  //   } else {
+  //     getAllBooks();
+  //     getTopBook();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return WillPopScope(
-        onWillPop: () {
-          return Future.value(false);
-        },
-        child: Scaffold(
+      onWillPop: () {
+        return Future.value(false);
+      },
+      child: Scaffold(
           drawer: MenuAside(),
           appBar: AppBar(
             backgroundColor: Colors.transparent,
@@ -254,54 +255,56 @@ class _HomePageState extends State<HomePage> {
                           ])),
             ],
           ),
-          body: OfflineBuilder(
-              connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-              ) {
-                final connected = connectivity != ConnectivityResult.none;
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    child,
-                    Positioned(
-                      height: 0.0,
-                      left: 0.0,
-                      right: 0.0,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 350),
-                        color: connected
-                            ? const Color(0xFF00EE44)
-                            : const Color(0xFFEE4400),
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 350),
-                          child: connected
-                              ? const Text('ONLINE')
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const <Widget>[
-                                    Text('OFFLINE'),
-                                    SizedBox(width: 8.0),
-                                    SizedBox(
-                                      width: 12.0,
-                                      height: 12.0,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2.0,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.white),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-              child: isLoading && topbook.length == 0
+          body:
+              //  OfflineBuilder(
+              //     connectivityBuilder: (
+              //       BuildContext context,
+              //       ConnectivityResult connectivity,
+              //       Widget child,
+              //     ) {
+              //       final connected = connectivity != ConnectivityResult.none;
+              //       return Stack(
+              //         fit: StackFit.expand,
+              //         children: [
+              //           child,
+              //           Positioned(
+              //             height: 0.0,
+              //             left: 0.0,
+              //             right: 0.0,
+              //             child: AnimatedContainer(
+              //               duration: const Duration(milliseconds: 350),
+              //               color: connected
+              //                   ? const Color(0xFF00EE44)
+              //                   : const Color(0xFFEE4400),
+              //               child: AnimatedSwitcher(
+              //                 duration: const Duration(milliseconds: 350),
+              //                 child: connected
+              //                     ? const Text('ONLINE')
+              //                     : Row(
+              //                         mainAxisAlignment: MainAxisAlignment.center,
+              //                         children: const <Widget>[
+              //                           Text('OFFLINE'),
+              //                           SizedBox(width: 8.0),
+              //                           SizedBox(
+              //                             width: 12.0,
+              //                             height: 12.0,
+              //                             child: CircularProgressIndicator(
+              //                               strokeWidth: 2.0,
+              //                               valueColor:
+              //                                   AlwaysStoppedAnimation<Color>(
+              //                                       Colors.white),
+              //                             ),
+              //                           ),
+              //                         ],
+              //                       ),
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       );
+              //     },
+              //     child:
+              isLoading && topbook.length == 0
                   ? Center(
                       child: LoadingAnimationWidget.discreteCircle(
                       color: Color.fromARGB(255, 138, 175, 52),
@@ -578,7 +581,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     )),
-        ));
+      // )
+    );
   }
 }
 

@@ -2,7 +2,7 @@ import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/view/rewards/rewards.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_offline/flutter_offline.dart';
+// import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,105 +75,108 @@ class _RewardsDetailState extends State<RewardsDetail> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => RewardsPage()));
               })),
-      body: OfflineBuilder(
-        connectivityBuilder: (
-          BuildContext context,
-          ConnectivityResult connectivity,
-          Widget child,
-        ) {
-          final connected = connectivity != ConnectivityResult.none;
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              child,
-              Positioned(
-                height: 0.0,
-                left: 0.0,
-                right: 0.0,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 350),
-                  color: connected
-                      ? const Color(0xFF00EE44)
-                      : const Color(0xFFEE4400),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 350),
-                    child: connected
-                        ? const Text('ONLINE')
-                        : Row(
+      body:
+          // OfflineBuilder(
+          //   connectivityBuilder: (
+          //     BuildContext context,
+          //     ConnectivityResult connectivity,
+          //     Widget child,
+          //   ) {
+          //     final connected = connectivity != ConnectivityResult.none;
+          //     return Stack(
+          //       fit: StackFit.expand,
+          //       children: [
+          //         child,
+          //         Positioned(
+          //           height: 0.0,
+          //           left: 0.0,
+          //           right: 0.0,
+          //           child: AnimatedContainer(
+          //             duration: const Duration(milliseconds: 350),
+          //             color: connected
+          //                 ? const Color(0xFF00EE44)
+          //                 : const Color(0xFFEE4400),
+          //             child: AnimatedSwitcher(
+          //               duration: const Duration(milliseconds: 350),
+          //               child: connected
+          //                   ? const Text('ONLINE')
+          //                   : Row(
+          //                       mainAxisAlignment: MainAxisAlignment.center,
+          //                       children: const <Widget>[
+          //                         Text('OFFLINE'),
+          //                         SizedBox(width: 8.0),
+          //                         SizedBox(
+          //                           width: 12.0,
+          //                           height: 12.0,
+          //                           child: CircularProgressIndicator(
+          //                             strokeWidth: 2.0,
+          //                             valueColor: AlwaysStoppedAnimation<Color>(
+          //                                 Colors.white),
+          //                           ),
+          //                         ),
+          //                       ],
+          //                     ),
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     );
+          //   },
+          //   child:
+          isLoading
+              ? Center(
+                  child: LoadingAnimationWidget.discreteCircle(
+                  color: Color.fromARGB(255, 138, 175, 52),
+                  secondRingColor: Colors.black,
+                  thirdRingColor: Colors.purple,
+                  size: 30,
+                ))
+              : RefreshIndicator(
+                  onRefresh: () async {},
+                  child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const <Widget>[
-                              Text('OFFLINE'),
-                              SizedBox(width: 8.0),
-                              SizedBox(
-                                width: 12.0,
-                                height: 12.0,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.0,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                ),
-                              ),
+                            children: <Widget>[
+                              Container(
+                                  height: 195,
+                                  width: 150,
+                                  child: Material(
+                                    child: Image.network(
+                                      dataBook?['image'] == null
+                                          ? "Đang tải..."
+                                          : 'http://103.77.166.202' +
+                                              dataBook?['image'],
+                                      fit: BoxFit.fill,
+                                    ),
+                                  )),
+                              SizedBox(height: size.height * 0.02),
+                              Text(
+                                  dataBook?['bookName'] == null
+                                      ? "Đang tải..."
+                                      : dataBook?['bookName'],
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                              SizedBox(height: size.height * 0.02),
+                              Text(
+                                  dataBook?['description'] == null
+                                      ? "Đang tải..."
+                                      : dataBook?['description'],
+                                  textAlign: TextAlign.justify,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  )),
                             ],
                           ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-        child: isLoading
-            ? Center(
-                child: LoadingAnimationWidget.discreteCircle(
-                color: Color.fromARGB(255, 138, 175, 52),
-                secondRingColor: Colors.black,
-                thirdRingColor: Colors.purple,
-                size: 30,
-              ))
-            : RefreshIndicator(
-                onRefresh: () async {},
-                child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                                height: 195,
-                                width: 150,
-                                child: Material(
-                                  child: Image.network(
-                                    dataBook?['image'] == null
-                                        ? "Đang tải..."
-                                        : 'http://103.77.166.202' +
-                                            dataBook?['image'],
-                                    fit: BoxFit.fill,
-                                  ),
-                                )),
-                            SizedBox(height: size.height * 0.02),
-                            Text(
-                                dataBook?['bookName'] == null
-                                    ? "Đang tải..."
-                                    : dataBook?['bookName'],
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
-                            SizedBox(height: size.height * 0.02),
-                            Text(
-                                dataBook?['description'] == null
-                                    ? "Đang tải..."
-                                    : dataBook?['description'],
-                                textAlign: TextAlign.justify,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                )),
-                          ],
                         ),
-                      ),
-                    )),
-              ),
-      ),
+                      )),
+                  // ),
+                ),
       floatingActionButton: SizedBox(
         height: 30.0,
         child: dataBook?['payment'] != true

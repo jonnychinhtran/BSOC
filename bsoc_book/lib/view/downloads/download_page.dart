@@ -1,7 +1,8 @@
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_offline/flutter_offline.dart';
+// import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -98,41 +99,43 @@ class _DownloadPageState extends State<DownloadPage> {
             ),
           ],
         ),
-        body: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              if (connectivity == ConnectivityResult.none) {
-                return Container(
-                  color: Colors.white70,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Image.asset('assets/images/wifi.png'),
-                          Text(
-                            'Không có kết nối Internet',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            'Vui lòng kiểm tra kết nối internet và thử lại',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              } else {
-                return child;
-              }
-            },
-            child: callback == ConnectivityResult.none
+        body:
+            // OfflineBuilder(
+            //     connectivityBuilder: (
+            //       BuildContext context,
+            //       ConnectivityResult connectivity,
+            //       Widget child,
+            //     ) {
+            //       if (connectivity == ConnectivityResult.none) {
+            //         return Container(
+            //           color: Colors.white70,
+            //           child: Center(
+            //             child: Padding(
+            //               padding: const EdgeInsets.all(16.0),
+            //               child: Column(
+            //                 children: [
+            //                   Image.asset('assets/images/wifi.png'),
+            //                   Text(
+            //                     'Không có kết nối Internet',
+            //                     style: TextStyle(
+            //                         color: Colors.black,
+            //                         fontWeight: FontWeight.bold),
+            //                   ),
+            //                   Text(
+            //                     'Vui lòng kiểm tra kết nối internet và thử lại',
+            //                     style: TextStyle(color: Colors.black),
+            //                   ),
+            //                 ],
+            //               ),
+            //             ),
+            //           ),
+            //         );
+            //       } else {
+            //         return child;
+            //       }
+            //     },
+            //     child:
+            isLoading
                 ? Center(
                     child: LoadingAnimationWidget.discreteCircle(
                     color: Color.fromARGB(255, 138, 175, 52),
@@ -217,6 +220,8 @@ class _DownloadPageState extends State<DownloadPage> {
                               ),
                             )
                           : Container();
-                    })));
+                    })
+        // )
+        );
   }
 }

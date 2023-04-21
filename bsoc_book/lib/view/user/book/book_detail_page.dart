@@ -8,10 +8,11 @@ import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:bsoc_book/view/widgets/alert_dailog.dart';
 import 'package:bsoc_book/view/widgets/charge_book.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_offline/flutter_offline.dart';
+// import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
@@ -193,54 +194,56 @@ class _DetailBookPageState extends State<DetailBookPage>
                     icon: Icon(Icons.download_for_offline))
               ],
             ),
-            body: OfflineBuilder(
-              connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-              ) {
-                final connected = connectivity != ConnectivityResult.none;
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    child,
-                    Positioned(
-                      height: 0.0,
-                      left: 0.0,
-                      right: 0.0,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 350),
-                        color: connected
-                            ? const Color(0xFF00EE44)
-                            : const Color(0xFFEE4400),
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 350),
-                          child: connected
-                              ? const Text('ONLINE')
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const <Widget>[
-                                    Text('OFFLINE'),
-                                    SizedBox(width: 8.0),
-                                    SizedBox(
-                                      width: 12.0,
-                                      height: 12.0,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2.0,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.white),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-              child: isLoading
+            body: 
+            // OfflineBuilder(
+            //   connectivityBuilder: (
+            //     BuildContext context,
+            //     ConnectivityResult connectivity,
+            //     Widget child,
+            //   ) {
+            //     final connected = connectivity != ConnectivityResult.none;
+            //     return Stack(
+            //       fit: StackFit.expand,
+            //       children: [
+            //         child,
+            //         Positioned(
+            //           height: 0.0,
+            //           left: 0.0,
+            //           right: 0.0,
+            //           child: AnimatedContainer(
+            //             duration: const Duration(milliseconds: 350),
+            //             color: connected
+            //                 ? const Color(0xFF00EE44)
+            //                 : const Color(0xFFEE4400),
+            //             child: AnimatedSwitcher(
+            //               duration: const Duration(milliseconds: 350),
+            //               child: connected
+            //                   ? const Text('ONLINE')
+            //                   : Row(
+            //                       mainAxisAlignment: MainAxisAlignment.center,
+            //                       children: const <Widget>[
+            //                         Text('OFFLINE'),
+            //                         SizedBox(width: 8.0),
+            //                         SizedBox(
+            //                           width: 12.0,
+            //                           height: 12.0,
+            //                           child: CircularProgressIndicator(
+            //                             strokeWidth: 2.0,
+            //                             valueColor:
+            //                                 AlwaysStoppedAnimation<Color>(
+            //                                     Colors.white),
+            //                           ),
+            //                         ),
+            //                       ],
+            //                     ),
+            //             ),
+            //           ),
+            //         ),
+            //       ],
+            //     );
+            //   },
+            //   child:
+               isLoading
                   ? Center(
                       child: LoadingAnimationWidget.discreteCircle(
                       color: Color.fromARGB(255, 138, 175, 52),
@@ -658,7 +661,9 @@ class _DetailBookPageState extends State<DetailBookPage>
                         ],
                       ),
                     ),
-            )));
+            )
+            // )
+            );
   }
 }
 
@@ -1640,41 +1645,43 @@ class _BookmarkPageState extends State<BookmarkPage> {
             },
           ),
         ),
-        body: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              if (connectivity == ConnectivityResult.none) {
-                return Container(
-                  color: Colors.white70,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Image.asset('assets/images/wifi.png'),
-                          Text(
-                            'Không có kết nối Internet',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            'Vui lòng kiểm tra kết nối internet và thử lại',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              } else {
-                return child;
-              }
-            },
-            child: callback == ConnectivityResult.none
+        body: 
+        // OfflineBuilder(
+        //     connectivityBuilder: (
+        //       BuildContext context,
+        //       ConnectivityResult connectivity,
+        //       Widget child,
+        //     ) {
+        //       if (connectivity == ConnectivityResult.none) {
+        //         return Container(
+        //           color: Colors.white70,
+        //           child: Center(
+        //             child: Padding(
+        //               padding: const EdgeInsets.all(16.0),
+        //               child: Column(
+        //                 children: [
+        //                   Image.asset('assets/images/wifi.png'),
+        //                   Text(
+        //                     'Không có kết nối Internet',
+        //                     style: TextStyle(
+        //                         color: Colors.black,
+        //                         fontWeight: FontWeight.bold),
+        //                   ),
+        //                   Text(
+        //                     'Vui lòng kiểm tra kết nối internet và thử lại',
+        //                     style: TextStyle(color: Colors.black),
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //           ),
+        //         );
+        //       } else {
+        //         return child;
+        //       }
+        //     },
+        //     child:
+             isLoading
                 ? Center(
                     child: LoadingAnimationWidget.discreteCircle(
                     color: Color.fromARGB(255, 138, 175, 52),
@@ -1731,7 +1738,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                   color: Colors.red)),
                         ),
                       );
-                    })));
+                    })
+                    // )
+                    );
   }
 }
 
