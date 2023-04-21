@@ -126,15 +126,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     });
   }
 
-  void checkConnect() async {
-    final connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult != ConnectivityResult.mobile) {
-      startTimer();
-    } else if (connectivityResult != ConnectivityResult.wifi) {
-      startTimer();
-    }
-  }
-
   int _currentIndex = 0;
   List<Answers?> _answers = [];
   List<QuestionResult>? _questionResults = [];
@@ -142,7 +133,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    // InternetPopup().initialize(context: context);
+    InternetPopup().initialize(context: context);
     super.initState();
     _answers = List<Answers?>.filled(widget.questions.length, null);
     controller = AnimationController(
@@ -151,25 +142,25 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     );
     controller.addListener(() async {
       final connectivityResult = await (Connectivity().checkConnectivity());
-
       notify();
       if (controller.isAnimating) {
         setState(() {
           progress = controller.value;
         });
-      }
-      if (connectivityResult == ConnectivityResult.none) {
-        controller.stop();
-        setState(() {
-          isPlaying = false;
-        });
-      }
-      if (connectivityResult != ConnectivityResult.wifi) {
-        controller.reverse(from: controller.value);
-        print(controller.reverse);
-        setState(() {
-          isPlaying = true;
-        });
+        if (connectivityResult == ConnectivityResult.none) {
+          controller.stop();
+          setState(() {
+            isPlaying = false;
+          });
+        }
+        if (connectivityResult != ConnectivityResult.wifi) {
+          controller.reverse(
+              from: controller.value == 0 ? 1.0 : controller.value);
+          setState(() {
+            progress = controller.value;
+            isPlaying = true;
+          });
+        }
       } else {
         setState(() {
           progress = 1.0;
@@ -177,7 +168,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
         });
       }
     });
-
     startTimer();
   }
 

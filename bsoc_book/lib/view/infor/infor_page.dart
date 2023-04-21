@@ -14,6 +14,7 @@ import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:internet_popup/internet_popup.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,19 +64,11 @@ class _InforPageState extends State<InforPage> {
     }
   }
 
-  // Future<void> callback() async {
-  //   if (connectivity == ConnectivityResult.none) {
-  //     isLoading = true;
-  //   } else {
-  //     getUserDetail();
-  //   }
-  // }
-
   @override
   void initState() {
-    // callback();
-    getUserDetail();
+    InternetPopup().initialize(context: context);
     super.initState();
+    getUserDetail();
   }
 
   @override

@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:internet_popup/internet_popup.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:new_version/new_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,8 +51,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    InternetPopup().initialize(context: context);
     super.initState();
-    // callback();
     getAllBooks();
     getTopBook();
     _noOfQuestions = 10;

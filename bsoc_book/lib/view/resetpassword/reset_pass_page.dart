@@ -4,6 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:internet_popup/internet_popup.dart';
 
 class ResetPassPage extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class _ResetPassPageState extends State<ResetPassPage> {
 
   @override
   void initState() {
+    InternetPopup().initialize(context: context);
     super.initState();
   }
 

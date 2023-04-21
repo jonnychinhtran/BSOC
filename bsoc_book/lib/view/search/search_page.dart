@@ -4,6 +4,7 @@ import 'package:bsoc_book/data/model/books/book_model.dart'
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_popup/internet_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -48,6 +49,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void initState() {
+    InternetPopup().initialize(context: context);
     _getAllBooks();
     super.initState();
   }

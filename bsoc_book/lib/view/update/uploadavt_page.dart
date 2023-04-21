@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:internet_popup/internet_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UploadAvatar extends StatefulWidget {
@@ -64,6 +65,7 @@ class _UploadAvatarState extends State<UploadAvatar> {
 
   @override
   void initState() {
+    InternetPopup().initialize(context: context);
     _uploadImage();
     super.initState();
   }
