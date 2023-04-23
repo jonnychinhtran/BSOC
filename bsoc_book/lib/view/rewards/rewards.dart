@@ -76,7 +76,7 @@ class _RewardsPageState extends State<RewardsPage> {
       if (e.isNoConnectionError) {
         // Get.dialog(DialogError());
       } else {
-        Get.snackbar("error", e.toString());
+        // Get.snackbar("error", e.toString());
         print(e);
         rethrow;
       }

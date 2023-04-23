@@ -61,7 +61,7 @@ class _PracticePageState extends State<PracticePage> {
       }
       print("res: ${response.data}");
     } catch (e) {
-      Get.snackbar("error", e.toString());
+      // Get.snackbar("error", e.toString());
       print(e);
     }
   }
