@@ -119,9 +119,18 @@ class _DetailBookPageState extends State<DetailBookPage>
     }
   }
 
+  Future<void> callback() async {
+    if (connectivity == ConnectivityResult.none) {
+      isLoading = true;
+    } else {
+      getItemBooks();
+    }
+  }
+
   @override
   void initState() {
     InternetPopup().initialize(context: context);
+    callback();
     getItemBooks();
     super.initState();
   }
@@ -194,7 +203,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                   icon: Icon(Icons.download_for_offline))
             ],
           ),
-          body: isLoading && listReponse == 0
+          body: isLoading && callback == null
               ? Center(
                   child: LoadingAnimationWidget.discreteCircle(
                   color: Color.fromARGB(255, 138, 175, 52),
@@ -218,7 +227,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                             width: 150,
                             child: Material(
                               child: Image.network(
-                                dataBook!['image'] == null
+                                dataBook?['image'] == null
                                     ? "Đang tải..."
                                     : 'http://103.77.166.202' +
                                         dataBook?['image'],
