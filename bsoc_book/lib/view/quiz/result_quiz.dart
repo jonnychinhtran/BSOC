@@ -267,7 +267,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                   onPressed: () {
                                     Get.to(PracticePage());
                                   },
-                                  child: Text('Trở về trang chủ'),
+                                  child: Text('Trở về trang chủ đề thi'),
                                 ),
                               ),
                             ),

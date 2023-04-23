@@ -1,12 +1,11 @@
+import 'package:bsoc_book/view/quiz/quiz_options.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:bsoc_book/data/model/quiz/category.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
 import 'package:bsoc_book/data/network/api_question.dart';
-import 'package:bsoc_book/view/quiz/quiz.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:bsoc_book/controller/authen/authen_controller.dart';
 import 'package:internet_popup/internet_popup.dart';
@@ -180,11 +179,7 @@ class _PracticePageState extends State<PracticePage> {
                             height: 2,
                             color: Colors.white,
                           ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              dropdownValue = newValue!;
-                            });
-                          },
+
                           items: categoryList.map<DropdownMenuItem<String>>(
                               (Category standard) {
                             return DropdownMenuItem<String>(
@@ -192,43 +187,29 @@ class _PracticePageState extends State<PracticePage> {
                               child: Text(standard.name.toString()),
                             );
                           }).toList(),
+                          onChanged: (String? newValue) async {
+                            setState(() {
+                              dropdownValue = newValue!;
+                            });
+                            _noOfQuestions =
+                                int.parse(dropdownValue.toString());
+                            print(_noOfQuestions);
+                            List<Question> questions =
+                                await getQuestions(_noOfQuestions);
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (sheetContext) => BottomSheet(
+                                builder: (_) => QuizOptionsDialog(
+                                  idPractice: dropdownValue,
+                                  questions: questions,
+                                  headquestion: headquestion,
+                                ),
+                                onClosing: () {},
+                              ),
+                            );
+                          },
                         )),
                     SizedBox(height: size.height * 0.01),
-                    ElevatedButton(
-                        onPressed: () async {
-                          _noOfQuestions = int.parse(dropdownValue.toString());
-                          print(_noOfQuestions);
-                          List<Question> questions =
-                              await getQuestions(_noOfQuestions);
-                          if (headquestion!['totalQuestion'] == 0) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("Thông báo"),
-                                  content: Text("Đề thi đang được cập nhật"),
-                                  actions: [
-                                    TextButton(
-                                      child: Text("OK"),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => QuizPage(
-                                          questions: questions,
-                                          headquestion: headquestion,
-                                        )));
-                          }
-                        },
-                        child: Text('Bắt đầu thi')),
                   ],
                 ),
               ),
