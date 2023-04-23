@@ -1,17 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:bsoc_book/controller/authen/authen_controller.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
-import 'package:bsoc_book/data/model/quiz/question.dart';
-import 'package:bsoc_book/data/network/api_question.dart';
-import 'package:bsoc_book/data/model/bookmark/bookmark_model.dart';
 import 'package:bsoc_book/data/model/books/allbook_model.dart';
-import 'package:bsoc_book/data/model/books/book_model.dart';
 import 'package:bsoc_book/data/model/books/topbook_model.dart';
 import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/quiz/practice.dart';
-import 'package:bsoc_book/view/quiz/quiz.dart';
 import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:bsoc_book/view/widgets/alert_dailog.dart';
@@ -20,7 +14,6 @@ import 'package:bsoc_book/view/widgets/updatedialog.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:internet_popup/internet_popup.dart';
@@ -47,8 +40,6 @@ class _HomePageState extends State<HomePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool isLoading = true;
 
-  int? _noOfQuestions;
-
   @override
   void initState() {
     InternetPopup().initialize(context: context);
@@ -56,8 +47,6 @@ class _HomePageState extends State<HomePage> {
     getAllBooks();
     getTopBook();
     super.initState();
-
-    _noOfQuestions = 10;
 
     final newVersion = NewVersion(
       iOSId: 'com.b4usolution.app.bsoc',

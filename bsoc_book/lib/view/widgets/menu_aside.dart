@@ -41,7 +41,7 @@ class _MenuAsideState extends State<MenuAside> {
       if (response.statusCode == 200) {
         mapDemo = response.data;
         var phoneuser = mapDemo!['phone'].toString();
-        var fullname = mapDemo!['fullname'].toString();
+        // var fullname = mapDemo!['fullname'].toString();
         final SharedPreferences? prefs = await _prefs;
         await prefs?.setString('phoneUser', phoneuser);
 

@@ -33,12 +33,11 @@ class _RewardsPageState extends State<RewardsPage> {
       });
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
-      var response =
-          await Dio().get('http://103.77.166.202:9999/api/user/profile',
-              options: Options(headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer $token',
-              }));
+      var response = await Dio().get('http://103.77.166.202/api/user/profile',
+          options: Options(headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          }));
       if (response.statusCode == 200) {
         datauser = response.data;
         await prefs.setString('username', datauser!['username']);
@@ -84,17 +83,18 @@ class _RewardsPageState extends State<RewardsPage> {
     }
   }
 
-  // Future<void> callback() async {
-  //   if (connectivity == ConnectivityResult.none) {
-  //     isLoading = true;
-  //   } else {
-  //     getUserDetail();
-  //   }
-  // }
+  Future<void> callback() async {
+    if (connectivity == ConnectivityResult.none) {
+      isLoading = true;
+    } else {
+      getAllBooks();
+    }
+  }
 
   @override
   void initState() {
     InternetPopup().initialize(context: context);
+    callback();
     getAllBooks();
     getUserDetail();
     super.initState();
@@ -134,162 +134,112 @@ class _RewardsPageState extends State<RewardsPage> {
                 ],
               )),
         ),
-        body:
-            // OfflineBuilder(
-            //     connectivityBuilder: (
-            //       BuildContext context,
-            //       ConnectivityResult connectivity,
-            //       Widget child,
-            //     ) {
-            //       final connected = connectivity != ConnectivityResult.none;
-            //       return Stack(
-            //         fit: StackFit.expand,
-            //         children: [
-            //           child,
-            //           Positioned(
-            //             height: 0.0,
-            //             left: 0.0,
-            //             right: 0.0,
-            //             child: AnimatedContainer(
-            //               duration: const Duration(milliseconds: 350),
-            //               color: connected
-            //                   ? const Color(0xFF00EE44)
-            //                   : const Color(0xFFEE4400),
-            //               child: AnimatedSwitcher(
-            //                 duration: const Duration(milliseconds: 350),
-            //                 child: connected
-            //                     ? const Text('ONLINE')
-            //                     : Row(
-            //                         mainAxisAlignment: MainAxisAlignment.center,
-            //                         children: const <Widget>[
-            //                           Text('OFFLINE'),
-            //                           SizedBox(width: 8.0),
-            //                           SizedBox(
-            //                             width: 12.0,
-            //                             height: 12.0,
-            //                             child: CircularProgressIndicator(
-            //                               strokeWidth: 2.0,
-            //                               valueColor: AlwaysStoppedAnimation<Color>(
-            //                                   Colors.white),
-            //                             ),
-            //                           ),
-            //                         ],
-            //                       ),
-            //               ),
-            //             ),
-            //           ),
-            //         ],
-            //       );
-            //     },
-            //     child:
-            isLoading
-                ? Center(
-                    child: LoadingAnimationWidget.discreteCircle(
-                    color: Color.fromARGB(255, 138, 175, 52),
-                    secondRingColor: Colors.black,
-                    thirdRingColor: Colors.purple,
-                    size: 30,
-                  ))
-                : RefreshIndicator(
-                    onRefresh: () async {
-                      getAllBooks();
-                    },
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: const ScrollPhysics(),
-                        itemCount: listbook.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final book = listbook[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RewardsDetail(
-                                          userId: datauser!['id'].toString(),
-                                          bookId: book.id.toString())));
-                            },
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 8.0, bottom: 8.0),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      height: size.height * 0.20,
-                                      width: size.width * 0.4,
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              fit: BoxFit.fitHeight,
-                                              image: NetworkImage(
-                                                book.image == null
-                                                    ? "Đang tải..."
-                                                    : 'http://103.77.166.202' +
-                                                        book.image.toString(),
-                                              ))),
-                                    ),
-                                    Container(
-                                      width: 200,
-                                      margin: EdgeInsets.only(left: 8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            book.bookName == null
+        body: isLoading && callback == 0
+            ? Center(
+                child: LoadingAnimationWidget.discreteCircle(
+                color: Color.fromARGB(255, 138, 175, 52),
+                secondRingColor: Colors.black,
+                thirdRingColor: Colors.purple,
+                size: 30,
+              ))
+            : RefreshIndicator(
+                onRefresh: () async {
+                  getAllBooks();
+                },
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const ScrollPhysics(),
+                    itemCount: listbook.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final book = listbook[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RewardsDetail(
+                                      userId: datauser!['id'].toString(),
+                                      bookId: book.id.toString())));
+                        },
+                        child: Card(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: size.height * 0.20,
+                                  width: size.width * 0.4,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          fit: BoxFit.fitHeight,
+                                          image: NetworkImage(
+                                            book.image == null
                                                 ? "Đang tải..."
-                                                : book.bookName.toString(),
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          SizedBox(height: size.height * 0.02),
-                                          Align(
-                                            alignment: Alignment.bottomLeft,
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  height: 20,
-                                                  margin: EdgeInsets.only(
-                                                      right: 8.0),
-                                                  child: Image.asset(
-                                                      'assets/images/point.png'),
-                                                ),
-                                                Container(
-                                                  margin: EdgeInsets.only(
-                                                      right: 10.0),
-                                                  child: Text(
-                                                    '1',
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors
-                                                            .orangeAccent
-                                                            .shade700),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
+                                                : 'http://103.77.166.202' +
+                                                    book.image.toString(),
+                                          ))),
                                 ),
-                              ),
+                                Container(
+                                  width: 200,
+                                  margin: EdgeInsets.only(left: 8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        book.bookName == null
+                                            ? "Đang tải..."
+                                            : book.bookName.toString(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      SizedBox(height: size.height * 0.02),
+                                      Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              height: 20,
+                                              margin:
+                                                  EdgeInsets.only(right: 8.0),
+                                              child: Image.asset(
+                                                  'assets/images/point.png'),
+                                            ),
+                                            Container(
+                                              margin:
+                                                  EdgeInsets.only(right: 10.0),
+                                              child: Text(
+                                                '1',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors
+                                                        .orangeAccent.shade700),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
                             ),
-                          );
-                        }),
-                  )
+                          ),
+                        ),
+                      );
+                    }),
+              )
         // )
         );
   }

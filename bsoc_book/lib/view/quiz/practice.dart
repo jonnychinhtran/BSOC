@@ -1,14 +1,9 @@
-import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:bsoc_book/controller/quiz/category_controller.dart';
 import 'package:bsoc_book/data/model/quiz/category.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
 import 'package:bsoc_book/data/network/api_question.dart';
 import 'package:bsoc_book/view/quiz/quiz.dart';
-import 'package:bsoc_book/view/quiz/topic_practice.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
-import 'package:bsoc_book/view/widgets/alert_dailog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_offline/flutter_offline.dart';
@@ -51,7 +46,7 @@ class _PracticePageState extends State<PracticePage> {
       final prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
       var response = await Dio().get(
-          'http://103.77.166.202:9999/api/quiz/list-subject',
+          'http://103.77.166.202/api/quiz/list-subject',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;

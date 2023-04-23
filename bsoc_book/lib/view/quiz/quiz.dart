@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:bsoc_book/data/model/quiz/QuestionResult.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
@@ -9,16 +8,12 @@ import 'package:bsoc_book/view/rewards/rewards.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-// import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:internet_popup/internet_popup.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:get/get_connect/http/src/multipart/form_data.dart';
 
 Map<String, dynamic>? quizResult;
 
@@ -60,7 +55,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
       final dio = Dio(); // Create Dio instance
       final response = await dio.post(
-          'http://103.77.166.202:9999/api/quiz/check-result',
+          'http://103.77.166.202/api/quiz/check-result',
           options: Options(
               contentType: 'application/json',
               headers: {'Authorization': 'Bearer $token'}),
@@ -448,7 +443,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
       final dio = Dio(); // Create Dio instance
       final response = await dio.post(
-          'http://103.77.166.202:9999/api/quiz/check-result',
+          'http://103.77.166.202/api/quiz/check-result',
           options: Options(
               contentType: 'application/json',
               headers: {'Authorization': 'Bearer $token'}),

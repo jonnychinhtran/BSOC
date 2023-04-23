@@ -1,7 +1,4 @@
 import 'package:bsoc_book/controller/authen/authen_controller.dart';
-import 'package:bsoc_book/routes/app_pages.dart';
-import 'package:bsoc_book/routes/app_routes.dart';
-import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';

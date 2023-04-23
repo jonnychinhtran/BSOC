@@ -21,7 +21,7 @@ class CategoryController extends GetxController {
       final prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
       var response = await Dio().get(
-          'http://103.77.166.202:9999/api/quiz/list-subject',
+          'http://103.77.166.202/api/quiz/list-subject',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
       if (response.statusCode == 200) {
         List data = jsonDecode(response.data);

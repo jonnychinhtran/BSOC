@@ -1,10 +1,7 @@
-import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:open_store/open_store.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UpdateDialog extends StatefulWidget {
   final String version;

@@ -41,12 +41,11 @@ class _InforPageState extends State<InforPage> {
       });
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
-      var response =
-          await Dio().get('http://103.77.166.202:9999/api/user/profile',
-              options: Options(headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer $token',
-              }));
+      var response = await Dio().get('http://103.77.166.202/api/user/profile',
+          options: Options(headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          }));
       if (response.statusCode == 200) {
         datauser = response.data;
         await prefs.setString('username', datauser!['username']);

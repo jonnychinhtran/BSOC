@@ -1,10 +1,8 @@
-import 'dart:async';
 import 'package:bsoc_book/data/model/quiz/question.dart';
 import 'package:bsoc_book/view/quiz/check_answers.dart';
 import 'package:bsoc_book/view/quiz/practice.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:internet_popup/internet_popup.dart';
 

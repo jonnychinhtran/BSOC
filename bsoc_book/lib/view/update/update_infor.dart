@@ -1,7 +1,5 @@
 import 'package:bsoc_book/view/infor/infor_page.dart';
-import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:internet_popup/internet_popup.dart';

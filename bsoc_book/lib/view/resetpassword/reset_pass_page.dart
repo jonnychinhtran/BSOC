@@ -1,6 +1,5 @@
 import 'package:bsoc_book/controller/reset/reset_controller.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

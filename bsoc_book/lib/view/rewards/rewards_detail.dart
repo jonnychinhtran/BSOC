@@ -147,7 +147,7 @@ class _RewardsDetailState extends State<RewardsDetail> {
                       int? bookid = dataBook!['id'];
 
                       var response = await Dio().post(
-                          'http://103.77.166.202:9999/api/payment/open-book/${widget.userId}/$bookid',
+                          'http://103.77.166.202/api/payment/open-book/${widget.userId}/$bookid',
                           options: Options(
                               headers: {'Authorization': 'Bearer $token'}));
                       if (response.statusCode == 200) {
