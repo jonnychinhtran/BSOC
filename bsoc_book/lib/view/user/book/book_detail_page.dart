@@ -203,7 +203,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                   icon: Icon(Icons.download_for_offline))
             ],
           ),
-          body: isLoading && callback == null
+          body: isLoading && dataBook == null
               ? Center(
                   child: LoadingAnimationWidget.discreteCircle(
                   color: Color.fromARGB(255, 138, 175, 52),
@@ -227,10 +227,10 @@ class _DetailBookPageState extends State<DetailBookPage>
                             width: 150,
                             child: Material(
                               child: Image.network(
-                                dataBook?['image'] == null
+                                dataBook!['image'] == null
                                     ? "Đang tải..."
                                     : 'http://103.77.166.202' +
-                                        dataBook?['image'],
+                                        dataBook!['image'],
                                 fit: BoxFit.fill,
                               ),
                             )),

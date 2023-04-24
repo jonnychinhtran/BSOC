@@ -1,3 +1,4 @@
+import 'package:bsoc_book/data/network/api_subject_infor.dart';
 import 'package:bsoc_book/view/quiz/quiz_options.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:bsoc_book/data/model/quiz/category.dart';
@@ -195,14 +196,14 @@ class _PracticePageState extends State<PracticePage> {
                                 int.parse(dropdownValue.toString());
                             print(_noOfQuestions);
                             List<Question> questions =
-                                await getQuestions(_noOfQuestions);
+                                await getSubject(_noOfQuestions);
                             showModalBottomSheet(
                               context: context,
                               builder: (sheetContext) => BottomSheet(
                                 builder: (_) => QuizOptionsDialog(
                                   idPractice: dropdownValue,
                                   questions: questions,
-                                  headquestion: headquestion,
+                                  headquestion: headquestions,
                                 ),
                                 onClosing: () {},
                               ),
