@@ -305,36 +305,27 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  if (authController.isLoggedIn.value) {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                CompanyPage()));
-                                  } else {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AlertPageDialog(),
-                                    );
-                                  }
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CompanyPage()));
                                 },
-                                child: Image.asset('assets/images/banner1.png'),
+                                child: Container(
+                                    width: 160,
+                                    child: Image.asset(
+                                        'assets/images/banner1.png')),
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  if (authController.isLoggedIn.value) {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => JobPage()));
-                                  } else {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AlertPageDialog(),
-                                    );
-                                  }
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => JobPage()));
                                 },
-                                child: Image.asset('assets/images/banner2.png'),
+                                child: Container(
+                                    width: 160,
+                                    child: Image.asset(
+                                        'assets/images/banner2.png')),
                               ),
                             ],
                           ),
