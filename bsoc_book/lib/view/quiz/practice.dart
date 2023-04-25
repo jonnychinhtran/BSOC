@@ -103,120 +103,125 @@ class _PracticePageState extends State<PracticePage> {
             },
           ),
         ),
-        body: Stack(children: [
-          Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/bg1.png'),
-                  fit: BoxFit.cover,
-                ),
-              )),
-          SafeArea(
-            child: Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // SizedBox(height: size.height * 0.08),
-                    Text(
-                      'Favorites of the',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(height: size.height * 0.02),
-                    Text(
-                      'B4U',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40,
-                          fontWeight: FontWeight.w900),
-                    ),
-                    SizedBox(height: size.height * 0.01),
-                    Text(
-                      'BSOC APP',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40,
-                          fontWeight: FontWeight.w900),
-                    ),
-                    SizedBox(height: size.height * 0.04),
-                    Container(
-                        height: 150,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/icon1.png'),
-                            fit: BoxFit.fitHeight,
-                          ),
-                        )),
-                    SizedBox(height: size.height * 0.03),
-                    Text(
-                      'LỰA CHỌN CHỦ ĐỀ:',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: DropdownButton<String>(
-                          value: dropdownValue == null
-                              ? ""
-                              : dropdownValue, // create a variable named dropdownValue and set in onChange function
-                          icon: const Icon(Icons.arrow_downward,
-                              color: Colors.white),
-                          iconSize: 24,
-                          elevation: 16,
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 226, 66, 66),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
-                          underline: Container(
-                            height: 2,
+        body: RefreshIndicator(
+          onRefresh: () async {
+            fetchCategories();
+          },
+          child: Stack(children: [
+            Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/bg1.png'),
+                    fit: BoxFit.cover,
+                  ),
+                )),
+            SafeArea(
+              child: Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // SizedBox(height: size.height * 0.08),
+                      Text(
+                        'Favorites of the',
+                        style: TextStyle(
                             color: Colors.white,
-                          ),
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: size.height * 0.02),
+                      Text(
+                        'B4U',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 40,
+                            fontWeight: FontWeight.w900),
+                      ),
+                      SizedBox(height: size.height * 0.01),
+                      Text(
+                        'BSOC APP',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 40,
+                            fontWeight: FontWeight.w900),
+                      ),
+                      SizedBox(height: size.height * 0.04),
+                      Container(
+                          height: 150,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/icon1.png'),
+                              fit: BoxFit.fitHeight,
+                            ),
+                          )),
+                      SizedBox(height: size.height * 0.03),
+                      Text(
+                        'LỰA CHỌN CHỦ ĐỀ:',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800),
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: DropdownButton<String>(
+                            value: dropdownValue == null
+                                ? ""
+                                : dropdownValue, // create a variable named dropdownValue and set in onChange function
+                            icon: const Icon(Icons.arrow_downward,
+                                color: Colors.white),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: const TextStyle(
+                                color: Color.fromARGB(255, 226, 66, 66),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18),
+                            underline: Container(
+                              height: 2,
+                              color: Colors.white,
+                            ),
 
-                          items: categoryList.map<DropdownMenuItem<String>>(
-                              (Category standard) {
-                            return DropdownMenuItem<String>(
-                              value: standard.id.toString(),
-                              child: Text(standard.name.toString()),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) async {
-                            setState(() {
-                              dropdownValue = newValue!;
-                            });
-                            _noOfQuestions =
-                                int.parse(dropdownValue.toString());
-                            print(_noOfQuestions);
+                            items: categoryList.map<DropdownMenuItem<String>>(
+                                (Category standard) {
+                              return DropdownMenuItem<String>(
+                                value: standard.id.toString(),
+                                child: Text(standard.name.toString()),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) async {
+                              setState(() {
+                                dropdownValue = newValue!;
+                              });
+                              _noOfQuestions =
+                                  int.parse(dropdownValue.toString());
+                              print(_noOfQuestions);
 
-                            await getSubject2(_noOfQuestions);
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (sheetContext) => BottomSheet(
-                                builder: (_) => QuizOptionsDialog(
-                                  idPractice: dropdownValue,
-                                  headquestions: headquestions,
+                              await getSubject2(_noOfQuestions);
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (sheetContext) => BottomSheet(
+                                  builder: (_) => QuizOptionsDialog(
+                                    idPractice: dropdownValue,
+                                    headquestions: headquestions,
+                                  ),
+                                  onClosing: () {},
                                 ),
-                                onClosing: () {},
-                              ),
-                            );
-                          },
-                        )),
-                    SizedBox(height: size.height * 0.01),
-                  ],
+                              );
+                            },
+                          )),
+                      SizedBox(height: size.height * 0.01),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          )
-        ])
+            )
+          ]),
+        )
         // )
         );
   }

@@ -23,7 +23,7 @@ class BackendService {
   //   }
   // }
 
-  Future getSuggestions(String pattern) async {
+  static Future<List<Content>> getSuggestions(String pattern) async {
     String? token;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
@@ -32,6 +32,17 @@ class BackendService {
     http.Response response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
     });
-    return response.body;
+    if (response.statusCode == 200) {
+      final List books = json.decode(response.body);
+      print(books);
+      return books.map((json) => Content.fromJson(json)).where((book) {
+        final nameLower = book.bookName!.toLowerCase();
+        final queryLower = pattern.toLowerCase();
+
+        return nameLower.contains(queryLower);
+      }).toList();
+    } else {
+      throw Exception();
+    }
   }
 }

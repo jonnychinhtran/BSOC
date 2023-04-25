@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:bsoc_book/data/model/books/allbook_model.dart';
 import 'package:bsoc_book/data/model/books/book_model.dart'
     show Content, BookModel;
-import 'package:bsoc_book/data/network/api_search.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:diacritic/diacritic.dart';
@@ -15,7 +14,7 @@ import 'package:http/http.dart' as http;
 
 Map? bookSearch;
 List? listSearch;
-// List<Map<String, dynamic>>? listSearch;
+// List<dynamic>? data2;
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -29,11 +28,10 @@ class _SearchPageState extends State<SearchPage> {
   final controller = TextEditingController();
   bool isLoading = true;
   String? token;
-  FocusNode? _focusNode;
-  final GlobalKey _key = GlobalKey();
-  BookModel? bookModel;
+  List<Content> books = [];
+  // BookModel? bookModel;
 
-  Future<void> _getAllBooks() async {
+  static Future<List<Content>> getAllBooks(String value) async {
     String? token;
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('accessToken');
@@ -43,20 +41,49 @@ class _SearchPageState extends State<SearchPage> {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      setState(() {
-        bookModel = BookModel.fromJson(
-            jsonDecode(Utf8Decoder().convert(response.bodyBytes)));
-        isLoading = false;
-      });
+      Map<String, dynamic> bookModel =
+          jsonDecode(Utf8Decoder().convert(response.bodyBytes));
+
+      List<Content> books = bookModel["content"];
+      print(books);
+      return books
+          .where((element) =>
+              '${removeDiacritics(element.bookName!)} ${removeDiacritics(element.author!)} ${removeDiacritics(element.description!)} ${element.bookName} ${element.author} ${element.description}'
+                  .toLowerCase()
+                  .contains(value.toLowerCase()))
+          .toList();
     } else {
       throw Exception('Lỗi tải hệ thống');
     }
   }
 
+  //  Future<List<Content>> getSuggestions() async {
+  //   String? token;
+  //   final prefs = await SharedPreferences.getInstance();
+  //   token = prefs.getString('accessToken');
+
+  //   var url = Uri.parse('http://103.77.166.202/api/book/all-book');
+  //   http.Response response = await http.get(url, headers: {
+  //     'Authorization': 'Bearer $token',
+  //   });
+  //   if (response.statusCode == 200) {
+  //     final List books = json.decode(response.body);
+  //     print(books);
+  //     return books.map((json) => Content.fromJson(json)).where((book) {
+  //       final nameLower = book.bookName!.toLowerCase();
+  //       final queryLower = pattern.toLowerCase();
+
+  //       return nameLower.contains(queryLower);
+  //     }).toList();
+  //   } else {
+  //     throw Exception();
+  //   }
+  // }
+
   @override
   void initState() {
     InternetPopup().initialize(context: context);
-    _getAllBooks();
+    // _getAllBooks();
     super.initState();
   }
 
@@ -78,32 +105,75 @@ class _SearchPageState extends State<SearchPage> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.search),
                     border: OutlineInputBorder(),
-                    hintText: 'Search Username',
+                    hintText: 'Tìm kiếm sách',
                   ),
                 ),
-                suggestionsCallback: (pattern) {
-                  return BackendService().getSuggestions(pattern: pattern);
+                suggestionsCallback: (value) async {
+                  String? token;
+                  final prefs = await SharedPreferences.getInstance();
+                  token = prefs.getString('accessToken');
+
+                  var url =
+                      Uri.parse('http://103.77.166.202/api/book/all-book');
+                  http.Response response = await http.get(url, headers: {
+                    'Authorization': 'Bearer $token',
+                  });
+                  if (response.statusCode == 200) {
+                    Map<String, dynamic> bookModel =
+                        jsonDecode(Utf8Decoder().convert(response.bodyBytes));
+
+                    List<dynamic> books = bookModel["content"];
+                    print(books);
+                    return books
+                        .map((json) => Content.fromJson(json))
+                        .where((user) {
+                      final nameLower = user.bookName!.toLowerCase();
+                      final queryLower = value.toLowerCase();
+                      return nameLower.contains(queryLower);
+                    }).toList();
+                  } else {
+                    throw Exception('Lỗi tải hệ thống');
+                  }
                 },
-                itemBuilder: (context, BookModel suggestion) {
+                itemBuilder: (context, Content? suggestion) {
+                  final book = suggestion!;
+                  print(book);
+                  // return ListTile(
+                  //   title: Text(book.bookName.toString()),
+                  // );
                   return ListTile(
-                    title: Text(suggestion.content.toString()),
+                    leading: Image.network(
+                      'http://103.77.166.202' + book.image!,
+                      fit: BoxFit.cover,
+                      width: 50,
+                      height: 50,
+                    ),
+                    title: Text(book.bookName!),
+                    subtitle: Text(book.author!),
                   );
                 },
                 noItemsFoundBuilder: (context) => Container(
                   height: 100,
                   child: Center(
                     child: Text(
-                      'No Users Found.',
-                      style: TextStyle(fontSize: 24),
+                      'Không tìm thấy sách',
+                      style: TextStyle(fontSize: 18),
                     ),
                   ),
                 ),
-                onSuggestionSelected: (BookModel suggestion) {
-                  ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(
-                      content: Text('Selected user:'),
-                    ));
+                onSuggestionSelected: (Content? suggestion) {
+                  final book = suggestion!;
+                  print(book);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DetailBookPage(id: book.id!.toString())));
+                  // ScaffoldMessenger.of(context)
+                  //   ..removeCurrentSnackBar()
+                  //   ..showSnackBar(SnackBar(
+                  //     content: Text(book.bookName.toString()),
+                  //   ));
                 },
               ),
             )
