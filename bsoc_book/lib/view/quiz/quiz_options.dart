@@ -5,11 +5,11 @@ import 'package:bsoc_book/view/quiz/quiz.dart';
 import 'package:flutter/material.dart';
 
 class QuizOptionsDialog extends StatefulWidget {
-  final List<Question> questions;
-  final Map<String, dynamic>? headquestion;
+  final Map<String, dynamic>? headquestions;
   final String? idPractice;
+  final Map<String, dynamic>? data2;
   const QuizOptionsDialog(
-      {Key? key, required this.questions, this.headquestion, this.idPractice})
+      {Key? key, required this.headquestions, this.idPractice, this.data2})
       : super(key: key);
 
   @override
@@ -36,19 +36,25 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
               //     style: Theme.of(context).textTheme.headline6!.copyWith(),
               //   ),
               // ),
-              // SizedBox(height: 10.0),
+              SizedBox(height: 5.0),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Số câu hỏi: "),
-                  Text(widget.headquestion!['totalQuestion'].toString()),
+                  Text("Số câu hỏi: ", style: TextStyle(fontSize: 16)),
+                  Text(widget.headquestions!['totalQuestion'].toString(),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 ],
               ),
 
-              SizedBox(height: 20.0),
+              SizedBox(height: 10.0),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Thời gian thi: "),
-                  Text(widget.headquestion!['duration'].toString() + ' phút'),
+                  Text("Thời gian thi: ", style: TextStyle(fontSize: 16)),
+                  Text(widget.headquestions!['duration'].toString() + ' phút',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 ],
               ),
 
@@ -62,7 +68,8 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
                     print(_noOfQuestions);
                     List<Question> questions =
                         await getQuestions(_noOfQuestions);
-                    if (headquestion!['totalQuestion'] == 0) {
+                    print('trang thi: $widget.headquestions');
+                    if (widget.headquestions!['totalQuestion'] == null) {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -86,7 +93,7 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
                           MaterialPageRoute(
                               builder: (context) => QuizPage(
                                     questions: questions,
-                                    headquestion: headquestion,
+                                    data2: data2,
                                   )));
                     }
                   },

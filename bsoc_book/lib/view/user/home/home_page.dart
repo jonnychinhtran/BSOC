@@ -298,6 +298,42 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           SizedBox(height: size.height * 0.02),
+
+                          // Padding(
+                          //   padding: const EdgeInsets.only(left: 14.0),
+                          //   child: Align(
+                          //     alignment: Alignment.centerLeft,
+                          //     child: Text(
+                          //       'Luyện thi IELTS - TOEIC - IT',
+                          //       textAlign: TextAlign.left,
+                          //       style: TextStyle(
+                          //         fontSize: 18,
+                          //         fontWeight: FontWeight.w500,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (authController.isLoggedIn.value) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PracticePage()));
+                                } else {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertPageDialog(),
+                                  );
+                                }
+                              },
+                              child: Image.asset('assets/images/practice1.jpg'),
+                            ),
+                          ),
+                          SizedBox(height: size.height * 0.02),
                           Padding(
                             padding: const EdgeInsets.only(left: 13.0),
                             child: Align(
@@ -351,41 +387,6 @@ class _HomePageState extends State<HomePage> {
                                 }),
                           ),
                           SizedBox(height: size.height * 0.04),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 14.0),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Luyện thi IELTS - TOEIC - IT',
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                if (authController.isLoggedIn.value) {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              PracticePage()));
-                                } else {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertPageDialog(),
-                                  );
-                                }
-                              },
-                              child: Image.asset('assets/images/practice1.jpg'),
-                            ),
-                          ),
-                          SizedBox(height: size.height * 0.02),
                           Padding(
                             padding: const EdgeInsets.only(left: 14.0),
                             child: Align(

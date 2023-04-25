@@ -76,6 +76,7 @@ dependencies:
   awesome_dialog: ^3.0.2
   connectivity_plus: ^2.3.9
   internet_popup: ^1.0.8+4
+  flutter_typeahead: ^4.3.1
 
 dev_dependencies:
   flutter_test:

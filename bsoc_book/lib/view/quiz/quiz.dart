@@ -19,8 +19,8 @@ Map<String, dynamic>? quizResult;
 
 class QuizPage extends StatefulWidget {
   final List<Question> questions;
-  final Map<String, dynamic>? headquestion;
-  const QuizPage({Key? key, required this.questions, this.headquestion})
+  final Map<String, dynamic>? data2;
+  const QuizPage({Key? key, required this.questions, this.data2})
       : super(key: key);
 
   @override
@@ -133,7 +133,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     _answers = List<Answers?>.filled(widget.questions.length, null);
     controller = AnimationController(
       vsync: this,
-      duration: Duration(minutes: widget.headquestion!['duration']),
+      duration: Duration(minutes: widget.data2!['duration']),
     );
     controller.addListener(() async {
       final connectivityResult = await (Connectivity().checkConnectivity());

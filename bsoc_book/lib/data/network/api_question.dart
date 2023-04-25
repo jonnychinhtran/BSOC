@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 
 const String baseUrl = "http://103.77.166.202/api/quiz/list-question";
 
-Map<String, dynamic>? headquestions;
+Map<String, dynamic>? data2;
 
 Future<List<Question>> getQuestions(int? total) async {
   String url = "$baseUrl/$total";
   final response = await Dio().get(url);
-  headquestions = response.data;
+  data2 = response.data;
   final questions =
       List<Map<String, dynamic>>.from(response.data["listQuestion"]);
   debugPrint(questions.toString(), wrapWidth: 1024);
