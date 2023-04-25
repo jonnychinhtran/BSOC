@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -14,19 +15,32 @@ class LoginController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Future<void> loginWithUsername() async {
-    var headers = {'content-type': 'application/json'};
+    // var headers = {'content-type': 'application/json'};
+    // try {
+    //   var url = Uri.parse(
+    //       ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.loginUser);
+    //   Map body = {
+    //     'username': usernameController.text,
+    //     'password': passwordController.text
+    //   };
+    //   http.Response response =
+    //       await http.post(url, body: jsonEncode(body), headers: headers);
+
+    final formData = {
+      'username': usernameController.text,
+      'password': passwordController.text
+    };
+
     try {
-      var url = Uri.parse(
-          ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.loginUser);
-      Map body = {
-        'username': usernameController.text,
-        'password': passwordController.text
+      Dio().options.headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
       };
-      http.Response response =
-          await http.post(url, body: jsonEncode(body), headers: headers);
+      var response = await Dio().post('http://103.77.166.202/api/auth/login',
+          data: json.encode(formData));
 
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
+        final json = jsonDecode(response.data);
         var token = json['data']['accessToken'];
         var user = json['data']['username'];
         var email = json['data']['email'];
@@ -43,11 +57,19 @@ class LoginController extends GetxController {
         usernameController.clear();
         passwordController.clear();
       } else {
-        throw jsonDecode(response.body)["Thông báo"] ?? "Vui lòng đăng nhập";
+        throw Error();
+        // throw jsonDecode(response.body)["Thông báo"] ?? "Vui lòng đăng nhập";
       }
-    } catch (e) {
-      Get.snackbar("Lỗi đăng nhập", "Tên đăng nhập hoặc mật khẩu không đúng");
-      print(e);
+    } on DioError catch (e) {
+      print(e.response!.data);
+      if (e.response!.data['data'] == 'Error: Username is already taken!') {
+        Get.snackbar("Lỗi đăng ký", "Tên người dùng đã được sử dụng!");
+      } else if (e.response!.data['data'] ==
+          'Error: Email is already in use!') {
+        Get.snackbar("Lỗi đăng ký", "Email đã được sử dụng!");
+      } else {
+        return e.response!.data;
+      }
     }
   }
 }

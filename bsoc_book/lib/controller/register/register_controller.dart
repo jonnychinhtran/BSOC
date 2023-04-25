@@ -37,14 +37,19 @@ class RegisterationController extends GetxController {
         phoneController.clear();
         Get.to(LoginPage());
       } else {
-        Get.snackbar("Lỗi", "Đăng ký thất bại. Thử lại.");
+        throw Error();
+        // Get.snackbar("Lỗi", "Đăng ký thất bại. Thử lại.");
       }
       print("res: ${response.data}");
-    } catch (e) {
-      // Get.snackbar("Lỗi đăng ký", e['message']);
-      Get.snackbar("Lỗi đăng ký",
-          "Vui lòng kiểm tra lại thiếu thông tin hoặc trùng tên");
-      print(e);
+    } on DioError catch (e) {
+      if (e.response!.data['data'] == 'Error: Username is already taken!') {
+        Get.snackbar("Lỗi đăng ký", "Tên người dùng đã được sử dụng!");
+      } else if (e.response!.data['data'] ==
+          'Error: Email is already in use!') {
+        Get.snackbar("Lỗi đăng ký", "Email đã được sử dụng!");
+      } else {
+        return e.response!.data;
+      }
     }
   }
 }

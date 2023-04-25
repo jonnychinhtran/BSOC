@@ -58,7 +58,7 @@ class AuthController extends GetxController {
         throw jsonDecode(response.body)["Thông báo"] ?? "Vui lòng đăng nhập";
       }
     } catch (e) {
-      Get.snackbar("Lỗi đăng nhập", "Tên đăng nhập hoặc mật khẩu không đúng");
+      Get.snackbar("Lỗi đăng nhập", "Tài khoản hoặc mật khẩu sai!");
       print(e);
     }
   }
