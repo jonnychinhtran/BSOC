@@ -52,7 +52,6 @@ dependencies:
   email_validator: ^2.1.17
   percent_indicator: ^4.2.3
   social_media_flutter: ^0.0.2
-  dropdown_button2: ^1.8.9
   group_button: ^5.2.2
   image_picker: ^0.8.6
   modal_progress_hud_nsn: ^0.3.0

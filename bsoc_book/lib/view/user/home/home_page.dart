@@ -3,6 +3,8 @@ import 'package:bsoc_book/controller/authen/authen_controller.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/data/model/books/allbook_model.dart';
 import 'package:bsoc_book/data/model/books/topbook_model.dart';
+import 'package:bsoc_book/view/banner/company_page.dart';
+import 'package:bsoc_book/view/banner/job_page.dart';
 import 'package:bsoc_book/view/infor/infor_page.dart';
 import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/quiz/practice.dart';
@@ -298,21 +300,45 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           SizedBox(height: size.height * 0.02),
-
-                          // Padding(
-                          //   padding: const EdgeInsets.only(left: 14.0),
-                          //   child: Align(
-                          //     alignment: Alignment.centerLeft,
-                          //     child: Text(
-                          //       'Luyện thi IELTS - TOEIC - IT',
-                          //       textAlign: TextAlign.left,
-                          //       style: TextStyle(
-                          //         fontSize: 18,
-                          //         fontWeight: FontWeight.w500,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  if (authController.isLoggedIn.value) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                CompanyPage()));
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertPageDialog(),
+                                    );
+                                  }
+                                },
+                                child: Image.asset('assets/images/banner1.png'),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  if (authController.isLoggedIn.value) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => JobPage()));
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertPageDialog(),
+                                    );
+                                  }
+                                },
+                                child: Image.asset('assets/images/banner2.png'),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: size.height * 0.02),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: GestureDetector(
@@ -330,7 +356,7 @@ class _HomePageState extends State<HomePage> {
                                   );
                                 }
                               },
-                              child: Image.asset('assets/images/practice1.jpg'),
+                              child: Image.asset('assets/images/practice2.png'),
                             ),
                           ),
                           SizedBox(height: size.height * 0.02),

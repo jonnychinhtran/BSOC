@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bsoc_book/data/model/quiz/question2.dart';
 import 'package:bsoc_book/data/network/api_subject_infor.dart';
 import 'package:bsoc_book/view/quiz/quiz_options.dart';
@@ -53,6 +55,7 @@ class _PracticePageState extends State<PracticePage> {
         final List<dynamic> data = response.data;
         setState(() {
           categoryList = data.map((json) => Category.fromJson(json)).toList();
+
           print(categoryList);
           dropdownValue = categoryList[0].id.toString();
           isLoading = false;
@@ -119,14 +122,14 @@ class _PracticePageState extends State<PracticePage> {
                 )),
             SafeArea(
               child: Align(
-                alignment: Alignment.center,
+                alignment: Alignment.topCenter,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                  padding:
+                      const EdgeInsets.only(top: 15.0, left: 16.0, right: 16.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // SizedBox(height: size.height * 0.08),
                       Text(
                         'Favorites of the',
                         style: TextStyle(
@@ -168,51 +171,65 @@ class _PracticePageState extends State<PracticePage> {
                             fontWeight: FontWeight.w800),
                       ),
                       Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: DropdownButton<String>(
-                            value: dropdownValue == null
-                                ? ""
-                                : dropdownValue, // create a variable named dropdownValue and set in onChange function
-                            icon: const Icon(Icons.arrow_downward,
-                                color: Colors.white),
-                            iconSize: 24,
-                            elevation: 16,
-                            style: const TextStyle(
-                                color: Color.fromARGB(255, 226, 66, 66),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18),
-                            underline: Container(
-                              height: 2,
+                          padding: const EdgeInsets.all(20.0),
+                          child: Container(
+                            // color: Colors.white,
+                            decoration: BoxDecoration(
                               color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
                             ),
-
-                            items: categoryList.map<DropdownMenuItem<String>>(
-                                (Category standard) {
-                              return DropdownMenuItem<String>(
-                                value: standard.id.toString(),
-                                child: Text(standard.name.toString()),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) async {
-                              setState(() {
-                                dropdownValue = newValue!;
-                              });
-                              _noOfQuestions =
-                                  int.parse(dropdownValue.toString());
-                              print(_noOfQuestions);
-
-                              await getSubject2(_noOfQuestions);
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (sheetContext) => BottomSheet(
-                                  builder: (_) => QuizOptionsDialog(
-                                    idPractice: dropdownValue,
-                                    headquestions: headquestions,
-                                  ),
-                                  onClosing: () {},
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 16.0, right: 16.0),
+                              child: DropdownButton<String>(
+                                dropdownColor: Colors.white,
+                                isExpanded: true,
+                                value: dropdownValue == null
+                                    ? "Chọn đề thi"
+                                    : dropdownValue, // create a variable named dropdownValue and set in onChange function
+                                icon: const Icon(
+                                  Icons.arrow_downward,
+                                  color: Color.fromARGB(255, 226, 66, 66),
                                 ),
-                              );
-                            },
+                                hint: Text('Chọn đề thi'),
+                                iconSize: 24,
+                                elevation: 1,
+                                style: const TextStyle(
+                                  color: Color.fromARGB(255, 226, 66, 66),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                                items: categoryList
+                                    .map<DropdownMenuItem<String>>(
+                                        (Category standard) {
+                                  return DropdownMenuItem<String>(
+                                    value: standard.id.toString(),
+                                    child: Text(standard.name.toString()),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) async {
+                                  setState(() {
+                                    dropdownValue = newValue!;
+                                  });
+                                  _noOfQuestions =
+                                      int.parse(dropdownValue.toString());
+                                  print(_noOfQuestions);
+
+                                  await getSubject2(_noOfQuestions);
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (sheetContext) => BottomSheet(
+                                      builder: (_) => QuizOptionsDialog(
+                                        idPractice: dropdownValue,
+                                        headquestions: headquestions,
+                                      ),
+                                      onClosing: () {},
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                           )),
                       SizedBox(height: size.height * 0.01),
                     ],
