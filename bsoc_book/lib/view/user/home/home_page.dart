@@ -302,6 +302,7 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(height: size.height * 0.02),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisSize: MainAxisSize.max,
                             children: [
                               GestureDetector(
                                 onTap: () {
@@ -311,9 +312,10 @@ class _HomePageState extends State<HomePage> {
                                           builder: (context) => CompanyPage()));
                                 },
                                 child: Container(
-                                    width: 160,
+                                    // width: 160,
                                     child: Image.asset(
-                                        'assets/images/banner1.png')),
+                                        'assets/images/banner1.png',
+                                        fit: BoxFit.fill)),
                               ),
                               GestureDetector(
                                 onTap: () {
@@ -323,9 +325,10 @@ class _HomePageState extends State<HomePage> {
                                           builder: (context) => JobPage()));
                                 },
                                 child: Container(
-                                    width: 160,
+                                    // width: 160,
                                     child: Image.asset(
-                                        'assets/images/banner2.png')),
+                                        'assets/images/banner2.png',
+                                        fit: BoxFit.fill)),
                               ),
                             ],
                           ),
