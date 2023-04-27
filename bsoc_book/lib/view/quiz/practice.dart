@@ -52,10 +52,9 @@ class _PracticePageState extends State<PracticePage> {
           'http://103.77.166.202/api/quiz/list-subject',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
       if (response.statusCode == 200) {
-        final List<dynamic> data = response.data;
+        final List<dynamic> data = (response.data);
         setState(() {
           categoryList = data.map((json) => Category.fromJson(json)).toList();
-
           print(categoryList);
           dropdownValue = categoryList[0].id.toString();
           isLoading = false;
@@ -75,6 +74,7 @@ class _PracticePageState extends State<PracticePage> {
     callback();
     fetchCategories();
     super.initState();
+
     InternetPopup().initialize(context: context);
   }
 
@@ -207,7 +207,10 @@ class _PracticePageState extends State<PracticePage> {
                                     value: standard.id.toString(),
                                     child: Text(standard.name.toString()),
                                   );
-                                }).toList(),
+                                }).toList()
+                                  ..sort((a, b) => a.child
+                                      .toString()
+                                      .compareTo(b.child.toString())),
                                 onChanged: (String? newValue) async {
                                   setState(() {
                                     dropdownValue = newValue!;
