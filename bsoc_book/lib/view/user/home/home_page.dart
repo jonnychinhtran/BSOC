@@ -304,31 +304,36 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CompanyPage()));
-                                },
-                                child: Container(
-                                    // width: 160,
-                                    child: Image.asset(
-                                        'assets/images/banner1.png',
-                                        fit: BoxFit.fill)),
+                              Flexible(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                CompanyPage()));
+                                  },
+                                  child: Container(
+                                      width: 170,
+                                      child: Image.asset(
+                                          'assets/images/banner1.png',
+                                          fit: BoxFit.fill)),
+                                ),
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => JobPage()));
-                                },
-                                child: Container(
-                                    // width: 160,
-                                    child: Image.asset(
-                                        'assets/images/banner2.png',
-                                        fit: BoxFit.fill)),
+                              Flexible(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => JobPage()));
+                                  },
+                                  child: Container(
+                                      width: 170,
+                                      child: Image.asset(
+                                          'assets/images/banner3.jpg',
+                                          fit: BoxFit.fill)),
+                                ),
                               ),
                             ],
                           ),
