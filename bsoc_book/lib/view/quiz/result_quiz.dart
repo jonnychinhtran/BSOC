@@ -8,7 +8,7 @@ import 'package:internet_popup/internet_popup.dart';
 
 class ResultQuizPage extends StatefulWidget {
   final List<Question> questions;
-  final List<Answers?> answers;
+  final List<List<int>> answers;
   final Map<String, dynamic>? quizResult;
 
   ResultQuizPage(
@@ -37,6 +37,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     int correct = 0;
+
     // this.widget.answers.forEach((index, value) {
     //   // if (this.widget.questions[index].correctAnswer == value) correct++;
     // });
@@ -285,13 +286,12 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                   ),
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
+                                  onPressed: () async {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
                                             builder: (_) => CheckAnswersPage(
-                                                  questions: widget.questions,
-                                                  answers: widget.answers,
-                                                )));
+                                                questions: widget.questions,
+                                                answers: widget.answers)));
                                   },
                                   child: Text('Kiểm tra lại đáp án'),
                                 ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:bsoc_book/data/model/quiz/QuestionResult.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
@@ -122,7 +123,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   }
 
   int _currentIndex = 0;
-  List<Answers?> _answers = [];
+  List<List<int>> _answers = [];
   List<QuestionResult>? _questionResults = [];
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
@@ -130,7 +131,9 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   void initState() {
     InternetPopup().initialize(context: context);
     super.initState();
-    _answers = List<Answers?>.filled(widget.questions.length, null);
+    // _answers = List.filled(widget.questions.length, null);
+    _answers = List.generate(widget.questions.length, (_) => []);
+    // _answers = List.filled(widget.questions.length, null);
     controller = AnimationController(
       vsync: this,
       duration: Duration(minutes: widget.data2!['duration']),
@@ -269,14 +272,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                       width: 310,
                       animateFromLastPercent: true,
                       lineHeight: 7.0,
-                      // trailing: Text(
-                      //   countText,
-                      //   style: TextStyle(
-                      //     color: Colors.white,
-                      //     fontSize: 16,
-                      //     fontWeight: FontWeight.w400,
-                      //   ),
-                      // ),
                       percent: progress,
                       progressColor: Color.fromARGB(244, 255, 251, 42),
                     ),
@@ -295,13 +290,26 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                           ),
                           SizedBox(width: 16.0),
                           Expanded(
-                            child: Text(
-                              HtmlUnescape().convert(
-                                  widget.questions[_currentIndex].content!),
-                              softWrap: true,
-                              style: MediaQuery.of(context).size.width > 800
-                                  ? _questionStyle.copyWith(fontSize: 30.0)
-                                  : _questionStyle,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  HtmlUnescape().convert(
+                                      widget.questions[_currentIndex].content!),
+                                  softWrap: true,
+                                  style: MediaQuery.of(context).size.width > 800
+                                      ? _questionStyle.copyWith(fontSize: 30.0)
+                                      : _questionStyle,
+                                ),
+                                widget.questions[_currentIndex].isMultiChoice ==
+                                        true
+                                    ? Text(' (Choose multiple answers)',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white))
+                                    : Container(),
+                              ],
                             ),
                           ),
                         ],
@@ -311,23 +319,66 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            ...options!.map((answer) => RadioListTile<Answers>(
-                                  title: Text(
-                                    HtmlUnescape().convert("${answer.content}"),
-                                    style:
-                                        MediaQuery.of(context).size.width > 800
-                                            ? TextStyle(fontSize: 30.0)
-                                            : null,
-                                  ),
-                                  groupValue: _answers[_currentIndex],
-                                  value: answer,
-                                  onChanged: (Answers? value) {
-                                    setState(() {
-                                      _answers[_currentIndex] = value!;
-                                      print(_answers[_currentIndex]);
-                                    });
-                                  },
-                                )),
+                            ...options!
+                                .map((answer) => widget.questions[_currentIndex]
+                                            .isMultiChoice ==
+                                        true
+                                    ? CheckboxListTile(
+                                        controlAffinity:
+                                            ListTileControlAffinity.leading,
+                                        contentPadding: EdgeInsets.zero,
+                                        dense: true,
+                                        title: Text(
+                                          HtmlUnescape()
+                                              .convert("${answer.content}"),
+                                          style: MediaQuery.of(context)
+                                                      .size
+                                                      .width >
+                                                  800
+                                              ? TextStyle(fontSize: 30.0)
+                                              : null,
+                                        ),
+                                        value: answer.selected ?? false,
+                                        onChanged: (val) {
+                                          print(val);
+                                          setState(() {
+                                            answer.selected = val;
+                                            if (_answers[_currentIndex]
+                                                .contains(answer.id)) {
+                                              _answers[_currentIndex]
+                                                  .remove(answer.id);
+                                            } else {
+                                              _answers[_currentIndex]
+                                                  .add(answer.id!);
+                                            }
+                                            print(_answers[_currentIndex]);
+                                          });
+                                        })
+                                    : RadioListTile<int>(
+                                        title: Text(
+                                          HtmlUnescape()
+                                              .convert("${answer.content}"),
+                                          style: MediaQuery.of(context)
+                                                      .size
+                                                      .width >
+                                                  800
+                                              ? TextStyle(fontSize: 30.0)
+                                              : null,
+                                        ),
+                                        groupValue:
+                                            _answers[_currentIndex].isNotEmpty
+                                                ? _answers[_currentIndex][0]
+                                                : null,
+                                        value: answer.id!,
+                                        onChanged: (int? value) {
+                                          print(value);
+                                          setState(() {
+                                            _answers[_currentIndex] = [value!];
+                                            print(_answers[_currentIndex]);
+                                          });
+                                        },
+                                      ))
+                                .toList(),
                           ],
                         ),
                       ),
@@ -412,17 +463,17 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   }
 
   void _nextSubmit() async {
-    if (_answers[_currentIndex] == null) {
+    if (_answers[_currentIndex].isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Bạn phải chọn một câu trả lời để tiếp tục."),
       ));
       return;
     }
 
-    final answerId = _answers[_currentIndex]!.id;
-    print(answerId);
     final questionId = widget.questions[_currentIndex].id;
     print(questionId);
+    final answerId = _answers[_currentIndex];
+    print(answerId);
     final questionResult =
         QuestionResult(questionId: questionId, answerId: answerId);
     _questionResults?.add(questionResult);

@@ -1,6 +1,6 @@
 class QuestionResult {
   int? questionId;
-  int? answerId;
+  List<int>? answerId;
 
   QuestionResult({this.questionId, this.answerId});
 
