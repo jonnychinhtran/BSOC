@@ -303,7 +303,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                                 ),
                                 widget.questions[_currentIndex].isMultiChoice ==
                                         true
-                                    ? Text(' (Choose multiple answers)',
+                                    ? Text(' (Chọn nhiều đáp án)',
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
@@ -491,6 +491,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
       var formData =
           _questionResults?.map((result) => result.toJson()).toList();
+      print(formData);
 
       final dio = Dio(); // Create Dio instance
       final response = await dio.post(
