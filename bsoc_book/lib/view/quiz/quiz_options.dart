@@ -8,8 +8,13 @@ class QuizOptionsDialog extends StatefulWidget {
   final Map<String, dynamic>? headquestions;
   final String? idPractice;
   final Map<String, dynamic>? data2;
+  final String? selectedStandardName;
   const QuizOptionsDialog(
-      {Key? key, required this.headquestions, this.idPractice, this.data2})
+      {Key? key,
+      required this.headquestions,
+      this.idPractice,
+      this.data2,
+      this.selectedStandardName})
       : super(key: key);
 
   @override
@@ -27,16 +32,23 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
         child: Center(
           child: Column(
             children: <Widget>[
-              // Container(
-              //   width: double.infinity,
-              //   padding: const EdgeInsets.all(16.0),
-              //   color: Colors.grey.shade200,
-              //   child: Text(
-              //     widget.idPractice.toString(),
-              //     style: Theme.of(context).textTheme.headline6!.copyWith(),
-              //   ),
-              // ),
-              SizedBox(height: 5.0),
+              SizedBox(height: 10.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Chủ đề: ",
+                      style: TextStyle(fontSize: 16)), // Change the text
+                  Text(
+                      widget.selectedStandardName == null
+                          ? ""
+                          : widget.selectedStandardName
+                              .toString(), // Use the selectedStandardName parameter
+
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                ],
+              ),
+              SizedBox(height: 15.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -46,8 +58,7 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 ],
               ),
-
-              SizedBox(height: 10.0),
+              SizedBox(height: 15.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -57,11 +68,7 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 ],
               ),
-
-              SizedBox(height: 5.0),
-              // processing
-              //     ? CircularProgressIndicator()
-              //     :
+              SizedBox(height: 10.0),
               ElevatedButton(
                   onPressed: () async {
                     _noOfQuestions = int.parse(widget.idPractice.toString());

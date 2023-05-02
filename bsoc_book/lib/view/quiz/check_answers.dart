@@ -55,15 +55,34 @@ class _CheckAnswersPageState extends State<CheckAnswersPage> {
     }
     print(widget.questions[index]);
     Question question = widget.questions[index];
+    List<int> answerIds = widget.answers[index] ?? [];
 
     print(widget.answers);
-
-    // bool correct = allanswers[index]?.isCorrect == true;
-    // Answers? selectedAnswer = allanswers[index];
-
     // Find the correct answer for the current question
     Answers? correctAnswer =
         question.answers?.firstWhere((answer) => answer.isCorrect == true);
+
+    bool allCorrect = true;
+    List<Widget> answerWidgets = [];
+    for (int answerId in answerIds) {
+      Answers? answer =
+          question.answers?.firstWhere((answer) => answer.id == answerId);
+
+      bool isCorrect = answer?.isCorrect ?? false;
+      allCorrect = allCorrect && isCorrect;
+
+      answerWidgets.add(
+        Text(
+          isCorrect
+              ? '- ${answer?.content}'
+              : '- ${answer?.content} (Đáp án sai)',
+          style: TextStyle(
+              color: isCorrect ? Colors.green : Colors.red,
+              fontWeight: isCorrect ? FontWeight.bold : FontWeight.bold,
+              fontSize: 18),
+        ),
+      );
+    }
 
     return Card(
       child: Padding(
@@ -78,37 +97,48 @@ class _CheckAnswersPageState extends State<CheckAnswersPage> {
                   fontWeight: FontWeight.w500,
                   fontSize: 16.0),
             ),
-            SizedBox(height: 5.0),
-            // allanswers[index]?.content != null
-            //     ? Text(
-            //         HtmlUnescape().convert("${allanswers[index]?.content}"),
-            //         style: TextStyle(
-            //             color: correct ? Colors.green : Colors.red,
-            //             fontSize: 18.0,
-            //             fontWeight: FontWeight.bold),
-            //       )
-            //     : Text(
-            //         'Bạn chưa chọn đáp án nào',
-            //         style: TextStyle(
-            //             color: correct ? Colors.green : Colors.red,
-            //             fontSize: 18.0,
-            //             fontWeight: FontWeight.bold),
-            //       ),
-            SizedBox(height: 5.0),
-            // correct || correctAnswer == null
-            //     ? Container()
-            //     : Text.rich(
-            //         TextSpan(children: [
-            //           TextSpan(text: "Đáp án đúng: "),
-            //           TextSpan(
-            //               text: HtmlUnescape().convert(
-            //                   allanswers[index]?.content != null
-            //                       ? "${correctAnswer.content}"
-            //                       : "Vui lòng làm bài thi"),
-            //               style: TextStyle(fontWeight: FontWeight.w500))
-            //         ]),
-            //         style: TextStyle(fontSize: 16.0),
-            //       )
+            SizedBox(height: 10.0),
+            answerWidgets.isNotEmpty
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: answerWidgets)
+                : Text(
+                    'Bạn chưa chọn đáp án nào',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 18.0,
+                      letterSpacing: 10.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+            SizedBox(height: 10.0),
+            allCorrect
+                ? Container()
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: "Đáp án đúng: "),
+                          ],
+                        ),
+                        style: TextStyle(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      Text(
+                        HtmlUnescape().convert(
+                          correctAnswer?.content ?? 'Vui lòng làm bài thi',
+                        ),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16.0,
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  )
           ],
         ),
       ),

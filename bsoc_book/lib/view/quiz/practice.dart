@@ -69,6 +69,8 @@ class _PracticePageState extends State<PracticePage> {
     }
   }
 
+  String? selectedStandardName;
+
   @override
   void initState() {
     callback();
@@ -192,6 +194,9 @@ class _PracticePageState extends State<PracticePage> {
                                   Icons.arrow_downward,
                                   color: Color.fromARGB(255, 226, 66, 66),
                                 ),
+                                underline: Container(
+                                  height: 0,
+                                ),
                                 hint: Text('Chọn đề thi'),
                                 iconSize: 24,
                                 elevation: 1,
@@ -214,6 +219,12 @@ class _PracticePageState extends State<PracticePage> {
                                 onChanged: (String? newValue) async {
                                   setState(() {
                                     dropdownValue = newValue!;
+                                    selectedStandardName = categoryList
+                                        .firstWhere((standard) =>
+                                            standard.id.toString() ==
+                                            dropdownValue)
+                                        .name
+                                        .toString();
                                   });
                                   _noOfQuestions =
                                       int.parse(dropdownValue.toString());
@@ -223,9 +234,14 @@ class _PracticePageState extends State<PracticePage> {
                                   showModalBottomSheet(
                                     context: context,
                                     builder: (sheetContext) => BottomSheet(
-                                      builder: (_) => QuizOptionsDialog(
-                                        idPractice: dropdownValue,
-                                        headquestions: headquestions,
+                                      builder: (_) => Container(
+                                        height: 190,
+                                        child: QuizOptionsDialog(
+                                          idPractice: dropdownValue,
+                                          headquestions: headquestions,
+                                          selectedStandardName:
+                                              selectedStandardName,
+                                        ),
                                       ),
                                       onClosing: () {},
                                     ),
