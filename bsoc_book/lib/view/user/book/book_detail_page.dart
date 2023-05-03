@@ -1725,7 +1725,7 @@ class DialogError extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              Get.off(() => const HomePage());
+              Get.off(() => HomePage());
             },
             child: Text('Trở về trang chủ'),
           ),

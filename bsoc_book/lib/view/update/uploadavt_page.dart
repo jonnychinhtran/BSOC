@@ -59,7 +59,7 @@ class _UploadAvatarState extends State<UploadAvatar> {
     print(response.data);
     if (response.statusCode == 200) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const HomePage()));
+          context, MaterialPageRoute(builder: (context) => HomePage()));
     }
   }
 

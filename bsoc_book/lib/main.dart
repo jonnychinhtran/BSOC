@@ -60,14 +60,13 @@ class _CheckPageState extends State<CheckPage> {
   }
 
   void checkiflogged() {
-    box.read('isLoggedIn')
-        ? Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-            (Route<dynamic> route) => false)
-        : Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-            (Route<dynamic> route) => false);
+    bool isLoggedIn = box.read('isLoggedIn');
+    if (isLoggedIn) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+    } else {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+    }
   }
 }
