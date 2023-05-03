@@ -37,6 +37,7 @@ class RegisterationController extends GetxController {
         phoneController.clear();
         Get.to(LoginPage());
       } else {
+        Get.snackbar("Lỗi", "Đăng ký thất bại. Thử lại.");
         throw Error();
         // Get.snackbar("Lỗi", "Đăng ký thất bại. Thử lại.");
       }
@@ -48,6 +49,7 @@ class RegisterationController extends GetxController {
           'Error: Email is already in use!') {
         Get.snackbar("Lỗi đăng ký", "Email đã được sử dụng!");
       } else {
+        print(e.response!.data);
         return e.response!.data;
       }
     }

@@ -74,9 +74,16 @@ class _RegisterPageState extends State<RegisterPage> {
                       TextFormField(
                         controller: registerController.usernameController,
                         validator: (value) {
-                          return (value == null || value.isEmpty)
-                              ? 'Vui lòng nhập tên đăng nhập'
-                              : null;
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập tên đăng nhập';
+                          } else if (value.length < 3) {
+                            return 'Tên đăng nhập phải có ít nhất 3 ký tự trở lên';
+                          } else if (!RegExp(r'^[a-zA-Z0-9_]+$')
+                              .hasMatch(value)) {
+                            return 'Tên đăng nhập chỉ được chứa ký tự a-z, A-Z, 0-9 hoặc _';
+                          } else {
+                            return null;
+                          }
                         },
                         decoration: InputDecoration(
                             hintText: "Tên đăng nhập",
@@ -188,9 +195,17 @@ class _RegisterPageState extends State<RegisterPage> {
                         obscureText: true,
                         controller: registerController.passwordController,
                         validator: (value) {
-                          return (value == null || value.isEmpty)
-                              ? 'Vui lòng nhập mật khẩu'
-                              : null;
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập mật khẩu';
+                          } else if (value.length < 6) {
+                            return 'Mật khẩu phải có ít nhất 6 ký tự';
+                          } else if (!RegExp(
+                                  r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$')
+                              .hasMatch(value)) {
+                            return 'Mật khẩu phải chứa ít nhất một chữ cái viết hoa và một chữ cái thường (Aa-Zz), một ký hiệu đặc biệt (#, &, % v.v.), và một số (0-9)';
+                          } else {
+                            return null;
+                          }
                         },
                         decoration: InputDecoration(
                             hintText: "Mật khẩu",
