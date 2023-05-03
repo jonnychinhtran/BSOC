@@ -25,11 +25,25 @@ import 'package:new_version/new_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media_flutter/social_media_flutter.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final AuthController authController = Get.find();
+
   final getAllBooksController = Get.put(AllBooksController());
+
   final getTopBookController = Get.put(TopBookController());
+
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  @override
+  void initState() {
+    InternetPopup().initialize(context: context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:bsoc_book/data/model/books/allbook_model.dart';
 import 'package:dio/dio.dart';
@@ -11,6 +12,12 @@ class AllBooksController extends GetxController {
   void onInit() {
     super.onInit();
     getAllBooks();
+    // Start listening for connectivity changes
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result != ConnectivityResult.none) {
+        getAllBooks(); // Call getAllBooks again to refresh data
+      }
+    });
   }
 
   Future<void> getAllBooks() async {

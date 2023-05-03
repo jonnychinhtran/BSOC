@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/data/model/books/topbook_model.dart';
@@ -12,6 +13,12 @@ class TopBookController extends GetxController {
   void onInit() {
     super.onInit();
     getTopBook();
+    // Start listening for connectivity changes
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result != ConnectivityResult.none) {
+        getTopBook(); // Call getAllBooks again to refresh data
+      }
+    });
   }
 
   Future<void> getTopBook() async {
