@@ -45,7 +45,9 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getAllBooksController.getAllBooks();
+      print('All book: ${getAllBooksController.getAllBooks()}');
       await getTopBookController.getTopBook();
+      print('Top book: ${getAllBooksController.getAllBooks()}');
     });
     final newVersion = NewVersion(
       iOSId: 'com.b4usolution.app.bsoc',

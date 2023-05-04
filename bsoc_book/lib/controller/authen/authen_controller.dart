@@ -65,6 +65,7 @@ class AuthController extends GetxController {
 
   void logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
     await prefs.remove('accessToken');
     box.write('isLoggedIn', false);
     isLoggedIn.value = false;

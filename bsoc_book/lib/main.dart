@@ -49,6 +49,7 @@ class _CheckPageState extends State<CheckPage> {
       bool isLoggedIn = box.read('isLoggedIn');
       final SharedPreferences prefs = await _prefs;
       final token = prefs.getString('accessToken');
+      print('Token: $token');
       if (isLoggedIn && token != null) {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => HomePage()));
