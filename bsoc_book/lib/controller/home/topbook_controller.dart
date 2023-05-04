@@ -31,6 +31,7 @@ class TopBookController extends GetxController {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
       if (response.statusCode == 200) {
+        print(response.data);
         List<dynamic> data = response.data;
         topbooks.assignAll(
             data.map((json) => TopbookModel.fromJson(json)).toList());

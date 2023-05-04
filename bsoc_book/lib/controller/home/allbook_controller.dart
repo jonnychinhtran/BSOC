@@ -29,6 +29,7 @@ class AllBooksController extends GetxController {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
       if (response.statusCode == 200) {
+        print(response.data);
         final List<dynamic> data = response.data['content'];
         books.assignAll(
             data.map((json) => AllBookModel.fromJson(json)).toList());

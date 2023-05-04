@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,8 +25,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: CheckPage(),
-      // initialRoute: Routes.home,
-      // getPages: PageRoutes.pages,
     );
   }
 }
@@ -39,15 +38,30 @@ class CheckPage extends StatefulWidget {
 
 class _CheckPageState extends State<CheckPage> {
   final box = GetStorage();
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   @override
   void initState() {
     super.initState();
     box.writeIfNull('isLoggedIn', false);
 
     Future.delayed(Duration.zero, () async {
-      checkiflogged();
+      bool isLoggedIn = box.read('isLoggedIn');
+      final SharedPreferences prefs = await _prefs;
+      final token = prefs.getString('accessToken');
+      if (isLoggedIn && token != null) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      } else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      }
     });
   }
+
+  // void checkiflogged() async {
+
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -57,16 +71,5 @@ class _CheckPageState extends State<CheckPage> {
         child: CircularProgressIndicator(),
       )),
     );
-  }
-
-  void checkiflogged() {
-    bool isLoggedIn = box.read('isLoggedIn');
-    if (isLoggedIn) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
-    } else {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
-    }
   }
 }

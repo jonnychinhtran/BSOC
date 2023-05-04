@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -14,18 +12,23 @@ class LoginController extends GetxController {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  Future<void> loginWithUsername() async {
-    // var headers = {'content-type': 'application/json'};
-    // try {
-    //   var url = Uri.parse(
-    //       ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.loginUser);
-    //   Map body = {
-    //     'username': usernameController.text,
-    //     'password': passwordController.text
-    //   };
-    //   http.Response response =
-    //       await http.post(url, body: jsonEncode(body), headers: headers);
 
+  @override
+  void onInit() {
+    super.onInit();
+    checkLoggedIn();
+  }
+
+  Future<void> checkLoggedIn() async {
+    final SharedPreferences prefs = await _prefs;
+    final bool? loggedIn = prefs.getBool('isLoggedIn');
+    if (loggedIn != null && loggedIn) {
+      isLoggedIn.value = true;
+      Get.to(HomePage());
+    }
+  }
+
+  Future<void> loginWithUsername() async {
     final formData = {
       'username': usernameController.text,
       'password': passwordController.text
@@ -51,14 +54,13 @@ class LoginController extends GetxController {
         await prefs?.setString('idInforUser', idUser);
         await prefs?.setString('emailuser', email);
         Get.snackbar("Thành công", "Đăng nhập thành công.");
-        Get.to(HomePage());
         box.write('isLoggedIn', true);
         isLoggedIn.value = true;
         usernameController.clear();
         passwordController.clear();
+        Get.to(HomePage());
       } else {
         throw Error();
-        // throw jsonDecode(response.body)["Thông báo"] ?? "Vui lòng đăng nhập";
       }
     } on DioError catch (e) {
       print(e.response!.data);
