@@ -43,6 +43,52 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     InternetPopup().initialize(context: context);
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await getAllBooksController.getAllBooks();
+      await getTopBookController.getTopBook();
+    });
+    final newVersion = NewVersion(
+      iOSId: 'com.b4usolution.app.bsoc',
+      androidId: 'com.b4usolution.b4u_bsoc',
+    );
+    checkNewVersion(newVersion);
+  }
+
+  void showErrorDialog(BuildContext context, String error) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Error'),
+        content: Text(error),
+        actions: [
+          TextButton(
+            child: Text('OK'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void checkNewVersion(NewVersion newVersion) async {
+    final status = await newVersion.getVersionStatus();
+    if (status != null) {
+      if (status.canUpdate) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return UpdateDialog(
+              allowDismissal: true,
+              description: status.releaseNotes!,
+              version: status.storeVersion,
+              appLink: status.appStoreLink,
+            );
+          },
+        );
+      }
+      print(status.appStoreLink);
+      print(status.storeVersion);
+    }
   }
 
   @override
@@ -143,7 +189,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             body: Obx(() {
-              if (getAllBooksController.isLoading.value ||
+              if (getAllBooksController.isLoading.value &&
                   getTopBookController.isLoading.value) {
                 return Center(
                     child: LoadingAnimationWidget.discreteCircle(
@@ -476,33 +522,33 @@ class _HomePageState extends State<HomePage> {
 //     getTopBook();
 //     super.initState();
 
-//     final newVersion = NewVersion(
-//       iOSId: 'com.b4usolution.app.bsoc',
-//       androidId: 'com.b4usolution.b4u_bsoc',
-//     );
-//     checkNewVersion(newVersion);
+    // final newVersion = NewVersion(
+    //   iOSId: 'com.b4usolution.app.bsoc',
+    //   androidId: 'com.b4usolution.b4u_bsoc',
+    // );
+    // checkNewVersion(newVersion);
 //   }
 
-//   void checkNewVersion(NewVersion newVersion) async {
-//     final status = await newVersion.getVersionStatus();
-//     if (status != null) {
-//       if (status.canUpdate) {
-//         showDialog(
-//           context: context,
-//           builder: (BuildContext context) {
-//             return UpdateDialog(
-//               allowDismissal: true,
-//               description: status.releaseNotes!,
-//               version: status.storeVersion,
-//               appLink: status.appStoreLink,
-//             );
-//           },
-//         );
-//       }
-//       print(status.appStoreLink);
-//       print(status.storeVersion);
-//     }
-//   }
+  // void checkNewVersion(NewVersion newVersion) async {
+  //   final status = await newVersion.getVersionStatus();
+  //   if (status != null) {
+  //     if (status.canUpdate) {
+  //       showDialog(
+  //         context: context,
+  //         builder: (BuildContext context) {
+  //           return UpdateDialog(
+  //             allowDismissal: true,
+  //             description: status.releaseNotes!,
+  //             version: status.storeVersion,
+  //             appLink: status.appStoreLink,
+  //           );
+  //         },
+  //       );
+  //     }
+  //     print(status.appStoreLink);
+  //     print(status.storeVersion);
+  //   }
+  // }
 
 //   Future<void> getAllBooks() async {
 //     String? token;
