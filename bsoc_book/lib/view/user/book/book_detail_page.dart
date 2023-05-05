@@ -797,11 +797,15 @@ class _PdfViewerPageState extends State<PdfViewerPage>
                     ],
                   )),
                 )
-              : LoadingAnimationWidget.discreteCircle(
-                  color: Color.fromARGB(255, 138, 175, 52),
-                  secondRingColor: Colors.black,
-                  thirdRingColor: Colors.purple,
-                  size: 30,
+              : Expanded(
+                  child: Center(
+                    child: LoadingAnimationWidget.discreteCircle(
+                      color: Color.fromARGB(255, 138, 175, 52),
+                      secondRingColor: Colors.black,
+                      thirdRingColor: Colors.purple,
+                      size: 30,
+                    ),
+                  ),
                 ),
           Container(
             height: .10 * MediaQuery.of(context).size.height,

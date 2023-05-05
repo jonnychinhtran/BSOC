@@ -202,7 +202,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           } else if (!RegExp(
                                   r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$')
                               .hasMatch(value)) {
-                            return 'Mật khẩu phải chứa ít nhất một chữ cái viết hoa và một chữ cái thường (Aa-Zz), một ký hiệu đặc biệt (#, &, % v.v.), và một số (0-9)';
+                            // return 'Mật khẩu phải chứa ít nhất một chữ cái viết hoa và một chữ cái thường (Aa-Zz), một ký hiệu đặc biệt (#, &, % v.v.), và một số (0-9)';
+                            return 'Mật khẩu phải có (Aa-Zz), (#, &, @...) và (0-9)';
                           } else {
                             return null;
                           }

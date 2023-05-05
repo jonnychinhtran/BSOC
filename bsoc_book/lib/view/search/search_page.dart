@@ -48,7 +48,7 @@ class _SearchPageState extends State<SearchPage> {
       print(books);
       return books
           .where((element) =>
-              '${removeDiacritics(element.bookName!)} ${removeDiacritics(element.author!)} ${removeDiacritics(element.description!)} ${element.bookName} ${element.author} ${element.description}'
+              '${removeDiacritics(element.bookName!)} ${removeDiacritics(element.author!)} ${element.bookName} ${element.author}'
                   .toLowerCase()
                   .contains(value.toLowerCase()))
           .toList();
@@ -57,33 +57,9 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  //  Future<List<Content>> getSuggestions() async {
-  //   String? token;
-  //   final prefs = await SharedPreferences.getInstance();
-  //   token = prefs.getString('accessToken');
-
-  //   var url = Uri.parse('http://103.77.166.202/api/book/all-book');
-  //   http.Response response = await http.get(url, headers: {
-  //     'Authorization': 'Bearer $token',
-  //   });
-  //   if (response.statusCode == 200) {
-  //     final List books = json.decode(response.body);
-  //     print(books);
-  //     return books.map((json) => Content.fromJson(json)).where((book) {
-  //       final nameLower = book.bookName!.toLowerCase();
-  //       final queryLower = pattern.toLowerCase();
-
-  //       return nameLower.contains(queryLower);
-  //     }).toList();
-  //   } else {
-  //     throw Exception();
-  //   }
-  // }
-
   @override
   void initState() {
     InternetPopup().initialize(context: context);
-    // _getAllBooks();
     super.initState();
   }
 
@@ -114,7 +90,6 @@ class _SearchPageState extends State<SearchPage> {
                     String? token;
                     final prefs = await SharedPreferences.getInstance();
                     token = prefs.getString('accessToken');
-
                     var url =
                         Uri.parse('http://103.77.166.202/api/book/all-book');
                     http.Response response = await http.get(url, headers: {
@@ -129,15 +104,10 @@ class _SearchPageState extends State<SearchPage> {
                       return books
                           .map((json) => Content.fromJson(json))
                           .where((user) =>
-                              // final nameLower =
-                              //     removeDiacritics(user.bookName!).toLowerCase();
-                              // final athourLower =
-                              //     removeDiacritics(user.author!).toLowerCase();
-                              // final queryLower = value.toLowerCase();
-                              // return nameLower.contains(queryLower);
                               '${removeDiacritics(user.bookName!)} ${removeDiacritics(user.author!)}'
                                   .toLowerCase()
-                                  .contains(value.toLowerCase()))
+                                  .contains(
+                                      removeDiacritics(value).toLowerCase()))
                           .toList();
                     } else {
                       throw Exception('Lỗi tải hệ thống');
@@ -146,9 +116,6 @@ class _SearchPageState extends State<SearchPage> {
                   itemBuilder: (context, Content? suggestion) {
                     final book = suggestion!;
                     print(book);
-                    // return ListTile(
-                    //   title: Text(book.bookName.toString()),
-                    // );
                     return ListTile(
                       leading: Image.network(
                         'http://103.77.166.202' + book.image!,
@@ -177,87 +144,10 @@ class _SearchPageState extends State<SearchPage> {
                         MaterialPageRoute(
                             builder: (context) =>
                                 DetailBookPage(id: book.id!.toString())));
-                    // ScaffoldMessenger.of(context)
-                    //   ..removeCurrentSnackBar()
-                    //   ..showSnackBar(SnackBar(
-                    //     content: Text(book.bookName.toString()),
-                    //   ));
                   },
                 ),
               ),
             )
-            // Autocomplete<Content>(
-            //   optionsBuilder: (TextEditingValue value) {
-            //     if (value.text.isEmpty) {
-            //       return List.empty();
-            //     }
-            // return bookModel!.content!
-            //     .where((element) =>
-            //         '${removeDiacritics(element.bookName!)} ${removeDiacritics(element.author!)} ${removeDiacritics(element.description!)} ${element.bookName} ${element.author} ${element.description}'
-            //             .toLowerCase()
-            //             .contains(value.text.toLowerCase()))
-            //     .toList();
-            //   },
-            //   fieldViewBuilder: (BuildContext context,
-            //           TextEditingController controller,
-            //           FocusNode node,
-            //           VoidCallback onFieldSubmitted) =>
-            //       TextField(
-            //     controller: controller,
-            //     focusNode: node,
-            //     decoration: InputDecoration(
-            //       hintText: "Nhập tên sách tại đây",
-            //       fillColor: Colors.grey[300],
-            //       filled: true,
-            //       contentPadding:
-            //           EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-            //       prefixIcon: Icon(Icons.search),
-            //       border: OutlineInputBorder(
-            //         borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            //       ),
-            //     ),
-            //   ),
-            //   displayStringForOption: (Content d) =>
-            //       '${d.bookName} ${d.author} ${d.description}',
-            //   onSelected: (value) => print('chon sach: $value.bookName'),
-
-            //   optionsViewBuilder: (BuildContext context, Function onSelect,
-            //       Iterable<Content> contentList) {
-            //     return Material(
-            //       child: ListView.builder(
-            //         itemCount: contentList.length,
-            //         itemBuilder: ((context, index) {
-            //           Content d = contentList.elementAt(index);
-            //           return InkWell(
-            //             onTap: () async {
-            //               final SharedPreferences? prefs = await _prefs;
-            //               await prefs?.setString('idbook', d.id!.toString());
-
-            //               print('idBook: ${d.id.toString()}');
-
-            //               Navigator.push(
-            //                   context,
-            //                   MaterialPageRoute(
-            //                       builder: (context) =>
-            //                           DetailBookPage(id: d.id!.toString())));
-            //             },
-            //             child: ListTile(
-            //               leading: Image.network(
-            //                 'http://103.77.166.202' + d.image!,
-            //                 fit: BoxFit.cover,
-            //                 width: 50,
-            //                 height: 50,
-            //               ),
-            //               title: Text(d.bookName!),
-            //               subtitle: Text(d.author!),
-            //             ),
-            //           );
-            //         }),
-            //       ),
-            //     );
-            //   },
-            // ),
-            // ),
           ],
         ));
   }
