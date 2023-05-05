@@ -75,7 +75,7 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
                     print(_noOfQuestions);
                     List<Question> questions =
                         await getQuestions(_noOfQuestions);
-                    print('trang thi: $widget.headquestions');
+                    // print('trang thi: $widget.headquestions');
                     if (widget.headquestions!['totalQuestion'] == null) {
                       showDialog(
                         context: context,

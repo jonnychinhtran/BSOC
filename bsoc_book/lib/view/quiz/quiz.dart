@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:bsoc_book/data/model/quiz/QuestionResult.dart';
 import 'package:bsoc_book/data/model/quiz/question.dart';
@@ -131,9 +130,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   void initState() {
     InternetPopup().initialize(context: context);
     super.initState();
-    // _answers = List.filled(widget.questions.length, null);
     _answers = List.generate(widget.questions.length, (_) => []);
-    // _answers = List.filled(widget.questions.length, null);
+    print('Timer: ${widget.data2!['duration'].toString()}');
     controller = AnimationController(
       vsync: this,
       duration: Duration(minutes: widget.data2!['duration']),
