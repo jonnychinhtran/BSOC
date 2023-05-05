@@ -131,10 +131,10 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     InternetPopup().initialize(context: context);
     super.initState();
     _answers = List.generate(widget.questions.length, (_) => []);
-    print('Timer: ${widget.data2!['duration'].toString()}');
+    print('Timer: ${widget.data2?['duration'].toString()}');
     controller = AnimationController(
       vsync: this,
-      duration: Duration(minutes: widget.data2!['duration']),
+      duration: Duration(minutes: widget.data2?['duration']),
     );
     controller.addListener(() async {
       final connectivityResult = await (Connectivity().checkConnectivity());
@@ -149,7 +149,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
             isPlaying = false;
           });
         }
-        if (connectivityResult != ConnectivityResult.wifi) {
+        if (connectivityResult != ConnectivityResult.wifi &&
+            connectivityResult != ConnectivityResult.mobile) {
           controller.reverse(
               from: controller.value == 0 ? 1.0 : controller.value);
           setState(() {
