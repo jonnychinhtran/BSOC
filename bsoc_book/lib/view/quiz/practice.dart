@@ -187,8 +187,8 @@ class _PracticePageState extends State<PracticePage> {
                               child: DropdownButton<String>(
                                 dropdownColor: Colors.white,
                                 isExpanded: true,
-                                value: dropdownValue == null
-                                    ? "Chọn đề thi"
+                                value: dropdownValue != null
+                                    ? null
                                     : dropdownValue, // create a variable named dropdownValue and set in onChange function
                                 icon: const Icon(
                                   Icons.arrow_downward,
@@ -197,9 +197,13 @@ class _PracticePageState extends State<PracticePage> {
                                 underline: Container(
                                   height: 0,
                                 ),
-                                hint: Text('Chọn đề thi'),
+                                hint: dropdownValue != null
+                                    ? Text('Chọn đề thi')
+                                    : SizedBox.shrink(),
                                 iconSize: 24,
-                                elevation: 1,
+                                // elevation: 1,
+                                autofocus: true,
+                                menuMaxHeight: 150,
                                 style: const TextStyle(
                                   color: Color.fromARGB(255, 226, 66, 66),
                                   fontWeight: FontWeight.bold,
