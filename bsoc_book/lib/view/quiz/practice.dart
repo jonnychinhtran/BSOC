@@ -15,8 +15,6 @@ import 'package:bsoc_book/controller/authen/authen_controller.dart';
 import 'package:internet_popup/internet_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-String? dropdownValue;
-
 class PracticePage extends StatefulWidget {
   const PracticePage({super.key});
 
@@ -42,6 +40,8 @@ class _PracticePageState extends State<PracticePage> {
     }
   }
 
+  String? dropdownValue;
+
   List<Category> categoryList = <Category>[];
 
   Future<void> fetchCategories() async {
@@ -54,9 +54,10 @@ class _PracticePageState extends State<PracticePage> {
       if (response.statusCode == 200) {
         final List<dynamic> data = (response.data);
         setState(() {
-          categoryList = data.map((json) => Category.fromJson(json)).toList();
+          categoryList = data.map((json) => Category.fromJson(json)).toList()
+            ..sort((a, b) => a.name.toString().compareTo(b.name.toString()));
           print(categoryList);
-          dropdownValue = categoryList[0].id.toString();
+          // dropdownValue = categoryList[0].id.toString();
           isLoading = false;
         });
       } else {
@@ -157,7 +158,7 @@ class _PracticePageState extends State<PracticePage> {
                       ),
                       SizedBox(height: size.height * 0.04),
                       Container(
-                          height: 150,
+                          height: 100,
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: AssetImage('assets/images/icon1.png'),
@@ -172,88 +173,75 @@ class _PracticePageState extends State<PracticePage> {
                             fontSize: 16,
                             fontWeight: FontWeight.w800),
                       ),
-                      Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Container(
-                            // color: Colors.white,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
+                      SizedBox(height: size.height * 0.03),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 16.0, right: 16.0),
+                          child: DropdownButton<String>(
+                            dropdownColor: Colors.white,
+                            isExpanded: true,
+                            value: dropdownValue,
+                            hint: dropdownValue == null
+                                ? Text('Chọn đề thi')
+                                : null,
+                            icon: const Icon(
+                              Icons.arrow_downward,
+                              color: Color.fromARGB(255, 226, 66, 66),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 16.0, right: 16.0),
-                              child: DropdownButton<String>(
-                                dropdownColor: Colors.white,
-                                isExpanded: true,
-                                value: dropdownValue != null
-                                    ? null
-                                    : dropdownValue, // create a variable named dropdownValue and set in onChange function
-                                icon: const Icon(
-                                  Icons.arrow_downward,
-                                  color: Color.fromARGB(255, 226, 66, 66),
-                                ),
-                                underline: Container(
-                                  height: 0,
-                                ),
-                                hint: dropdownValue != null
-                                    ? Text('Chọn đề thi')
-                                    : SizedBox.shrink(),
-                                iconSize: 24,
-                                // elevation: 1,
-                                autofocus: true,
-                                menuMaxHeight: 150,
-                                style: const TextStyle(
-                                  color: Color.fromARGB(255, 226, 66, 66),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                                items: categoryList
-                                    .map<DropdownMenuItem<String>>(
-                                        (Category standard) {
-                                  return DropdownMenuItem<String>(
-                                    value: standard.id.toString(),
-                                    child: Text(standard.name.toString()),
-                                  );
-                                }).toList()
-                                  ..sort((a, b) => a.child
-                                      .toString()
-                                      .compareTo(b.child.toString())),
-                                onChanged: (String? newValue) async {
-                                  setState(() {
-                                    dropdownValue = newValue!;
-                                    selectedStandardName = categoryList
-                                        .firstWhere((standard) =>
-                                            standard.id.toString() ==
-                                            dropdownValue)
-                                        .name
-                                        .toString();
-                                  });
-                                  _noOfQuestions =
-                                      int.parse(dropdownValue.toString());
-                                  print(_noOfQuestions);
+                            underline: Container(
+                              height: 0,
+                            ),
+                            iconSize: 24,
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 226, 66, 66),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                            items: categoryList.map<DropdownMenuItem<String>>(
+                                (Category standard) {
+                              return DropdownMenuItem<String>(
+                                value: standard.id.toString(),
+                                child: Text(standard.name.toString()),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) async {
+                              setState(() {
+                                dropdownValue = newValue!;
+                                selectedStandardName = categoryList
+                                    .firstWhere((standard) =>
+                                        standard.id.toString() == dropdownValue)
+                                    .name
+                                    .toString();
+                              });
+                              _noOfQuestions =
+                                  int.parse(dropdownValue.toString());
+                              print(_noOfQuestions);
 
-                                  await getSubject2(_noOfQuestions);
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (sheetContext) => BottomSheet(
-                                      builder: (_) => Container(
-                                        height: 190,
-                                        child: QuizOptionsDialog(
-                                          idPractice: dropdownValue,
-                                          headquestions: headquestions,
-                                          selectedStandardName:
-                                              selectedStandardName,
-                                        ),
-                                      ),
-                                      onClosing: () {},
+                              await getSubject2(_noOfQuestions);
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (sheetContext) => BottomSheet(
+                                  builder: (_) => Container(
+                                    height: 190,
+                                    child: QuizOptionsDialog(
+                                      idPractice: dropdownValue,
+                                      headquestions: headquestions,
+                                      selectedStandardName:
+                                          selectedStandardName,
                                     ),
-                                  );
-                                },
-                              ),
-                            ),
-                          )),
+                                  ),
+                                  onClosing: () {},
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                       SizedBox(height: size.height * 0.01),
                     ],
                   ),
