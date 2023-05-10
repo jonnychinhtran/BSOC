@@ -44,7 +44,7 @@ class AuthController extends GetxController {
         var email = json['data']['email'];
         var idUser = json['data']['id'].toString();
         final SharedPreferences? prefs = await _prefs;
-        await prefs?.setString('accessToken', token);
+        await prefs?.setString('accessToken', token!);
         await prefs?.setString('username', user);
         await prefs?.setString('idInforUser', idUser);
         await prefs?.setString('emailuser', email);
@@ -67,6 +67,7 @@ class AuthController extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     await prefs.remove('accessToken');
+    box.remove('isLoggedIn');
     box.write('isLoggedIn', false);
     isLoggedIn.value = false;
   }

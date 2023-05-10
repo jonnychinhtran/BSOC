@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bsoc_book/controller/authen/authen_controller.dart';
 import 'package:bsoc_book/controller/changepass/changepass_controller.dart';
 import 'package:bsoc_book/view/about/about_page.dart';
@@ -18,7 +20,7 @@ import 'package:internet_popup/internet_popup.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Map? datauser;
+Map<String, dynamic>? datauser;
 
 class InforPage extends StatefulWidget {
   const InforPage({super.key});
@@ -41,11 +43,9 @@ class _InforPageState extends State<InforPage> {
       });
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
+      print(token);
       var response = await Dio().get('http://103.77.166.202/api/user/profile',
-          options: Options(headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
-          }));
+          options: Options(headers: {'Authorization': 'Bearer $token'}));
       if (response.statusCode == 200) {
         datauser = response.data;
         await prefs.setString('username', datauser!['username']);

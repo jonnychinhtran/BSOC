@@ -16,7 +16,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  LoginController loginController = Get.put(LoginController());
+  // LoginController loginController = Get.put(LoginController());
   final AuthController authController = Get.put(AuthController());
   final userdata = GetStorage();
   final _usernameController = TextEditingController();
