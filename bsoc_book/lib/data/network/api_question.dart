@@ -14,7 +14,7 @@ Future<List<Question>> getQuestions(int? total) async {
   final box = GetStorage();
   bool isLoggedIn = box.read('isLoggedIn');
   if (isLoggedIn) {
-    token = prefs.getString('accessToken');
+    token = box.read('accessToken');
   }
 
   String url = "$baseUrl/$total";

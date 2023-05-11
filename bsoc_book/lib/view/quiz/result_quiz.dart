@@ -29,7 +29,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
 
   @override
   void initState() {
-    InternetPopup().initialize(context: context);
+    // InternetPopup().initialize(context: context);
     super.initState();
   }
 

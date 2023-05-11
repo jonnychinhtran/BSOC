@@ -27,7 +27,7 @@ class TopBookController extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isLoggedIn = box.read('isLoggedIn');
     if (isLoggedIn) {
-      token = prefs.getString('accessToken');
+      token = box.read('accessToken');
     }
 
     try {

@@ -47,8 +47,7 @@ class _CheckPageState extends State<CheckPage> {
 
     Future.delayed(Duration.zero, () async {
       bool isLoggedIn = box.read('isLoggedIn');
-      final SharedPreferences prefs = await _prefs;
-      final token = prefs.getString('accessToken');
+      final token = box.read('accessToken');
       print('Token: $token');
       if (isLoggedIn && token != null) {
         Navigator.push(

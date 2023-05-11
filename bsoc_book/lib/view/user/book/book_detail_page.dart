@@ -129,7 +129,7 @@ class _DetailBookPageState extends State<DetailBookPage>
 
   @override
   void initState() {
-    InternetPopup().initialize(context: context);
+    // InternetPopup().initialize(context: context);
     callback();
     getItemBooks();
     super.initState();
@@ -722,7 +722,7 @@ class _PdfViewerPageState extends State<PdfViewerPage>
 
   @override
   void initState() {
-    InternetPopup().initialize(context: context);
+    // InternetPopup().initialize(context: context);
     readData();
     getItemBooks();
     loadPDF();
@@ -1587,7 +1587,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   @override
   void initState() {
-    InternetPopup().initialize(context: context);
+    // InternetPopup().initialize(context: context);
     readBookmark();
     getBookmarkDetail();
     callback();

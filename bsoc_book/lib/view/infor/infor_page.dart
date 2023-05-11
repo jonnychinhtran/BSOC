@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:bsoc_book/controller/authen/authen_controller.dart';
 import 'package:bsoc_book/controller/changepass/changepass_controller.dart';
 import 'package:bsoc_book/view/about/about_page.dart';
@@ -31,7 +30,7 @@ class InforPage extends StatefulWidget {
 
 class _InforPageState extends State<InforPage> {
   final AuthController authController = Get.find();
-
+  final box = GetStorage();
   ConnectivityResult connectivity = ConnectivityResult.none;
   bool isLoading = true;
   String? token;
@@ -42,8 +41,37 @@ class _InforPageState extends State<InforPage> {
         isLoading = true;
       });
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      token = prefs.getString('accessToken');
+      token = box.read('accessToken');
       print(token);
+
+      if (token == null) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Phiên đã hết hạn"),
+              content: Text("Vui lòng đăng nhập lại."),
+              actions: [
+                TextButton(
+                  child: Text("Đồng ý"),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+
       var response = await Dio().get('http://103.77.166.202/api/user/profile',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
       if (response.statusCode == 200) {
@@ -465,7 +493,7 @@ class _InforPageState extends State<InforPage> {
                           SizedBox(height: size.height * 0.02),
                           Center(
                             child: Text(
-                              '1.1.0',
+                              '1.1.1',
                               style: TextStyle(fontSize: 16),
                             ),
                           ),

@@ -65,7 +65,7 @@ class _UploadAvatarState extends State<UploadAvatar> {
 
   @override
   void initState() {
-    InternetPopup().initialize(context: context);
+    // InternetPopup().initialize(context: context);
     _uploadImage();
     super.initState();
   }

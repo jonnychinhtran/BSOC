@@ -1,13 +1,16 @@
 import 'package:bsoc_book/data/network/api_client.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class InforUserController extends GetxController {
+  final box = GetStorage();
+
   Future<void> getInforUser() async {
     String? token;
     final prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
+    token = box.read('accessToken');
 
     var url =
         Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.inforUser);

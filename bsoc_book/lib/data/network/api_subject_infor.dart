@@ -8,11 +8,11 @@ Map<String, dynamic>? headquestions;
 
 Future<void> getSubject2(int? total) async {
   String? token;
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
   final box = GetStorage();
   bool isLoggedIn = box.read('isLoggedIn');
   if (isLoggedIn) {
-    token = prefs.getString('accessToken');
+    token = box.read('accessToken');
   }
 
   String url = "$baseUrl/$total";

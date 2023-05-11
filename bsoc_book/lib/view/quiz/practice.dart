@@ -78,7 +78,7 @@ class _PracticePageState extends State<PracticePage> {
     fetchCategories();
     super.initState();
 
-    InternetPopup().initialize(context: context);
+    // InternetPopup().initialize(context: context);
   }
 
   @override

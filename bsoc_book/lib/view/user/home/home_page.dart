@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    InternetPopup().initialize(context: context);
+    // InternetPopup().initialize(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getAllBooksController.getAllBooks();
@@ -281,7 +281,20 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
-                          SizedBox(height: size.height * 0.02),
+                          SizedBox(height: size.height * 0.04),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 13.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Luyện thi "IELTS - TOEIC - IT - PSM1"',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.redAccent),
+                              ),
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: GestureDetector(
@@ -302,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                               child: Image.asset('assets/images/practice2.png'),
                             ),
                           ),
-                          SizedBox(height: size.height * 0.02),
+                          SizedBox(height: size.height * 0.04),
                           Padding(
                             padding: const EdgeInsets.only(left: 13.0),
                             child: Align(

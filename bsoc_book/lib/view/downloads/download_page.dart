@@ -70,7 +70,7 @@ class _DownloadPageState extends State<DownloadPage> {
 
   @override
   void initState() {
-    InternetPopup().initialize(context: context);
+    // InternetPopup().initialize(context: context);
     getItemBooks();
     callback();
     super.initState();

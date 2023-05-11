@@ -8,8 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 class AuthController extends GetxController {
-  RxBool isLoggedIn = false.obs;
   final box = GetStorage();
+  RxBool isLoggedIn = false.obs;
+
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -20,7 +21,7 @@ class AuthController extends GetxController {
     checkIsLoggedIn();
   }
 
-  void checkIsLoggedIn() {
+  void checkIsLoggedIn() async {
     bool loggedIn = box.read('isLoggedIn') ?? false;
     isLoggedIn.value = loggedIn;
   }
@@ -44,16 +45,17 @@ class AuthController extends GetxController {
         var email = json['data']['email'];
         var idUser = json['data']['id'].toString();
         final SharedPreferences? prefs = await _prefs;
-        await prefs?.setString('accessToken', token!);
+        await prefs?.setString('accessToken', token);
         await prefs?.setString('username', user);
         await prefs?.setString('idInforUser', idUser);
         await prefs?.setString('emailuser', email);
         Get.snackbar("Thành công", "Đăng nhập thành công.");
-        Get.to(HomePage());
+        box.write('accessToken', token);
         box.write('isLoggedIn', true);
         isLoggedIn.value = true;
         usernameController.clear();
         passwordController.clear();
+        Get.to(HomePage());
       } else {
         throw jsonDecode(response.body)["Thông báo"] ?? "Vui lòng đăng nhập";
       }
@@ -67,7 +69,7 @@ class AuthController extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     await prefs.remove('accessToken');
-    box.remove('isLoggedIn');
+    box.remove('accessToken');
     box.write('isLoggedIn', false);
     isLoggedIn.value = false;
   }

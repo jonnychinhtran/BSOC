@@ -16,7 +16,7 @@ class _ResetPassPageState extends State<ResetPassPage> {
 
   @override
   void initState() {
-    InternetPopup().initialize(context: context);
+    // InternetPopup().initialize(context: context);
     super.initState();
   }
 

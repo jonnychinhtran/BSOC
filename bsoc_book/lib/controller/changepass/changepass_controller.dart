@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangepassConntroller extends GetxController {
+  final box = GetStorage();
   String? token;
   String? username;
   TextEditingController usernameController = TextEditingController();
@@ -12,7 +14,7 @@ class ChangepassConntroller extends GetxController {
 
   Future<void> changepassUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
+    token = box.read('accessToken');
     username = prefs.getString('username');
 
     final formData = {

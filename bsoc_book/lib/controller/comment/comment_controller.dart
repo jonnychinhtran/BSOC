@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CommentController extends GetxController {
+  final box = GetStorage();
   TextEditingController ratingController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   String? token;
@@ -14,7 +16,7 @@ class CommentController extends GetxController {
 
   Future<void> commentUserBook() async {
     final prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
+    token = box.read('accessToken');
     idBook = prefs.getString('idbook');
     idUser = prefs.getString('idInforUser');
     rating = prefs.getDouble('rating');

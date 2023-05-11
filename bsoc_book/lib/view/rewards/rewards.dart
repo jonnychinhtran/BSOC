@@ -25,7 +25,7 @@ class _RewardsPageState extends State<RewardsPage> {
 
   @override
   void initState() {
-    InternetPopup().initialize(context: context);
+    // InternetPopup().initialize(context: context);
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -79,7 +79,8 @@ class _RewardsPageState extends State<RewardsPage> {
           builder: (bookController) {
             return GetBuilder<UserController>(
               builder: (userController) {
-                if (userController.isLoading || bookController.isLoading) {
+                if (userController.isLoading.value ||
+                    bookController.isLoading) {
                   return Center(
                     child: LoadingAnimationWidget.discreteCircle(
                       color: Color.fromARGB(255, 138, 175, 52),
