@@ -76,6 +76,8 @@ dependencies:
   connectivity_plus: ^2.3.9
   internet_popup: ^1.0.8+4
   flutter_typeahead: ^4.3.1
+  flutter_fortune_wheel: ^1.2.0
+  flutter_svg: ^1.1.6
 
 dev_dependencies:
   flutter_test:
