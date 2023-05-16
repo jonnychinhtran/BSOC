@@ -94,10 +94,11 @@ class _InforPageState extends State<InforPage> {
   @override
   void initState() {
     InternetPopup().initialize(context: context);
-    getUserDetail();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getUserDetail();
+      if (authController.isLoggedIn.value) {
+        await getUserDetail();
+      }
     });
   }
 

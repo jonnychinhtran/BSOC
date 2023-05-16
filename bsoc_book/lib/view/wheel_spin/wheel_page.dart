@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:bsoc_book/view/user/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
@@ -135,13 +134,24 @@ class _WheelPageState extends State<WheelPage> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(2.0),
+                    Expanded(
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                              color: Colors.orangeAccent, width: 10.0),
+                              color: Color.fromARGB(255, 255, 225, 65),
+                              width: 20.0),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              color: Color.fromARGB(232, 232, 173, 11),
+                              width: 10.0),
                         ),
                         child: FortuneWheel(
                           selected: selected.stream,
@@ -164,11 +174,19 @@ class _WheelPageState extends State<WheelPage> {
                       ),
                     ),
                     Container(
+                      width: 40.0,
+                      height: 40.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color.fromARGB(255, 255, 225, 65),
+                      ),
+                    ),
+                    Container(
                       width: 30.0,
                       height: 30.0,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.yellowAccent,
+                        color: Color.fromARGB(232, 232, 173, 11),
                       ),
                     ),
                     Container(
@@ -176,7 +194,7 @@ class _WheelPageState extends State<WheelPage> {
                       height: 20.0,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.brown,
+                        color: Color.fromARGB(155, 155, 0, 0),
                       ),
                     ),
                   ],
@@ -217,4 +235,23 @@ class VoucherListPage extends StatelessWidget {
       ),
     );
   }
+}
+
+class CirclePainter extends CustomPainter {
+  final _paint = Paint()
+    ..color = Colors.red
+    ..strokeWidth = 2
+    // Use [PaintingStyle.fill] if you want the circle to be filled.
+    ..style = PaintingStyle.stroke;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawOval(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      _paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

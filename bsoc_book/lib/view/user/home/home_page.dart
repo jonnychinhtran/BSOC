@@ -12,6 +12,7 @@ import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/quiz/practice.dart';
 import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
+import 'package:bsoc_book/view/wheel_spin/wheel_page.dart';
 import 'package:bsoc_book/view/widgets/alert_dailog.dart';
 import 'package:bsoc_book/view/widgets/demo_wheel.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
@@ -287,7 +288,29 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: size.height * 0.04),
+                              SizedBox(height: size.height * 0.01),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (authController.isLoggedIn.value) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  WheelPage()));
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertPageDialog(),
+                                      );
+                                    }
+                                  },
+                                  child:
+                                      Image.asset('assets/images/wheel1.jpg'),
+                                ),
+                              ),
+                              SizedBox(height: size.height * 0.01),
                               Padding(
                                 padding: const EdgeInsets.only(left: 13.0),
                                 child: Align(
@@ -522,10 +545,10 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TimeFrameIcon(),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: TimeFrameIcon(),
+                      // ),
                     ],
                   ),
                 );
