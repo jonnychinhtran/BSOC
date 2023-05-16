@@ -288,28 +288,28 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: size.height * 0.01),
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (authController.isLoggedIn.value) {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  WheelPage()));
-                                    } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertPageDialog(),
-                                      );
-                                    }
-                                  },
-                                  child:
-                                      Image.asset('assets/images/wheel1.jpg'),
-                                ),
-                              ),
+                              SizedBox(height: size.height * 0.02),
+                              // Padding(
+                              //   padding: const EdgeInsets.all(16.0),
+                              //   child: GestureDetector(
+                              //     onTap: () {
+                              //       if (authController.isLoggedIn.value) {
+                              //         Navigator.push(
+                              //             context,
+                              //             MaterialPageRoute(
+                              //                 builder: (context) =>
+                              //                     WheelPage()));
+                              //       } else {
+                              //         showDialog(
+                              //           context: context,
+                              //           builder: (context) => AlertPageDialog(),
+                              //         );
+                              //       }
+                              //     },
+                              //     child:
+                              //         Image.asset('assets/images/wheel1.jpg'),
+                              //   ),
+                              // ),
                               SizedBox(height: size.height * 0.01),
                               Padding(
                                 padding: const EdgeInsets.only(left: 13.0),
