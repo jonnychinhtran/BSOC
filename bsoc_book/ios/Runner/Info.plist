@@ -31,11 +31,9 @@
 	<key>NSAllowsArbitraryLoads</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Access image take by camera</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Use microphone by project</string>
+	<string>We need your camera to show your avatar image in profile</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Pick image from Photo Library</string>
+	<string>We need your photo to show your avatar image in profile</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
