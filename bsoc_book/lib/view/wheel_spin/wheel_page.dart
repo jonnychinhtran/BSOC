@@ -133,6 +133,10 @@ class _WheelPageState extends State<WheelPage> {
         });
         showResultDialog(selectedIndex);
       });
+    } else if (datauser!['spinTurn'] == 0) {
+      setState(() {
+        isSpinning = false;
+      });
     }
   }
 
