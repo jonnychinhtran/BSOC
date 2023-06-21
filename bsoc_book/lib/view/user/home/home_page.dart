@@ -351,6 +351,41 @@ class _HomePageState extends State<HomePage> {
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
+                                    'Vòng quay may mắn',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (authController.isLoggedIn.value) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  WheelPage()));
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertPageDialog(),
+                                      );
+                                    }
+                                  },
+                                  child: Image.asset(
+                                      'assets/images/banner-wheel.jpg'),
+                                ),
+                              ),
+                              SizedBox(height: size.height * 0.04),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 13.0),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
                                     'Top 5 sách hay',
                                     style: TextStyle(
                                       fontSize: 18,

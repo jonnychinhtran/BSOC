@@ -1,5 +1,5 @@
 import 'package:bsoc_book/view/infor/infor_page.dart';
-import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:internet_popup/internet_popup.dart';
@@ -32,32 +32,37 @@ class _UpdateUserState extends State<UpdateUser> {
     username = prefs.getString('username');
     emailUser = prefs.getString('emailuser');
     phoneUser = prefs.getString('phoneUser');
-    // int value1 = int.parse(phoneController.text);
 
-    var formData = FormData.fromMap(
-      {
-        "userId": idUser.toString(),
-        "fullname": fullnameController.text,
-        "username": username,
-        "email": emailController.text,
-        "phone": phoneController.text,
-      },
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('http://103.77.166.202/api/user/update'),
     );
+    request.headers.addAll(headers);
+    request.fields['userId'] = idUser.toString();
+    request.fields['fullname'] = fullnameController.text;
+    request.fields['username'] = username.toString();
+    request.fields['email'] = emailController.text;
+    request.fields['phone'] = phoneController.text;
 
-    var response = await Dio().post('http://103.77.166.202/api/user/update',
-        data: formData,
-        options: Options(headers: {
-          'Authorization': 'Bearer $token',
-        }));
-    print(response.toString());
-    print(response.data);
-    if (response.statusCode == 200) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const InforPage()));
-      Navigator.of(context).pop();
-      fullnameController.clear();
-      emailController.clear();
-      phoneController.clear();
+    try {
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const InforPage()),
+        );
+        Navigator.of(context).pop();
+        fullnameController.clear();
+        emailController.clear();
+        phoneController.clear();
+      }
+    } catch (error) {
+      // Handle http request error
+      print(error);
     }
   }
 

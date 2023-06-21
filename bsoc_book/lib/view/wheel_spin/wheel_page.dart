@@ -1,10 +1,15 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/user/home/home_page.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:html_unescape/html_unescape.dart';
+
+Map<String, dynamic>? datauser;
 
 class WheelPage extends StatefulWidget {
   const WheelPage({super.key});
@@ -18,6 +23,15 @@ class _WheelPageState extends State<WheelPage> {
   int selectedIndex = 0;
   bool isSpinning = false;
   final storage = GetStorage();
+  bool isLoading = true;
+  String? token;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserDetail();
+    getlistSpin();
+  }
 
   @override
   void dispose() {
@@ -25,16 +39,86 @@ class _WheelPageState extends State<WheelPage> {
     super.dispose();
   }
 
-  final items = <String>[
-    '       Chúc bạn \n\  may mắn lần sau',
-    'Nhận 1 điểm \n\    đổi sách',
-    '        Giảm 20% \n\khóa microservice',
-    'Nhận 1 điểm \n\    đổi sách',
-    '        Giảm 20% \n\       khóa học ios',
-    'Nhận thêm \n\1 lượt quay',
-    '       Chúc bạn \n\  may mắn lần sau',
-    '         Giảm 20% \n\  khóa microservice',
-  ];
+  Future<void> getUserDetail() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      token = storage.read('accessToken');
+      print(token);
+
+      if (token == null) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Phiên đã hết hạn"),
+              content: Text("Vui lòng đăng nhập lại."),
+              actions: [
+                TextButton(
+                  child: Text("Đồng ý"),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+
+      var response = await Dio().get('http://103.77.166.202/api/user/profile',
+          options: Options(headers: {'Authorization': 'Bearer $token'}));
+      if (response.statusCode == 200) {
+        datauser = response.data;
+        // print(datauser!['spinTurn']);
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } catch (e) {
+      // Get.snackbar("error", e.toString());
+      print(e);
+    }
+  }
+
+  List items = <String>[];
+
+  Future<void> getlistSpin() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      token = storage.read('accessToken');
+      print(token);
+      var response = await Dio().get('http://103.77.166.202/api/spin/list',
+          options: Options(headers: {'Authorization': 'Bearer $token'}));
+      if (response.statusCode == 200) {
+        items = (response.data);
+        print(items);
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } catch (e) {
+      // Get.snackbar("error", e.toString());
+      print(e);
+    }
+  }
 
   void spinWheel() {
     if (!isSpinning) {
@@ -59,25 +143,27 @@ class _WheelPageState extends State<WheelPage> {
         return Center(
           child: AlertDialog(
             title: Text('Thông báo'),
-            content: Text(items[selectedIndex]),
+            content: Text(items[selectedIndex]['name'].toString()),
             actions: [
               TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  setState(() {
-                    this.selectedIndex = selectedIndex;
-                  });
+                onPressed: () async {
+                  storage.write('idSpin', items[selectedIndex]['id']);
 
-                  // Store the selected voucher in GetStorage
-                  storage.write('vouchers', [items[selectedIndex]]);
+                  String? token;
+                  int? idSpin;
+                  final box = GetStorage();
+                  token = box.read('accessToken');
+                  idSpin = box.read('idSpin');
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          VoucherListPage(vouchers: [items[selectedIndex]]),
-                    ),
+                  final dio = Dio(); // Create Dio instance
+                  final response = await dio.post(
+                    'http://103.77.166.202/api/spin/turn/$idSpin',
+                    options: Options(
+                        contentType: 'application/json',
+                        headers: {'Authorization': 'Bearer $token'}),
                   );
+                  print(response);
+                  Navigator.of(context).pop();
                 },
                 child: Text('Thu thập ngay'),
               ),
@@ -105,111 +191,132 @@ class _WheelPageState extends State<WheelPage> {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => HomePage()));
             }),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.local_offer),
-            onPressed: () async {
-              final vouchers = storage.read('vouchers') ?? [];
-              final voucherList =
-                  vouchers.map((voucher) => voucher.toString()).toList();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VoucherListPage(vouchers: voucherList),
-                ),
-              );
-            },
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(Icons.local_offer),
+        //     onPressed: () async {
+        //       final vouchers = storage.read('vouchers') ?? [];
+        //       final voucherList =
+        //           vouchers.map((voucher) => voucher.toString()).toList();
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(
+        //           builder: (context) => VoucherListPage(vouchers: voucherList),
+        //         ),
+        //       );
+        //     },
+        //   ),
+        // ],
       ),
-      body: GestureDetector(
-        onTap: () {
-          spinWheel();
-        },
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              color: Color.fromARGB(255, 255, 225, 65),
-                              width: 20.0),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              color: Color.fromARGB(232, 232, 173, 11),
-                              width: 10.0),
-                        ),
-                        child: FortuneWheel(
-                          selected: selected.stream,
-                          animateFirst: false,
-                          items: [
-                            for (var it in items)
-                              FortuneItem(
-                                child: Text(HtmlUnescape().convert(it)),
-                              ),
-                          ],
-                          indicators: [
-                            FortuneIndicator(
-                              alignment: Alignment.topCenter,
-                              child: TriangleIndicator(
-                                color: Colors.red,
+      body: items.length > 1
+          ? GestureDetector(
+              onTap: () {
+                datauser!['spinTurn'] == 0
+                    ? showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Center(
+                            child: AlertDialog(
+                              title: Text('Thông báo'),
+                              content: Text('Bạn đã hết lượt quay'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Thoát'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    : spinWheel();
+              },
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Color.fromARGB(255, 255, 225, 65),
+                                width: 20.0,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Color.fromARGB(232, 232, 173, 11),
+                                  width: 10.0,
+                                ),
+                              ),
+                              child: FortuneWheel(
+                                selected: selected.stream,
+                                animateFirst: false,
+                                items: [
+                                  for (var item in items)
+                                    FortuneItem(
+                                      child: Text(
+                                        item['name'].toString(),
+                                        style: TextStyle(fontSize: 6.5),
+                                      ),
+                                    ),
+                                ],
+                                indicators: [
+                                  FortuneIndicator(
+                                    alignment: Alignment.topCenter,
+                                    child: TriangleIndicator(
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 40.0,
+                            height: 40.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromARGB(232, 232, 173, 11),
+                            ),
+                          ),
+                          Container(
+                            width: 30.0,
+                            height: 30.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromARGB(232, 232, 173, 11),
+                            ),
+                          ),
+                          Container(
+                            width: 20.0,
+                            height: 20.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromARGB(155, 155, 0, 0),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Container(
-                      width: 40.0,
-                      height: 40.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color.fromARGB(255, 255, 225, 65),
-                      ),
-                    ),
-                    Container(
-                      width: 30.0,
-                      height: 30.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color.fromARGB(232, 232, 173, 11),
-                      ),
-                    ),
-                    Container(
-                      width: 20.0,
-                      height: 20.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color.fromARGB(155, 155, 0, 0),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            )
+          : Center(
+              child: Text('Đang tải dữ liệu...'),
             ),
-            // TextButton(
-            //   onPressed: () {
-            //     spinWheel();
-            //   },
-            //   child: Text('Quay vòng xoay'),
-            // ),
-          ],
-        ),
-      ),
     );
   }
 }

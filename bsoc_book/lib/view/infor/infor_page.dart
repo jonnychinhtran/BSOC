@@ -244,8 +244,8 @@ class _InforPageState extends State<InforPage> {
                                     style:
                                         TextStyle(fontWeight: FontWeight.w500),
                                   ),
-                                  trailing: Text(datauser == null
-                                      ? ""
+                                  trailing: Text(datauser != null
+                                      ? " "
                                       : datauser!['phone'].toString()),
                                 ),
                               ],
@@ -494,7 +494,7 @@ class _InforPageState extends State<InforPage> {
                           SizedBox(height: size.height * 0.02),
                           Center(
                             child: Text(
-                              '1.1.1',
+                              '1.1.2',
                               style: TextStyle(fontSize: 16),
                             ),
                           ),

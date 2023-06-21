@@ -26,7 +26,6 @@ class _RewardsPageState extends State<RewardsPage> {
   @override
   void initState() {
     // InternetPopup().initialize(context: context);
-
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await userController.getUserDetail();
@@ -90,114 +89,107 @@ class _RewardsPageState extends State<RewardsPage> {
                     ),
                   );
                 } else {
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      bookController.getAllBooks();
-                      userController.getUserDetail();
-                    },
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const ScrollPhysics(),
-                      itemCount: bookController.listbook.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final book = bookController.listbook[index];
-                        return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RewardsDetail(
-                                    userId: userController.datauser!['id']
-                                        .toString(),
-                                    bookId: book.id.toString(),
-                                  ),
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const ScrollPhysics(),
+                    itemCount: bookController.listbook.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final book = bookController.listbook[index];
+                      return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RewardsDetail(
+                                  userId:
+                                      userController.datauser!['id'].toString(),
+                                  bookId: book.id.toString(),
                                 ),
-                              );
-                            },
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 8.0,
-                                  bottom: 8.0,
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      height: size.height * 0.20,
-                                      width: size.width * 0.4,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          fit: BoxFit.fitHeight,
-                                          image: NetworkImage(
-                                            book.image == null
-                                                ? "Đang tải..."
-                                                : 'http://103.77.166.202' +
-                                                    book.image.toString(),
-                                          ),
+                            );
+                          },
+                          child: Card(
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 8.0,
+                                bottom: 8.0,
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: size.height * 0.20,
+                                    width: size.width * 0.4,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        fit: BoxFit.fitHeight,
+                                        image: NetworkImage(
+                                          book.image == null
+                                              ? "Đang tải..."
+                                              : 'http://103.77.166.202' +
+                                                  book.image.toString(),
                                         ),
                                       ),
                                     ),
-                                    Container(
-                                      width: 200,
-                                      margin: EdgeInsets.only(left: 8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            book.bookName == null
-                                                ? "Đang tải..."
-                                                : book.bookName.toString(),
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 14,
-                                            ),
+                                  ),
+                                  Container(
+                                    width: 200,
+                                    margin: EdgeInsets.only(left: 8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          book.bookName == null
+                                              ? "Đang tải..."
+                                              : book.bookName.toString(),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
                                           ),
-                                          SizedBox(height: size.height * 0.02),
-                                          Align(
-                                            alignment: Alignment.bottomLeft,
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  height: 20,
-                                                  margin: EdgeInsets.only(
-                                                      right: 8.0),
-                                                  child: Image.asset(
-                                                      'assets/images/point.png'),
-                                                ),
-                                                Container(
-                                                  margin: EdgeInsets.only(
-                                                      right: 10.0),
-                                                  child: Text(
-                                                    '1',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.orangeAccent
-                                                          .shade700,
-                                                    ),
+                                        ),
+                                        SizedBox(height: size.height * 0.02),
+                                        Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                height: 20,
+                                                margin:
+                                                    EdgeInsets.only(right: 8.0),
+                                                child: Image.asset(
+                                                    'assets/images/point.png'),
+                                              ),
+                                              Container(
+                                                margin: EdgeInsets.only(
+                                                    right: 10.0),
+                                                child: Text(
+                                                  '1',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors
+                                                        .orangeAccent.shade700,
                                                   ),
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ));
-                      },
-                    ),
+                            ),
+                          ));
+                    },
                   );
                 }
               },

@@ -9,6 +9,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:internet_popup/internet_popup.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -47,8 +48,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     if (countText == '0:00:00' && !_resultSent) {
       _resultSent = true;
       String? token;
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      token = prefs.getString('accessToken');
+      final box = GetStorage();
+      token = box.read('accessToken');
 
       var formData =
           _questionResults?.map((result) => result.toJson()).toList();
@@ -485,8 +486,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     } else if (!_resultSent) {
       _resultSent = true;
       String? token;
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      token = prefs.getString('accessToken');
+      final box = GetStorage();
+      token = box.read('accessToken');
 
       var formData =
           _questionResults?.map((result) => result.toJson()).toList();

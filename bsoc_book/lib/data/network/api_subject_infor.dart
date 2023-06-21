@@ -10,17 +10,13 @@ Future<void> getSubject2(int? total) async {
   String? token;
   // SharedPreferences prefs = await SharedPreferences.getInstance();
   final box = GetStorage();
-  bool isLoggedIn = box.read('isLoggedIn');
-  if (isLoggedIn) {
-    token = box.read('accessToken');
-  }
-
+  token = box.read('accessToken');
+  print('token $token');
   String url = "$baseUrl/$total";
   final response = await Dio().get(
     url,
-    options: isLoggedIn
-        ? Options(headers: {'Authorization': 'Bearer $token'})
-        : null,
+    options: Options(headers: {'Authorization': 'Bearer $token'}),
   );
+  print(response);
   headquestions = response.data;
 }
