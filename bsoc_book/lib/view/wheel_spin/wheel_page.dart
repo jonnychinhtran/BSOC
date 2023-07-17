@@ -195,25 +195,25 @@ class _WheelPageState extends State<WheelPage> {
               ),
               GestureDetector(
                 onTap: () async {
-                  // storage.write('idSpin', items[selectedIndex]['id']);
+                  storage.write('idSpin', items[selectedIndex]['id']);
 
-                  // String? token;
-                  // int? idSpin;
-                  // final box = GetStorage();
-                  // token = box.read('accessToken');
-                  // idSpin = box.read('idSpin');
+                  String? token;
+                  int? idSpin;
+                  final box = GetStorage();
+                  token = box.read('accessToken');
+                  idSpin = box.read('idSpin');
 
-                  // final dio = Dio(); // Create Dio instance
-                  // final response = await dio.post(
-                  //   'http://103.77.166.202/api/spin/turn/$idSpin',
-                  //   options: Options(
-                  //       contentType: 'application/json',
-                  //       headers: {'Authorization': 'Bearer $token'}),
-                  // );
-                  // print(response);
-                  // Navigator.of(context).pop();
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) => WheelPage()));
+                  final dio = Dio(); // Create Dio instance
+                  final response = await dio.post(
+                    'http://103.77.166.202/api/spin/turn/$idSpin',
+                    options: Options(
+                        contentType: 'application/json',
+                        headers: {'Authorization': 'Bearer $token'}),
+                  );
+                  print(response);
+                  Navigator.of(context).pop();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => WheelPage()));
                 },
                 child: Container(
                   alignment: FractionalOffset.topRight,
@@ -243,32 +243,30 @@ class _WheelPageState extends State<WheelPage> {
           ),
         );
       },
-    );
-    // .timeout(Duration(seconds: 5), onTimeout: () async{
-    //   // Automatically close the popup after 5 seconds
-    //   Navigator.of(context).pop();
-    //   // Send the data here
-    //   storage.write('idSpin', items[selectedIndex]['id']);
+    ).timeout(Duration(seconds: 5), onTimeout: () async {
+      // Automatically close the popup after 5 seconds
+      Navigator.of(context).pop();
+      // Send the data here
+      storage.write('idSpin', items[selectedIndex]['id']);
 
-    //               String? token;
-    //               int? idSpin;
-    //               final box = GetStorage();
-    //               token = box.read('accessToken');
-    //               idSpin = box.read('idSpin');
+      String? token;
+      int? idSpin;
+      final box = GetStorage();
+      token = box.read('accessToken');
+      idSpin = box.read('idSpin');
 
-    //               final dio = Dio(); // Create Dio instance
-    //               final response = await dio.post(
-    //                 'http://103.77.166.202/api/spin/turn/$idSpin',
-    //                 options: Options(
-    //                     contentType: 'application/json',
-    //                     headers: {'Authorization': 'Bearer $token'}),
-    //               );
-    //               print(response);
-    //               Navigator.of(context).pop();
-    //               Navigator.push(context,
-    //                   MaterialPageRoute(builder: (context) => WheelPage()));
-    // }
-    // );
+      final dio = Dio(); // Create Dio instance
+      final response = await dio.post(
+        'http://103.77.166.202/api/spin/turn/$idSpin',
+        options: Options(
+            contentType: 'application/json',
+            headers: {'Authorization': 'Bearer $token'}),
+      );
+      print(response);
+      Navigator.of(context).pop();
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => WheelPage()));
+    });
   }
 
   @override
