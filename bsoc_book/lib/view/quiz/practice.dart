@@ -48,6 +48,7 @@ class _PracticePageState extends State<PracticePage> {
     try {
       final prefs = await SharedPreferences.getInstance();
       token = prefs.getString('accessToken');
+      print('Token Category Question: $token');
       var response = await Dio().get(
           'http://103.77.166.202/api/quiz/list-subject',
           options: Options(headers: {'Authorization': 'Bearer $token'}));

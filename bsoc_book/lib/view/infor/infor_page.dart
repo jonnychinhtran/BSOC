@@ -189,7 +189,7 @@ class _InforPageState extends State<InforPage> {
                                       : datauser!['id'].toString()),
                                 ),
                                 Divider(
-                                  height: 2,
+                                  height: 1,
                                   endIndent: 0,
                                   color: Color.fromARGB(255, 87, 87, 87),
                                 ),
@@ -233,21 +233,21 @@ class _InforPageState extends State<InforPage> {
                                       ? ""
                                       : datauser!['email'].toString()),
                                 ),
-                                Divider(
-                                  height: 2,
-                                  endIndent: 0,
-                                  color: Color.fromARGB(255, 87, 87, 87),
-                                ),
-                                ListTile(
-                                  title: Text(
-                                    'Số điện thoại:',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w500),
-                                  ),
-                                  trailing: Text(datauser != null
-                                      ? " "
-                                      : datauser!['phone'].toString()),
-                                ),
+                                // Divider(
+                                //   height: 2,
+                                //   endIndent: 0,
+                                //   color: Color.fromARGB(255, 87, 87, 87),
+                                // ),
+                                // ListTile(
+                                //   title: Text(
+                                //     'Số điện thoại:',
+                                //     style:
+                                //         TextStyle(fontWeight: FontWeight.w500),
+                                //   ),
+                                //   trailing: Text(datauser != null
+                                //       ? " "
+                                //       : datauser!['phone'].toString()),
+                                // ),
                               ],
                             ),
                           ),
@@ -624,7 +624,7 @@ class _InforPageState extends State<InforPage> {
                     SizedBox(height: size.height * 0.02),
                     Center(
                       child: Text(
-                        '1.1.0',
+                        '1.1.2',
                         style: TextStyle(fontSize: 16),
                       ),
                     ),

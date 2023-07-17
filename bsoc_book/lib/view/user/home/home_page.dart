@@ -8,20 +8,15 @@ import 'package:bsoc_book/data/model/books/topbook_model.dart';
 import 'package:bsoc_book/view/banner/company_page.dart';
 import 'package:bsoc_book/view/banner/job_page.dart';
 import 'package:bsoc_book/view/infor/infor_page.dart';
-import 'package:bsoc_book/view/login/login_page.dart';
 import 'package:bsoc_book/view/quiz/practice.dart';
 import 'package:bsoc_book/view/search/search_page.dart';
 import 'package:bsoc_book/view/user/book/book_detail_page.dart';
 import 'package:bsoc_book/view/wheel_spin/wheel_page.dart';
 import 'package:bsoc_book/view/widgets/alert_dailog.dart';
-import 'package:bsoc_book/view/widgets/demo_wheel.dart';
 import 'package:bsoc_book/view/widgets/menu_aside.dart';
 import 'package:bsoc_book/view/widgets/updatedialog.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:internet_popup/internet_popup.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:new_version/new_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,13 +39,16 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     // InternetPopup().initialize(context: context);
+    getAllBooksController.getAllBooks();
+    getTopBookController.getTopBook();
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getAllBooksController.getAllBooks();
-      print('All book: ${getAllBooksController.getAllBooks()}');
-      await getTopBookController.getTopBook();
-      print('Top book: ${getAllBooksController.getAllBooks()}');
-    });
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) async {
+    //   await getAllBooksController.getAllBooks();
+    //   // print('All book: ${getAllBooksController.getAllBooks()}');
+    //   await getTopBookController.getTopBook();
+    //   // print('Top book: ${getAllBooksController.getAllBooks()}');
+    // });
     final newVersion = NewVersion(
       iOSId: 'com.b4usolution.app.bsoc',
       androidId: 'com.b4usolution.b4u_bsoc',
