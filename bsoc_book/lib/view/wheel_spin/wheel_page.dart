@@ -8,6 +8,7 @@ import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 Map<String, dynamic>? datauser;
 
@@ -189,10 +190,7 @@ class _WheelPageState extends State<WheelPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(),
-              Text(
-                'Chúc Mừng',
-                style: TextStyle(color: Colors.white),
-              ),
+              Container(),
               GestureDetector(
                 onTap: () async {
                   storage.write('idSpin', items[selectedIndex]['id']);
@@ -211,19 +209,37 @@ class _WheelPageState extends State<WheelPage> {
                         headers: {'Authorization': 'Bearer $token'}),
                   );
                   print(response);
-                  Navigator.of(context).pop();
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => WheelPage()));
                 },
                 child: Container(
                   alignment: FractionalOffset.topRight,
                   child: GestureDetector(
-                    child: Icon(
-                      Icons.clear,
-                      color: Colors.white,
+                    child: SizedBox(
+                      width: 30,
+                      child: Image.asset(
+                        'assets/images/close.png',
+                      ),
                     ),
-                    onTap: () {
-                      Navigator.pop(context);
+                    onTap: () async {
+                      storage.write('idSpin', items[selectedIndex]['id']);
+
+                      String? token;
+                      int? idSpin;
+                      final box = GetStorage();
+                      token = box.read('accessToken');
+                      idSpin = box.read('idSpin');
+
+                      final dio = Dio(); // Create Dio instance
+                      final response = await dio.post(
+                        'http://103.77.166.202/api/spin/turn/$idSpin',
+                        options: Options(
+                            contentType: 'application/json',
+                            headers: {'Authorization': 'Bearer $token'}),
+                      );
+                      print(response);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => WheelPage()));
                     },
                   ),
                 ),
@@ -234,19 +250,17 @@ class _WheelPageState extends State<WheelPage> {
               child: Text(
             items[selectedIndex]['name'].toString(),
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
           )),
-          backgroundColor:
-              Color.fromARGB(255, 1, 132, 194), // Set red background color
+          backgroundColor: Colors.white, // Set red background color
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
         );
       },
-    ).timeout(Duration(seconds: 5), onTimeout: () async {
-      // Automatically close the popup after 5 seconds
+    ).timeout(Duration(seconds: 3), onTimeout: () async {
       Navigator.of(context).pop();
-      // Send the data here
+
       storage.write('idSpin', items[selectedIndex]['id']);
 
       String? token;
@@ -302,30 +316,29 @@ class _WheelPageState extends State<WheelPage> {
           ],
         ),
         leading: GestureDetector(
-            child: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Image.asset(
+                'assets/images/back.png',
+              ),
             ),
             onTap: () {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => HomePage()));
             }),
-        // actions: [
-        //   IconButton(
-        //     icon: Icon(Icons.local_offer),
-        //     onPressed: () async {
-        //       final vouchers = storage.read('vouchers') ?? [];
-        //       final voucherList =
-        //           vouchers.map((voucher) => voucher.toString()).toList();
-        //       Navigator.push(
-        //         context,
-        //         MaterialPageRoute(
-        //           builder: (context) => VoucherListPage(vouchers: voucherList),
-        //         ),
-        //       );
-        //     },
-        //   ),
-        // ],
+        actions: [
+          GestureDetector(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.asset(
+                  'assets/images/list.png',
+                ),
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => VoucherListPage()));
+              }),
+        ],
       ),
       body: items.length > 1
           ? Stack(children: [
@@ -453,25 +466,94 @@ class _WheelPageState extends State<WheelPage> {
   }
 }
 
-class VoucherListPage extends StatelessWidget {
-  final List<dynamic>? vouchers;
+class VoucherListPage extends StatefulWidget {
+  @override
+  State<VoucherListPage> createState() => _VoucherListPageState();
+}
 
-  VoucherListPage({required this.vouchers});
+class _VoucherListPageState extends State<VoucherListPage> {
+  bool isLoading = true;
+  List? voucherList;
+  int? itemVoucher;
+  Future<void> getVoucherList() async {
+    try {
+      final box = GetStorage();
+      String? token;
+      token = box.read('accessToken');
+
+      setState(() {
+        isLoading = true;
+      });
+
+      var response = await Dio().get('http://103.77.166.202/api/user/voucher',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }));
+      if (response.statusCode == 200) {
+        itemVoucher = response.data['pointForClaimBook'];
+        voucherList = response.data['listVoucher'];
+        print(voucherList);
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+      }
+      print("res: ${response.data}");
+    } catch (e) {
+      // Get.snackbar("error", e.toString());
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    getVoucherList();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Voucher List'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Image.asset('assets/images/point.png'),
+                Container(
+                  margin: EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    itemVoucher == null ? '0' : itemVoucher.toString(),
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-      body: ListView.builder(
-        itemCount: vouchers!.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(vouchers!.isEmpty ? "" : vouchers![index].toString()),
-          );
-        },
-      ),
+      body: getVoucherList == ''
+          ? Center(
+              child: LoadingAnimationWidget.discreteCircle(
+              color: Color.fromARGB(255, 138, 175, 52),
+              secondRingColor: Colors.black,
+              thirdRingColor: Colors.purple,
+              size: 30,
+            ))
+          : ListView.builder(
+              itemCount: voucherList != null ? voucherList!.length : null,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(voucherList != null
+                      ? voucherList![index]['name'].toString()
+                      : ""),
+                );
+              },
+            ),
     );
   }
 }
