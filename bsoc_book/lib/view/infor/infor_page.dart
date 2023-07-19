@@ -373,27 +373,27 @@ class _InforPageState extends State<InforPage> {
                             color: Colors.white,
                             child: Column(
                               children: [
-                                ListTile(
-                                  leading: Icon(Icons.info),
-                                  title: Text(
-                                    'Cập nhật thông tin',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w500),
-                                  ),
-                                  trailing: Icon(Icons.keyboard_arrow_right),
-                                  onTap: () async {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const UpdateUser()));
-                                  },
-                                ),
-                                Divider(
-                                  height: 2,
-                                  endIndent: 0,
-                                  color: Color.fromARGB(255, 87, 87, 87),
-                                ),
+                                // ListTile(
+                                //   leading: Icon(Icons.info),
+                                //   title: Text(
+                                //     'Cập nhật thông tin',
+                                //     style:
+                                //         TextStyle(fontWeight: FontWeight.w500),
+                                //   ),
+                                //   trailing: Icon(Icons.keyboard_arrow_right),
+                                //   onTap: () async {
+                                //     Navigator.push(
+                                //         context,
+                                //         MaterialPageRoute(
+                                //             builder: (context) =>
+                                //                 UpdateUser()));
+                                //   },
+                                // ),
+                                // Divider(
+                                //   height: 2,
+                                //   endIndent: 0,
+                                //   color: Color.fromARGB(255, 87, 87, 87),
+                                // ),
                                 ListTile(
                                   leading: Icon(Icons.shield),
                                   title: Text(

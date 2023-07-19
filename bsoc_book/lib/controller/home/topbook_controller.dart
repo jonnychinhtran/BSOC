@@ -39,7 +39,7 @@ class TopBookController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        print('Res top book: ${response.data}');
+        // print('Res top book: ${response.data}');
         List<dynamic> data = response.data;
         topbooks.assignAll(
             data.map((json) => TopbookModel.fromJson(json)).toList());
