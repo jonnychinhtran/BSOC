@@ -185,42 +185,69 @@ class _WheelPageState extends State<WheelPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(),
-              Container(),
-              GestureDetector(
-                onTap: () async {
-                  storage.write('idSpin', items[selectedIndex]['id']);
-
-                  String? token;
-                  int? idSpin;
-                  final box = GetStorage();
-                  token = box.read('accessToken');
-                  idSpin = box.read('idSpin');
-
-                  final dio = Dio(); // Create Dio instance
-                  final response = await dio.post(
-                    'http://103.77.166.202/api/spin/turn/$idSpin',
-                    options: Options(
-                        contentType: 'application/json',
-                        headers: {'Authorization': 'Bearer $token'}),
-                  );
-                  print(response);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => WheelPage()));
-                },
-                child: Container(
-                  alignment: FractionalOffset.topRight,
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+          elevation: 0.0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            margin: EdgeInsets.only(left: 0.0, right: 0.0),
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(
+                    top: 18.0,
+                  ),
+                  margin: EdgeInsets.only(top: 3.0, right: 8.0),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(16.0),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 0.0,
+                          offset: Offset(0.0, 0.0),
+                        ),
+                      ]),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: new Text(items[selectedIndex]['name'].toString(),
+                            style:
+                                TextStyle(fontSize: 14.0, color: Colors.black)),
+                      ) //
+                          ),
+                      // SizedBox(height: 24.0),
+                      // InkWell(
+                      // child: Container(
+                      //     padding: EdgeInsets.only(top: 15.0,bottom:15.0),
+                      //     decoration: BoxDecoration(
+                      //     color:Colors.white,
+                      //     borderRadius: BorderRadius.only(
+                      //         bottomLeft: Radius.circular(16.0),
+                      //         bottomRight: Radius.circular(16.0)),
+                      //     ),
+                      //     child:  Text(
+                      //     "OK",
+                      //     style: TextStyle(color: Colors.blue,fontSize: 25.0),
+                      //     textAlign: TextAlign.center,
+                      //     ),
+                      // ),
+                      // onTap:(){
+                      //     Navigator.pop(context);
+                      // },
+                      // )
+                    ],
+                  ),
+                ),
+                Positioned(
+                  right: 0.0,
                   child: GestureDetector(
-                    child: SizedBox(
-                      width: 30,
-                      child: Image.asset(
-                        'assets/images/close.png',
-                      ),
-                    ),
                     onTap: () async {
                       storage.write('idSpin', items[selectedIndex]['id']);
 
@@ -238,29 +265,118 @@ class _WheelPageState extends State<WheelPage> {
                             headers: {'Authorization': 'Bearer $token'}),
                       );
                       print(response);
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => WheelPage()));
+                      Navigator.of(context).pop();
+                      Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          transitionDuration: Duration.zero,
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  WheelPage(),
+                        ),
+                      );
                     },
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: CircleAvatar(
+                        radius: 14.0,
+                        backgroundColor: Colors.red,
+                        child: Icon(Icons.close, color: Colors.white),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          content: Container(
-              child: Text(
-            items[selectedIndex]['name'].toString(),
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.black),
-          )),
-          backgroundColor: Colors.white, // Set red background color
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+              ],
+            ),
           ),
         );
+        // return AlertDialog(
+        //   title: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       Container(),
+        //       Container(),
+        //       GestureDetector(
+        //         onTap: () async {
+        //           // storage.write('idSpin', items[selectedIndex]['id']);
+
+        //           // String? token;
+        //           // int? idSpin;
+        //           // final box = GetStorage();
+        //           // token = box.read('accessToken');
+        //           // idSpin = box.read('idSpin');
+
+        //           // final dio = Dio(); // Create Dio instance
+        //           // final response = await dio.post(
+        //           //   'http://103.77.166.202/api/spin/turn/$idSpin',
+        //           //   options: Options(
+        //           //       contentType: 'application/json',
+        //           //       headers: {'Authorization': 'Bearer $token'}),
+        //           // );
+        //           // print(response);
+        //           Navigator.pushReplacement(
+        //             context,
+        //             PageRouteBuilder(
+        //               transitionDuration: Duration.zero,
+        //               pageBuilder: (context, animation, secondaryAnimation) =>
+        //                   WheelPage(),
+        //             ),
+        //           );
+        //         },
+        //         child: Container(
+        //           alignment: FractionalOffset.topRight,
+        //           child: GestureDetector(
+        //             child: SizedBox(
+        //               width: 30,
+        //               child: Image.asset(
+        //                 'assets/images/close.png',
+        //               ),
+        //             ),
+        //             onTap: () async {
+        //               // storage.write('idSpin', items[selectedIndex]['id']);
+
+        //               // String? token;
+        //               // int? idSpin;
+        //               // final box = GetStorage();
+        //               // token = box.read('accessToken');
+        //               // idSpin = box.read('idSpin');
+
+        //               // final dio = Dio(); // Create Dio instance
+        //               // final response = await dio.post(
+        //               //   'http://103.77.166.202/api/spin/turn/$idSpin',
+        //               //   options: Options(
+        //               //       contentType: 'application/json',
+        //               //       headers: {'Authorization': 'Bearer $token'}),
+        //               // );
+        //               // print(response);
+        //               Navigator.pushReplacement(
+        //                 context,
+        //                 PageRouteBuilder(
+        //                   transitionDuration: Duration.zero,
+        //                   pageBuilder:
+        //                       (context, animation, secondaryAnimation) =>
+        //                           WheelPage(),
+        //                 ),
+        //               );
+        //             },
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        //   content: Container(
+        //       child: Text(
+        //     items[selectedIndex]['name'].toString(),
+        //     textAlign: TextAlign.center,
+        //     style: TextStyle(color: Colors.black),
+        //   )),
+        //   backgroundColor: Colors.white, // Set red background color
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(10.0),
+        //   ),
+        // );
       },
     ).timeout(Duration(seconds: 3), onTimeout: () async {
-      Navigator.of(context).pop();
-
       storage.write('idSpin', items[selectedIndex]['id']);
 
       String? token;
@@ -278,191 +394,198 @@ class _WheelPageState extends State<WheelPage> {
       );
       print(response);
       Navigator.of(context).pop();
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => WheelPage()));
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          transitionDuration: Duration.zero,
+          pageBuilder: (context, animation, secondaryAnimation) => WheelPage(),
+        ),
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      // backgroundColor: Colors.grey[300],
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        centerTitle: true,
-        title: Stack(
-          children: <Widget>[
-            // Stroked text as border.
-            Text(
-              'Vòng Xoay May Mắn',
-              style: TextStyle(
-                fontSize: 20,
-                foreground: Paint()
-                  ..style = PaintingStyle.stroke
-                  ..strokeWidth = 3
-                  ..color = Colors.blue.shade700,
+        extendBodyBehindAppBar: true,
+        // backgroundColor: Colors.grey[300],
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          centerTitle: true,
+          title: Stack(
+            children: <Widget>[
+              // Stroked text as border.
+              Text(
+                'Vòng Xoay May Mắn',
+                style: TextStyle(
+                  fontSize: 20,
+                  foreground: Paint()
+                    ..style = PaintingStyle.stroke
+                    ..strokeWidth = 3
+                    ..color = Colors.blue.shade700,
+                ),
               ),
-            ),
-            // Solid text as fill.
-            Text(
-              'Vòng Xoay May Mắn',
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.grey[300],
+              // Solid text as fill.
+              Text(
+                'Vòng Xoay May Mắn',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.grey[300],
+                ),
               ),
-            ),
-          ],
-        ),
-        leading: GestureDetector(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Image.asset(
-                'assets/images/back.png',
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => HomePage()));
-            }),
-        actions: [
-          GestureDetector(
+            ],
+          ),
+          leading: GestureDetector(
               child: Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Image.asset(
-                  'assets/images/list.png',
+                  'assets/images/back.png',
                 ),
               ),
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => VoucherListPage()));
+                    MaterialPageRoute(builder: (context) => HomePage()));
               }),
-        ],
-      ),
-      body: items.length > 1
-          ? Stack(children: [
-              Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/bgspin.jpg'),
-                      fit: BoxFit.cover,
-                    ),
-                  )),
-              SafeArea(
-                child: GestureDetector(
-                  onTap: () {
-                    datauser!['spinTurn'] == 0
-                        ? showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Center(
-                                child: AlertDialog(
-                                  title: Text('Thông báo'),
-                                  content: Text('Bạn đã hết lượt quay'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () async {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('Thoát'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          )
-                        : spinWheel();
-                  },
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Color.fromARGB(255, 255, 225, 65),
-                                    width: 20.0,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Color.fromARGB(232, 232, 173, 11),
-                                      width: 10.0,
-                                    ),
-                                  ),
-                                  child: FortuneWheel(
-                                    selected: selected.stream,
-                                    animateFirst: false,
-                                    items: [
-                                      for (var item in items)
-                                        FortuneItem(
-                                          child: Text(
-                                            item['name'].toString(),
-                                            style: TextStyle(fontSize: 6.7),
-                                          ),
-                                        ),
-                                    ],
-                                    indicators: [
-                                      FortuneIndicator(
-                                        alignment: Alignment.topCenter,
-                                        child: TriangleIndicator(
-                                          color: Colors.red,
-                                        ),
+          actions: [
+            GestureDetector(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image.asset(
+                    'assets/images/list.png',
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => VoucherListPage()));
+                }),
+          ],
+        ),
+        body: items.length > 1
+            ? Stack(children: [
+                Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/bgspin.jpg'),
+                        fit: BoxFit.cover,
+                      ),
+                    )),
+                SafeArea(
+                  child: GestureDetector(
+                    onTap: () {
+                      datauser!['spinTurn'] == 0
+                          ? showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Center(
+                                  child: AlertDialog(
+                                    title: Text('Thông báo'),
+                                    content: Text('Bạn đã hết lượt quay'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('Thoát'),
                                       ),
                                     ],
                                   ),
+                                );
+                              },
+                            )
+                          : spinWheel();
+                    },
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Color.fromARGB(255, 255, 225, 65),
+                                      width: 20.0,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                width: 40.0,
-                                height: 40.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color.fromARGB(232, 232, 173, 11),
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color:
+                                            Color.fromARGB(232, 232, 173, 11),
+                                        width: 10.0,
+                                      ),
+                                    ),
+                                    child: FortuneWheel(
+                                      selected: selected.stream,
+                                      animateFirst: false,
+                                      items: [
+                                        for (var item in items)
+                                          FortuneItem(
+                                            child: Text(
+                                              item['name'].toString(),
+                                              style: TextStyle(fontSize: 6.7),
+                                            ),
+                                          ),
+                                      ],
+                                      indicators: [
+                                        FortuneIndicator(
+                                          alignment: Alignment.topCenter,
+                                          child: TriangleIndicator(
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                width: 30.0,
-                                height: 30.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color.fromARGB(232, 232, 173, 11),
+                                Container(
+                                  width: 40.0,
+                                  height: 40.0,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color.fromARGB(232, 232, 173, 11),
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                width: 20.0,
-                                height: 20.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color.fromARGB(155, 155, 0, 0),
+                                Container(
+                                  width: 30.0,
+                                  height: 30.0,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color.fromARGB(232, 232, 173, 11),
+                                  ),
                                 ),
-                              ),
-                            ],
+                                Container(
+                                  width: 20.0,
+                                  height: 20.0,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color.fromARGB(155, 155, 0, 0),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ])
-          : Center(
-              child: Text('Đang tải dữ liệu...'),
-            ),
-    );
+              ])
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }
 

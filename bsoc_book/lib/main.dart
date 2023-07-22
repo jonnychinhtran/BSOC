@@ -52,18 +52,43 @@ class _CheckPageState extends State<CheckPage> {
       print(isLoggedIn);
       final token = box.read('accessToken');
       print('Token: $token');
-      DateTime? expiryDate = Jwt.getExpiryDate(token);
-      print(expiryDate);
-      // To check if token is expired
-      bool isExpired = Jwt.isExpired(token);
-      print(!isExpired);
-      if (!isExpired && isLoggedIn && token != null) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
+      if (token != null) {
+        DateTime? expiryDate = Jwt.getExpiryDate(token);
+        print(expiryDate);
+        // To check if token is expired
+        bool isExpired = Jwt.isExpired(token);
+        print(!isExpired);
+        if (!isExpired && isLoggedIn) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HomePage()));
+        } else {
+          // Token is expired
+          authController.logout();
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Thông báo'),
+                content: Text('Phiên làm việc hết hạn, đăng nhập lại'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('Đồng ý'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LoginPage()));
+        }
       } else {
+        // Token is null
         authController.logout();
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+            context, MaterialPageRoute(builder: (context) => HomePage()));
       }
     });
   }
