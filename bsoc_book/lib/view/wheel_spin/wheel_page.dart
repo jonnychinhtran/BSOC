@@ -480,7 +480,7 @@ class _WheelPageState extends State<WheelPage> {
                         padding: const EdgeInsets.only(left: 120.0, top: 135.0),
                         child: SizedBox(
                           child: Text(
-                            datauser?['spinTurn'] == 0
+                            datauser == null
                                 ? 'Bạn còn 0 lượt quay'
                                 : 'Bạn còn ' +
                                     datauser!['spinTurn'].toString() +

@@ -293,7 +293,8 @@ class _InforPageState extends State<InforPage> {
                                     width: 500,
                                     height: 80,
                                     decoration: BoxDecoration(
-                                        color: Colors.blue,
+                                        color:
+                                            Color.fromARGB(255, 138, 175, 52),
                                         borderRadius: BorderRadius.vertical(
                                             top: Radius.circular(8.0))),
                                     child: Padding(
