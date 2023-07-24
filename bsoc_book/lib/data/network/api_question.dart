@@ -10,7 +10,7 @@ Map<String, dynamic>? data2;
 String? token;
 
 Future<List<Question>> getQuestions(int? total) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
   final box = GetStorage();
   token = box.read('accessToken');
   print('Token Question: $token');

@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:internet_popup/internet_popup.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,8 +25,9 @@ class _RewardsDetailState extends State<RewardsDetail> {
   String? token;
 
   Future<void> getItemBooks() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    final box = GetStorage();
+    token = box.read('accessToken');
 
     try {
       var response = await Dio()

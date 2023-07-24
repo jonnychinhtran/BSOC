@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:html_unescape/html_unescape.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 Map<String, dynamic>? datauser;
@@ -376,7 +375,7 @@ class _WheelPageState extends State<WheelPage> {
         //   ),
         // );
       },
-    ).timeout(Duration(seconds: 3), onTimeout: () async {
+    ).timeout(Duration(seconds: 30), onTimeout: () async {
       storage.write('idSpin', items[selectedIndex]['id']);
 
       String? token;
@@ -475,111 +474,133 @@ class _WheelPageState extends State<WheelPage> {
                       ),
                     )),
                 SafeArea(
-                  child: GestureDetector(
-                    onTap: () {
-                      datauser!['spinTurn'] == 0
-                          ? showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Center(
-                                  child: AlertDialog(
-                                    title: Text('Thông báo'),
-                                    content: Text('Bạn đã hết lượt quay'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () async {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('Thoát'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            )
-                          : spinWheel();
-                    },
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Color.fromARGB(255, 255, 225, 65),
-                                      width: 20.0,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color:
-                                            Color.fromARGB(232, 232, 173, 11),
-                                        width: 10.0,
-                                      ),
-                                    ),
-                                    child: FortuneWheel(
-                                      selected: selected.stream,
-                                      animateFirst: false,
-                                      items: [
-                                        for (var item in items)
-                                          FortuneItem(
-                                            child: Text(
-                                              item['name'].toString(),
-                                              style: TextStyle(fontSize: 6.7),
-                                            ),
-                                          ),
-                                      ],
-                                      indicators: [
-                                        FortuneIndicator(
-                                          alignment: Alignment.topCenter,
-                                          child: TriangleIndicator(
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  width: 40.0,
-                                  height: 40.0,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color.fromARGB(232, 232, 173, 11),
-                                  ),
-                                ),
-                                Container(
-                                  width: 30.0,
-                                  height: 30.0,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color.fromARGB(232, 232, 173, 11),
-                                  ),
-                                ),
-                                Container(
-                                  width: 20.0,
-                                  height: 20.0,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color.fromARGB(155, 155, 0, 0),
-                                  ),
-                                ),
-                              ],
-                            ),
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 120.0, top: 135.0),
+                        child: SizedBox(
+                          child: Text(
+                            datauser?['spinTurn'] == 0
+                                ? 'Bạn còn 0 lượt quay'
+                                : 'Bạn còn ' +
+                                    datauser!['spinTurn'].toString() +
+                                    ' lượt quay',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18.0),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          datauser!['spinTurn'] == 0
+                              ? showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Center(
+                                      child: AlertDialog(
+                                        title: Text('Thông báo'),
+                                        content: Text('Bạn đã hết lượt quay'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () async {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('Thoát'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                )
+                              : spinWheel();
+                        },
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color:
+                                              Color.fromARGB(255, 255, 225, 65),
+                                          width: 20.0,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: Color.fromARGB(
+                                                232, 232, 173, 11),
+                                            width: 10.0,
+                                          ),
+                                        ),
+                                        child: FortuneWheel(
+                                          selected: selected.stream,
+                                          animateFirst: false,
+                                          items: [
+                                            for (var item in items)
+                                              FortuneItem(
+                                                child: Text(
+                                                  item['name'].toString(),
+                                                  style:
+                                                      TextStyle(fontSize: 6.7),
+                                                ),
+                                              ),
+                                          ],
+                                          indicators: [
+                                            FortuneIndicator(
+                                              alignment: Alignment.topCenter,
+                                              child: TriangleIndicator(
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 40.0,
+                                      height: 40.0,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color:
+                                            Color.fromARGB(232, 232, 173, 11),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 30.0,
+                                      height: 30.0,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color:
+                                            Color.fromARGB(232, 232, 173, 11),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 20.0,
+                                      height: 20.0,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color.fromARGB(155, 155, 0, 0),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ])

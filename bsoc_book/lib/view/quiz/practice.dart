@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bsoc_book/controller/authen/authen_controller.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:internet_popup/internet_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -46,8 +47,10 @@ class _PracticePageState extends State<PracticePage> {
 
   Future<void> fetchCategories() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      token = prefs.getString('accessToken');
+      // final prefs = await SharedPreferences.getInstance();
+      // token = prefs.getString('accessToken');
+      final box = GetStorage();
+      token = box.read('accessToken');
       print('Token Category Question: $token');
       var response = await Dio().get(
           'http://103.77.166.202/api/quiz/list-subject',

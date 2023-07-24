@@ -815,7 +815,8 @@ class DialogLogout extends StatelessWidget {
               // await prefs.clear();
               // box.write('isLoggedIn', false);
               authController.logout();
-              Get.offAll(HomePage());
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => HomePage()));
             },
             child: Text('Có'),
           ),

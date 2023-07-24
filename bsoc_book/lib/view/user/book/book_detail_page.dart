@@ -63,7 +63,9 @@ class _DetailBookPageState extends State<DetailBookPage>
 
   Future<void> getItemBooks() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
+    // token = prefs.getString('accessToken');
+    final box = GetStorage();
+    token = box.read('accessToken');
     idbooks = prefs.getString('idbook');
     try {
       var response =
@@ -96,7 +98,9 @@ class _DetailBookPageState extends State<DetailBookPage>
   Future<void> addBookmark() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      token = prefs.getString('accessToken');
+      // token = prefs.getString('accessToken');
+      final box = GetStorage();
+      token = box.read('accessToken');
       idchap = prefs.getString('idchapter');
       var response = await Dio().post(
           'http://103.77.166.202/api/chapter/add-bookmark?chapterId=$idchap',
@@ -698,7 +702,9 @@ class _PdfViewerPageState extends State<PdfViewerPage>
     String? token;
 
     final prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
+    // token = prefs.getString('accessToken');
+    final box = GetStorage();
+    token = box.read('accessToken');
     idchap = prefs.getInt('idchapter') ?? 0;
     filename = prefs.getString('filePathChapter');
 
@@ -1018,7 +1024,9 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
     String? idchapter;
     String? namesave;
     final prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('accessToken');
+    // token = prefs.getString('accessToken');
+    final box = GetStorage();
+    token = box.read('accessToken');
     idchapter = prefs.getString('idchapter');
     namesave = prefs.getString('filePath');
     idbooks = prefs.getString('idbook');
@@ -1112,8 +1120,8 @@ class _ReviewBookState extends State<ReviewBook> {
         isLoading = true;
       });
 
-      final prefs = await SharedPreferences.getInstance();
-      token = prefs.getString('accessToken');
+      final box = GetStorage();
+      token = box.read('accessToken');
 
       setState(() {
         isLoading = true;
@@ -1520,7 +1528,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
   Future<void> getBookmarkDetail() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      token = prefs.getString('accessToken');
+      final box = GetStorage();
+      token = box.read('accessToken');
       // id = prefs.getString('idbook');
       setState(() {
         isLoading = true;
@@ -1550,7 +1559,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
   Future<void> removeBookmark() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      token = prefs.getString('accessToken');
+      // token = prefs.getString('accessToken');
+      final box = GetStorage();
+      token = box.read('accessToken');
       idchaps = prefs.getString('idchapter');
       setState(() {
         isLoading = false;

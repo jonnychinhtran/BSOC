@@ -49,10 +49,10 @@ class AuthController extends GetxController {
         await prefs?.setString('username', user);
         await prefs?.setString('idInforUser', idUser);
         await prefs?.setString('emailuser', email);
-        Get.snackbar("Thành công", "Đăng nhập thành công.");
-        box.write('accessToken', token);
-        box.write('isLoggedIn', true);
+        await box.write('accessToken', token);
+        await box.write('isLoggedIn', true);
         isLoggedIn.value = true;
+        Get.snackbar("Thành công", "Đăng nhập thành công.");
         usernameController.clear();
         passwordController.clear();
         Get.to(HomePage());
