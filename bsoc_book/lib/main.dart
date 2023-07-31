@@ -82,7 +82,7 @@ class _CheckPageState extends State<CheckPage> {
             },
           );
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LoginPage()));
+              context, MaterialPageRoute(builder: (context) => HomePage()));
         }
       } else {
         // Token is null

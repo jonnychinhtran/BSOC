@@ -477,7 +477,7 @@ class _WheelPageState extends State<WheelPage> {
                   child: Stack(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 120.0, top: 135.0),
+                        padding: const EdgeInsets.only(left: 120.0, top: 109.0),
                         child: SizedBox(
                           child: Text(
                             datauser == null
@@ -597,6 +597,58 @@ class _WheelPageState extends State<WheelPage> {
                                 ),
                               ),
                             ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.transparent),
+                                textStyle: MaterialStateProperty.all<TextStyle>(
+                                  TextStyle(fontSize: 18),
+                                ),
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Cách thức nhận thưởng'),
+                                      content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: <Widget>[
+                                            Text(
+                                                '1. Nếu bạn quay trúng vào ô nhận được 1 quyển sách sẽ được cộng điểm để quy đổi sách, số điểm sẽ được hiển thị trong danh sách Voucher nằm ở vị trí góc trên bên phải sau đó vào phần cài đặt tài khoản để đổi sách.'),
+                                            SizedBox(
+                                              height: 2.0,
+                                            ),
+                                            Text(
+                                                '2. Các Voucher khóa học khi nhận được trong lượt quay, liên hệ admin để đăng ký khóa học với Voucher:'),
+                                            SizedBox(
+                                              height: 2.0,
+                                            ),
+                                            Text(
+                                                '- Số Zalo/Phone: (+84)0989.214.285'),
+                                            SizedBox(
+                                              height: 2.0,
+                                            ),
+                                            Text(
+                                                '- Hoặc email: info@b4usolution.com - Skype: hoa.lethibich'),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          child: Text('Thoát'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Text('Cách thức nhận thưởng'),
+                            ),
                           ],
                         ),
                       ),
@@ -660,7 +712,7 @@ class _VoucherListPageState extends State<VoucherListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Voucher List'),
+        title: Text('Danh sách Voucher'),
         actions: [
           Padding(
             padding: const EdgeInsets.all(14.0),
