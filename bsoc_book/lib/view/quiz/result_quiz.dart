@@ -4,7 +4,6 @@ import 'package:bsoc_book/view/quiz/practice.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:internet_popup/internet_popup.dart';
 
 class ResultQuizPage extends StatefulWidget {
   final List<Question> questions;
@@ -25,7 +24,7 @@ class ResultQuizPage extends StatefulWidget {
 class _ResultQuizPageState extends State<ResultQuizPage> {
   ConnectivityResult connectivity = ConnectivityResult.none;
   bool isLoading = true;
-  int? correctAnswers;
+  int correctAnswers = 0;
 
   @override
   void initState() {
@@ -147,7 +146,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                               'Câu hỏi',
                                               style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 16,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.w600),
                                             ),
                                           ],
@@ -179,6 +178,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
+                                              // '${widget.quizResult!['totalCorrect']}/${widget.questions.length}',
                                               '${widget.quizResult!['totalCorrect']}/${widget.questions.length}',
                                               style: TextStyle(
                                                   color: Colors.white,
@@ -191,7 +191,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                               'Câu đúng',
                                               style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 16,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.w600),
                                             ),
                                           ],
@@ -223,7 +223,8 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              '${widget.quizResult!['totalWrong']}/${widget.questions.length}',
+                                              // '${widget.quizResult!['totalWrong']}/${widget.questions.length}',
+                                              '${widget.questions.length - widget.quizResult!['totalCorrect']}/${widget.questions.length}',
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 20,
@@ -235,7 +236,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                               'Câu sai',
                                               style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 16,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.w600),
                                             ),
                                           ],
