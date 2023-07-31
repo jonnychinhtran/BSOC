@@ -477,7 +477,7 @@ class _WheelPageState extends State<WheelPage> {
                   child: Stack(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 120.0, top: 109.0),
+                        padding: const EdgeInsets.only(left: 120.0, top: 70.0),
                         child: SizedBox(
                           child: Text(
                             datauser == null
