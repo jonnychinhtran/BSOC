@@ -183,6 +183,7 @@ class _WheelPageState extends State<WheelPage> {
   void showResultDialog(int selectedIndex) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return Dialog(
           shape:
@@ -221,26 +222,6 @@ class _WheelPageState extends State<WheelPage> {
                                 TextStyle(fontSize: 14.0, color: Colors.black)),
                       ) //
                           ),
-                      // SizedBox(height: 24.0),
-                      // InkWell(
-                      // child: Container(
-                      //     padding: EdgeInsets.only(top: 15.0,bottom:15.0),
-                      //     decoration: BoxDecoration(
-                      //     color:Colors.white,
-                      //     borderRadius: BorderRadius.only(
-                      //         bottomLeft: Radius.circular(16.0),
-                      //         bottomRight: Radius.circular(16.0)),
-                      //     ),
-                      //     child:  Text(
-                      //     "OK",
-                      //     style: TextStyle(color: Colors.blue,fontSize: 25.0),
-                      //     textAlign: TextAlign.center,
-                      //     ),
-                      // ),
-                      // onTap:(){
-                      //     Navigator.pop(context);
-                      // },
-                      // )
                     ],
                   ),
                 ),
@@ -289,91 +270,6 @@ class _WheelPageState extends State<WheelPage> {
             ),
           ),
         );
-        // return AlertDialog(
-        //   title: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: [
-        //       Container(),
-        //       Container(),
-        //       GestureDetector(
-        //         onTap: () async {
-        //           // storage.write('idSpin', items[selectedIndex]['id']);
-
-        //           // String? token;
-        //           // int? idSpin;
-        //           // final box = GetStorage();
-        //           // token = box.read('accessToken');
-        //           // idSpin = box.read('idSpin');
-
-        //           // final dio = Dio(); // Create Dio instance
-        //           // final response = await dio.post(
-        //           //   'http://103.77.166.202/api/spin/turn/$idSpin',
-        //           //   options: Options(
-        //           //       contentType: 'application/json',
-        //           //       headers: {'Authorization': 'Bearer $token'}),
-        //           // );
-        //           // print(response);
-        //           Navigator.pushReplacement(
-        //             context,
-        //             PageRouteBuilder(
-        //               transitionDuration: Duration.zero,
-        //               pageBuilder: (context, animation, secondaryAnimation) =>
-        //                   WheelPage(),
-        //             ),
-        //           );
-        //         },
-        //         child: Container(
-        //           alignment: FractionalOffset.topRight,
-        //           child: GestureDetector(
-        //             child: SizedBox(
-        //               width: 30,
-        //               child: Image.asset(
-        //                 'assets/images/close.png',
-        //               ),
-        //             ),
-        //             onTap: () async {
-        //               // storage.write('idSpin', items[selectedIndex]['id']);
-
-        //               // String? token;
-        //               // int? idSpin;
-        //               // final box = GetStorage();
-        //               // token = box.read('accessToken');
-        //               // idSpin = box.read('idSpin');
-
-        //               // final dio = Dio(); // Create Dio instance
-        //               // final response = await dio.post(
-        //               //   'http://103.77.166.202/api/spin/turn/$idSpin',
-        //               //   options: Options(
-        //               //       contentType: 'application/json',
-        //               //       headers: {'Authorization': 'Bearer $token'}),
-        //               // );
-        //               // print(response);
-        //               Navigator.pushReplacement(
-        //                 context,
-        //                 PageRouteBuilder(
-        //                   transitionDuration: Duration.zero,
-        //                   pageBuilder:
-        //                       (context, animation, secondaryAnimation) =>
-        //                           WheelPage(),
-        //                 ),
-        //               );
-        //             },
-        //           ),
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        //   content: Container(
-        //       child: Text(
-        //     items[selectedIndex]['name'].toString(),
-        //     textAlign: TextAlign.center,
-        //     style: TextStyle(color: Colors.black),
-        //   )),
-        //   backgroundColor: Colors.white, // Set red background color
-        //   shape: RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.circular(10.0),
-        //   ),
-        // );
       },
     ).timeout(Duration(seconds: 30), onTimeout: () async {
       storage.write('idSpin', items[selectedIndex]['id']);
