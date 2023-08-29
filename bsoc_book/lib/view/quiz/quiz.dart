@@ -53,7 +53,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
       var formData =
           _questionResults?.map((result) => result.toJson()).toList();
-
+      print('Dữ liệu gửi lên: $formData');
       final dio = Dio(); // Create Dio instance
       final response = await dio.post(
           'http://103.77.166.202/api/quiz/check-result',
@@ -62,7 +62,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
               headers: {'Authorization': 'Bearer $token'}),
           data: formData);
       quizResult = response.data;
-      print(quizResult);
+      print('Kết quả API check-result trả về: $quizResult');
 
       if (quizResult?['totalCorrect'] == 0 && quizResult?['totalWrong'] == 0) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -131,6 +131,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   void initState() {
     InternetPopup().initialize(context: context);
     super.initState();
+    _questionResults = [];
     _answers = List.generate(widget.questions.length, (_) => []);
     print('Timer: ${widget.data2?['duration'].toString()}');
     controller = AnimationController(
@@ -444,22 +445,15 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   }
 
   void _backSubmit() {
-    // if (_answers[_currentIndex] == (widget.questions.length + 1)) {
-    //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //     content: Text("You must select an answer to continue."),
-    //   ));
-    //   return;
-    // }
-    if (_currentIndex < (widget.questions.length + 1)) {
+    if (_currentIndex > 0) {
       setState(() {
         _currentIndex--;
+        _questionResults!.removeWhere(
+          (result) =>
+              result.questionId == widget.questions[_currentIndex + 1].id,
+        );
       });
     }
-    // else {
-    // Navigator.of(context).pushReplacement(MaterialPageRoute(
-    //     builder: (_) => ResultQuizPage(
-    //         questions: widget.questions, answers: _answers)));
-    // }
   }
 
   void _nextSubmit() async {
@@ -476,6 +470,12 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     print(answerId);
     final questionResult =
         QuestionResult(questionId: questionId, answerId: answerId);
+
+    // Remove duplicates if the same questionId and answerId combination already exists
+    _questionResults?.removeWhere((result) =>
+        result.questionId == questionResult.questionId &&
+        result.answerId == questionResult.answerId);
+
     _questionResults?.add(questionResult);
     print(questionResult);
 

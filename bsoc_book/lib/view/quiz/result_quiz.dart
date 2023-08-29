@@ -30,6 +30,12 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
   void initState() {
     // InternetPopup().initialize(context: context);
     super.initState();
+    print('Tổng câu hỏi: ${widget.questions.length}');
+    print('Tổng câu trả lời: ${widget.answers.length}');
+    print(
+        'Đáp án đúng trên số câu hỏi: ${widget.quizResult!['totalCorrect']}/${widget.questions.length}');
+    print(
+        'Đáp án đúng sai số câu hỏi:  ${widget.quizResult!['totalWrong']}/${widget.questions.length}');
   }
 
   @override
@@ -224,7 +230,7 @@ class _ResultQuizPageState extends State<ResultQuizPage> {
                                           children: [
                                             Text(
                                               // '${widget.quizResult!['totalWrong']}/${widget.questions.length}',
-                                              '${widget.questions.length - widget.quizResult!['totalCorrect']}/${widget.questions.length}',
+                                              '${widget.quizResult!['totalWrong']}/${widget.questions.length}',
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 20,
