@@ -266,7 +266,7 @@ class _MenuAsideState extends State<MenuAside> {
               padding: const EdgeInsets.all(25.0),
               child: Align(
                   alignment: FractionalOffset.bottomLeft,
-                  child: Text('Phiên bản: 1.1.2')),
+                  child: Text('Phiên bản: 1.1.3')),
             ),
           ),
         ],
