@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus_windows
   modal_progress_hud_nsn
+  sentry_flutter
   url_launcher_windows
 )
 

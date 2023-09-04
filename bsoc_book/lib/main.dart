@@ -6,12 +6,24 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jwt_decode/jwt_decode.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
-  runApp(Phoenix(child: MyApp()));
+  await SentryFlutter.init(
+    (options) {
+      options.dsn =
+          'https://7aa1ca68e853ae9aa6edd85d7e7410b6@o4504015220965376.ingest.sentry.io/4505819997274112';
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 1.0;
+    },
+    appRunner: () => runApp(Phoenix(child: MyApp())),
+  );
+
+  // runApp(Phoenix(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
