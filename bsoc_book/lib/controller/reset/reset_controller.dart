@@ -1,4 +1,4 @@
-import 'package:bsoc_book/view/login/login_page.dart';
+import 'package:bsoc_book/app/view/login/login_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

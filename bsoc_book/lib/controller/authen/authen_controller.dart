@@ -1,5 +1,5 @@
 import 'package:bsoc_book/data/network/api_client.dart';
-import 'package:bsoc_book/view/user/home/home_page.dart';
+import 'package:bsoc_book/app/view/user/home/home_page.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'dart:convert';
