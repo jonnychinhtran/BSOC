@@ -6,8 +6,9 @@
 
 #include "generated_plugin_registrant.h"
 
-#include <connectivity_plus_windows/connectivity_plus_windows_plugin.h>
+#include <connectivity_plus/connectivity_plus_windows_plugin.h>
 #include <modal_progress_hud_nsn/modal_progress_hud_nsn_plugin.h>
+#include <network_info_plus_windows/network_info_plus_windows_plugin.h>
 #include <sentry_flutter/sentry_flutter_plugin.h>
 #include <url_launcher_windows/url_launcher_windows.h>
 
@@ -16,6 +17,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("ConnectivityPlusWindowsPlugin"));
   ModalProgressHudNsnPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("ModalProgressHudNsnPlugin"));
+  NetworkInfoPlusWindowsPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("NetworkInfoPlusWindowsPlugin"));
   SentryFlutterPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("SentryFlutterPlugin"));
   UrlLauncherWindowsRegisterWithRegistrar(

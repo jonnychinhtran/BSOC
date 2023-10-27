@@ -63,14 +63,12 @@ dependencies:
   open_store: ^0.5.0
   flutter_rating_bar: ^4.0.1
   external_path: ^1.0.3
-  auto_reload: ^1.1.0
   flutter_phoenix: ^1.1.0
   flutter_custom_clippers: ^2.1.0
   html_unescape: ^2.0.0
   auto_size_text: ^3.0.0
   awesome_dialog: ^3.0.2
   connectivity_plus: ^5.0.1
-  internet_popup: ^1.0.8+4
   flutter_typeahead: ^4.3.1
   flutter_fortune_wheel: ^1.2.1
   flutter_svg: ^1.1.6
@@ -87,7 +85,6 @@ dependencies:
   intl: ^0.18.1
   logging_appenders: ^1.0.2
   ping_discover_network_forked: ^0.0.1
-  logging: ^1.0.2
 
 dev_dependencies:
   flutter_test:
