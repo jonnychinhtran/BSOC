@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_offline/flutter_offline.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:internet_popup/internet_popup.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';

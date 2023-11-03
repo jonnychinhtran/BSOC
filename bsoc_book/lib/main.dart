@@ -1,6 +1,8 @@
+import 'package:bsoc_book/config/application.dart';
+import 'package:bsoc_book/config/routes.dart';
 import 'package:bsoc_book/controller/authen/authen_controller.dart';
-import 'package:bsoc_book/view/login/login_page.dart';
-import 'package:bsoc_book/view/user/home/home_page.dart';
+import 'package:bsoc_book/widgets/app_dataglobal.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
@@ -9,9 +11,13 @@ import 'package:jwt_decode/jwt_decode.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'resource/values/app_colors.dart';
+
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init();
+  // await GetStorage.init();
   await SentryFlutter.init(
     (options) {
       options.dsn =
@@ -20,102 +26,121 @@ void main() async {
       // We recommend adjusting this value in production.
       options.tracesSampleRate = 1.0;
     },
-    appRunner: () => runApp(Phoenix(child: MyApp())),
+    appRunner: () => runApp(MyApp()),
   );
 
   // runApp(Phoenix(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
-  final AuthController authController = Get.put(AuthController());
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  // final AuthController authController = Get.put(AuthController());
+
+  _MyAppState() {
+    final router = FluroRouter();
+    Routes.configureRoutes(router);
+    Application.router = router;
+    AppDataGlobal();
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'B4U BSOC',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: CheckPage(),
-    );
+    final app = MaterialApp(
+        debugShowCheckedModeBanner: false,
+        navigatorKey: navigatorKey,
+        title: 'B4U BSOC',
+        theme: ThemeData(
+          fontFamily: 'Poppins',
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            primary: AppColors.PRIMARY_COLOR,
+          ),
+        ),
+        initialRoute: "/",
+        onGenerateRoute: Application.router.generator);
+    return app;
   }
 }
 
-class CheckPage extends StatefulWidget {
-  const CheckPage({super.key});
+// class CheckPage extends StatefulWidget {
+//   const CheckPage({super.key});
 
-  @override
-  State<CheckPage> createState() => _CheckPageState();
-}
+//   @override
+//   State<CheckPage> createState() => _CheckPageState();
+// }
 
-class _CheckPageState extends State<CheckPage> {
-  final box = GetStorage();
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  final AuthController authController = Get.put(AuthController());
-  @override
-  void initState() {
-    super.initState();
-    box.writeIfNull('isLoggedIn', false);
+// class _CheckPageState extends State<CheckPage> {
+//   final box = GetStorage();
+//   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+//   final AuthController authController = Get.put(AuthController());
+//   @override
+//   void initState() {
+//     super.initState();
+//     box.writeIfNull('isLoggedIn', false);
 
-    Future.delayed(Duration.zero, () async {
-      bool isLoggedIn = box.read('isLoggedIn');
-      print(isLoggedIn);
-      final token = box.read('accessToken');
-      print('Token: $token');
-      if (token != null) {
-        DateTime? expiryDate = Jwt.getExpiryDate(token);
-        print(expiryDate);
-        // To check if token is expired
-        bool isExpired = Jwt.isExpired(token);
-        print(!isExpired);
-        if (!isExpired && isLoggedIn) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
-        } else {
-          // Token is expired
-          authController.logout();
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('Thông báo'),
-                content: Text('Phiên làm việc hết hạn, đăng nhập lại'),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text('Đồng ý'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
-        }
-      } else {
-        // Token is null
-        authController.logout();
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
-      }
-    });
-  }
+//     Future.delayed(Duration.zero, () async {
+//       bool isLoggedIn = box.read('isLoggedIn');
+//       print(isLoggedIn);
+//       final token = box.read('accessToken');
+//       print('Token: $token');
+//       if (token != null) {
+//         DateTime? expiryDate = Jwt.getExpiryDate(token);
+//         print(expiryDate);
+//         // To check if token is expired
+//         bool isExpired = Jwt.isExpired(token);
+//         print(!isExpired);
+//         if (!isExpired && isLoggedIn) {
+//           Navigator.push(
+//               context, MaterialPageRoute(builder: (context) => HomePage()));
+//         } else {
+//           // Token is expired
+//           authController.logout();
+//           showDialog(
+//             context: context,
+//             builder: (BuildContext context) {
+//               return AlertDialog(
+//                 title: Text('Thông báo'),
+//                 content: Text('Phiên làm việc hết hạn, đăng nhập lại'),
+//                 actions: <Widget>[
+//                   TextButton(
+//                     child: Text('Đồng ý'),
+//                     onPressed: () {
+//                       Navigator.of(context).pop();
+//                     },
+//                   ),
+//                 ],
+//               );
+//             },
+//           );
+//           Navigator.push(
+//               context, MaterialPageRoute(builder: (context) => HomePage()));
+//         }
+//       } else {
+//         // Token is null
+//         authController.logout();
+//         Navigator.push(
+//             context, MaterialPageRoute(builder: (context) => HomePage()));
+//       }
+//     });
+//   }
 
-  // void checkiflogged() async {
+//   // void checkiflogged() async {
 
-  // }
+//   // }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-          child: Center(
-        child: CircularProgressIndicator(),
-      )),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: SafeArea(
+//           child: Center(
+//         child: CircularProgressIndicator(),
+//       )),
+//     );
+//   }
+// }

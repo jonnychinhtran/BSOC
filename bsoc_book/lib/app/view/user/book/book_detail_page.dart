@@ -15,7 +15,6 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:internet_popup/internet_popup.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
@@ -153,8 +152,8 @@ class _DetailBookPageState extends State<DetailBookPage>
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: (() {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => HomePage()));
               }),
             ),
             actions: [
@@ -1740,7 +1739,7 @@ class DialogError extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              Get.off(() => HomePage());
+              // Get.off(() => HomePage());
             },
             child: Text('Trở về trang chủ'),
           ),

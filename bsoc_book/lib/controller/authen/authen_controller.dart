@@ -55,7 +55,7 @@ class AuthController extends GetxController {
         Get.snackbar("Thành công", "Đăng nhập thành công.");
         usernameController.clear();
         passwordController.clear();
-        Get.to(HomePage());
+        // Get.to(HomePage());
       } else {
         throw jsonDecode(response.body)["Thông báo"] ?? "Vui lòng đăng nhập";
       }

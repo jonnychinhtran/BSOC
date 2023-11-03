@@ -1,7 +1,7 @@
 class NetworkEndpoints {
   static const String DNS_SERVER = "";
   static const String BASE_URL = "http://103.77.166.202";
-  static const String BASE_API = "";
+  // static const String BASE_API = "";
   static const String BASE_API_VERSION = "/api";
   // static const String BASE_API_VERSION = "/v1" + BASE_MODULE;
   // static const String BASE_MODULE = "/pos";
@@ -17,7 +17,7 @@ class NetworkEndpoints {
   static const String POST_DELETE_PROFILE_API = '/user/delete';
 
   //User Get
-  static const String GET_USER_INFO_API = '/user/delete';
+  static const String GET_USER_INFO_API = '/user/profile';
   static const String GET_VOUCHER_API = '/user/voucher';
 
   //Book Store

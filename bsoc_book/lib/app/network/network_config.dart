@@ -7,14 +7,11 @@ class NetworkConfig {
   static const String API_KEY_RESPONSE_DATA = "data";
   static const String API_KEY_RESPONSE_RESULT = "result";
   static const String API_KEY_RESPONSE_MESSAGE = "message";
-  static const String API_KEY_RESPONSE_STATUS = "status";
+  static const String API_KEY_RESPONSE_STATUS = "statusCode";
   static const String API_KEY_PHONE = "phone";
   static const String API_KEY_FULL_NAME = "full_name";
   static const String API_KEY_RESPONSE_CODE = "code";
 
-  static const String STATUS_OK = "OK";
+  static const int STATUS_OK = 200;
   static const String STATUS_FAIL = "FAIL";
-
-  static const String SECRET_KEY = "lER8rbam6Y8EUYPm";
-  static const String CRM_TOKEN_KEY = "qRpV3TaOKpdbJ6a2";
 }

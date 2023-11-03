@@ -3,7 +3,6 @@ import 'package:bsoc_book/app/view/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:internet_popup/internet_popup.dart';
 
 class ResetPassPage extends StatefulWidget {
   @override

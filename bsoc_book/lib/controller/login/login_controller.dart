@@ -24,7 +24,7 @@ class LoginController extends GetxController {
     final bool? loggedIn = prefs.getBool('isLoggedIn');
     if (loggedIn != null && loggedIn) {
       isLoggedIn.value = true;
-      Get.to(HomePage());
+      // Get.to(HomePage());
     }
   }
 
@@ -58,7 +58,7 @@ class LoginController extends GetxController {
         isLoggedIn.value = true;
         usernameController.clear();
         passwordController.clear();
-        Get.to(HomePage());
+        // Get.to(HomePage());
       } else {
         throw Error();
       }

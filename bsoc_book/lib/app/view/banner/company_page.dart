@@ -33,9 +33,9 @@ class _CompanyPageState extends State<CompanyPage> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(builder: (context) => HomePage()),
+              // );
             },
           ),
         ),

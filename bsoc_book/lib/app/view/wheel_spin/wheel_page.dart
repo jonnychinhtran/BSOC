@@ -339,8 +339,8 @@ class _WheelPageState extends State<WheelPage> {
                 ),
               ),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => HomePage()));
               }),
           actions: [
             GestureDetector(

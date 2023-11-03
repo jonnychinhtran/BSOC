@@ -15,7 +15,6 @@ import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:internet_popup/internet_popup.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -117,8 +116,8 @@ class _InforPageState extends State<InforPage> {
               color: Colors.white,
             ),
             onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => HomePage()));
+              // Navigator.push(
+              //     context, MaterialPageRoute(builder: (context) => HomePage()));
             }),
       ),
       body: getUserDetail == ConnectivityResult.none
@@ -816,8 +815,8 @@ class DialogLogout extends StatelessWidget {
               // await prefs.clear();
               // box.write('isLoggedIn', false);
               authController.logout();
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => HomePage()));
+              // Navigator.push(
+              //     context, MaterialPageRoute(builder: (context) => HomePage()));
             },
             child: Text('Có'),
           ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// App Colors Class - Resource class for storing app level color constants
 class AppColors {
   //static const Color PRIMARY_COLOR = Color(0xFF2D65EF);
-  static const Color PRIMARY_COLOR = Color(0xFF4C70F0);
+  static const Color PRIMARY_COLOR = Color.fromARGB(255, 153, 195, 59);
   static const Color UNSELECTED_ITEM_COLOR = Color(0xFF7D7D7D);
   static const Color SELECTED_ITEM_COLOR = Color(0xFF4C70F0);
 

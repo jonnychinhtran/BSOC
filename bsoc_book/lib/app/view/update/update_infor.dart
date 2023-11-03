@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:internet_popup/internet_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:bsoc_book/controller/update_info/update_controller.dart';
@@ -73,7 +72,6 @@ class _UpdateUserState extends State<UpdateUser> {
 
   @override
   void initState() {
-    InternetPopup().initialize(context: context);
     super.initState();
   }
 

@@ -10,7 +10,7 @@ import 'app_routes.dart';
 
 class PageRoutes {
   static var pages = [
-    GetPage(name: Routes.home, page: () => HomePage()),
+    // GetPage(name: Routes.home, page: () => HomePage()),
     GetPage(name: Routes.contact, page: () => const ContactPage()),
     GetPage(name: Routes.login, page: () => const LoginPage()),
     GetPage(name: Routes.reset, page: () => ResetPassPage()),

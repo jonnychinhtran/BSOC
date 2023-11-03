@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:internet_popup/internet_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UploadAvatar extends StatefulWidget {
@@ -58,8 +57,8 @@ class _UploadAvatarState extends State<UploadAvatar> {
     print(response.toString());
     print(response.data);
     if (response.statusCode == 200) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+      // Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => HomePage()));
     }
   }
 

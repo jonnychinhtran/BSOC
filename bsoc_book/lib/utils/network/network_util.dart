@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:dio/dio.dart';
 import '../http/http_exception.dart';
 import '../../utils/log/dio_logger.dart';
@@ -109,9 +108,11 @@ class NetworkUtil2 {
     Response response;
 
     if (null != inOptions) {
+      //
       response = await _dio.post(url,
           queryParameters: inQueryParameters, data: data, options: inOptions);
     } else {
+      //
       response =
           await _dio.post(url, queryParameters: inQueryParameters, data: data);
     }
