@@ -17,7 +17,7 @@ TopBookModel _$TopBookModelFromJson(Map<String, dynamic> json) => TopBookModel(
 
 Map<String, dynamic> _$TopBookModelToJson(TopBookModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'id': instance.bookId,
       'bookName': instance.bookName,
       'author': instance.author,
       'description': instance.description,

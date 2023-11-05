@@ -1,11 +1,15 @@
 import 'package:bsoc_book/app/models/book/book_model.dart';
+import 'package:bsoc_book/app/view/user/home/components/item_list_book.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
 import 'package:flutter/material.dart';
 
 class ItemBook extends StatefulWidget {
-  const ItemBook({super.key, required this.bookModel});
+  const ItemBook(
+      {super.key, required this.bookModel, required this.onTapNextPage});
 
   final List<BookModel> bookModel;
+  final Function onTapNextPage;
+
   @override
   State<ItemBook> createState() => _ItemBookState();
 }
@@ -24,38 +28,11 @@ class _ItemBookState extends State<ItemBook> {
       controller: ScrollController(keepScrollOffset: false),
       itemCount: widget.bookModel.length,
       itemBuilder: (context, index) {
-        BookModel bookModel = widget.bookModel[index];
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () {},
-            child: SizedBox(
-              child: Stack(
-                children: [
-                  Column(
-                    children: [
-                      Image.network(
-                        AppDataGlobal().domain + bookModel.image!,
-                        fit: BoxFit.contain,
-                      ),
-                      const SizedBox(
-                        height: 10.0,
-                      ),
-                      Expanded(
-                          child: Text(
-                        bookModel.bookName!,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                      )),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
+        return ItemListBook(
+            bookModel: widget.bookModel[index],
+            onPressedNextPage: () {
+              widget.onTapNextPage(widget.bookModel[index]);
+            });
       },
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,

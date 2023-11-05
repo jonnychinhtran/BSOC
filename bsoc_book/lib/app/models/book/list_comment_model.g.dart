@@ -9,9 +9,11 @@ part of 'list_comment_model.dart';
 ListCommentModel _$ListCommentModelFromJson(Map<String, dynamic> json) =>
     ListCommentModel(
       json['id'] as int,
-      json['content'] as String,
-      json['rating'] as int,
-      UserModel.fromJson(json['user'] as Map<String, dynamic>),
+      json['content'] as String?,
+      json['rating'] as int?,
+      json['user'] == null
+          ? null
+          : UserModel.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ListCommentModelToJson(ListCommentModel instance) =>

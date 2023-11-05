@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bsoc_book/app/view/user/home/home_view.dart';
+import 'package:bsoc_book/app/view_model/app_view_model.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/app/view_model/login_view_model.dart';
 import 'package:bsoc_book/config/application.dart';
@@ -18,19 +19,26 @@ class AppView extends StatefulWidget {
 class _AppViewState extends State<AppView> {
   Timer? checkConnection;
   int _currentPage = 0;
+  bool _isShowAppBar = true;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Widget> _pages = [];
   final HomeViewModel _homeViewModel = HomeViewModel();
   final loginViewModel = LoginViewModel();
   final PageController _pageController = PageController(keepPage: true);
-
+  final AppViewModel _appViewModel = AppViewModel();
   @override
   void initState() {
     _pages.add(HomeView(
+      appViewModel: _appViewModel,
       homeViewModel: _homeViewModel,
     ));
 
     super.initState();
+
+    _appViewModel.isShowAppBarStream.listen((event) {
+      _isShowAppBar = event;
+      setState(() {});
+    });
   }
 
   void _selectedTab(int index) {
@@ -90,7 +98,7 @@ class _AppViewState extends State<AppView> {
           )
         ]),
       )),
-      appBar: AppBarCustom(scaffoldKey: _scaffoldKey),
+      appBar: _isShowAppBar ? AppBarCustom(scaffoldKey: _scaffoldKey) : null,
       body: _getCurrentPage(),
     );
   }

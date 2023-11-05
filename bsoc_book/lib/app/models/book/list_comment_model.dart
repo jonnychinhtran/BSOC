@@ -5,14 +5,13 @@ part 'list_comment_model.g.dart';
 
 @JsonSerializable()
 class ListCommentModel {
-  @JsonKey(name: 'id')
   int id;
   @JsonKey(name: 'content')
-  String content;
+  String? content;
   @JsonKey(name: 'rating')
-  int rating;
+  int? rating;
   @JsonKey(name: 'user')
-  UserModel user;
+  UserModel? user;
 
   ListCommentModel(this.id, this.content, this.rating, this.user);
 

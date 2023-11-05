@@ -1,11 +1,18 @@
+import 'package:bsoc_book/app/view/book/book_detail_page.dart';
 import 'package:bsoc_book/app/view/user/home/home_page.dart';
+import 'package:bsoc_book/app/view_model/app_view_model.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/app/view_model/login_view_model.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key, required this.homeViewModel});
+  const HomeView({
+    super.key,
+    required this.homeViewModel,
+    required this.appViewModel,
+  });
   final HomeViewModel homeViewModel;
+  final AppViewModel appViewModel;
 
   @override
   State<HomeView> createState() => HomeViewState();
@@ -26,7 +33,16 @@ class HomeViewState extends State<HomeView> {
       homeViewModel: _homeViewModel,
     ));
 
+    _listPage.add(BookDetailPage(
+      parentViewState: this,
+      homeViewModel: _homeViewModel,
+    ));
+
     super.initState();
+  }
+
+  void setShowAppBar(bool isShow) {
+    widget.appViewModel.setShowAppBar(isShowAppBar: isShow);
   }
 
   void nextPage({String customerPhone = ""}) {
@@ -57,9 +73,16 @@ class HomeViewState extends State<HomeView> {
   void jumpPageHome() {
     // setShowBottomBar(true);
     // setCurrentBottomBar(0);
-    // _checkOutViewModel.clearData();
+    setShowAppBar(true);
+    _homeViewModel.clearCache();
     FocusScope.of(context).unfocus();
     _pageViewController.jumpToPage(0);
+  }
+
+  void jumpPageBookDetailPage() {
+    FocusScope.of(context).unfocus();
+    setShowAppBar(false);
+    _pageViewController.jumpToPage(1);
   }
 
   @override

@@ -8,16 +8,15 @@ part of 'chapters_model.dart';
 
 ChaptersModel _$ChaptersModelFromJson(Map<String, dynamic> json) =>
     ChaptersModel(
-      json['id'] as int,
-      json['chapterId'] as int,
+      json['id'] as int?,
+      json['chapterId'] as int?,
       json['chapterTitle'] as String,
       json['filePath'] as String,
-      json['first'] as bool,
-      json['last'] as bool,
-      json['downloaded'] as bool,
-      json['bookmark'] as bool,
-      json['allow'] as bool,
-      BookModel.fromJson(json['book'] as Map<String, dynamic>),
+      json['first'] as bool?,
+      json['last'] as bool?,
+      json['downloaded'] as bool?,
+      json['bookmark'] as bool?,
+      json['allow'] as bool?,
     );
 
 Map<String, dynamic> _$ChaptersModelToJson(ChaptersModel instance) =>
@@ -31,5 +30,4 @@ Map<String, dynamic> _$ChaptersModelToJson(ChaptersModel instance) =>
       'downloaded': instance.downloaded,
       'bookmark': instance.bookmark,
       'allow': instance.allow,
-      'book': instance.book,
     };

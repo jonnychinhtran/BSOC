@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bsoc_book/app/models/book/book_model.dart';
+import 'package:bsoc_book/app/models/book/list_comment_model.dart';
 import 'package:bsoc_book/app/models/book/top_book_model.dart';
 import 'package:bsoc_book/app/view/user/home/components/item_book.dart';
 import 'package:bsoc_book/app/view/user/home/components/item_top_book.dart';
@@ -87,6 +88,25 @@ class _HomePageState extends State<HomePage> {
     // );
     // checkNewVersion(newVersion);
     super.initState();
+  }
+
+  _onTapNextPage(BookModel bookModel) async {
+    print('object $bookModel');
+    setState(() {
+      _loadingIsWaiting = true;
+    });
+    widget.homeViewModel.bookId = bookModel.id!;
+    widget.homeViewModel.getBookDetailPage().then((value) {
+      if (value != null) {
+        BookModel bookModel = value;
+        setState(() {
+          _loadingIsWaiting = false;
+        });
+        if (bookModel.chapters.isNotEmpty) {
+          widget.parentViewState.jumpPageBookDetailPage();
+        }
+      }
+    });
   }
 
   // void showErrorDialog(BuildContext context, String error) {
@@ -238,6 +258,9 @@ class _HomePageState extends State<HomePage> {
                         if (data != null && data['list'] != null) {
                           return ItemTopBook(
                             topBookModel: data['list'],
+                            onTapNextPage: (BookModel bookModel) {
+                              _onTapNextPage(bookModel);
+                            },
                           );
                         }
                         return Container();
@@ -265,6 +288,9 @@ class _HomePageState extends State<HomePage> {
                         if (dataBook != null && dataBook['list'] != null) {
                           return ItemBook(
                             bookModel: dataBook['list'],
+                            onTapNextPage: (BookModel bookModel) {
+                              _onTapNextPage(bookModel);
+                            },
                           );
                         }
                         return Container();

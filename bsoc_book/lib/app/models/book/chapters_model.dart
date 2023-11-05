@@ -5,38 +5,34 @@ part 'chapters_model.g.dart';
 
 @JsonSerializable()
 class ChaptersModel {
-  @JsonKey(name: 'id')
-  int id;
-  @JsonKey(name: 'chapterId')
-  int chapterId;
+  int? id;
+  int? chapterId;
   @JsonKey(name: 'chapterTitle')
   String chapterTitle;
   @JsonKey(name: 'filePath')
   String filePath;
   @JsonKey(name: 'first')
-  bool first;
+  bool? first;
   @JsonKey(name: 'last')
-  bool last;
+  bool? last;
   @JsonKey(name: 'downloaded')
-  bool downloaded;
+  bool? downloaded;
   @JsonKey(name: 'bookmark')
-  bool bookmark;
+  bool? bookmark;
   @JsonKey(name: 'allow')
-  bool allow;
-  @JsonKey(name: 'book')
-  BookModel book;
+  bool? allow;
 
   ChaptersModel(
-      this.id,
-      this.chapterId,
-      this.chapterTitle,
-      this.filePath,
-      this.first,
-      this.last,
-      this.downloaded,
-      this.bookmark,
-      this.allow,
-      this.book);
+    this.id,
+    this.chapterId,
+    this.chapterTitle,
+    this.filePath,
+    this.first,
+    this.last,
+    this.downloaded,
+    this.bookmark,
+    this.allow,
+  );
 
   factory ChaptersModel.fromJson(Map<String, dynamic> json) =>
       _$ChaptersModelFromJson(json);

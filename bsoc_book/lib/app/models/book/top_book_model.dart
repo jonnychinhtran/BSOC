@@ -5,7 +5,7 @@ part 'top_book_model.g.dart';
 @JsonSerializable()
 class TopBookModel {
   @JsonKey(name: 'id')
-  int id;
+  int bookId;
   @JsonKey(name: 'bookName')
   String bookName;
   @JsonKey(name: 'author')
@@ -17,7 +17,7 @@ class TopBookModel {
   @JsonKey(name: 'rating')
   double rating;
 
-  TopBookModel(this.id, this.bookName, this.author, this.description,
+  TopBookModel(this.bookId, this.bookName, this.author, this.description,
       this.image, this.rating);
 
   factory TopBookModel.fromJson(Map<String, dynamic> json) =>

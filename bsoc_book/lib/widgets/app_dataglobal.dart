@@ -18,6 +18,8 @@ class AppDataGlobal {
   String domain = "";
   String _accessToken = "";
 
+  String? currentBookId;
+
   HomeViewModel? _homeViewModel;
 
   HomeViewModel? get homeViewModel => _homeViewModel;
