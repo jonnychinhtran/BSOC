@@ -267,21 +267,20 @@ class _BookDetailPageState extends State<BookDetailPage> {
     if (currentTab == CHAPTER) {
       return ChapterBookList(chapterModel: bookModel.chapters);
     } else if (currentTab == ABOUT) {
-      return SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Text(
-            bookModel.description.toString(),
-            style: TextStyle(fontSize: 14.0),
+      return Expanded(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              bookModel.description.toString(),
+              style: TextStyle(fontSize: 14.0),
+            ),
           ),
         ),
       );
     } else if (currentTab == COMMENT) {
-      // return Text(_listComment.toString());
-      return Expanded(
-        child: CommentBookList(
-          commentModel: _listComment,
-        ),
+      return CommentBookList(
+        commentModel: _listComment,
       );
     }
   }

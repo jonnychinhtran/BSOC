@@ -37,6 +37,14 @@ class _ChapterBookListState extends State<ChapterBookList> {
                       style:
                           TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                     ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Icon(
+                      Icons.remove_red_eye,
+                      color: Colors.yellow.shade800,
+                      size: 16,
+                    )
                   ],
                 ),
                 const SizedBox(
@@ -46,7 +54,23 @@ class _ChapterBookListState extends State<ChapterBookList> {
                   children: [
                     Expanded(
                       child: Text(widget.chapterModel[index].chapterTitle,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                           style: TextStyle(fontSize: 14)),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.bookmark_add_sharp,
+                            color: Color.fromARGB(255, 253, 135, 0),
+                          ),
+                          Icon(Icons.download_outlined, color: Colors.blue)
+                        ],
+                      ),
                     )
                   ],
                 )

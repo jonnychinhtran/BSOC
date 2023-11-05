@@ -33,39 +33,41 @@ class _CommentBookListState extends State<CommentBookList> {
         physics: const ScrollPhysics(),
         itemCount: widget.commentModel.length,
         itemBuilder: (context, index) {
-          // _userModel = _listCommentModel[index].user!;
-          if (widget.commentModel[index].user != null) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15.0),
-              child: Row(
-                children: <Widget>[
-                  Container(
-                      child: Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: CircleAvatar(
-                              radius: 30,
-                              backgroundImage: NetworkImage(
-                                AppDataGlobal().domain +
-                                    widget.commentModel[index].user!.avatar!,
-                              )))),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(widget.commentModel[index].user!.fullname!),
-                      Text(
-                        widget.commentModel[index].content!,
-                        textAlign: TextAlign.justify,
-                      ),
-                      RatingBars(
-                          rating: widget.commentModel[index].rating!.toDouble())
-                    ],
-                  )
-                ],
-              ),
-            );
-          } else {
-            return Container();
-          }
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15.0),
+            child: Row(
+              children: <Widget>[
+                Container(
+                    child: Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: CircleAvatar(
+                            radius: 30,
+                            backgroundImage: NetworkImage(
+                              AppDataGlobal().domain +
+                                  widget.commentModel[index].user!.avatar!,
+                            )))),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.commentModel[index].user!.fullname!),
+                        Text(
+                          widget.commentModel[index].content!,
+                          textAlign: TextAlign.justify,
+                        ),
+                        RatingBars(
+                            rating: widget.commentModel[index].rating == null
+                                ? 0
+                                : widget.commentModel[index].rating!.toDouble())
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
         });
   }
 }
