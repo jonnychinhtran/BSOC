@@ -1,19 +1,50 @@
 import 'package:bsoc_book/app/models/book/chapters_model.dart';
+import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:flutter/material.dart';
 
 class ChapterBookList extends StatefulWidget {
   const ChapterBookList({
     super.key,
     required this.chapterModel,
+    required this.homeViewModel,
   });
 
   final List<ChaptersModel> chapterModel;
+  final HomeViewModel homeViewModel;
 
   @override
   State<ChapterBookList> createState() => _ChapterBookListState();
 }
 
 class _ChapterBookListState extends State<ChapterBookList> {
+  late HomeViewModel _homeViewModel;
+  late List<ChaptersIdModel>? chapterId;
+  Map? itemsChapter;
+  int? chapterid;
+
+  @override
+  void initState() {
+    _homeViewModel = widget.homeViewModel;
+    widget.chapterModel.map((e) {
+      List<ChaptersIdModel> list = <ChaptersIdModel>[];
+      int chapterid = 0;
+      for (int i = 0; i < widget.chapterModel.length; i++) {
+        chapterid = widget.chapterModel[i].id!;
+      }
+
+      ChaptersIdModel chapterIdModel = ChaptersIdModel(
+        chapterid,
+      );
+      list.add(chapterIdModel);
+    });
+    print('CHapter ID: ' + chapterid!.toString());
+    _homeViewModel
+        .getChapterPdf(chapterid)
+        .then((value) => {itemsChapter = value});
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -85,4 +116,10 @@ class _ChapterBookListState extends State<ChapterBookList> {
       },
     );
   }
+}
+
+class ChaptersIdModel {
+  int chapterId;
+
+  ChaptersIdModel(this.chapterId);
 }

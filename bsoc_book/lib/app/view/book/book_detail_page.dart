@@ -265,7 +265,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
 
   _renderContent(BookModel bookModel) {
     if (currentTab == CHAPTER) {
-      return ChapterBookList(chapterModel: bookModel.chapters);
+      return ChapterBookList(
+          chapterModel: bookModel.chapters, homeViewModel: _homeViewModel);
     } else if (currentTab == ABOUT) {
       return Expanded(
         child: SingleChildScrollView(

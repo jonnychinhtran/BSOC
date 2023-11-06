@@ -1,4 +1,5 @@
 import 'package:bsoc_book/app/view/book/book_detail_page.dart';
+import 'package:bsoc_book/app/view/book/components/read_chapter_book.dart';
 import 'package:bsoc_book/app/view/user/home/home_page.dart';
 import 'package:bsoc_book/app/view_model/app_view_model.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
@@ -34,6 +35,11 @@ class HomeViewState extends State<HomeView> {
     ));
 
     _listPage.add(BookDetailPage(
+      parentViewState: this,
+      homeViewModel: _homeViewModel,
+    ));
+
+    _listPage.add(ReadChapterBook(
       parentViewState: this,
       homeViewModel: _homeViewModel,
     ));
@@ -83,6 +89,12 @@ class HomeViewState extends State<HomeView> {
     FocusScope.of(context).unfocus();
     setShowAppBar(false);
     _pageViewController.jumpToPage(1);
+  }
+
+  void jumpReadBookPage() {
+    FocusScope.of(context).unfocus();
+    setShowAppBar(false);
+    _pageViewController.jumpToPage(2);
   }
 
   @override

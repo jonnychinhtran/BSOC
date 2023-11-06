@@ -10,4 +10,6 @@ abstract class IBookRepo {
   Future<BookModel?> getBookDetail({required int bookId});
 
   Future<List<ListCommentModel>> getListComment({required int bookId});
+
+  Future getFilePdf({required int chapterId});
 }

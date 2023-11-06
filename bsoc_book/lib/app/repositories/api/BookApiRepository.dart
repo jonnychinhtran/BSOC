@@ -62,4 +62,9 @@ class BookApiRepository extends ApiProviderRepository implements IBookRepo {
 
         return list;
       });
+
+  @override
+  Future getFilePdf({required int chapterId}) => NetworkUtil2()
+      .get(url: NetworkEndpoints.GET_DOWNLOAD_CHAPTER_API + '/$chapterId')
+      .then((dynamic response) => print(response));
 }

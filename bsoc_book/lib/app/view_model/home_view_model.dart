@@ -136,6 +136,14 @@ class HomeViewModel {
         return <ListCommentModel>[];
       });
 
+  Future getChapterPdf(id) =>
+      _bookRepo.getFilePdf(chapterId: id).then((pdfFile) {
+        if (null != pdfFile) {
+          return pdfFile;
+        }
+        return null;
+      });
+
   void dispose() {
     _bookDetailModelSubject.close();
     _listTopBookSubject.close();
