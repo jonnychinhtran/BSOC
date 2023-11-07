@@ -145,7 +145,9 @@ class _BookDetailPageState extends State<BookDetailPage> {
                             Expanded(
                               child: SizedBox(
                                 child: _renderContent(
-                                    _homeViewModel.bookDetailModel!),
+                                    _homeViewModel.bookDetailModel!,
+                                    _homeViewModel,
+                                    widget.parentViewState),
                               ),
                             )
                           ],
@@ -263,10 +265,13 @@ class _BookDetailPageState extends State<BookDetailPage> {
     );
   }
 
-  _renderContent(BookModel bookModel) {
+  _renderContent(BookModel bookModel, HomeViewModel _homeViewModel,
+      HomeViewState _homeViewState) {
     if (currentTab == CHAPTER) {
       return ChapterBookList(
-          chapterModel: bookModel.chapters, homeViewModel: _homeViewModel);
+          chapterModel: bookModel.chapters,
+          homeViewModel: _homeViewModel,
+          homeViewState: _homeViewState);
     } else if (currentTab == ABOUT) {
       return Expanded(
         child: SingleChildScrollView(

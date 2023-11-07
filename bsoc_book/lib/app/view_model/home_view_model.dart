@@ -1,12 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:bsoc_book/app/models/book/book_model.dart';
 import 'package:bsoc_book/app/models/book/list_comment_model.dart';
 import 'package:bsoc_book/app/models/book/top_book_model.dart';
 import 'package:bsoc_book/app/repositories/IBookRepo.dart';
 import 'package:bsoc_book/app/repositories/api/BookApiRepository.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class HomeViewModel {
   int bookId;
+  String _localPath = "";
   late IBookRepo _bookRepo;
 
   bool _hasMore = true;
@@ -25,7 +30,7 @@ class HomeViewModel {
   dynamic get checkListTopBook => _topBookList;
   dynamic get checkListBook => _getBookList;
   BookModel? get bookDetailModel => _bookDetailModel;
-
+  String get localPath => _localPath;
   List<BookModel> get tempListTopBookBase => _tempListTopBookBase;
   List<BookModel> get topBookModel => _topbookModel;
 
@@ -50,6 +55,7 @@ class HomeViewModel {
   clearCache() {
     _hasMore = true;
     bookId = 0;
+    _localPath = '';
     _topbookModel.clear();
     _topBookList = {};
     _bookModel.clear();
@@ -136,12 +142,14 @@ class HomeViewModel {
         return <ListCommentModel>[];
       });
 
-  Future getChapterPdf(id) =>
-      _bookRepo.getFilePdf(chapterId: id).then((pdfFile) {
+  Future<String> getChapterPdf(id) =>
+      _bookRepo.getFilePdf(chapterId: id).then((pdfFile) async {
+        print('PDF PDF : $pdfFile');
         if (null != pdfFile) {
+          _localPath = pdfFile;
           return pdfFile;
         }
-        return null;
+        return '';
       });
 
   void dispose() {

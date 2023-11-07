@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:bsoc_book/widgets/app_dataglobal.dart';
+import 'package:http/http.dart' as http;
 import 'package:bsoc_book/api/ApiProviderRepository.dart';
 import 'package:bsoc_book/app/models/book/book_model.dart';
 import 'package:bsoc_book/app/models/book/comment_model.dart';
@@ -7,7 +10,9 @@ import 'package:bsoc_book/app/network/network_config.dart';
 import 'package:bsoc_book/app/network/network_endpoints.dart';
 import 'package:bsoc_book/app/repositories/IBookRepo.dart';
 import 'package:bsoc_book/utils/network/network_util.dart';
+import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
+import 'package:path_provider/path_provider.dart';
 
 class BookApiRepository extends ApiProviderRepository implements IBookRepo {
   final logger = Logger("BookApiRepository");
@@ -51,7 +56,7 @@ class BookApiRepository extends ApiProviderRepository implements IBookRepo {
   @override
   Future<List<ListCommentModel>> getListComment({required int bookId}) =>
       NetworkUtil2()
-          .get(url: NetworkEndpoints.GET_COMMENT_BOOK_API + '/$bookId')
+          .get(url: '${NetworkEndpoints.GET_COMMENT_BOOK_API}/$bookId')
           .then((dynamic response) {
         final items = response;
         List<ListCommentModel> list = [];
@@ -64,7 +69,20 @@ class BookApiRepository extends ApiProviderRepository implements IBookRepo {
       });
 
   @override
-  Future getFilePdf({required int chapterId}) => NetworkUtil2()
-      .get(url: NetworkEndpoints.GET_DOWNLOAD_CHAPTER_API + '/$chapterId')
-      .then((dynamic response) => print(response));
+  Future<String> getFilePdf({required int chapterId}) async {
+    String filename = 'file.pdf';
+
+    var url =
+        Uri.parse('http://103.77.166.202/api/chapter/download/$chapterId');
+    http.Response response = await http.get(url, headers: {
+      'Authorization': 'Bearer ${AppDataGlobal().accessToken}',
+      'Accept': 'application/pdf'
+    });
+
+    var dir = await getApplicationDocumentsDirectory();
+    File file = File("${dir.path}/$filename");
+
+    file.writeAsBytesSync(response.bodyBytes, flush: true);
+    return file.path;
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:bsoc_book/app/models/book/chapters_model.dart';
+import 'package:bsoc_book/app/view/user/home/home_view.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:flutter/material.dart';
 
@@ -7,10 +8,12 @@ class ChapterBookList extends StatefulWidget {
     super.key,
     required this.chapterModel,
     required this.homeViewModel,
+    required this.homeViewState,
   });
 
   final List<ChaptersModel> chapterModel;
   final HomeViewModel homeViewModel;
+  final HomeViewState homeViewState;
 
   @override
   State<ChapterBookList> createState() => _ChapterBookListState();
@@ -19,28 +22,12 @@ class ChapterBookList extends StatefulWidget {
 class _ChapterBookListState extends State<ChapterBookList> {
   late HomeViewModel _homeViewModel;
   late List<ChaptersIdModel>? chapterId;
-  Map? itemsChapter;
+  String? itemsChapter;
   int? chapterid;
 
   @override
   void initState() {
     _homeViewModel = widget.homeViewModel;
-    widget.chapterModel.map((e) {
-      List<ChaptersIdModel> list = <ChaptersIdModel>[];
-      int chapterid = 0;
-      for (int i = 0; i < widget.chapterModel.length; i++) {
-        chapterid = widget.chapterModel[i].id!;
-      }
-
-      ChaptersIdModel chapterIdModel = ChaptersIdModel(
-        chapterid,
-      );
-      list.add(chapterIdModel);
-    });
-    print('CHapter ID: ' + chapterid!.toString());
-    _homeViewModel
-        .getChapterPdf(chapterid)
-        .then((value) => {itemsChapter = value});
 
     super.initState();
   }
@@ -53,20 +40,31 @@ class _ChapterBookListState extends State<ChapterBookList> {
       itemCount: widget.chapterModel.length,
       itemBuilder: (context, index) {
         return GestureDetector(
-          onTap: () {},
+          onTap: () {
+            _homeViewModel
+                .getChapterPdf(widget.chapterModel[index].id)
+                .then((value) => {
+                      if (value != '')
+                        {
+                          itemsChapter = value,
+                          if (itemsChapter!.isNotEmpty)
+                            {widget.homeViewState.jumpReadBookPage()}
+                        }
+                    });
+          },
           child: Card(
-            color: Color.fromARGB(255, 255, 255, 255),
+            color: const Color.fromARGB(255, 255, 255, 255),
             elevation: 10,
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(children: <Widget>[
                 Row(
                   children: [
                     Text(
-                      'Chương: ' + widget.chapterModel[index].id.toString(),
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                      'Chương: ${widget.chapterModel[index].id}',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 16),
                     ),
                     const SizedBox(
                       width: 10,
@@ -87,14 +85,14 @@ class _ChapterBookListState extends State<ChapterBookList> {
                       child: Text(widget.chapterModel[index].chapterTitle,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
-                          style: TextStyle(fontSize: 14)),
+                          style: const TextStyle(fontSize: 14)),
                     ),
                     const SizedBox(
                       width: 10,
                     ),
                     Container(
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(
                             Icons.bookmark_add_sharp,
                             color: Color.fromARGB(255, 253, 135, 0),
