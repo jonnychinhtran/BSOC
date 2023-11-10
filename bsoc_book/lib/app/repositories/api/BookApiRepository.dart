@@ -70,7 +70,7 @@ class BookApiRepository extends ApiProviderRepository implements IBookRepo {
 
   @override
   Future<String> getFilePdf({required int chapterId}) async {
-    String filename = 'file.pdf';
+    String filename = 'chapter_$chapterId.pdf';
 
     var url =
         Uri.parse('http://103.77.166.202/api/chapter/download/$chapterId');

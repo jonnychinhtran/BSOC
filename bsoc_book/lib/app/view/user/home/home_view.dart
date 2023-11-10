@@ -1,3 +1,4 @@
+import 'package:bsoc_book/app/models/book/chapters_model.dart';
 import 'package:bsoc_book/app/view/book/book_detail_page.dart';
 import 'package:bsoc_book/app/view/book/components/read_chapter_book.dart';
 import 'package:bsoc_book/app/view/user/home/home_page.dart';
