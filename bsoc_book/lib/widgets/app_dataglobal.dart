@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:bsoc_book/app/models/book/book_model.dart';
+import 'package:bsoc_book/app/models/user_model.dart';
 import 'package:bsoc_book/app/network/network_endpoints.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/utils/network/network_util.dart';
@@ -24,8 +25,11 @@ class AppDataGlobal {
 
   HomeViewModel? get homeViewModel => _homeViewModel;
 
+  UserModel? _userModel;
+  UserModel? get userModel => _userModel;
   //-------------------------------------------------------------------- Stream -------------------------------------------------------------------
   BehaviorSubject<bool> hasHomeViewModel = BehaviorSubject<bool>();
+  BehaviorSubject<bool> hasRefreshUserModel = BehaviorSubject<bool>();
 
   //-------------------------------------------------------------------- Singleton ----------------------------------------------------------------------
   // Final static instance of class initialized by private constructor
@@ -62,6 +66,11 @@ class AppDataGlobal {
     _accessToken = accessToken;
   }
 
+  void setUser({required UserModel userModel}) {
+    _userModel = userModel;
+    hasRefreshUserModel.add(true);
+  }
+
   void initDomainApi({required String domain}) {
     AppDataGlobal().domain = domain;
     print("Set Base URl API ${domain + NetworkEndpoints.BASE_API_VERSION}");
@@ -73,5 +82,6 @@ class AppDataGlobal {
 
   void dispose() {
     hasHomeViewModel.close();
+    hasRefreshUserModel.close();
   }
 }

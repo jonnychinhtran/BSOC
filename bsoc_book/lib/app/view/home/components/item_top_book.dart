@@ -1,6 +1,6 @@
 import 'package:bsoc_book/app/models/book/book_model.dart';
 import 'package:bsoc_book/app/models/book/top_book_model.dart';
-import 'package:bsoc_book/app/view/user/home/components/item_list_top_book.dart';
+import 'package:bsoc_book/app/view/home/components/item_list_top_book.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
 import 'package:flutter/material.dart';
 

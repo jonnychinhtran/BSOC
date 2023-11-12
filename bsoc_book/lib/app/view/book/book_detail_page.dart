@@ -2,7 +2,7 @@ import 'package:bsoc_book/app/models/book/book_model.dart';
 import 'package:bsoc_book/app/models/book/list_comment_model.dart';
 import 'package:bsoc_book/app/view/book/components/chapter_book_list.dart';
 import 'package:bsoc_book/app/view/book/components/comment_book_list.dart';
-import 'package:bsoc_book/app/view/user/home/home_view.dart';
+import 'package:bsoc_book/app/view/home/home_view.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/resource/values/app_colors.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';

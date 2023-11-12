@@ -5,7 +5,7 @@ import 'package:bsoc_book/app/view/infor/infor_page.dart';
 import 'package:bsoc_book/app/view/login/login_page.dart';
 import 'package:bsoc_book/app/view/terms/terms_page.dart';
 import 'package:bsoc_book/app/view/update/uploadavt_page.dart';
-import 'package:bsoc_book/app/view/user/home/home_page.dart';
+import 'package:bsoc_book/app/view/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -125,10 +125,10 @@ class _MenuAsideState extends State<MenuAside> {
                               final SharedPreferences? prefs = await _prefs;
                               await prefs?.setString(
                                   'id', mapDemo!['id'].toString());
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => InforPage()));
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => InfoPage()));
                             },
                             child: Text(
                               mapDemo?['fullname'] == null

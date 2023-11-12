@@ -5,7 +5,7 @@ import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/app/view/downloads/download_page.dart';
 import 'package:bsoc_book/app/view/login/login_page.dart';
-import 'package:bsoc_book/app/view/user/home/home_page.dart';
+import 'package:bsoc_book/app/view/home/home_page.dart';
 import 'package:bsoc_book/app/view/widgets/alert_dailog.dart';
 import 'package:bsoc_book/app/view/widgets/charge_book.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';

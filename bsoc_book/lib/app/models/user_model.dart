@@ -1,3 +1,5 @@
+import 'package:bsoc_book/app/models/book/book_model.dart';
+import 'package:bsoc_book/app/models/book/chapters_model.dart';
 import 'package:bsoc_book/app/models/roles_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'user_model.g.dart';
@@ -12,16 +14,23 @@ class UserModel {
   @JsonKey(name: "phone")
   String? phone;
   @JsonKey(name: "roles")
-  RolesModel? roles;
+  List<RolesModel>? roles;
   @JsonKey(name: "image")
   String? image;
   @JsonKey(name: "avatar")
   String? avatar;
+  @JsonKey(name: "books")
+  List<BookModel>? books;
+  @JsonKey(name: "chapters")
+  List<ChaptersModel>? chapters;
   @JsonKey(name: "fullname")
   String? fullname;
+  @JsonKey(name: "pointForClaimBook", defaultValue: 0)
   int? pointForClaimBook;
+  @JsonKey(name: "spinTurn", defaultValue: 0)
   int? spinTurn;
-  bool active;
+  @JsonKey(name: "active")
+  bool? active;
 
   UserModel(
       {this.id,
@@ -30,10 +39,12 @@ class UserModel {
       this.roles,
       this.image,
       this.avatar,
+      this.books,
+      this.chapters,
       this.fullname,
       this.pointForClaimBook,
       this.spinTurn,
-      this.active = true});
+      this.active});
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);

@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:bsoc_book/app/models/book/chapters_model.dart';
 import 'package:bsoc_book/app/view/book/components/item_chapter_list.dart';
-import 'package:bsoc_book/app/view/user/home/home_view.dart';
+import 'package:bsoc_book/app/view/home/home_view.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/config/application.dart';
 import 'package:bsoc_book/config/routes.dart';

@@ -1,4 +1,4 @@
-import 'package:bsoc_book/app/view/user/home/home_page.dart';
+import 'package:bsoc_book/app/view/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';

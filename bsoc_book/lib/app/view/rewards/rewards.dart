@@ -46,10 +46,10 @@ class _RewardsPageState extends State<RewardsPage> {
               color: Colors.white,
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => InforPage()),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => InforPage()),
+              // );
             },
           ),
           title: Container(

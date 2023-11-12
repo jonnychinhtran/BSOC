@@ -1,7 +1,8 @@
 import 'package:bsoc_book/app/models/book/chapters_model.dart';
 import 'package:bsoc_book/app/view/book/book_detail_page.dart';
 import 'package:bsoc_book/app/view/book/components/read_chapter_book.dart';
-import 'package:bsoc_book/app/view/user/home/home_page.dart';
+import 'package:bsoc_book/app/view/home/home_page.dart';
+import 'package:bsoc_book/app/view/infor/infor_page.dart';
 import 'package:bsoc_book/app/view_model/app_view_model.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/app/view_model/login_view_model.dart';

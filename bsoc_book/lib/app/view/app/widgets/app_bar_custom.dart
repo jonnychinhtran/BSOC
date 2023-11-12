@@ -1,3 +1,9 @@
+import 'package:bsoc_book/app/view/home/home_view.dart';
+import 'package:bsoc_book/app/view/infor/infor_page.dart';
+import 'package:bsoc_book/app/view/infor/infor_page_view.dart';
+import 'package:bsoc_book/app/view_model/app_view_model.dart';
+import 'package:bsoc_book/app/view_model/home_view_model.dart';
+import 'package:bsoc_book/app/view_model/user_view_model.dart';
 import 'package:bsoc_book/config/application.dart';
 import 'package:bsoc_book/config/routes.dart';
 import 'package:bsoc_book/utils/resource_values.dart';
@@ -6,9 +12,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:social_media_flutter/social_media_flutter.dart';
 
 class AppBarCustom extends StatefulWidget implements PreferredSizeWidget {
-  const AppBarCustom({super.key, required this.scaffoldKey});
+  const AppBarCustom(
+      {super.key,
+      required this.homeViewModel,
+      required this.parentViewState,
+      required this.scaffoldKey});
 
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final HomeViewModel homeViewModel;
+  final HomeViewState parentViewState;
 
   @override
   State<AppBarCustom> createState() => _AppBarCustomState();
@@ -18,12 +30,36 @@ class AppBarCustom extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _AppBarCustomState extends State<AppBarCustom> {
-  void _openEndDrawer() {
-    widget.scaffoldKey.currentState!.openDrawer();
-  }
+  HomeViewModel? _homeViewModel;
+  final AppViewModel _appViewModel = AppViewModel();
+  final UserViewModel _userViewModel = UserViewModel();
+  int _currentPage = 0;
+  final PageController _pageController = PageController();
+  final List<Widget> _pages = [];
+  // void _openEndDrawer() {
+  //   widget.scaffoldKey.currentState!.openDrawer();
+  // }
 
   void goHome() {
     Application.router.navigateTo(context, Routes.app, clearStack: true);
+  }
+
+  @override
+  void initState() {
+    _pages.add(InfoPageView(
+      appViewModel: _appViewModel,
+      homeViewModel: widget.homeViewModel,
+      userViewModel: _userViewModel,
+    ));
+
+    _homeViewModel = widget.homeViewModel;
+
+    super.initState();
+  }
+
+  void jumpPageInfo() {
+    FocusScope.of(context).unfocus();
+    _pageController.jumpToPage(0);
   }
 
   @override
@@ -44,11 +80,19 @@ class _AppBarCustomState extends State<AppBarCustom> {
                 SizedBox(
                   width: 30,
                   height: 30,
-                  child: IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () => _openEndDrawer(),
-                    icon: SvgPicture.asset(
-                      'assets/icon/icon_drawer.svg',
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => InfoPageView(
+                                    appViewModel: _appViewModel,
+                                    homeViewModel: widget.homeViewModel,
+                                    userViewModel: _userViewModel,
+                                  )));
+                    },
+                    child: Icon(
+                      Icons.person_outline,
                       color: Colors.white,
                     ),
                   ),

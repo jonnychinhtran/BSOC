@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:bsoc_book/app/view/login/login_page.dart';
-import 'package:bsoc_book/app/view/user/home/home_page.dart';
+import 'package:bsoc_book/app/view/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';

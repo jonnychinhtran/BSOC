@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:bsoc_book/app/view/user/home/home_view.dart';
+import 'package:bsoc_book/app/view/home/home_view.dart';
 import 'package:bsoc_book/app/view_model/app_view_model.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/app/view_model/login_view_model.dart';
@@ -26,6 +26,8 @@ class _AppViewState extends State<AppView> {
   final loginViewModel = LoginViewModel();
   final PageController _pageController = PageController(keepPage: true);
   final AppViewModel _appViewModel = AppViewModel();
+  final HomeViewState _parentViewState = HomeViewState();
+
   @override
   void initState() {
     _pages.add(HomeView(
@@ -98,7 +100,13 @@ class _AppViewState extends State<AppView> {
           )
         ]),
       )),
-      appBar: _isShowAppBar ? AppBarCustom(scaffoldKey: _scaffoldKey) : null,
+      appBar: _isShowAppBar
+          ? AppBarCustom(
+              homeViewModel: _homeViewModel,
+              parentViewState: _parentViewState,
+              scaffoldKey: _scaffoldKey,
+            )
+          : null,
       body: _getCurrentPage(),
     );
   }

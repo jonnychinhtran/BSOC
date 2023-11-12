@@ -23,7 +23,12 @@ class LoginViewModel {
   }
 
   Future<bool> loadAppData() async {
-    _userRepo.getUser().then((value) {});
+    print("-------------Load User Data ----------------");
+    _userRepo.getUser().then((userModel) {
+      if (null != userModel) {
+        AppDataGlobal().setUser(userModel: userModel);
+      }
+    });
 
     return Future.value(true);
   }
