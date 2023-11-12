@@ -23,14 +23,12 @@ class InfoApiRepository extends ApiProviderRepository implements IInfoRepo {
 
   @override
   Future<UserModel?> updateInfo(
-          {File? image,
-          int? userId,
+          {String? userId,
           String? username,
           String? email,
           String? phone,
           String? fullname}) =>
       NetworkUtil2().post(url: NetworkEndpoints.UPDATE_PROFILE_API, data: {
-        'image': image,
         'userId': userId,
         'username': username,
         'email': email,

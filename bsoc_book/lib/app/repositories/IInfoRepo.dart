@@ -6,8 +6,7 @@ abstract class IInfoRepo {
   Future<UserModel?> getUser();
   // Future<bool> updateUser(UserModel model);
   Future<UserModel?> updateInfo(
-      {required File? image,
-      required int userId,
+      {required String userId,
       required String username,
       required String email,
       required String phone,

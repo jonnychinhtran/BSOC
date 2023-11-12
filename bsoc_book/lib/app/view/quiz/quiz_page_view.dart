@@ -1,67 +1,41 @@
 import 'package:bsoc_book/app/view/infor/infor_change_pass.dart';
 import 'package:bsoc_book/app/view/infor/infor_page.dart';
 import 'package:bsoc_book/app/view/infor/infor_update.dart';
+import 'package:bsoc_book/app/view/quiz/practice.dart';
+import 'package:bsoc_book/app/view/wheel_spin/wheel_page.dart';
 import 'package:bsoc_book/app/view_model/app_view_model.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
+import 'package:bsoc_book/app/view_model/quiz_view_model.dart';
 import 'package:bsoc_book/app/view_model/user_view_model.dart';
 import 'package:flutter/material.dart';
 
-class InfoPageView extends StatefulWidget {
-  final AppViewModel appViewModel;
-  final HomeViewModel homeViewModel;
-  final UserViewModel userViewModel;
-  const InfoPageView(
-      {super.key,
-      required this.appViewModel,
-      required this.homeViewModel,
-      required this.userViewModel});
+class QuizPageView extends StatefulWidget {
+  const QuizPageView({
+    super.key,
+  });
 
   @override
-  State<InfoPageView> createState() => InfoPageViewState();
+  State<QuizPageView> createState() => QuizPageViewState();
 }
 
-class InfoPageViewState extends State<InfoPageView> {
-  final UserViewModel _userViewModel = UserViewModel();
-  final HomeViewModel _homeViewModel = HomeViewModel();
+class QuizPageViewState extends State<QuizPageView> {
+  final QuizViewModel _quizViewModel = QuizViewModel();
   final PageController _pageViewController = PageController();
   final List<Widget> _listPage = [];
 
   @override
   void initState() {
-    _listPage.add(InfoPage(
-      userViewModel: _userViewModel,
+    _listPage.add(QuizHomePage(
       parentViewState: this,
-      homeViewModel: _homeViewModel,
-    ));
-
-    _listPage.add(InfoUpdatePage(
-      userViewModel: _userViewModel,
-      parentViewState: this,
-      homeViewModel: _homeViewModel,
-    ));
-
-    _listPage.add(InfoChangePass(
-      userViewModel: _userViewModel,
-      parentViewState: this,
-      homeViewModel: _homeViewModel,
+      quizViewModel: _quizViewModel,
     ));
 
     super.initState();
   }
 
-  void jumpPageInfo() {
+  void jumpPageWheel() {
     FocusScope.of(context).unfocus();
     _pageViewController.jumpToPage(0);
-  }
-
-  void jumpPageInfoUpdate() {
-    FocusScope.of(context).unfocus();
-    _pageViewController.jumpToPage(1);
-  }
-
-  void jumpPageChangePass() {
-    FocusScope.of(context).unfocus();
-    _pageViewController.jumpToPage(2);
   }
 
   @override

@@ -40,7 +40,7 @@ class _IndexViewState extends State<IndexView>
           } catch (e) {
             // ignore: use_build_context_synchronously
             Application.router
-                .navigateTo(context, Routes.appRouteLogin, clearStack: true);
+                .navigateTo(context, Routes.app, clearStack: true);
 
             return;
           }
@@ -49,8 +49,7 @@ class _IndexViewState extends State<IndexView>
         }
       } else {
         // ignore: use_build_context_synchronously
-        Application.router
-            .navigateTo(context, Routes.appRouteLogin, clearStack: true);
+        Application.router.navigateTo(context, Routes.app, clearStack: true);
       }
     });
   }

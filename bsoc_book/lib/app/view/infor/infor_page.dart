@@ -51,6 +51,11 @@ class _InfoPageState extends State<InfoPage> {
     Application.router.navigateTo(context, Routes.app, clearStack: true);
   }
 
+  void goLogin() {
+    Application.router
+        .navigateTo(context, Routes.appRouteLogin, clearStack: true);
+  }
+
   @override
   void initState() {
     _homeViewModel = widget.homeViewModel;
@@ -60,12 +65,14 @@ class _InfoPageState extends State<InfoPage> {
       _isLoading = true;
     });
 
-    _userViewModel?.getInfoPage().then((value) {
-      if (value != null) {
-        _userItem = value;
-        print("User Info 2222: $_userItem");
-      }
-    });
+    if (AppDataGlobal().accessToken != "") {
+      _userViewModel?.getInfoPage().then((value) {
+        if (value != null) {
+          _userItem = value;
+          print("User Info 2222: $_userItem");
+        }
+      });
+    }
 
     super.initState();
   }
@@ -159,12 +166,12 @@ class _InfoPageState extends State<InfoPage> {
                                         GestureDetector(
                                           onTap: _pickImageFromGallery,
                                           child: Container(
-                                            padding: EdgeInsets.all(8.0),
-                                            decoration: BoxDecoration(
+                                            padding: const EdgeInsets.all(8.0),
+                                            decoration: const BoxDecoration(
                                               color: Colors.blue,
                                               shape: BoxShape.circle,
                                             ),
-                                            child: Icon(
+                                            child: const Icon(
                                               Icons.camera_alt,
                                               color: Colors.white,
                                             ),
@@ -200,7 +207,7 @@ class _InfoPageState extends State<InfoPage> {
                                       child: Column(
                                         children: [
                                           ListTile(
-                                            title: Text(
+                                            title: const Text(
                                               'Mã tài khoản:',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500),
@@ -208,14 +215,14 @@ class _InfoPageState extends State<InfoPage> {
                                             trailing:
                                                 Text(_userItem!.id.toString()),
                                           ),
-                                          Divider(
+                                          const Divider(
                                             height: 1,
                                             endIndent: 0,
                                             color:
                                                 Color.fromARGB(255, 87, 87, 87),
                                           ),
                                           ListTile(
-                                            title: Text(
+                                            title: const Text(
                                               'Họ Tên:',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500),
@@ -223,33 +230,35 @@ class _InfoPageState extends State<InfoPage> {
                                             trailing:
                                                 Text(_userItem!.fullname!),
                                           ),
-                                          Divider(
+                                          const Divider(
                                             height: 2,
                                             endIndent: 0,
                                             color:
                                                 Color.fromARGB(255, 87, 87, 87),
                                           ),
                                           ListTile(
-                                            title: Text(
+                                            title: const Text(
                                               'Email:',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500),
                                             ),
                                             trailing: Text(_userItem!.email!),
                                           ),
-                                          Divider(
+                                          const Divider(
                                             height: 2,
                                             endIndent: 0,
                                             color:
                                                 Color.fromARGB(255, 87, 87, 87),
                                           ),
                                           ListTile(
-                                            title: Text(
+                                            title: const Text(
                                               'Số điện thoại:',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500),
                                             ),
-                                            trailing: Text(_userItem!.phone!),
+                                            trailing: Text(
+                                                _userItem!.phone!.toString() ??
+                                                    'N/A'),
                                           ),
                                         ],
                                       ),
@@ -270,7 +279,7 @@ class _InfoPageState extends State<InfoPage> {
                                             Container(
                                               width: 500,
                                               height: 80,
-                                              decoration: BoxDecoration(
+                                              decoration: const BoxDecoration(
                                                   color: Color.fromARGB(
                                                       255, 138, 175, 52),
                                                   borderRadius:
@@ -285,7 +294,7 @@ class _InfoPageState extends State<InfoPage> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Text(
+                                                    const Text(
                                                       'Điểm thưởng',
                                                       style: TextStyle(
                                                           fontSize: 22,
@@ -304,15 +313,17 @@ class _InfoPageState extends State<InfoPage> {
                                             Container(
                                               width: 500,
                                               height: 100,
-                                              decoration: BoxDecoration(
+                                              decoration: const BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.vertical(
                                                           bottom:
                                                               Radius.circular(
                                                                   8.0))),
                                               child: Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: 16.0, top: 20.0),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 16.0,
+                                                          top: 20.0),
                                                   child: Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
@@ -320,7 +331,7 @@ class _InfoPageState extends State<InfoPage> {
                                                     children: [
                                                       _userItem!.pointForClaimBook ==
                                                               0
-                                                          ? Text(
+                                                          ? const Text(
                                                               '0 Điểm',
                                                               style: TextStyle(
                                                                   fontSize: 20,
@@ -332,7 +343,7 @@ class _InfoPageState extends State<InfoPage> {
                                                             )
                                                           : Text(
                                                               '${_userItem!.pointForClaimBook!} Điểm',
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                   fontSize: 20,
                                                                   fontWeight:
                                                                       FontWeight
@@ -343,7 +354,7 @@ class _InfoPageState extends State<InfoPage> {
                                                       SizedBox(
                                                           height: size.height *
                                                               0.02),
-                                                      Text(
+                                                      const Text(
                                                         'Mỗi bài thi đạt 100% sẽ được tặng 01 điểm',
                                                       )
                                                     ],
@@ -360,52 +371,61 @@ class _InfoPageState extends State<InfoPage> {
                                       color: Colors.white,
                                       child: Column(
                                         children: [
-                                          ListTile(
-                                            leading: Icon(Icons.info),
-                                            title: Text(
-                                              'Cập nhật thông tin',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            trailing: Icon(
-                                                Icons.keyboard_arrow_right),
-                                            onTap: () async {},
-                                          ),
-                                          Divider(
+                                          // const Divider(
+                                          //   height: 2,
+                                          //   endIndent: 0,
+                                          //   color:
+                                          //       Color.fromARGB(255, 87, 87, 87),
+                                          // ),
+                                          // ListTile(
+                                          //   leading: const Icon(Icons.info),
+                                          //   title: const Text(
+                                          //     'Cập nhật thông tin',
+                                          //     style: TextStyle(
+                                          //         fontWeight: FontWeight.w500),
+                                          //   ),
+                                          //   trailing: const Icon(
+                                          //       Icons.keyboard_arrow_right),
+                                          //   onTap: () {
+                                          //     widget.parentViewState
+                                          //         .jumpPageInfoUpdate();
+                                          //   },
+                                          // ),
+                                          const Divider(
                                             height: 2,
                                             endIndent: 0,
                                             color:
                                                 Color.fromARGB(255, 87, 87, 87),
                                           ),
                                           ListTile(
-                                            leading: Icon(Icons.shield),
-                                            title: Text(
+                                            leading: const Icon(Icons.shield),
+                                            title: const Text(
                                               'Đổi mật khẩu',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500),
                                             ),
-                                            trailing: Icon(
+                                            trailing: const Icon(
                                                 Icons.keyboard_arrow_right),
-                                            onTap: () async {},
+                                            onTap: () {},
                                           ),
-                                          Divider(
+                                          const Divider(
                                             height: 2,
                                             endIndent: 0,
                                             color:
                                                 Color.fromARGB(255, 87, 87, 87),
                                           ),
                                           ListTile(
-                                            leading: Icon(Icons.delete),
-                                            title: Text(
+                                            leading: const Icon(Icons.delete),
+                                            title: const Text(
                                               'Xóa tài khoản',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500),
                                             ),
-                                            trailing: Icon(
+                                            trailing: const Icon(
                                                 Icons.keyboard_arrow_right),
                                             onTap: () async {},
                                           ),
-                                          Divider(
+                                          const Divider(
                                             height: 2,
                                             endIndent: 0,
                                             color:
@@ -419,16 +439,10 @@ class _InfoPageState extends State<InfoPage> {
                                                         color: Colors
                                                             .grey.shade400))),
                                             child: ListTile(
-                                              title: Text('Giới thiệu'),
-                                              trailing: Icon(Icons.arrow_right),
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          AboutPage()),
-                                                );
-                                              },
+                                              title: const Text('Giới thiệu'),
+                                              trailing:
+                                                  const Icon(Icons.arrow_right),
+                                              onTap: () {},
                                             ),
                                           ),
                                           Container(
@@ -439,33 +453,22 @@ class _InfoPageState extends State<InfoPage> {
                                                         color: Colors
                                                             .grey.shade400))),
                                             child: ListTile(
-                                              title: Text('Liên hệ'),
-                                              trailing: Icon(Icons.arrow_right),
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          ContactPage()),
-                                                );
-                                              },
+                                              title: const Text('Liên hệ'),
+                                              trailing:
+                                                  const Icon(Icons.arrow_right),
+                                              onTap: () {},
                                             ),
                                           ),
                                           Container(
-                                            decoration: BoxDecoration(
+                                            decoration: const BoxDecoration(
                                               color: Colors.white,
                                             ),
                                             child: ListTile(
-                                              title: Text('Điều khoản sử dụng'),
-                                              trailing: Icon(Icons.arrow_right),
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          TermsPage()),
-                                                );
-                                              },
+                                              title: const Text(
+                                                  'Điều khoản sử dụng'),
+                                              trailing:
+                                                  const Icon(Icons.arrow_right),
+                                              onTap: () {},
                                             ),
                                           ),
                                         ],
@@ -481,8 +484,12 @@ class _InfoPageState extends State<InfoPage> {
                     )
                   : Column(
                       children: [
+                        const SizedBox(
+                          height: 15,
+                        ),
                         const Padding(
-                          padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 40.0, vertical: 15.0),
                           child: Text(
                             'Bạn cần đăng nhập hoặc đăng ký để xem thông tin tài khoản.',
                             style: TextStyle(fontSize: 16),
@@ -492,11 +499,7 @@ class _InfoPageState extends State<InfoPage> {
                         SizedBox(height: size.height * 0.02),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginPage()),
-                            );
+                            goLogin();
                           },
                           child: Container(
                             width: 190,
@@ -509,6 +512,44 @@ class _InfoPageState extends State<InfoPage> {
                               'Đăng nhập hoặc Đăng ký',
                               style: TextStyle(color: Colors.white),
                             ),
+                          ),
+                        ),
+                        SizedBox(height: size.height * 0.04),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border(
+                                  top: BorderSide(color: Colors.grey.shade400),
+                                  bottom:
+                                      BorderSide(color: Colors.grey.shade400))),
+                          child: ListTile(
+                            title: Text('Giới thiệu'),
+                            trailing: Icon(Icons.arrow_right),
+                            onTap: () {},
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border(
+                                  bottom:
+                                      BorderSide(color: Colors.grey.shade400))),
+                          child: ListTile(
+                            title: Text('Liên hệ'),
+                            trailing: Icon(Icons.arrow_right),
+                            onTap: () {},
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border(
+                                  bottom:
+                                      BorderSide(color: Colors.grey.shade400))),
+                          child: ListTile(
+                            title: Text('Điều khoản sử dụng'),
+                            trailing: Icon(Icons.arrow_right),
+                            onTap: () {},
                           ),
                         ),
                       ],
@@ -1074,56 +1115,56 @@ class _InfoPageState extends State<InfoPage> {
 //           ],
 //         ),
 //       ),
-//                     Container(
-//                       decoration: BoxDecoration(
-//                           color: Colors.white,
-//                           border: Border(
-//                               bottom: BorderSide(color: Colors.grey.shade400))),
-//                       child: ListTile(
-//                         title: Text('Giới thiệu'),
-//                         trailing: Icon(Icons.arrow_right),
-//                         onTap: () {
-//                           Navigator.push(
-//                             context,
-//                             MaterialPageRoute(
-//                                 builder: (context) => AboutPage()),
-//                           );
-//                         },
-//                       ),
-//                     ),
-//                     Container(
-//                       decoration: BoxDecoration(
-//                           color: Colors.white,
-//                           border: Border(
-//                               bottom: BorderSide(color: Colors.grey.shade400))),
-//                       child: ListTile(
-//                         title: Text('Liên hệ'),
-//                         trailing: Icon(Icons.arrow_right),
-//                         onTap: () {
-//                           Navigator.push(
-//                             context,
-//                             MaterialPageRoute(
-//                                 builder: (context) => ContactPage()),
-//                           );
-//                         },
-//                       ),
-//                     ),
-//                     Container(
-//                       decoration: BoxDecoration(
-//                         color: Colors.white,
-//                       ),
-//                       child: ListTile(
-//                         title: Text('Điều khoản sử dụng'),
-//                         trailing: Icon(Icons.arrow_right),
-//                         onTap: () {
-//                           Navigator.push(
-//                             context,
-//                             MaterialPageRoute(
-//                                 builder: (context) => TermsPage()),
-//                           );
-//                         },
-//                       ),
-//                     ),
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //       color: Colors.white,
+                    //       border: Border(
+                    //           bottom: BorderSide(color: Colors.grey.shade400))),
+                    //   child: ListTile(
+                    //     title: Text('Giới thiệu'),
+                    //     trailing: Icon(Icons.arrow_right),
+                    //     onTap: () {
+                    //       Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //             builder: (context) => AboutPage()),
+                    //       );
+                    //     },
+                    //   ),
+                    // ),
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //       color: Colors.white,
+                    //       border: Border(
+                    //           bottom: BorderSide(color: Colors.grey.shade400))),
+                    //   child: ListTile(
+                    //     title: Text('Liên hệ'),
+                    //     trailing: Icon(Icons.arrow_right),
+                    //     onTap: () {
+                    //       Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //             builder: (context) => ContactPage()),
+                    //       );
+                    //     },
+                    //   ),
+                    // ),
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //     color: Colors.white,
+                    //   ),
+                    //   child: ListTile(
+                    //     title: Text('Điều khoản sử dụng'),
+                    //     trailing: Icon(Icons.arrow_right),
+                    //     onTap: () {
+                    //       Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //             builder: (context) => TermsPage()),
+                    //       );
+                    //     },
+                    //   ),
+                    // ),
 //                     SizedBox(height: size.height * 0.02),
 //                     Center(
 //                       child: Text(

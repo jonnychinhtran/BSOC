@@ -40,8 +40,7 @@ class UserViewModel {
   }
 
   Future<bool> updateUser(
-      {required File image,
-      required int userId,
+      {required String userId,
       required String username,
       required String email,
       required String phone,
@@ -49,16 +48,15 @@ class UserViewModel {
     try {
       return await _infoRepo
           .updateInfo(
-              image: image,
               userId: userId,
               username: username,
               email: email,
               phone: phone,
               fullname: fullname)
-          .then((UserModel? value) {
+          .then((value) {
         if (null != value) {
           _userModel = value;
-          _userInfoModelSubject.add(value);
+          // _userInfoModelSubject.add(value);
           // _hasAddItemServiceOrderSubject.add(true);
           return true;
         }

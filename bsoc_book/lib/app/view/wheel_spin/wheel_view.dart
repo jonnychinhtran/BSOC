@@ -1,47 +1,31 @@
 import 'package:bsoc_book/app/view/infor/infor_change_pass.dart';
 import 'package:bsoc_book/app/view/infor/infor_page.dart';
 import 'package:bsoc_book/app/view/infor/infor_update.dart';
+import 'package:bsoc_book/app/view/wheel_spin/wheel_page.dart';
 import 'package:bsoc_book/app/view_model/app_view_model.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/app/view_model/user_view_model.dart';
 import 'package:flutter/material.dart';
 
-class InfoPageView extends StatefulWidget {
-  final AppViewModel appViewModel;
+class WheelPageView extends StatefulWidget {
   final HomeViewModel homeViewModel;
-  final UserViewModel userViewModel;
-  const InfoPageView(
-      {super.key,
-      required this.appViewModel,
-      required this.homeViewModel,
-      required this.userViewModel});
+  const WheelPageView({
+    super.key,
+    required this.homeViewModel,
+  });
 
   @override
-  State<InfoPageView> createState() => InfoPageViewState();
+  State<WheelPageView> createState() => WheelPageViewState();
 }
 
-class InfoPageViewState extends State<InfoPageView> {
-  final UserViewModel _userViewModel = UserViewModel();
+class WheelPageViewState extends State<WheelPageView> {
   final HomeViewModel _homeViewModel = HomeViewModel();
   final PageController _pageViewController = PageController();
   final List<Widget> _listPage = [];
 
   @override
   void initState() {
-    _listPage.add(InfoPage(
-      userViewModel: _userViewModel,
-      parentViewState: this,
-      homeViewModel: _homeViewModel,
-    ));
-
-    _listPage.add(InfoUpdatePage(
-      userViewModel: _userViewModel,
-      parentViewState: this,
-      homeViewModel: _homeViewModel,
-    ));
-
-    _listPage.add(InfoChangePass(
-      userViewModel: _userViewModel,
+    _listPage.add(WheelPage(
       parentViewState: this,
       homeViewModel: _homeViewModel,
     ));
@@ -49,19 +33,9 @@ class InfoPageViewState extends State<InfoPageView> {
     super.initState();
   }
 
-  void jumpPageInfo() {
+  void jumpPageWheel() {
     FocusScope.of(context).unfocus();
     _pageViewController.jumpToPage(0);
-  }
-
-  void jumpPageInfoUpdate() {
-    FocusScope.of(context).unfocus();
-    _pageViewController.jumpToPage(1);
-  }
-
-  void jumpPageChangePass() {
-    FocusScope.of(context).unfocus();
-    _pageViewController.jumpToPage(2);
   }
 
   @override

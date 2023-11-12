@@ -1,7 +1,14 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:bsoc_book/app/view/infor/infor_page_view.dart';
 import 'package:bsoc_book/app/view/login/login_page.dart';
 import 'package:bsoc_book/app/view/home/home_page.dart';
+import 'package:bsoc_book/app/view/wheel_spin/wheel_view.dart';
+import 'package:bsoc_book/app/view_model/home_view_model.dart';
+import 'package:bsoc_book/app/view_model/user_view_model.dart';
+import 'package:bsoc_book/config/application.dart';
+import 'package:bsoc_book/config/routes.dart';
+import 'package:bsoc_book/widgets/app_dataglobal.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
@@ -12,7 +19,14 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 Map<String, dynamic>? datauser;
 
 class WheelPage extends StatefulWidget {
-  const WheelPage({super.key});
+  const WheelPage({
+    super.key,
+    required this.homeViewModel,
+    required this.parentViewState,
+  });
+
+  final HomeViewModel homeViewModel;
+  final WheelPageViewState parentViewState;
 
   @override
   State<WheelPage> createState() => _WheelPageState();
@@ -25,6 +39,10 @@ class _WheelPageState extends State<WheelPage> {
   final storage = GetStorage();
   bool isLoading = true;
   String? token;
+
+  void goHome() {
+    Application.router.navigateTo(context, Routes.app, clearStack: true);
+  }
 
   @override
   void initState() {
@@ -76,7 +94,9 @@ class _WheelPageState extends State<WheelPage> {
       }
 
       var response = await Dio().get('http://103.77.166.202/api/user/profile',
-          options: Options(headers: {'Authorization': 'Bearer $token'}));
+          options: Options(headers: {
+            'Authorization': 'Bearer ${AppDataGlobal().accessToken}'
+          }));
       if (response.statusCode == 200) {
         datauser = response.data;
         // print(datauser!['spinTurn']);
@@ -103,7 +123,9 @@ class _WheelPageState extends State<WheelPage> {
       token = storage.read('accessToken');
       print(token);
       var response = await Dio().get('http://103.77.166.202/api/spin/list',
-          options: Options(headers: {'Authorization': 'Bearer $token'}));
+          options: Options(headers: {
+            'Authorization': 'Bearer ${AppDataGlobal().accessToken}'
+          }));
       if (response.statusCode == 200) {
         items = (response.data);
         print(items);
@@ -242,19 +264,22 @@ class _WheelPageState extends State<WheelPage> {
                         'http://103.77.166.202/api/spin/turn/$idSpin',
                         options: Options(
                             contentType: 'application/json',
-                            headers: {'Authorization': 'Bearer $token'}),
+                            headers: {
+                              'Authorization':
+                                  'Bearer ${AppDataGlobal().accessToken}'
+                            }),
                       );
                       print(response);
                       Navigator.of(context).pop();
-                      Navigator.pushReplacement(
-                        context,
-                        PageRouteBuilder(
-                          transitionDuration: Duration.zero,
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  WheelPage(),
-                        ),
-                      );
+                      // Navigator.pushReplacement(
+                      //   context,
+                      //   PageRouteBuilder(
+                      //     transitionDuration: Duration.zero,
+                      //     pageBuilder:
+                      //         (context, animation, secondaryAnimation) =>
+                      //             WheelPage(),
+                      //   ),
+                      // );
                     },
                     child: Align(
                       alignment: Alignment.topRight,
@@ -283,19 +308,19 @@ class _WheelPageState extends State<WheelPage> {
       final dio = Dio(); // Create Dio instance
       final response = await dio.post(
         'http://103.77.166.202/api/spin/turn/$idSpin',
-        options: Options(
-            contentType: 'application/json',
-            headers: {'Authorization': 'Bearer $token'}),
+        options: Options(contentType: 'application/json', headers: {
+          'Authorization': 'Bearer ${AppDataGlobal().accessToken}'
+        }),
       );
       print(response);
       Navigator.of(context).pop();
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          transitionDuration: Duration.zero,
-          pageBuilder: (context, animation, secondaryAnimation) => WheelPage(),
-        ),
-      );
+      // Navigator.pushReplacement(
+      //   context,
+      //   PageRouteBuilder(
+      //     transitionDuration: Duration.zero,
+      //     pageBuilder: (context, animation, secondaryAnimation) => WheelPage(),
+      //   ),
+      // );
     });
   }
 
@@ -339,8 +364,7 @@ class _WheelPageState extends State<WheelPage> {
                 ),
               ),
               onTap: () {
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (context) => HomePage()));
+                goHome();
               }),
           actions: [
             GestureDetector(
@@ -579,7 +603,7 @@ class _VoucherListPageState extends State<VoucherListPage> {
 
       var response = await Dio().get('http://103.77.166.202/api/user/voucher',
           options: Options(headers: {
-            'Authorization': 'Bearer $token',
+            'Authorization': 'Bearer ${AppDataGlobal().accessToken}',
           }));
       if (response.statusCode == 200) {
         itemVoucher = response.data['pointForClaimBook'];

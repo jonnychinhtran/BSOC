@@ -269,6 +269,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
       HomeViewState _homeViewState) {
     if (currentTab == CHAPTER) {
       return ChapterBookList(
+          bookModel: bookModel,
           chapterModel: bookModel.chapters,
           homeViewModel: _homeViewModel,
           homeViewState: _homeViewState);

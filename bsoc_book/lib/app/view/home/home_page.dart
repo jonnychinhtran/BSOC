@@ -5,6 +5,8 @@ import 'package:bsoc_book/app/models/book/top_book_model.dart';
 import 'package:bsoc_book/app/view/home/components/item_book.dart';
 import 'package:bsoc_book/app/view/home/components/item_top_book.dart';
 import 'package:bsoc_book/app/view/home/home_view.dart';
+import 'package:bsoc_book/app/view/quiz/quiz_page_view.dart';
+import 'package:bsoc_book/app/view/wheel_spin/wheel_view.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/app/view_model/login_view_model.dart';
 import 'package:bsoc_book/controller/authen/authen_controller.dart';
@@ -210,7 +212,12 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => QuizPageView()));
+                      },
                       child: Image.asset('assets/images/practice2.png'),
                     ),
                   ),
@@ -231,7 +238,14 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => WheelPageView(
+                                      homeViewModel: widget.homeViewModel,
+                                    )));
+                      },
                       child: Image.asset('assets/images/banner-wheel.jpg'),
                     ),
                   ),
