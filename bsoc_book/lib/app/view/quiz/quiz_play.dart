@@ -163,72 +163,6 @@ class _QuizPlayPageState extends State<QuizPlayPage>
                   }
               }
           });
-
-      // String? token;
-      // final box = GetStorage();
-      // token = box.read('accessToken');
-
-      // var formData =
-      //     _questionResults?.map((result) => result.toJson()).toList();
-      // print('Dữ liệu gửi lên: $formData');
-      // final dio = Dio(); // Create Dio instance
-      // final response = await dio.post(
-      //     'http://103.77.166.202/api/quiz/check-result',
-      //     options: Options(
-      //         contentType: 'application/json',
-      //         headers: {'Authorization': 'Bearer $token'}),
-      //     data: formData);
-      // quizResult = response.data;
-      // print('Kết quả API check-result trả về: $quizResult');
-
-      // if (quizResult?['totalCorrect'] == 0 && quizResult?['totalWrong'] == 0) {
-      //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //       builder: (_) => ResultQuizPlayPage(
-      //             questions: widget.questions,
-      //             answers: _answers,
-      //             quizResult: quizResult,
-      //           )));
-      // } else if (quizResult?['totalWrong'] == 0) {
-      //   AwesomeDialog(
-      //     context: context,
-      //     dialogType: DialogType.info,
-      //     borderSide: const BorderSide(
-      //       color: Colors.green,
-      //       width: 2,
-      //     ),
-      //     width: 330,
-      //     buttonsBorderRadius: const BorderRadius.all(
-      //       Radius.circular(2),
-      //     ),
-      //     dismissOnTouchOutside: true,
-      //     dismissOnBackKeyPress: false,
-      //     headerAnimationLoop: false,
-      //     animType: AnimType.bottomSlide,
-      //     title: 'CHÚC MỪNG',
-      //     desc: 'Bạn đã nhận được 01 điểm thưởng',
-      //     btnCancelText: "Để sau",
-      //     btnOkText: "Đổi sách",
-      //     showCloseIcon: true,
-      //     btnCancelOnPress: () {
-      //       Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //           builder: (_) => ResultQuizPlayPage(
-      //                 questions: widget.questions,
-      //                 answers: _answers,
-      //                 quizResult: quizResult,
-      //               )));
-      //     },
-      //     btnOkOnPress: () {
-      //       Get.to(RewardsPage());
-      //     },
-      //   ).show();
-      // } else {
-      //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //       builder: (_) => ResultQuizPlayPage(
-      //             questions: widget.questions,
-      //             answers: _answers,
-      //             quizResult: quizResult,
-      //           )));
-      // }
     }
   }
 
@@ -524,9 +458,9 @@ class _QuizPlayPageState extends State<QuizPlayPage>
     if (_currentIndex > 0) {
       setState(() {
         _currentIndex--;
-        _questionResults!.removeWhere(
-          (result) => result.questionId == _listQuestions[_currentIndex + 1].id,
-        );
+        // _questionResults!.removeWhere(
+        //   (result) => result.questionId == _listQuestions[_currentIndex + 1].id,
+        // );
       });
     }
   }
@@ -540,19 +474,15 @@ class _QuizPlayPageState extends State<QuizPlayPage>
     }
 
     final questionId = _listQuestions[_currentIndex].id;
-    // print(questionId);
     final answerId = _answers[_currentIndex];
-    // print(answerId);
+
+    // Remove the old answer for this question if it exists
+    _questionResults?.removeWhere((result) => result.questionId == questionId);
+
+    // Add the new answer
     final questionResult =
         PostQuizModel(questionId: questionId, answerId: answerId);
-
-    // Remove duplicates if the same questionId and answerId combination already exists
-    _questionResults?.removeWhere((result) =>
-        result.questionId == questionResult.questionId &&
-        result.answerId == questionResult.answerId);
-
     _questionResults?.add(questionResult);
-    // print(questionResult);
 
     if (_currentIndex < (_listQuestions.length - 1)) {
       setState(() {
@@ -563,7 +493,6 @@ class _QuizPlayPageState extends State<QuizPlayPage>
       logg.log(jsonEncode(_questionResults));
 
       _quizViewModel.updateQuizDone(_questionResults).then((value) => {
-            print('GUI CAU TRA LOI ${value}'),
             if (value != null)
               {
                 if (value.totalWrong == 0)
@@ -616,68 +545,6 @@ class _QuizPlayPageState extends State<QuizPlayPage>
                   }
               }
           });
-      // String? token;
-      // final box = GetStorage();
-      // token = box.read('accessToken');
-
-      // var formData =
-      //     _questionResults?.map((result) => result.toJson()).toList();
-      // print(formData);
-
-      // final dio = Dio(); // Create Dio instance
-      // final response = await dio.post(
-      //     'http://103.77.166.202/api/quiz/check-result',
-      //     options: Options(
-      //         contentType: 'application/json',
-      //         headers: {'Authorization': 'Bearer $token'}),
-      //     data: formData);
-      // quizResult = response.data;
-      // print(quizResult);
-
-      // if (quizResult?['totalWrong'] == 0) {
-      //   AwesomeDialog(
-      //     context: context,
-      //     dialogType: DialogType.info,
-      //     borderSide: const BorderSide(
-      //       color: Colors.green,
-      //       width: 2,
-      //     ),
-      //     width: 330,
-      //     buttonsBorderRadius: const BorderRadius.all(
-      //       Radius.circular(2),
-      //     ),
-      //     dismissOnTouchOutside: true,
-      //     dismissOnBackKeyPress: false,
-      //     headerAnimationLoop: false,
-      //     animType: AnimType.bottomSlide,
-      //     title: 'CHÚC MỪNG',
-      //     desc: 'Bạn đã nhận được 01 điểm thưởng',
-      //     btnCancelText: "Để sau",
-      //     btnOkText: "Đổi sách",
-      //     showCloseIcon: false,
-      //     btnCancelOnPress: () {
-      //       Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //           builder: (_) => ResultQuizPlayPage(
-      //                 questions: widget.questions,
-      //                 answers: _answers,
-      //                 quizResult: quizResult,
-      //               )));
-      //     },
-      //     btnOkOnPress: () {
-      //       Navigator.push(
-      //         context,
-      //         MaterialPageRoute(builder: (context) => const RewardsPage()),
-      //       );
-      //     },
-      //   ).show();
-      // } else {
-      //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //       builder: (_) => ResultQuizPlayPage(
-      //             questions: widget.questions,
-      //             answers: _answers,
-      //             quizResult: quizResult,
-      //           )));
-      // }
     }
   }
 
