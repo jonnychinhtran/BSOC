@@ -1,28 +1,39 @@
-import 'package:bsoc_book/data/model/quiz/category.dart';
-import 'package:bsoc_book/data/model/quiz/question.dart';
-import 'package:bsoc_book/data/network/api_question.dart';
-import 'package:bsoc_book/app/view/quiz/quiz.dart';
+import 'package:bsoc_book/app/models/quiz/list_question_model.dart';
+import 'package:bsoc_book/app/models/quiz/subject_info_model.dart';
+import 'package:bsoc_book/app/view/quiz/quiz_page_view.dart';
+import 'package:bsoc_book/app/view/quiz/quiz_play.dart';
+import 'package:bsoc_book/app/view_model/quiz_view_model.dart';
 import 'package:flutter/material.dart';
 
 class QuizOptionsDialog extends StatefulWidget {
-  final Map<String, dynamic>? headquestions;
-  final String? idPractice;
-  final Map<String, dynamic>? data2;
-  final String? selectedStandardName;
   const QuizOptionsDialog(
-      {Key? key,
+      {super.key,
+      required this.parentViewState,
+      required this.quizViewModel,
       required this.headquestions,
-      this.idPractice,
-      this.data2,
-      this.selectedStandardName})
-      : super(key: key);
+      required this.idPractice,
+      required this.selectedStandardName});
+
+  final QuizPageViewState parentViewState;
+  final QuizViewModel? quizViewModel;
+  final SubjectInfoModel? headquestions;
+  final String? idPractice;
+  final String? selectedStandardName;
 
   @override
   State<QuizOptionsDialog> createState() => _QuizOptionsDialogState();
 }
 
 class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
+  late QuizViewModel _quizViewModel;
   int? _noOfQuestions;
+  List<ListQuestionModel>? _listQuestionModel;
+
+  @override
+  void initState() {
+    _quizViewModel = widget.quizViewModel!;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +43,11 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
         child: Center(
           child: Column(
             children: <Widget>[
-              SizedBox(height: 10.0),
+              const SizedBox(height: 10.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Chủ đề: ",
+                  const Text("Chủ đề: ",
                       style: TextStyle(fontSize: 16)), // Change the text
                   Text(
                       widget.selectedStandardName == null
@@ -44,48 +55,48 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
                           : widget.selectedStandardName
                               .toString(), // Use the selectedStandardName parameter
 
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w600)),
                 ],
               ),
-              SizedBox(height: 15.0),
+              const SizedBox(height: 15.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Số câu hỏi: ", style: TextStyle(fontSize: 16)),
-                  Text(widget.headquestions!['totalQuestion'].toString(),
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  const Text("Số câu hỏi: ", style: TextStyle(fontSize: 16)),
+                  Text('${widget.headquestions!.totalQuestion} câu',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w600)),
                 ],
               ),
-              SizedBox(height: 15.0),
+              const SizedBox(height: 15.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Thời gian thi: ", style: TextStyle(fontSize: 16)),
-                  Text(widget.headquestions!['duration'].toString() + ' phút',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  const Text("Thời gian thi: ", style: TextStyle(fontSize: 16)),
+                  Text('${widget.headquestions!.duration!} phút',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w600)),
                 ],
               ),
-              SizedBox(height: 10.0),
+              const SizedBox(height: 10.0),
               ElevatedButton(
                   onPressed: () async {
                     _noOfQuestions = int.parse(widget.idPractice.toString());
-                    print(_noOfQuestions);
+                    // print(_noOfQuestions);
                     // List<Question> questions =
                     //     await getQuestions(_noOfQuestions);
                     // print('trang thi: $widget.headquestions');
-                    if (widget.headquestions!['totalQuestion'] == null) {
+                    if (widget.headquestions!.totalQuestion == 0) {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text("Thông báo"),
-                            content: Text("Đề thi đang được cập nhật"),
+                            title: const Text("Thông báo"),
+                            content: const Text("Đề thi đang được cập nhật"),
                             actions: [
                               TextButton(
-                                child: Text("OK"),
+                                child: const Text("OK"),
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
@@ -95,17 +106,30 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
                         },
                       );
                     } else {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => QuizPage(
-                      //               questions: questions,
-                      //               data2: data2,
-                      //             )));
+                      _quizViewModel
+                          .getListQuestionQuiz(_noOfQuestions)
+                          .then((value) => {
+                                if (value != [])
+                                  {
+                                    _listQuestionModel = value,
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => QuizPlayPage(
+                                                  parentViewState:
+                                                      widget.parentViewState,
+                                                  quizViewModel: _quizViewModel,
+                                                  listQuestions:
+                                                      _listQuestionModel!,
+                                                  timeQuiz: widget
+                                                      .headquestions!.duration,
+                                                )))
+                                  }
+                              });
                     }
                   },
-                  child: Text('Bắt đầu thi')),
-              SizedBox(height: 5.0),
+                  child: const Text('Bắt đầu thi')),
+              const SizedBox(height: 5.0),
             ],
           ),
         ),

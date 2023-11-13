@@ -1,4 +1,8 @@
+import 'package:bsoc_book/app/models/quiz/list_question_model.dart';
 import 'package:bsoc_book/app/models/quiz/list_subject_model.dart';
+import 'package:bsoc_book/app/models/quiz/post_quiz_model.dart';
+import 'package:bsoc_book/app/models/quiz/question_result_model.dart';
+import 'package:bsoc_book/app/models/quiz/subject_info_model.dart';
 import 'package:bsoc_book/app/repositories/IQuizRepo.dart';
 import 'package:bsoc_book/app/repositories/api/QuizApiRepository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -13,35 +17,43 @@ class QuizViewModel {
   bool get loading => _loading;
   bool get hasMore => _hasMore;
 
-  // BookModel? _bookDetailModel;
-  // List<BookModel> _tempListTopBookBase = [];
-  // final List<BookModel> _topbookModel = [];
+  SubjectInfoModel? _subjectInfoModel;
+  QuestionResultModel? _quizResultModel;
+  List<ListQuestionModel> _tempListQuestionBase = [];
+  final List<ListQuestionModel> _listQuestionModel = [];
   List<ListSubjectModel> _tempListSubjectBase = [];
   final List<ListSubjectModel> _subjectModel = [];
 
-  // dynamic _topBookList;
+  dynamic _questionList;
   dynamic _getSubjectList;
-  // dynamic get checkListTopBook => _topBookList;
+  dynamic get checkListQuestion => _questionList;
   dynamic get checkListBook => _getSubjectList;
-  // BookModel? get bookDetailModel => _bookDetailModel;
+  SubjectInfoModel? get subjectInfoModel => _subjectInfoModel;
+  QuestionResultModel? get quizResultModel => _quizResultModel;
+
   // String get localPath => _localPath;
-  // List<BookModel> get tempListTopBookBase => _tempListTopBookBase;
-  // List<BookModel> get topBookModel => _topbookModel;
+  List<ListQuestionModel> get tempListQuestionBase => _tempListQuestionBase;
+  List<ListQuestionModel> get listQuestionModel => _listQuestionModel;
 
   List<ListSubjectModel> get tempListSubjectBase => _tempListSubjectBase;
   List<ListSubjectModel> get listSubjectModel => _subjectModel;
 
-  // final BehaviorSubject<bool> _listTopBookSubject = BehaviorSubject();
-  // Stream<bool> get listTopBookStream => _listTopBookSubject.stream;
+  final BehaviorSubject<bool> _listQuestionSubject = BehaviorSubject();
+  Stream<bool> get listQuestionStream => _listQuestionSubject.stream;
 
   final BehaviorSubject<bool> _listSubjectModelSubject = BehaviorSubject();
   Stream<bool> get subjectQuizModelSubjectStream =>
       _listSubjectModelSubject.stream;
 
-  // final BehaviorSubject<BookModel?> _bookDetailModelSubject =
-  //     BehaviorSubject<BookModel?>();
-  // Stream<BookModel?> get bookDetailModelSubjectStream =>
-  //     _bookDetailModelSubject.stream;
+  final BehaviorSubject<SubjectInfoModel?> _subjectInfoModelSubject =
+      BehaviorSubject<SubjectInfoModel?>();
+  Stream<SubjectInfoModel?> get subjectInfoModelSubjectStream =>
+      _subjectInfoModelSubject.stream;
+
+  final BehaviorSubject<QuestionResultModel?> _subjectQuizResultSubject =
+      BehaviorSubject<QuestionResultModel?>();
+  Stream<QuestionResultModel?> get quizResultModelSubjectStream =>
+      _subjectQuizResultSubject.stream;
 
   QuizViewModel({this.quizId = 0}) {
     _quizRepo = QuizApiRepository();
@@ -51,35 +63,40 @@ class QuizViewModel {
     _hasMore = true;
     quizId = 0;
     // _localPath = '';
-    // _topbookModel.clear();
-    // _topBookList = {};
+    _quizResultModel = null;
+    _listQuestionModel.clear();
+    _questionList = {};
     _subjectModel.clear();
     _getSubjectList = {};
-    // _bookDetailModel = null;
+    _subjectInfoModel = null;
   }
 
   void setLoading(bool isLoading) {
     _loading = loading;
-    // _listTopBookSubject.add(isLoading);
+    _listQuestionSubject.add(isLoading);
     _listSubjectModelSubject.add(isLoading);
   }
 
-  // void setBookDetailModel({BookModel? bookModel}) {
-  //   _bookDetailModel = bookModel;
-  // }
+  void setSubjectInfoModel({SubjectInfoModel? subjectInfoModel}) {
+    _subjectInfoModel = subjectInfoModel;
+  }
 
-  // void setTopBookModel({required List<BookModel> list}) {
-  //   if (_tempListTopBookBase.isNotEmpty) {
-  //     _tempListTopBookBase.clear();
-  //   }
-  //   _tempListTopBookBase = list;
-  // }
+  void setQuizResultModel({QuestionResultModel? quizResultModel}) {
+    _quizResultModel = quizResultModel;
+  }
 
-  // void setListTopBookBase({required List<BookModel> list}) {
-  //   _topbookModel.addAll(list);
+  void setListQuestionModel({required List<ListQuestionModel> list}) {
+    if (_tempListQuestionBase.isNotEmpty) {
+      _tempListQuestionBase.clear();
+    }
+    _tempListQuestionBase = list;
+  }
 
-  //   _topBookList = {'list': _topbookModel};
-  // }
+  void setListQuestionBase({required List<ListQuestionModel> list}) {
+    _listQuestionModel.addAll(list);
+
+    _questionList = {'list': _listQuestionModel};
+  }
 
   void setsubjectModel({required List<ListSubjectModel> list}) {
     if (_tempListSubjectBase.isNotEmpty) {
@@ -109,34 +126,50 @@ class QuizViewModel {
 
   Future<List<ListSubjectModel>> getListSubjectQuiz() =>
       _quizRepo.getListSubject().then((listSubjectModel) {
-        if (null != listSubjectModel) {
+        if (null != _listSubjectModelSubject) {
+          setsubjectModel(list: listSubjectModel);
+          setListSubjectBase(list: listSubjectModel);
           return listSubjectModel;
         }
         return <ListSubjectModel>[];
       });
 
-  // void getListTopBook() {
-  //   clearCache();
-  //   setLoading(true);
-  //   _bookRepo.getListTop().then((dynamic topbookModel) {
-  //     if (!_listTopBookSubject.isClosed) {
-  //       setTopBookModel(list: topbookModel ?? []);
-  //       setListTopBookBase(list: topbookModel ?? []);
-  //       setLoading(false);
-  //     }
-  //   });
-  // }
+  Future<List<ListQuestionModel>> getListQuestionQuiz(id) {
+    // clearCache();
+    // setLoading(true);
+    return _quizRepo.getListQuestion(quizId: id).then((listQuestionModel) {
+      if (!_listQuestionSubject.isClosed) {
+        setListQuestionModel(list: listQuestionModel);
+        setListQuestionBase(list: listQuestionModel);
+        // setLoading(false);
+        return listQuestionModel;
+      }
+      return <ListQuestionModel>[];
+    });
+  }
 
-  // Future<BookModel?> getBookDetailPage() {
-  //   return _bookRepo.getBookDetail(bookId: bookId).then((value) {
-  //     if (null != value) {
-  //       setBookDetailModel(bookModel: value);
-  //       _bookDetailModelSubject.add(value);
-  //       return value;
-  //     }
-  //     return null;
-  //   });
-  // }
+  Future<SubjectInfoModel?> getSubjectInfoBottom(id) {
+    return _quizRepo.getSubjectInfo(quizId: id).then((value) {
+      if (null != value) {
+        setSubjectInfoModel(subjectInfoModel: value);
+        _subjectInfoModelSubject.add(value);
+        return value;
+      }
+      return null;
+    });
+  }
+
+  Future<QuestionResultModel?> updateQuizDone(data) {
+    print('DATA DATA DATA : $data');
+    return _quizRepo.updateQuiz(listQuiz: data).then((value) {
+      if (null != value) {
+        setQuizResultModel(quizResultModel: value);
+        _subjectQuizResultSubject.add(value);
+        return value;
+      }
+      return null;
+    });
+  }
 
   // Future<List<ListCommentModel>> getListCommentBook(id) =>
   //     _bookRepo.getListComment(bookId: id).then((listCommentModel) {
@@ -158,7 +191,9 @@ class QuizViewModel {
 
   void dispose() {
     // _bookDetailModelSubject.close();
-    // _listTopBookSubject.close();
+    _subjectInfoModelSubject.close();
+    _subjectQuizResultSubject.close();
+    _listQuestionSubject.close();
     _listSubjectModelSubject.close();
   }
 }

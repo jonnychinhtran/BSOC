@@ -43,6 +43,6 @@ class NetworkEndpoints {
   //Quiz
   static const String GET_QUIZ_SUBJECT_API = '/quiz/list-subject';
   static const String GET_QUIZ_QUESTION_API = '/quiz/list-question';
-  static const String GET_CHECK_RESULT_API = '/quiz/check-result';
+  static const String POST_CHECK_RESULT_API = '/quiz/check-result';
   static const String GET_SUBJECT_INFO_API = '/quiz/subject-info';
 }

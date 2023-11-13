@@ -13,7 +13,7 @@ class ListQuestionModel {
   @JsonKey(name: "totalAnswer")
   int? totalAnswer;
   @JsonKey(name: "answers")
-  AnswerModel? answers;
+  List<AnswerModel>? answers;
 
   ListQuestionModel(
       {this.id,

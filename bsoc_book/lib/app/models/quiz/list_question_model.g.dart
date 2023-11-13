@@ -12,9 +12,9 @@ ListQuestionModel _$ListQuestionModelFromJson(Map<String, dynamic> json) =>
       content: json['content'] as String?,
       isMultiChoice: json['isMultiChoice'] as bool? ?? false,
       totalAnswer: json['totalAnswer'] as int?,
-      answers: json['answers'] == null
-          ? null
-          : AnswerModel.fromJson(json['answers'] as Map<String, dynamic>),
+      answers: (json['answers'] as List<dynamic>?)
+          ?.map((e) => AnswerModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ListQuestionModelToJson(ListQuestionModel instance) =>
