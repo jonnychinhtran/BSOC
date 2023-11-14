@@ -83,10 +83,6 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
               ElevatedButton(
                   onPressed: () async {
                     _noOfQuestions = int.parse(widget.idPractice.toString());
-                    // print(_noOfQuestions);
-                    // List<Question> questions =
-                    //     await getQuestions(_noOfQuestions);
-                    // print('trang thi: $widget.headquestions');
                     if (widget.headquestions!.totalQuestion == 0) {
                       showDialog(
                         context: context,

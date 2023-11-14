@@ -1,13 +1,5 @@
-import 'package:bsoc_book/app/view/infor/infor_change_pass.dart';
-import 'package:bsoc_book/app/view/infor/infor_page.dart';
-import 'package:bsoc_book/app/view/infor/infor_update.dart';
 import 'package:bsoc_book/app/view/quiz/practice.dart';
-import 'package:bsoc_book/app/view/quiz/quiz_play.dart';
-import 'package:bsoc_book/app/view/wheel_spin/wheel_page.dart';
-import 'package:bsoc_book/app/view_model/app_view_model.dart';
-import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/app/view_model/quiz_view_model.dart';
-import 'package:bsoc_book/app/view_model/user_view_model.dart';
 import 'package:flutter/material.dart';
 
 class QuizPageView extends StatefulWidget {

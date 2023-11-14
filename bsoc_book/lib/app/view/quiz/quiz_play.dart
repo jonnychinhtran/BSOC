@@ -5,6 +5,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:bsoc_book/app/models/quiz/answer_model.dart';
 import 'package:bsoc_book/app/models/quiz/list_question_model.dart';
 import 'package:bsoc_book/app/models/quiz/post_quiz_model.dart';
+import 'package:bsoc_book/app/models/quiz/question_result_model.dart';
 import 'package:bsoc_book/app/view/quiz/quiz_page_view.dart';
 import 'package:bsoc_book/app/view_model/quiz_view_model.dart';
 import 'package:bsoc_book/data/model/quiz/QuestionResult.dart';
@@ -44,6 +45,7 @@ class _QuizPlayPageState extends State<QuizPlayPage>
     with TickerProviderStateMixin {
   late QuizViewModel _quizViewModel;
   late List<ListQuestionModel> _listQuestions;
+  late QuestionResultModel _quizResultModel;
   final TextStyle _questionStyle = TextStyle(
       fontSize: 18.0, fontWeight: FontWeight.w500, color: Colors.white);
   late AnimationController controller;
@@ -113,6 +115,7 @@ class _QuizPlayPageState extends State<QuizPlayPage>
       _quizViewModel.updateQuizDone(_questionResults).then((value) => {
             if (value != null)
               {
+                _quizResultModel = value,
                 if (value.totalWrong == 0)
                   {
                     AwesomeDialog(
@@ -136,12 +139,12 @@ class _QuizPlayPageState extends State<QuizPlayPage>
                       btnOkText: "Đổi sách",
                       showCloseIcon: false,
                       btnCancelOnPress: () {
-                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        //     builder: (_) => ResultQuizPlayPage(
-                        //           questions: widget.listQuestions,
-                        //           answers: _answers,
-                        //           quizResult: value,
-                        //         )));
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => ResultQuizPage(
+                                  questions: widget.listQuestions,
+                                  answersPost: _questionResults,
+                                  quizResult: _quizResultModel,
+                                )));
                       },
                       btnOkOnPress: () {
                         // Navigator.push(
@@ -154,12 +157,12 @@ class _QuizPlayPageState extends State<QuizPlayPage>
                   }
                 else
                   {
-                    // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    //     builder: (_) => ResultQuizPlayPage(
-                    //           questions: widget.listQuestions,
-                    //           answers: _answers,
-                    //           quizResult: value,
-                    //         )))
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => ResultQuizPage(
+                              questions: widget.listQuestions,
+                              answersPost: _questionResults,
+                              quizResult: _quizResultModel,
+                            )))
                   }
               }
           });
@@ -495,6 +498,7 @@ class _QuizPlayPageState extends State<QuizPlayPage>
       _quizViewModel.updateQuizDone(_questionResults).then((value) => {
             if (value != null)
               {
+                _quizResultModel = value,
                 if (value.totalWrong == 0)
                   {
                     AwesomeDialog(
@@ -518,12 +522,12 @@ class _QuizPlayPageState extends State<QuizPlayPage>
                       btnOkText: "Đổi sách",
                       showCloseIcon: false,
                       btnCancelOnPress: () {
-                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        //     builder: (_) => ResultQuizPlayPage(
-                        //           questions: widget.listQuestions,
-                        //           answers: _answers,
-                        //           quizResult: value,
-                        //         )));
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => ResultQuizPage(
+                                  questions: widget.listQuestions,
+                                  answersPost: _questionResults,
+                                  quizResult: _quizResultModel,
+                                )));
                       },
                       btnOkOnPress: () {
                         // Navigator.push(
@@ -536,12 +540,12 @@ class _QuizPlayPageState extends State<QuizPlayPage>
                   }
                 else
                   {
-                    // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    //     builder: (_) => ResultQuizPlayPage(
-                    //           questions: widget.listQuestions,
-                    //           answers: _answers,
-                    //           quizResult: value,
-                    //         )))
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => ResultQuizPage(
+                              questions: widget.listQuestions,
+                              answersPost: _questionResults,
+                              quizResult: _quizResultModel,
+                            )))
                   }
               }
           });
