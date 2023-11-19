@@ -209,7 +209,7 @@ class _ChapterBookListState extends State<ChapterBookList> {
                                                     chapterId:
                                                         widget
                                                             .chapterModel[index]
-                                                            .chapterId,
+                                                            .id,
                                                     namePath: widget
                                                         .chapterModel[index]
                                                         .filePath),
@@ -290,7 +290,6 @@ class _DownloadingDialogState extends State<DownloadingDialog> {
         Navigator.pop(context);
       }).catchError((error) {
         print("Download error: $error");
-        // Handle the error, maybe show a message to the user
       });
 
       await OpenFilex.open(path);
