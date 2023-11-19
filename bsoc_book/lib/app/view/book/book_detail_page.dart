@@ -203,12 +203,10 @@ class _BookDetailPageState extends State<BookDetailPage> {
                               height: 15,
                             ),
                             Expanded(
-                              child: SizedBox(
-                                child: _renderContent(
-                                    _homeViewModel.bookDetailModel!,
-                                    _homeViewModel,
-                                    widget.parentViewState),
-                              ),
+                              child: _renderContent(
+                                  _homeViewModel.bookDetailModel!,
+                                  _homeViewModel,
+                                  widget.parentViewState),
                             )
                           ],
                         ),
