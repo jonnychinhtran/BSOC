@@ -5,9 +5,11 @@ import 'package:bsoc_book/app/view/home/components/item_top_book.dart';
 import 'package:bsoc_book/app/view/home/home_view.dart';
 import 'package:bsoc_book/app/view/quiz/quiz_page_view.dart';
 import 'package:bsoc_book/app/view/wheel_spin/wheel_view.dart';
+import 'package:bsoc_book/app/view/widgets/updatedialog.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/app/view/banner/company_page.dart';
 import 'package:bsoc_book/app/view/banner/job_page.dart';
+import 'package:bsoc_book/utils/widget_helper.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
@@ -60,17 +62,11 @@ class _HomePageState extends State<HomePage> {
       }
     });
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //   await getAllBooksController.getAllBooks();
-    //   // print('All book: ${getAllBooksController.getAllBooks()}');
-    //   await getTopBookController.getTopBook();
-    //   // print('Top book: ${getAllBooksController.getAllBooks()}');
-    // });
-    // final newVersion = NewVersion(
-    //   iOSId: 'com.b4usolution.app.bsoc',
-    //   androidId: 'com.b4usolution.b4u_bsoc',
-    // );
-    // checkNewVersion(newVersion);
+    final newVersion = NewVersion(
+      iOSId: 'com.b4usolution.app.bsoc',
+      androidId: 'com.b4usolution.b4u_bsoc',
+    );
+    checkNewVersion(newVersion);
     super.initState();
   }
 
@@ -93,42 +89,26 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  // void showErrorDialog(BuildContext context, String error) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (_) => AlertDialog(
-  //       title: Text('Error'),
-  //       content: Text(error),
-  //       actions: [
-  //         TextButton(
-  //           child: Text('OK'),
-  //           onPressed: () => Navigator.of(context).pop(),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // void checkNewVersion(NewVersion newVersion) async {
-  //   final status = await newVersion.getVersionStatus();
-  //   if (status != null) {
-  //     if (status.canUpdate) {
-  //       showDialog(
-  //         context: context,
-  //         builder: (BuildContext context) {
-  //           return UpdateDialog(
-  //             allowDismissal: true,
-  //             description: status.releaseNotes!,
-  //             version: status.storeVersion,
-  //             appLink: status.appStoreLink,
-  //           );
-  //         },
-  //       );
-  //     }
-  //     print(status.appStoreLink);
-  //     print(status.storeVersion);
-  //   }
-  // }
+  void checkNewVersion(NewVersion newVersion) async {
+    final status = await newVersion.getVersionStatus();
+    if (status != null) {
+      if (status.canUpdate) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return UpdateDialog(
+              allowDismissal: true,
+              description: status.releaseNotes!,
+              version: status.storeVersion,
+              appLink: status.appStoreLink,
+            );
+          },
+        );
+      }
+      print(status.appStoreLink);
+      print(status.storeVersion);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,10 +177,17 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => QuizPageView()));
+                        if (AppDataGlobal().accessToken != '') {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => QuizPageView()));
+                        } else {
+                          WidgetHelper.showPopupMessage(
+                              context: context,
+                              content: const Text(
+                                  'Bạn cần đăng nhập để sử dụng chức năng này'));
+                        }
                       },
                       child: Image.asset('assets/images/practice2.png'),
                     ),
@@ -223,12 +210,19 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => WheelPageView(
-                                      homeViewModel: widget.homeViewModel,
-                                    )));
+                        if (AppDataGlobal().accessToken != '') {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => WheelPageView(
+                                        homeViewModel: widget.homeViewModel,
+                                      )));
+                        } else {
+                          WidgetHelper.showPopupMessage(
+                              context: context,
+                              content: const Text(
+                                  'Bạn cần đăng nhập để sử dụng chức năng này'));
+                        }
                       },
                       child: Image.asset('assets/images/banner-wheel.jpg'),
                     ),
@@ -383,500 +377,3 @@ class _HomePageState extends State<HomePage> {
     ]);
   }
 }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     var size = MediaQuery.of(context).size;
-//     return WillPopScope(
-//         onWillPop: () {
-//           return Future.value(false);
-//         },
-//         child: Scaffold(
-//             drawer: MenuAside(),
-//             appBar: AppBar(
-//               backgroundColor: Colors.transparent,
-//               elevation: 0,
-//               centerTitle: true,
-//               title: const Text(
-//                 'B4U BSOC',
-//                 style: TextStyle(color: Colors.black),
-//               ),
-//               leading: IconButton(
-//                 icon: Icon(Icons.person_outline_rounded),
-//                 color: Colors.black,
-//                 onPressed: () {
-//                   Navigator.push(context,
-//                       MaterialPageRoute(builder: (context) => InforPage()));
-//                 },
-//               ),
-//               actions: [
-//                 Theme(
-//                     data: Theme.of(context).copyWith(
-//                       dividerColor: Colors.white,
-//                       iconTheme: IconThemeData(color: Colors.white),
-//                       textTheme: TextTheme().apply(bodyColor: Colors.white),
-//                     ),
-//                     child: PopupMenuButton<int>(
-//                         color: Colors.white,
-//                         itemBuilder: (context) => [
-//                               PopupMenuItem<int>(
-//                                 value: 0,
-//                                 child: SocialWidget(
-//                                   placeholderText: 'B4U Solution',
-//                                   iconData: SocialIconsFlutter.facebook_box,
-//                                   link:
-//                                       'https://www.facebook.com/groups/376149517873940',
-//                                   iconColor: Color.fromARGB(255, 0, 170, 255),
-//                                   placeholderStyle: TextStyle(
-//                                       color: Colors.black, fontSize: 20),
-//                                 ),
-//                               ),
-//                               PopupMenuItem<int>(
-//                                 value: 1,
-//                                 child: SocialWidget(
-//                                   placeholderText: 'B4U Solution',
-//                                   iconData: SocialIconsFlutter.linkedin_box,
-//                                   link:
-//                                       'https://www.linkedin.com/in/b4usolution-b16383128/',
-//                                   iconColor: Colors.blueGrey,
-//                                   placeholderStyle: TextStyle(
-//                                       color: Colors.black, fontSize: 20),
-//                                 ),
-//                               ),
-//                               PopupMenuItem<int>(
-//                                 value: 2,
-//                                 child: SocialWidget(
-//                                   placeholderText: 'B4U Solution',
-//                                   iconData: SocialIconsFlutter.youtube,
-//                                   link:
-//                                       'https://www.youtube.com/channel/UC1UDTdvGiei6Lc4ei7VzL_A',
-//                                   iconColor: Colors.red,
-//                                   placeholderStyle: TextStyle(
-//                                       color: Colors.black, fontSize: 20),
-//                                 ),
-//                               ),
-//                               PopupMenuItem<int>(
-//                                 value: 3,
-//                                 child: SocialWidget(
-//                                   placeholderText: 'B4U Solution',
-//                                   iconData: SocialIconsFlutter.twitter,
-//                                   iconColor: Colors.lightBlue,
-//                                   link: 'https://twitter.com/b4usolution',
-//                                   placeholderStyle: TextStyle(
-//                                       color: Colors.black, fontSize: 20),
-//                                 ),
-//                               ),
-//                               PopupMenuItem<int>(
-//                                 value: 4,
-//                                 child: SocialWidget(
-//                                   placeholderText: 'B4U Solution',
-//                                   iconData: Icons.people,
-//                                   iconColor: Colors.lightBlue,
-//                                   link:
-//                                       'https://www.slideshare.net/b4usolution/',
-//                                   placeholderStyle: TextStyle(
-//                                       color: Colors.black, fontSize: 20),
-//                                 ),
-//                               ),
-//                             ])),
-//               ],
-//             ),
-//             body: Obx(() {
-//               if (getAllBooksController.isLoading.value &&
-//                   getTopBookController.isLoading.value) {
-//                 return Center(
-//                     child: LoadingAnimationWidget.discreteCircle(
-//                   color: Color.fromARGB(255, 138, 175, 52),
-//                   secondRingColor: Colors.black,
-//                   thirdRingColor: Colors.purple,
-//                   size: 30,
-//                 ));
-//               } else {
-//                 return RefreshIndicator(
-//                   onRefresh: () async {
-//                     getAllBooksController.getAllBooks();
-//                     getTopBookController.getTopBook();
-//                   },
-//                   child: Stack(
-//                     children: [
-//                       SafeArea(
-//                         child: SingleChildScrollView(
-//                           physics: ScrollPhysics(),
-//                           child: Column(
-//                             children: [
-                              // Padding(
-                              //   padding: const EdgeInsets.all(16.0),
-                              //   child: Container(
-                              //     height: 40,
-                              //     child: TextField(
-                              //       showCursor: true,
-                              //       readOnly: true,
-                              //       onTap: () {
-                              //         Navigator.push(
-                              //             context,
-                              //             MaterialPageRoute(
-                              //                 builder: (context) =>
-                              //                     SearchPage()));
-                              //       },
-                              //       decoration: InputDecoration(
-                              //         hintText: "Tìm kiếm sách",
-                              //         fillColor: Colors.grey[300],
-                              //         filled: true,
-                              //         contentPadding: EdgeInsets.symmetric(
-                              //             vertical: 6, horizontal: 12),
-                              //         prefixIcon: Icon(
-                              //           Icons.search,
-                              //           color: Colors.grey,
-                              //         ),
-                              //         focusedBorder: InputBorder.none,
-                              //         border: OutlineInputBorder(
-                              //           borderRadius: BorderRadius.all(
-                              //               Radius.circular(20.0)),
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-//                               SizedBox(height: size.height * 0.02),
-                              // Row(
-                              //   mainAxisAlignment:
-                              //       MainAxisAlignment.spaceEvenly,
-                              //   mainAxisSize: MainAxisSize.max,
-                              //   children: [
-                              //     Flexible(
-                              //       child: GestureDetector(
-                              //         onTap: () {
-                              //           Navigator.push(
-                              //               context,
-                              //               MaterialPageRoute(
-                              //                   builder: (context) =>
-                              //                       CompanyPage()));
-                              //         },
-                              //         child: Container(
-                              //             width: 170,
-                              //             child: Image.asset(
-                              //                 'assets/images/banner1.png',
-                              //                 fit: BoxFit.fill)),
-                              //       ),
-                              //     ),
-                              //     Flexible(
-                              //       child: GestureDetector(
-                              //         onTap: () {
-                              //           Navigator.push(
-                              //               context,
-                              //               MaterialPageRoute(
-                              //                   builder: (context) =>
-                              //                       JobPage()));
-                              //         },
-                              //         child: Container(
-                              //             width: 170,
-                              //             child: Image.asset(
-                              //                 'assets/images/banner3.jpg',
-                              //                 fit: BoxFit.fill)),
-                              //       ),
-                              //     ),
-                              //   ],
-                              // ),
-//                               SizedBox(height: size.height * 0.02),
-//                               // Padding(
-//                               //   padding: const EdgeInsets.all(16.0),
-//                               //   child: GestureDetector(
-//                               //     onTap: () {
-//                               //       if (authController.isLoggedIn.value) {
-//                               //         Navigator.push(
-//                               //             context,
-//                               //             MaterialPageRoute(
-//                               //                 builder: (context) =>
-//                               //                     WheelPage()));
-//                               //       } else {
-//                               //         showDialog(
-//                               //           context: context,
-//                               //           builder: (context) => AlertPageDialog(),
-//                               //         );
-//                               //       }
-//                               //     },
-//                               //     child:
-//                               //         Image.asset('assets/images/wheel1.jpg'),
-//                               //   ),
-//                               // ),
-                              // SizedBox(height: size.height * 0.01),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 13.0),
-                              //   child: Align(
-                              //     alignment: Alignment.centerLeft,
-                              //     child: Text(
-                              //       'Luyện thi "IELTS - TOEIC - IT - PSM1"',
-                              //       style: TextStyle(
-                              //           fontSize: 16,
-                              //           fontWeight: FontWeight.w700,
-                              //           color: Colors.redAccent),
-                              //     ),
-                              //   ),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.all(8.0),
-                              //   child: GestureDetector(
-                              //     onTap: () {
-                              //       if (authController.isLoggedIn.value) {
-                              //         // Navigator.push(
-                              //         //     context,
-                              //         //     MaterialPageRoute(
-                              //         //         builder: (context) =>
-                              //         //             PracticePage()));
-                              //       } else {
-                              //         showDialog(
-                              //           context: context,
-                              //           builder: (context) => AlertPageDialog(),
-                              //         );
-                              //       }
-                              //     },
-                              //     child: Image.asset(
-                              //         'assets/images/practice2.png'),
-                              //   ),
-                              // ),
-                              // SizedBox(height: size.height * 0.04),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 13.0),
-                              //   child: Align(
-                              //     alignment: Alignment.centerLeft,
-                              //     child: Text(
-                              //       'Vòng quay may mắn',
-                              //       style: TextStyle(
-                              //         fontSize: 18,
-                              //         fontWeight: FontWeight.w500,
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.all(8.0),
-                              //   child: GestureDetector(
-                              //     onTap: () {
-                              //       if (authController.isLoggedIn.value) {
-                              //         Navigator.push(
-                              //             context,
-                              //             MaterialPageRoute(
-                              //                 builder: (context) =>
-                              //                     WheelPage()));
-                              //       } else {
-                              //         showDialog(
-                              //           context: context,
-                              //           builder: (context) => AlertPageDialog(),
-                              //         );
-                              //       }
-                              //     },
-                              //     child: Image.asset(
-                              //         'assets/images/banner-wheel.jpg'),
-                              //   ),
-                              // ),
-                              // SizedBox(height: size.height * 0.04),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 13.0),
-                              //   child: Align(
-                              //     alignment: Alignment.centerLeft,
-                              //     child: Text(
-                              //       'Top 5 sách hay',
-                              //       style: TextStyle(
-                              //         fontSize: 18,
-                              //         fontWeight: FontWeight.w500,
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-//                               Container(
-//                                 height: 200,
-//                                 margin: EdgeInsets.only(left: 10, right: 10),
-//                                 child: ListView.builder(
-//                                     shrinkWrap: true,
-//                                     scrollDirection: Axis.horizontal,
-//                                     itemCount:
-//                                         getTopBookController.topbooks.length,
-//                                     itemBuilder:
-//                                         (BuildContext context, int index) {
-//                                       return Padding(
-//                                         padding: const EdgeInsets.all(8.0),
-//                                         child: GestureDetector(
-//                                           onTap: () async {
-//                                             final SharedPreferences? prefs =
-//                                                 await _prefs;
-//                                             await prefs?.setString(
-//                                                 'idbook',
-//                                                 getTopBookController
-//                                                     .topbooks[index].id
-//                                                     .toString());
-
-//                                             Navigator.push(
-//                                                 context,
-//                                                 MaterialPageRoute(
-//                                                     builder: (context) =>
-//                                                         DetailBookPage(
-//                                                             id: getTopBookController
-//                                                                 .topbooks[index]
-//                                                                 .id
-//                                                                 .toString())));
-//                                           },
-//                                           child: SizedBox(
-//                                             child: Image.network(
-//                                                 getTopBookController
-//                                                             .topbooks[index]
-//                                                             .image ==
-//                                                         null
-//                                                     ? "Đang tải..."
-//                                                     : 'http://103.77.166.202' +
-//                                                         getTopBookController
-//                                                             .topbooks[index]
-//                                                             .image
-//                                                             .toString()),
-//                                           ),
-//                                         ),
-//                                       );
-//                                     }),
-//                               ),
-//                               SizedBox(height: size.height * 0.04),
-//                               Padding(
-//                                 padding: const EdgeInsets.only(left: 14.0),
-//                                 child: Align(
-//                                   alignment: Alignment.centerLeft,
-//                                   child: Text(
-//                                     'Thư viện sách',
-//                                     textAlign: TextAlign.left,
-//                                     style: TextStyle(
-//                                       fontSize: 18,
-//                                       fontWeight: FontWeight.w500,
-//                                     ),
-//                                   ),
-//                                 ),
-//                               ),
-//                               Container(
-//                                 child: Padding(
-//                                   padding: const EdgeInsets.all(10.0),
-//                                   child: GridView.builder(
-//                                     physics: NeverScrollableScrollPhysics(),
-//                                     shrinkWrap: true,
-//                                     itemCount:
-//                                         getAllBooksController.books.length,
-//                                     gridDelegate:
-//                                         SliverGridDelegateWithFixedCrossAxisCount(
-//                                             crossAxisCount: 2,
-//                                             childAspectRatio: 2 / 3.3),
-//                                     itemBuilder:
-//                                         (BuildContext context, int index) {
-//                                       final book =
-//                                           getAllBooksController.books[index];
-//                                       return InkWell(
-//                                         child: Padding(
-//                                           padding: const EdgeInsets.all(8.0),
-//                                           child: Column(
-//                                               mainAxisSize: MainAxisSize.min,
-//                                               mainAxisAlignment:
-//                                                   MainAxisAlignment.start,
-//                                               crossAxisAlignment:
-//                                                   CrossAxisAlignment.start,
-//                                               children: [
-//                                                 GestureDetector(
-//                                                   onTap: () async {
-//                                                     final SharedPreferences?
-//                                                         prefs = await _prefs;
-//                                                     await prefs?.setString(
-//                                                         'idbook',
-//                                                         book.id.toString());
-//                                                     Navigator.push(
-//                                                         context,
-//                                                         MaterialPageRoute(
-//                                                             builder: (context) =>
-//                                                                 DetailBookPage(
-//                                                                     id: book.id
-//                                                                         .toString())));
-//                                                   },
-//                                                   child: Container(
-//                                                     height: size.height * 0.25,
-//                                                     width: size.width * 0.4,
-//                                                     decoration: BoxDecoration(
-//                                                         image: DecorationImage(
-//                                                             fit: BoxFit
-//                                                                 .fitHeight,
-//                                                             image: NetworkImage(
-//                                                               book.image == null
-//                                                                   ? "Đang tải..."
-//                                                                   : 'http://103.77.166.202' +
-//                                                                       book.image
-//                                                                           .toString(),
-//                                                             ))),
-//                                                   ),
-//                                                 ),
-//                                                 SizedBox(
-//                                                     height: size.height * 0.02),
-//                                                 Container(
-//                                                   child: Text(
-//                                                     book.bookName == null
-//                                                         ? "Đang tải..."
-//                                                         : book.bookName
-//                                                             .toString(),
-//                                                     overflow:
-//                                                         TextOverflow.ellipsis,
-//                                                     maxLines: 2,
-//                                                     style: const TextStyle(
-//                                                       fontWeight:
-//                                                           FontWeight.w600,
-//                                                       fontSize: 14,
-//                                                     ),
-//                                                   ),
-//                                                 ),
-//                                                 SizedBox(
-//                                                     height: size.height * 0.01),
-//                                                 Text(
-//                                                   book.author == null
-//                                                       ? "Đang tải..."
-//                                                       : 'bởi :' +
-//                                                           book.author
-//                                                               .toString(),
-//                                                   overflow:
-//                                                       TextOverflow.ellipsis,
-//                                                   maxLines: 2,
-//                                                   style: const TextStyle(
-//                                                       fontSize: 12),
-//                                                 ),
-//                                               ]),
-//                                         ),
-//                                       );
-//                                     },
-//                                   ),
-//                                 ),
-//                               ),
-//                               Container(
-//                                 color: Colors.grey.shade800,
-//                                 child: Padding(
-//                                   padding: const EdgeInsets.all(16.0),
-//                                   child: Center(
-//                                       child: Column(
-//                                     children: [
-//                                       Text(
-//                                         "© B4USOLUTION. All Rights Reserved.",
-//                                         style: TextStyle(
-//                                             color: Colors.white, fontSize: 16),
-//                                       ),
-//                                       SizedBox(height: 3),
-//                                       Text(
-//                                         "Privacy Policy Designed by B4USOLUTION",
-//                                         style: TextStyle(
-//                                             color: Colors.white, fontSize: 16),
-//                                       )
-//                                     ],
-//                                   )),
-//                                 ),
-//                               )
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                       // Padding(
-//                       //   padding: const EdgeInsets.all(8.0),
-//                       //   child: TimeFrameIcon(),
-//                       // ),
-//                     ],
-//                   ),
-//                 );
-//               }
-//             })));
-//   }
-// }

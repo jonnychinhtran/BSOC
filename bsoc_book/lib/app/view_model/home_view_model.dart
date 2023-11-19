@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:bsoc_book/app/models/api/post_response_model.dart';
 import 'package:bsoc_book/app/models/book/book_model.dart';
+import 'package:bsoc_book/app/models/book/chapters_model.dart';
 import 'package:bsoc_book/app/models/book/list_comment_model.dart';
 import 'package:bsoc_book/app/models/book/top_book_model.dart';
 import 'package:bsoc_book/app/repositories/IBookRepo.dart';
@@ -21,6 +22,7 @@ class HomeViewModel {
   bool get hasMore => _hasMore;
 
   BookModel? _bookDetailModel;
+  List<ChaptersModel>? _listChapterModel;
   List<BookModel> _tempListTopBookBase = [];
   final List<BookModel> _topbookModel = [];
   List<BookModel> _tempListBookBase = [];
@@ -40,6 +42,8 @@ class HomeViewModel {
   dynamic get checkListBook => _getBookList;
   dynamic get checkListComment => _getCommentList;
   BookModel? get bookDetailModel => _bookDetailModel;
+  List<ChaptersModel>? get listChapterModel => _listChapterModel;
+
   String get localPath => _localPath;
   List<BookModel> get tempListTopBookBase => _tempListTopBookBase;
   List<BookModel> get topBookModel => _topbookModel;
@@ -56,6 +60,11 @@ class HomeViewModel {
   final BehaviorSubject<bool> _listCommentModelSubject = BehaviorSubject();
   Stream<bool> get listCommentModelSubjectStream =>
       _listCommentModelSubject.stream;
+
+  // final BehaviorSubject<List<ChaptersModel>?> _listChapterModelSubject =
+  //     BehaviorSubject<List<ChaptersModel>?>();
+  // Stream<List<ChaptersModel>?> get listChapterModelSubjectStream =>
+  //     _listChapterModelSubject.stream;
 
   final BehaviorSubject<BookModel?> _bookDetailModelSubject =
       BehaviorSubject<BookModel?>();
@@ -92,6 +101,10 @@ class HomeViewModel {
 
   void setBookDetailModel({BookModel? bookModel}) {
     _bookDetailModel = bookModel;
+  }
+
+  void setListChapterModel({List<ChaptersModel>? listChapterModel}) {
+    _listChapterModel = listChapterModel;
   }
 
   void setTopBookModel({required List<BookModel> list}) {
@@ -152,6 +165,7 @@ class HomeViewModel {
     return _bookRepo.getBookDetail(bookId: bookId).then((value) {
       if (null != value) {
         setBookDetailModel(bookModel: value);
+        setListChapterModel(listChapterModel: value.chapters);
         _bookDetailModelSubject.add(value);
         return value;
       }

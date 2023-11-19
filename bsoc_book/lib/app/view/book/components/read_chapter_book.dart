@@ -53,29 +53,6 @@ class _ReadChapterBookState extends State<ReadChapterBook>
     super.initState();
   }
 
-  // void onSelectChapter(String newPdfPath) {
-  //   setState(() {
-  //     // Generate a new key to force the widget to rebuild
-  //     pdfViewKey = GlobalKey();
-  //     urlPDFPath = newPdfPath;
-  //   });
-  // }
-
-  // void onSelectChapter() async {
-  //   print('ID CHAPTER $idChapter');
-  //   _homeViewModel.getChapterPdf(idChapter).then((value) => {
-  //         if (value.isNotEmpty)
-  //           {
-  //             setState(() {
-  //               pdfViewKey = GlobalKey();
-  //               urlPDFPath = value;
-  //               // Close the drawer
-  //               Navigator.of(context).pop();
-  //             })
-  //           }
-  //       });
-  // }
-
   void goHome() {
     Application.router.navigateTo(context, Routes.app, clearStack: true);
   }
