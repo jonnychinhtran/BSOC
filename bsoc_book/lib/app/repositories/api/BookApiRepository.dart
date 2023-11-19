@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:bsoc_book/app/models/api/post_response_model.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
 import 'package:http/http.dart' as http;
 import 'package:bsoc_book/api/ApiProviderRepository.dart';
@@ -84,5 +86,33 @@ class BookApiRepository extends ApiProviderRepository implements IBookRepo {
 
     file.writeAsBytesSync(response.bodyBytes, flush: true);
     return file.path;
+  }
+
+  @override
+  Future<PostReponseModel?> postComment(
+      {required int userId,
+      required int bookId,
+      required double rating,
+      required String content}) async {
+    final formData = {
+      "userId": userId,
+      "bookId": bookId,
+      "rating": rating,
+      "content": content,
+    };
+    try {
+      var response = await Dio().post('http://103.77.166.202/api/book/comment',
+          data: json.encode(formData),
+          options: Options(headers: {
+            'Authorization': 'Bearer ${AppDataGlobal().accessToken}'
+          }));
+      if (response.statusCode == 200) {
+        getListComment(bookId: bookId);
+        final jsondata = response.data;
+      } else {}
+      print("res: ${response.data}");
+    } catch (e) {
+      print(e);
+    }
   }
 }

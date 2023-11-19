@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:bsoc_book/controller/authen/authen_controller.dart';
-import 'package:bsoc_book/controller/comment/comment_controller.dart';
 import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
 import 'package:bsoc_book/app/view/downloads/download_page.dart';
 import 'package:bsoc_book/app/view/login/login_page.dart';
@@ -52,7 +50,6 @@ class DetailBookPage extends StatefulWidget {
 
 class _DetailBookPageState extends State<DetailBookPage>
     with TickerProviderStateMixin {
-  final AuthController authController = Get.find();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   ConnectivityResult connectivity = ConnectivityResult.none;
   bool isLoading = true;
@@ -172,36 +169,36 @@ class _DetailBookPageState extends State<DetailBookPage>
               ),
               IconButton(
                   onPressed: () {
-                    if (authController.isLoggedIn.value) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                BookmarkPage(id: dataBook!['id'].toString())),
-                      );
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertPageDialog(),
-                      );
-                    }
+                    // if (authController.isLoggedIn.value) {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) =>
+                    //             BookmarkPage(id: dataBook!['id'].toString())),
+                    //   );
+                    // } else {
+                    //   showDialog(
+                    //     context: context,
+                    //     builder: (context) => AlertPageDialog(),
+                    //   );
+                    // }
                   },
                   icon: Icon(Icons.bookmark_sharp)),
               IconButton(
                   onPressed: () {
-                    if (authController.isLoggedIn.value) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                DownloadPage(id: dataBook!['id'].toString())),
-                      );
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertPageDialog(),
-                      );
-                    }
+                    // if (authController.isLoggedIn.value) {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) =>
+                    //             DownloadPage(id: dataBook!['id'].toString())),
+                    //   );
+                    // } else {
+                    //   showDialog(
+                    //     context: context,
+                    //     builder: (context) => AlertPageDialog(),
+                    //   );
+                    // }
                   },
                   icon: Icon(Icons.download_for_offline))
             ],
@@ -368,33 +365,33 @@ class _DetailBookPageState extends State<DetailBookPage>
                                                   print(
                                                       'ChapterID Click: ${listReponse![index]['id'].toString()}');
 
-                                                  if (listReponse![index]
-                                                          ['allow'] ==
-                                                      true) {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute<
-                                                              dynamic>(
-                                                          builder: (context) =>
-                                                              PdfViewerPage(
-                                                                  idb: dataBook![
-                                                                          'id']
-                                                                      .toString())),
-                                                    );
-                                                  } else if (authController
-                                                      .isLoggedIn.value) {
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          ChargeDialog(),
-                                                    );
-                                                  } else {
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          AlertPageDialog(),
-                                                    );
-                                                  }
+                                                  // if (listReponse![index]
+                                                  //         ['allow'] ==
+                                                  //     true) {
+                                                  //   Navigator.push(
+                                                  //     context,
+                                                  //     MaterialPageRoute<
+                                                  //             dynamic>(
+                                                  //         builder: (context) =>
+                                                  //             PdfViewerPage(
+                                                  //                 idb: dataBook![
+                                                  //                         'id']
+                                                  //                     .toString())),
+                                                  //   );
+                                                  // } else if (authController
+                                                  //     .isLoggedIn.value) {
+                                                  //   showDialog(
+                                                  //     context: context,
+                                                  //     builder: (context) =>
+                                                  //         ChargeDialog(),
+                                                  //   );
+                                                  // } else {
+                                                  //   showDialog(
+                                                  //     context: context,
+                                                  //     builder: (context) =>
+                                                  //         AlertPageDialog(),
+                                                  //   );
+                                                  // }
                                                 },
                                                 child: Card(
                                                   color: Color.fromARGB(
@@ -1109,7 +1106,6 @@ class ReviewBook extends StatefulWidget {
 }
 
 class _ReviewBookState extends State<ReviewBook> {
-  final AuthController authController = Get.find();
   bool isLoading = true;
   String? token;
 
@@ -1253,13 +1249,13 @@ class _ReviewBookState extends State<ReviewBook> {
                       );
                     },
                   ),
-                  SizedBox(
-                    child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Obx(() => authController.isLoggedIn.value
-                            ? DialogComment(id: widget.id)
-                            : Container())),
-                  )
+                  // SizedBox(
+                  //   child: Padding(
+                  //       padding: const EdgeInsets.all(16.0),
+                  //       child: Obx(() => authController.isLoggedIn.value
+                  //           ? DialogComment(id: widget.id)
+                  //           : Container())),
+                  // )
                 ],
               ),
             ),
@@ -1349,7 +1345,6 @@ class DialogComment extends StatefulWidget {
 class _DialogCommentState extends State<DialogComment> {
   final _formKey = GlobalKey<FormState>();
 
-  CommentController cmtcontroller = Get.put(CommentController());
   int? idbooks;
   String? token;
 
@@ -1454,7 +1449,7 @@ class _DialogCommentState extends State<DialogComment> {
                                   borderSide:
                                       BorderSide(width: 1, color: Colors.red)),
                             ),
-                            controller: cmtcontroller.contentController,
+                            // controller: cmtcontroller.contentController,
                             keyboardType: TextInputType.multiline,
                             maxLines: 3,
                             validator: (value) {
@@ -1481,7 +1476,7 @@ class _DialogCommentState extends State<DialogComment> {
                               await SharedPreferences.getInstance();
                           prefs.setDouble('rating', _rating);
                           if (_formKey.currentState!.validate()) {
-                            cmtcontroller.commentUserBook();
+                            // cmtcontroller.commentUserBook();
                             setState(() {
                               Navigator.pushAndRemoveUntil(
                                   context,

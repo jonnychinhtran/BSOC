@@ -20,6 +20,7 @@ class AppDataGlobal {
   String _accessToken = "";
 
   String? currentBookId;
+  String? currentUserId;
 
   HomeViewModel? _homeViewModel;
 

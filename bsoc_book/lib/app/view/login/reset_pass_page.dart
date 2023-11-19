@@ -1,21 +1,33 @@
-import 'package:bsoc_book/controller/reset/reset_controller.dart';
+import 'package:bsoc_book/app/view/login/components/success_resetpass_page.dart';
 import 'package:bsoc_book/app/view/login/login_page.dart';
+import 'package:bsoc_book/app/view_model/login_view_model.dart';
+import 'package:bsoc_book/config/application.dart';
+import 'package:bsoc_book/config/routes.dart';
+import 'package:bsoc_book/utils/widget_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 
 class ResetPassPage extends StatefulWidget {
+  const ResetPassPage({super.key});
+
   @override
   State<ResetPassPage> createState() => _ResetPassPageState();
 }
 
 class _ResetPassPageState extends State<ResetPassPage> {
   final _formKey = GlobalKey<FormState>();
-  ResetController resetController = Get.put(ResetController());
+  final TextEditingController _emailController = TextEditingController();
+  late LoginViewModel _loginViewModel;
+  bool _isLoading = false;
+
+  void goHome() {
+    Application.router
+        .navigateTo(context, Routes.appRouteLogin, clearStack: true);
+  }
 
   @override
   void initState() {
-    // InternetPopup().initialize(context: context);
+    _loginViewModel = LoginViewModel();
     super.initState();
   }
 
@@ -74,7 +86,7 @@ class _ResetPassPageState extends State<ResetPassPage> {
                           ),
                         ),
                         TextFormField(
-                          controller: resetController.emailController,
+                          controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
@@ -107,11 +119,39 @@ class _ResetPassPageState extends State<ResetPassPage> {
                                 onPressed: () => {
                                   if (_formKey.currentState!.validate())
                                     {
-                                      resetController.Resetpassword(),
+                                      setState(() {
+                                        _isLoading = true;
+                                      }),
+                                      if (_formKey.currentState!.validate())
+                                        {
+                                          _loginViewModel
+                                              .resetPassword(
+                                            email: _emailController.text,
+                                          )
+                                              .then((value) {
+                                            print(value);
+                                            if (value!.statusCode == 200) {
+                                              setState(() {
+                                                _isLoading = false;
+                                              });
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const SuccessResetPassPage()));
+                                            } else {
+                                              WidgetHelper.showMessageError(
+                                                  context: context,
+                                                  content:
+                                                      'Email không tồn tại. Thử lại.');
+                                            }
+                                          })
+                                        },
                                     }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                    primary: Color.fromARGB(255, 153, 195, 59),
+                                    backgroundColor:
+                                        Color.fromARGB(255, 153, 195, 59),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10)),
@@ -134,7 +174,7 @@ class _ResetPassPageState extends State<ResetPassPage> {
                           children: [
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () => {Get.to(LoginPage())},
+                                onPressed: () => {goHome()},
                                 style: ElevatedButton.styleFrom(
                                     primary: Color.fromARGB(255, 59, 118, 195),
                                     shape: RoundedRectangleBorder(

@@ -1,8 +1,8 @@
 import 'package:bsoc_book/app/view/contact/contact_page.dart';
 import 'package:bsoc_book/app/view/infor/infor_page.dart';
 import 'package:bsoc_book/app/view/login/login_page.dart';
-import 'package:bsoc_book/app/view/register/register_page.dart';
-import 'package:bsoc_book/app/view/resetpassword/reset_pass_page.dart';
+import 'package:bsoc_book/app/view/login/register_page.dart';
+import 'package:bsoc_book/app/view/login/reset_pass_page.dart';
 import 'package:bsoc_book/app/view/home/home_page.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';

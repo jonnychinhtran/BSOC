@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:bsoc_book/app/models/book/book_model.dart';
 import 'package:bsoc_book/app/models/book/chapters_model.dart';
 import 'package:bsoc_book/app/view/book/components/item_chapter_list.dart';
 import 'package:bsoc_book/app/view/home/home_view.dart';
@@ -48,6 +49,7 @@ class _ReadChapterBookState extends State<ReadChapterBook>
     urlPDFPath = widget.homeViewModel.localPath;
     print('TRANG SACH ${widget.homeViewModel.localPath}');
     _chapterModel = _homeViewModel.bookDetailModel!.chapters;
+
     super.initState();
   }
 
@@ -182,7 +184,6 @@ class _ReadChapterBookState extends State<ReadChapterBook>
           chapterItem: _chapterModel,
           homeViewModel: _homeViewModel,
           homeViewState: widget.parentViewState,
-          // onSelectChapter: onSelectChapter,
           onSelectChapter: (String newPdfPath) {
             setState(() {
               pdfViewKey = GlobalKey();

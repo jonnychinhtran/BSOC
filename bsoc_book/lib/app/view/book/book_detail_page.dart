@@ -5,9 +5,11 @@ import 'package:bsoc_book/app/view/book/components/comment_book_list.dart';
 import 'package:bsoc_book/app/view/home/home_view.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/resource/values/app_colors.dart';
+import 'package:bsoc_book/utils/widget_helper.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:share_plus/share_plus.dart';
 
 class BookDetailPage extends StatefulWidget {
   const BookDetailPage({
@@ -71,19 +73,65 @@ class _BookDetailPageState extends State<BookDetailPage> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.PRIMARY_COLOR,
         elevation: 0,
         titleSpacing: 0,
-        title: const Text(
-          'Chi tiết sách',
-          style: TextStyle(color: Colors.black, fontSize: 16),
-        ),
-        leading: BackButton(
-          color: Colors.black,
-          onPressed: () {
+        title: Text('Chi tiết sách'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: (() {
             widget.parentViewState.jumpPageHome();
-          },
+          }),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.share,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Share.share('Đọc ngay: ' +
+                  _bookModel.bookName.toString() +
+                  ' trên ứng dụng B4U BSOC '
+                      '- Cài ứng dụng B4U BSOC tại AppStore: https://apps.apple.com/us/app/b4u-bsoc/id6444538062 ' +
+                  ' - PlayStore: https://play.google.com/store/apps/details?id=com.b4usolution.b4u_bsoc');
+            },
+          ),
+          IconButton(
+              onPressed: () {
+                if (AppDataGlobal().accessToken != '') {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) =>
+                  //           BookmarkPage()),
+                  // );
+                } else {
+                  WidgetHelper.showPopupMessage(
+                      context: context,
+                      content: const Text(
+                          'Bạn cần đăng nhập để sử dụng chức năng này'));
+                }
+              },
+              icon: const Icon(Icons.bookmark_sharp)),
+          IconButton(
+              onPressed: () {
+                if (AppDataGlobal().accessToken != '') {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) =>
+                  //           DownloadPage()),
+                  // );
+                } else {
+                  WidgetHelper.showPopupMessage(
+                      context: context,
+                      content: const Text(
+                          'Bạn cần đăng nhập để sử dụng chức năng này'));
+                }
+              },
+              icon: const Icon(Icons.download_for_offline))
+        ],
       ),
       body: SafeArea(
         child: StreamBuilder(
@@ -265,14 +313,14 @@ class _BookDetailPageState extends State<BookDetailPage> {
     );
   }
 
-  _renderContent(BookModel bookModel, HomeViewModel _homeViewModel,
-      HomeViewState _homeViewState) {
+  _renderContent(BookModel bookModel, HomeViewModel homeViewModel,
+      HomeViewState homeViewState) {
     if (currentTab == CHAPTER) {
       return ChapterBookList(
           bookModel: bookModel,
           chapterModel: bookModel.chapters,
-          homeViewModel: _homeViewModel,
-          homeViewState: _homeViewState);
+          homeViewModel: homeViewModel,
+          homeViewState: homeViewState);
     } else if (currentTab == ABOUT) {
       return Expanded(
         child: SingleChildScrollView(
@@ -287,7 +335,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
       );
     } else if (currentTab == COMMENT) {
       return CommentBookList(
-        commentModel: _listComment,
+        bookId: bookId,
+        homeViewModel: homeViewModel,
       );
     }
   }

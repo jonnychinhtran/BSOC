@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bsoc_book/app/models/api/post_response_model.dart';
 import 'package:bsoc_book/app/models/book/book_model.dart';
 import 'package:bsoc_book/app/models/book/list_comment_model.dart';
 import 'package:bsoc_book/app/models/book/top_book_model.dart';
@@ -24,11 +25,20 @@ class HomeViewModel {
   final List<BookModel> _topbookModel = [];
   List<BookModel> _tempListBookBase = [];
   final List<BookModel> _bookModel = [];
+  List<ListCommentModel> _tempListCommentBase = [];
+  final List<ListCommentModel> _listCommentModel = [];
+
+  PostReponseModel? _postReponseModel;
+
+  PostReponseModel? get postModel => _postReponseModel;
 
   dynamic _topBookList;
   dynamic _getBookList;
+  dynamic _getCommentList;
+
   dynamic get checkListTopBook => _topBookList;
   dynamic get checkListBook => _getBookList;
+  dynamic get checkListComment => _getCommentList;
   BookModel? get bookDetailModel => _bookDetailModel;
   String get localPath => _localPath;
   List<BookModel> get tempListTopBookBase => _tempListTopBookBase;
@@ -43,10 +53,19 @@ class HomeViewModel {
   final BehaviorSubject<bool> _bookModelSubject = BehaviorSubject();
   Stream<bool> get bookModelSubjectStream => _bookModelSubject.stream;
 
+  final BehaviorSubject<bool> _listCommentModelSubject = BehaviorSubject();
+  Stream<bool> get listCommentModelSubjectStream =>
+      _listCommentModelSubject.stream;
+
   final BehaviorSubject<BookModel?> _bookDetailModelSubject =
       BehaviorSubject<BookModel?>();
   Stream<BookModel?> get bookDetailModelSubjectStream =>
       _bookDetailModelSubject.stream;
+
+  final BehaviorSubject<List<ListCommentModel>?> _bookCommentModelSubject =
+      BehaviorSubject<List<ListCommentModel>?>();
+  Stream<List<ListCommentModel>?> get bookCommentModelSubjectStream =>
+      _bookCommentModelSubject.stream;
 
   HomeViewModel({this.bookId = 0}) {
     _bookRepo = BookApiRepository();
@@ -61,12 +80,14 @@ class HomeViewModel {
     _bookModel.clear();
     _getBookList = {};
     _bookDetailModel = null;
+    _bookDetailModelSubject.add(null);
   }
 
   void setLoading(bool isLoading) {
     _loading = loading;
     _listTopBookSubject.add(isLoading);
     _bookModelSubject.add(isLoading);
+    _listCommentModelSubject.add(isLoading);
   }
 
   void setBookDetailModel({BookModel? bookModel}) {
@@ -97,6 +118,10 @@ class HomeViewModel {
     _bookModel.addAll(list);
 
     _getBookList = {'list': _bookModel};
+  }
+
+  void setPostModel({PostReponseModel? postModel}) {
+    _postReponseModel = postModel;
   }
 
   void getListBook() {
@@ -136,10 +161,8 @@ class HomeViewModel {
 
   Future<List<ListCommentModel>> getListCommentBook(id) =>
       _bookRepo.getListComment(bookId: id).then((listCommentModel) {
-        if (null != listCommentModel) {
-          return listCommentModel;
-        }
-        return <ListCommentModel>[];
+        _bookCommentModelSubject.add(listCommentModel);
+        return listCommentModel;
       });
 
   Future<String> getChapterPdf(id) =>
@@ -152,8 +175,24 @@ class HomeViewModel {
         return '';
       });
 
+  Future<PostReponseModel?> postCommentBook({
+    required int userId,
+    required int bookId,
+    required double rating,
+    required String content,
+  }) {
+    return _bookRepo
+        .postComment(
+            userId: userId, bookId: bookId, rating: rating, content: content)
+        .then((value) {
+      setPostModel(postModel: value);
+      return value;
+    });
+  }
+
   void dispose() {
     _bookDetailModelSubject.close();
+    _bookCommentModelSubject.close();
     _listTopBookSubject.close();
     _bookModelSubject.close();
   }

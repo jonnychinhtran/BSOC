@@ -1,9 +1,10 @@
-import 'package:bsoc_book/controller/register/register_controller.dart';
-import 'package:bsoc_book/app/view/login/login_page.dart';
-
+import 'package:bsoc_book/app/view/login/components/success_register_page.dart';
+import 'package:bsoc_book/app/view_model/login_view_model.dart';
+import 'package:bsoc_book/config/application.dart';
+import 'package:bsoc_book/config/routes.dart';
+import 'package:bsoc_book/utils/widget_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -13,10 +14,24 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  bool isLoading = true;
   final _formKey = GlobalKey<FormState>();
-  RegisterationController registerController =
-      Get.put(RegisterationController());
+  late LoginViewModel _loginViewModel;
+  bool _isLoading = false;
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  void goHome() {
+    Application.router
+        .navigateTo(context, Routes.appRouteLogin, clearStack: true);
+  }
+
+  @override
+  void initState() {
+    _loginViewModel = LoginViewModel();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +60,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     children: <Widget>[
                       Center(
                           child: Image.asset(
-                              'assets/images/logo-b4usolution.png')),
+                        'assets/images/logo-b4usolution.png',
+                        height: MediaQuery.of(context).viewInsets.bottom == 0
+                            ? size.height * 0.08
+                            : size.height * 0.04,
+                      )),
                       SizedBox(height: size.height * 0.02),
                       const Center(
                         child: Text(
@@ -72,7 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       TextFormField(
-                        controller: registerController.usernameController,
+                        controller: _usernameController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Vui lòng nhập tên đăng nhập';
@@ -111,7 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       TextFormField(
-                        controller: registerController.emailController,
+                        controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
@@ -151,11 +170,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       TextFormField(
-                        controller: registerController.phoneController,
+                        controller: _phoneController,
                         validator: (value) {
-                          // return (value == null || value.isEmpty)
-                          //     ? 'Vui lòng nhập Số điện thoại'
-                          //     : null;
                           if (value == "") {
                             return null;
                           }
@@ -164,7 +180,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           }
                           return null;
                         },
-                        // maxLength: 20,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
@@ -193,18 +208,19 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       TextFormField(
                         obscureText: true,
-                        controller: registerController.passwordController,
+                        controller: _passwordController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Vui lòng nhập mật khẩu';
                           } else if (value.length < 6) {
                             return 'Mật khẩu phải có ít nhất 6 ký tự';
-                          } else if (!RegExp(
-                                  r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$')
-                              .hasMatch(value)) {
-                            // return 'Mật khẩu phải chứa ít nhất một chữ cái viết hoa và một chữ cái thường (Aa-Zz), một ký hiệu đặc biệt (#, &, % v.v.), và một số (0-9)';
-                            return 'Mật khẩu phải có (Aa-Zz), (#, &, @...) và (0-9)';
-                          } else {
+                          }
+                          // else if (!RegExp(
+                          //         r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$')
+                          //     .hasMatch(value)) {
+                          //   return 'Mật khẩu phải có (Aa-Zz), (#, &, @...) và (0-9)';
+                          // }
+                          else {
                             return null;
                           }
                         },
@@ -222,9 +238,46 @@ class _RegisterPageState extends State<RegisterPage> {
                           Expanded(
                             child: ElevatedButton(
                               onPressed: () => {
+                                setState(() {
+                                  _isLoading = true;
+                                }),
                                 if (_formKey.currentState!.validate())
                                   {
-                                    registerController.registerWithUser(),
+                                    _loginViewModel
+                                        .registerUser(
+                                            username: _usernameController.text,
+                                            email: _emailController.text,
+                                            phone: _phoneController.text,
+                                            password: _passwordController.text)
+                                        .then((value) {
+                                      print(value);
+                                      if (value!.statusCode == 200) {
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const SuccessRegisterPage()));
+                                      } else if (value.data ==
+                                          'Error: Username is already taken!') {
+                                        WidgetHelper.showMessageError(
+                                            context: context,
+                                            content:
+                                                'Tên người dùng đã được sử dụng!');
+                                      } else if (value.data ==
+                                          'Error: Email is already in use!') {
+                                        WidgetHelper.showMessageError(
+                                            context: context,
+                                            content: 'Email đã được sử dụng!');
+                                      } else {
+                                        WidgetHelper.showMessageError(
+                                            context: context,
+                                            content:
+                                                'Đăng ký thất bại. Thử lại.');
+                                      }
+                                    })
                                   },
                               },
                               style: ElevatedButton.styleFrom(
@@ -254,7 +307,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.off(LoginPage());
+                              goHome();
                             },
                             child: const Text("Vui lòng đăng nhập"),
                           ),

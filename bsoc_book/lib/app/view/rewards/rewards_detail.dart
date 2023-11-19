@@ -75,8 +75,7 @@ class _RewardsDetailState extends State<RewardsDetail> {
                 color: Colors.white,
               ),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RewardsPage()));
+                Navigator.pop(context);
               })),
       body: isLoading
           ? Center(

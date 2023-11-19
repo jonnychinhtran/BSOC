@@ -1,8 +1,17 @@
+import 'dart:io';
+
 import 'package:bsoc_book/app/models/book/book_model.dart';
 import 'package:bsoc_book/app/models/book/chapters_model.dart';
 import 'package:bsoc_book/app/view/home/home_view.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
+import 'package:bsoc_book/utils/widget_helper.dart';
+import 'package:bsoc_book/widgets/app_dataglobal.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class ChapterBookList extends StatefulWidget {
   const ChapterBookList({
@@ -141,16 +150,79 @@ class _ChapterBookListState extends State<ChapterBookList> {
                           Container(
                             child: Row(
                               children: [
-                                widget.chapterModel[index].chapterId != 999
-                                    ? Icon(
-                                        Icons.bookmark_add_sharp,
-                                        color: Color.fromARGB(255, 253, 135, 0),
-                                      )
-                                    : Container(),
-                                widget.chapterModel[index].chapterId != 999
-                                    ? Icon(Icons.download_outlined,
-                                        color: Colors.blue)
-                                    : Container()
+                                if (widget.chapterModel[index].chapterId != 999)
+                                  IconButton(
+                                    icon: widget.chapterModel[index].bookmark ==
+                                            true
+                                        ? const Icon(Icons.bookmark_outlined,
+                                            color: Color.fromARGB(
+                                                255, 253, 135, 0))
+                                        : const Icon(
+                                            Icons.bookmark_border_outlined,
+                                            color: Colors.blue),
+                                    onPressed: () async {
+                                      if (AppDataGlobal().accessToken != '') {
+                                        var response = await Dio().post(
+                                            'http://103.77.166.202/api/chapter/add-bookmark?chapterId=${widget.chapterModel[index].chapterId}',
+                                            options: Options(headers: {
+                                              'Content-Type':
+                                                  'application/json',
+                                              'Authorization':
+                                                  'Bearer ${AppDataGlobal().accessToken}',
+                                            }));
+                                        if (response.statusCode == 200) {
+                                          setState(() {});
+                                        } else {}
+                                      } else {
+                                        WidgetHelper.showPopupMessage(
+                                            context: context,
+                                            content: const Text(
+                                                'Bạn cần đăng nhập để sử dụng chức năng này'));
+                                      }
+                                    },
+                                  ),
+                                if (widget.chapterModel[index].chapterId != 999)
+                                  IconButton(
+                                    icon: widget.chapterModel[index]
+                                                .downloaded ==
+                                            true
+                                        ? const Icon(
+                                            Icons.download_done_outlined,
+                                            color: Colors.blue)
+                                        : const Icon(Icons.download_outlined,
+                                            color: Colors.blue),
+                                    onPressed: () {
+                                      if (AppDataGlobal().accessToken != '') {
+                                        if (widget.chapterModel[index]
+                                                .downloaded ==
+                                            true) {
+                                          WidgetHelper.showPopupMessage(
+                                              context: context,
+                                              content: const Text(
+                                                  'Bạn đã tải chương này rồi'));
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            useRootNavigator: false,
+                                            builder: (context) =>
+                                                DownloadingDialog(
+                                                    chapterId:
+                                                        widget
+                                                            .chapterModel[index]
+                                                            .chapterId,
+                                                    namePath: widget
+                                                        .chapterModel[index]
+                                                        .filePath),
+                                          );
+                                        }
+                                      } else {
+                                        WidgetHelper.showPopupMessage(
+                                            context: context,
+                                            content: const Text(
+                                                'Bạn cần đăng nhập để sử dụng chức năng này'));
+                                      }
+                                    },
+                                  ),
                               ],
                             ),
                           )
@@ -169,4 +241,103 @@ class ChaptersIdModel {
   int chapterId;
 
   ChaptersIdModel(this.chapterId);
+}
+
+class DownloadingDialog extends StatefulWidget {
+  const DownloadingDialog({
+    super.key,
+    required this.chapterId,
+    required this.namePath,
+  });
+
+  final int? chapterId;
+  final String? namePath;
+
+  @override
+  _DownloadingDialogState createState() => _DownloadingDialogState();
+}
+
+class _DownloadingDialogState extends State<DownloadingDialog> {
+  bool isLoading = true;
+  double progress = 0.0;
+
+  void startDownloading() async {
+    Dio dio = Dio()
+      ..options.connectTimeout = 15000 // 15 seconds timeout
+      ..options.receiveTimeout = 30000 // 30 seconds receive timeout
+      ..interceptors.add(LogInterceptor(responseBody: true)); // Add logging
+
+    String url =
+        'http://103.77.166.202/api/chapter/download/${widget.chapterId}';
+    dio.options.headers["Authorization"] =
+        "Bearer ${AppDataGlobal().accessToken}";
+
+    String filename = widget.namePath.toString();
+
+    try {
+      String path = await _getFilePath(filename);
+
+      await dio.download(
+        url,
+        path,
+        onReceiveProgress: (receivedBytes, totalBytes) {
+          setState(() {
+            progress = receivedBytes / totalBytes;
+          });
+        },
+        deleteOnError: true,
+      ).then((_) {
+        Navigator.pop(context);
+      }).catchError((error) {
+        print("Download error: $error");
+        // Handle the error, maybe show a message to the user
+      });
+
+      await OpenFilex.open(path);
+    } catch (e) {
+      print("Error downloading file: $e");
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<String> _getFilePath(String filename) async {
+    final dir = Platform.isAndroid
+        ? await getExternalStorageDirectory()
+        : await getApplicationDocumentsDirectory();
+    return '${dir?.path}/$filename';
+  }
+
+  @override
+  void initState() {
+    startDownloading();
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String downloadingprogress = (progress * 100).toInt().toString();
+    return AlertDialog(
+      backgroundColor: Colors.black,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator.adaptive(),
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            "Tải về: $downloadingprogress%",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

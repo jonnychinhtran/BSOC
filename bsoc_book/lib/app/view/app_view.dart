@@ -67,39 +67,39 @@ class _AppViewState extends State<AppView> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       key: _scaffoldKey,
-      drawer: SafeArea(
-          child: Drawer(
-        width: 300,
-        backgroundColor: Colors.white,
-        child: Stack(children: [
-          Container(
-            padding: const EdgeInsets.only(bottom: 50.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Container(
-                    width: 300,
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Column(children: [
-                      SizedBox(
-                        width: 100,
-                        height: 70,
-                        child: Image.asset(
-                          'assets/images/logo-b4usolution.png',
-                        ),
-                      ),
-                    ]),
-                  )
-                ],
-              ),
-            ),
-          )
-        ]),
-      )),
+      // drawer: SafeArea(
+      //     child: Drawer(
+      //   width: 300,
+      //   backgroundColor: Colors.white,
+      //   child: Stack(children: [
+      //     Container(
+      //       padding: const EdgeInsets.only(bottom: 50.0),
+      //       child: SingleChildScrollView(
+      //         child: Column(
+      //           crossAxisAlignment: CrossAxisAlignment.start,
+      //           children: [
+      //             const SizedBox(
+      //               height: 10.0,
+      //             ),
+      //             Container(
+      //               width: 300,
+      //               padding: const EdgeInsets.symmetric(horizontal: 15),
+      //               child: Column(children: [
+      //                 SizedBox(
+      //                   width: 100,
+      //                   height: 70,
+      //                   child: Image.asset(
+      //                     'assets/images/logo-b4usolution.png',
+      //                   ),
+      //                 ),
+      //               ]),
+      //             )
+      //           ],
+      //         ),
+      //       ),
+      //     )
+      //   ]),
+      // )),
       appBar: _isShowAppBar
           ? AppBarCustom(
               homeViewModel: _homeViewModel,

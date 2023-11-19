@@ -1,21 +1,29 @@
 import 'dart:io';
 
+import 'package:bsoc_book/app/models/api/post_response_model.dart';
 import 'package:bsoc_book/app/models/user_model.dart';
 import 'package:bsoc_book/app/repositories/IInfoRepo.dart';
 import 'package:bsoc_book/app/repositories/IUserRepo.dart';
 import 'package:bsoc_book/app/repositories/api/InfoApiRepository.dart';
+import 'package:bsoc_book/app/repositories/api/UserRepository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserViewModel {
   late IInfoRepo _infoRepo;
+  late IUserRepo _userRepo;
 
   UserViewModel() {
     _infoRepo = InfoApiRepository();
+    _userRepo = UserApiRepository();
   }
 
   UserModel? _userModel;
 
   UserModel? get userlModel => _userModel;
+
+  PostReponseModel? _postReponseModel;
+
+  PostReponseModel? get postModel => _postReponseModel;
 
   final BehaviorSubject<UserModel?> _userInfoModelSubject =
       BehaviorSubject<UserModel?>();
@@ -24,6 +32,11 @@ class UserViewModel {
 
   clearCache() {
     _userModel = null;
+    _userInfoModelSubject.add(null);
+  }
+
+  void setPostModel({PostReponseModel? postModel}) {
+    _postReponseModel = postModel;
   }
 
   void setUserInfoModel({UserModel? userModel}) {
@@ -44,27 +57,25 @@ class UserViewModel {
       required String username,
       required String email,
       required String phone,
-      required String fullname}) async {
-    try {
-      return await _infoRepo
-          .updateInfo(
-              userId: userId,
-              username: username,
-              email: email,
-              phone: phone,
-              fullname: fullname)
-          .then((value) {
-        if (null != value) {
-          _userModel = value;
-          // _userInfoModelSubject.add(value);
-          // _hasAddItemServiceOrderSubject.add(true);
-          return true;
-        }
-        return false;
-      });
-    } catch (e) {
-      return false;
-    }
+      required String fullname}) {
+    return _userRepo
+        .updateInfo(
+            userId: userId,
+            username: username,
+            email: email,
+            phone: phone,
+            fullname: fullname)
+        .then((value) {
+      // setPostModel(postModel: value);
+      return value;
+    });
+  }
+
+  Future<PostReponseModel?> deleteUser() {
+    return _userRepo.deleteUser().then((value) {
+      setPostModel(postModel: value);
+      return value;
+    });
   }
 
   void dispose() {

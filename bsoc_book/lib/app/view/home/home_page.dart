@@ -1,38 +1,20 @@
-import 'dart:async';
+import 'dart:convert';
 import 'package:bsoc_book/app/models/book/book_model.dart';
-import 'package:bsoc_book/app/models/book/list_comment_model.dart';
-import 'package:bsoc_book/app/models/book/top_book_model.dart';
 import 'package:bsoc_book/app/view/home/components/item_book.dart';
 import 'package:bsoc_book/app/view/home/components/item_top_book.dart';
 import 'package:bsoc_book/app/view/home/home_view.dart';
 import 'package:bsoc_book/app/view/quiz/quiz_page_view.dart';
 import 'package:bsoc_book/app/view/wheel_spin/wheel_view.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
-import 'package:bsoc_book/app/view_model/login_view_model.dart';
-import 'package:bsoc_book/controller/authen/authen_controller.dart';
-import 'package:bsoc_book/controller/home/allbook_controller.dart';
-import 'package:bsoc_book/controller/home/topbook_controller.dart';
-import 'package:bsoc_book/data/core/infrastructure/dio_extensions.dart';
-import 'package:bsoc_book/data/model/books/allbook_model.dart';
-import 'package:bsoc_book/data/model/books/topbook_model.dart';
 import 'package:bsoc_book/app/view/banner/company_page.dart';
 import 'package:bsoc_book/app/view/banner/job_page.dart';
-import 'package:bsoc_book/app/view/infor/infor_page.dart';
-import 'package:bsoc_book/app/view/quiz/practice.dart';
-import 'package:bsoc_book/app/view/search/search_page.dart';
-import 'package:bsoc_book/app/view/user/book/book_detail_page.dart';
-import 'package:bsoc_book/app/view/wheel_spin/wheel_page.dart';
-import 'package:bsoc_book/app/view/widgets/alert_dailog.dart';
-import 'package:bsoc_book/app/view/widgets/menu_aside.dart';
-import 'package:bsoc_book/app/view/widgets/updatedialog.dart';
-import 'package:bsoc_book/resource/values/app_colors.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:new_version/new_version.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_media_flutter/social_media_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -160,7 +142,9 @@ class _HomePageState extends State<HomePage> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: size.height * 0.04),
+                  SizedBox(height: size.height * 0.02),
+                  _renderSearchBook(),
+                  SizedBox(height: size.height * 0.02),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.max,
@@ -326,6 +310,78 @@ class _HomePageState extends State<HomePage> {
       )),
     );
   }
+
+  _renderSearchBook() {
+    return Column(children: [
+      Container(
+          margin: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: TypeAheadField(
+              hideSuggestionsOnKeyboardHide: false,
+              textFieldConfiguration: const TextFieldConfiguration(
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(),
+                  hintText: 'Tìm kiếm sách',
+                ),
+              ),
+              suggestionsCallback: (dynamic value) async {
+                var url = Uri.parse('http://103.77.166.202/api/book/all-book');
+                http.Response response = await http.get(url);
+                if (response.statusCode == 200) {
+                  Map<String, dynamic> bookModel = jsonDecode(
+                      const Utf8Decoder().convert(response.bodyBytes));
+                  List<BookModel> books = (bookModel["content"] as List)
+                      .map((item) => BookModel.fromJson(item))
+                      .toList();
+
+                  return books
+                      .where((book) =>
+                          '${removeDiacritics(book.bookName!)} ${removeDiacritics(book.author!)}'
+                              .toLowerCase()
+                              .contains(removeDiacritics(value).toLowerCase()))
+                      .toList();
+                } else {
+                  throw Exception('Lỗi tải hệ thống');
+                }
+              },
+              itemBuilder: (context, BookModel suggestion) {
+                final book = suggestion;
+
+                return ListTile(
+                  leading: Image.network(
+                    AppDataGlobal().domain + book.image!,
+                    fit: BoxFit.cover,
+                    width: 50,
+                    height: 50,
+                  ),
+                  title: Text(book.bookName!),
+                  subtitle: Text(book.author!),
+                );
+              },
+              noItemsFoundBuilder: (context) => Container(
+                height: 100,
+                child: const Center(
+                  child: Text(
+                    'Không tìm thấy sách',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+              onSuggestionSelected: (BookModel suggestion) async {
+                final book = suggestion;
+                widget.homeViewModel.bookId = book.id!;
+                widget.homeViewModel.getBookDetailPage().then((value) {
+                  if (value != null) {
+                    widget.parentViewState.jumpPageBookDetailPage();
+                  }
+                });
+              },
+            ),
+          ))
+    ]);
+  }
 }
 
 //   @override
@@ -448,39 +504,39 @@ class _HomePageState extends State<HomePage> {
 //                           physics: ScrollPhysics(),
 //                           child: Column(
 //                             children: [
-//                               Padding(
-//                                 padding: const EdgeInsets.all(16.0),
-//                                 child: Container(
-//                                   height: 40,
-//                                   child: TextField(
-//                                     showCursor: true,
-//                                     readOnly: true,
-//                                     onTap: () {
-//                                       Navigator.push(
-//                                           context,
-//                                           MaterialPageRoute(
-//                                               builder: (context) =>
-//                                                   SearchPage()));
-//                                     },
-//                                     decoration: InputDecoration(
-//                                       hintText: "Tìm kiếm sách",
-//                                       fillColor: Colors.grey[300],
-//                                       filled: true,
-//                                       contentPadding: EdgeInsets.symmetric(
-//                                           vertical: 6, horizontal: 12),
-//                                       prefixIcon: Icon(
-//                                         Icons.search,
-//                                         color: Colors.grey,
-//                                       ),
-//                                       focusedBorder: InputBorder.none,
-//                                       border: OutlineInputBorder(
-//                                         borderRadius: BorderRadius.all(
-//                                             Radius.circular(20.0)),
-//                                       ),
-//                                     ),
-//                                   ),
-//                                 ),
-//                               ),
+                              // Padding(
+                              //   padding: const EdgeInsets.all(16.0),
+                              //   child: Container(
+                              //     height: 40,
+                              //     child: TextField(
+                              //       showCursor: true,
+                              //       readOnly: true,
+                              //       onTap: () {
+                              //         Navigator.push(
+                              //             context,
+                              //             MaterialPageRoute(
+                              //                 builder: (context) =>
+                              //                     SearchPage()));
+                              //       },
+                              //       decoration: InputDecoration(
+                              //         hintText: "Tìm kiếm sách",
+                              //         fillColor: Colors.grey[300],
+                              //         filled: true,
+                              //         contentPadding: EdgeInsets.symmetric(
+                              //             vertical: 6, horizontal: 12),
+                              //         prefixIcon: Icon(
+                              //           Icons.search,
+                              //           color: Colors.grey,
+                              //         ),
+                              //         focusedBorder: InputBorder.none,
+                              //         border: OutlineInputBorder(
+                              //           borderRadius: BorderRadius.all(
+                              //               Radius.circular(20.0)),
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
 //                               SizedBox(height: size.height * 0.02),
                               // Row(
                               //   mainAxisAlignment:

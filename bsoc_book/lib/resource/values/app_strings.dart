@@ -1,6 +1,6 @@
 /// App Strings Class -> Resource class for storing app level strings constants
 class AppStrings {
-  static const String APP_NAME = "Go POS";
+  static const String APP_NAME = "B4U BSOC";
 
   //--------------------------------------------------- Login -----------------------------------------------------------------------------------------
 

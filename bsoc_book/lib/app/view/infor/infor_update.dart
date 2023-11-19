@@ -6,6 +6,7 @@ import 'package:bsoc_book/resource/values/app_colors.dart';
 import 'package:bsoc_book/utils/widget_helper.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
 import 'package:bsoc_book/widgets/default_button.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -28,6 +29,7 @@ class InfoUpdatePage extends StatefulWidget {
 class _InfoUpdatePageState extends State<InfoUpdatePage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fullnameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   HomeViewModel? _homeViewModel;
   UserViewModel? _userViewModel;
@@ -48,6 +50,13 @@ class _InfoUpdatePageState extends State<InfoUpdatePage> {
         if (value != null) {
           _userItem = value;
           print("User Info 2222: $_userItem");
+        }
+      });
+      _userViewModel!.userInfoModelSubjectStream.listen((event) {
+        if (event != null) {
+          _fullnameController.text = event.fullname.toString();
+          _emailController.text = event.email.toString();
+          _phoneController.text = event.phone.toString();
         }
       });
     }
@@ -76,6 +85,8 @@ class _InfoUpdatePageState extends State<InfoUpdatePage> {
             builder: (context, snapshot) {
               if (snapshot.hasData && snapshot.data != null) {
                 UserModel item = snapshot.data!;
+                print(item.username!);
+                print(item.id!);
                 return Column(
                   children: [
                     Form(
@@ -114,6 +125,50 @@ class _InfoUpdatePageState extends State<InfoUpdatePage> {
                                       // },
                                       decoration: InputDecoration(
                                           hintText: item.fullname.toString(),
+                                          isDense: true,
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          )),
+                                    ),
+                                    SizedBox(height: size.height * 0.02),
+                                    const Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding:
+                                            EdgeInsets.only(left: 0, bottom: 4),
+                                        child: Text(
+                                          'Email',
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    TextFormField(
+                                      controller: _emailController,
+                                      keyboardType: TextInputType.emailAddress,
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Vui lòng nhập email';
+                                        }
+                                        if (!RegExp(
+                                                r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                                            .hasMatch(value)) {
+                                          return 'Nhập sai định dạng email';
+                                        }
+                                        return null;
+                                      },
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.deny(
+                                            RegExp(r" "))
+                                      ],
+                                      decoration: InputDecoration(
+                                          hintText: "Email",
                                           isDense: true,
                                           border: OutlineInputBorder(
                                             borderRadius:
@@ -167,49 +222,40 @@ class _InfoUpdatePageState extends State<InfoUpdatePage> {
                                       children: [
                                         Expanded(
                                           child: DefaultButton(
-                                            onPress: () {
-                                              _userViewModel!
-                                                  .updateUser(
-                                                      userId:
-                                                          item.id!.toString(),
-                                                      username: item.username!,
-                                                      email: item.email!,
-                                                      phone:
-                                                          _phoneController.text,
-                                                      fullname:
-                                                          _fullnameController
-                                                              .text)
-                                                  .then((bool value) => {
-                                                        setState(() {
-                                                          _isLoading = false;
-                                                        }),
-                                                        if (true == value)
-                                                          {
-                                                            WidgetHelper
-                                                                .showMessageSuccess(
-                                                                    context:
-                                                                        context,
-                                                                    content:
-                                                                        'Cập nhật thông tin thành công'),
-                                                            _userViewModel
-                                                                ?.getInfoPage()
-                                                                .then((value) {
-                                                              if (value !=
-                                                                  null) {
-                                                                _userItem =
-                                                                    value;
-                                                                print(
-                                                                    "User Info update done: $_userItem");
-                                                              } else {
-                                                                WidgetHelper.showMessageError(
-                                                                    context:
-                                                                        context,
-                                                                    content:
-                                                                        'Cập nhật thông tin thất bại');
-                                                              }
-                                                            }),
-                                                          }
-                                                      });
+                                            onPress: () async {
+                                              var formData = FormData.fromMap(
+                                                {
+                                                  "userId": item.id!.toString(),
+                                                  "fullname":
+                                                      _fullnameController.text,
+                                                  "username":
+                                                      item.username!.toString(),
+                                                  "email":
+                                                      _emailController.text,
+                                                  "phone":
+                                                      _phoneController.text,
+                                                },
+                                              );
+                                              var response = await Dio().post(
+                                                  'http://103.77.166.202/api/user/update',
+                                                  data: formData,
+                                                  options: Options(headers: {
+                                                    'Authorization':
+                                                        'Bearer ${AppDataGlobal().accessToken}',
+                                                  }));
+
+                                              if (response.statusCode == 200) {
+                                                _userViewModel?.getInfoPage();
+                                                WidgetHelper.showMessageSuccess(
+                                                    context: context,
+                                                    content:
+                                                        'Cập nhật thành công.');
+                                              } else {
+                                                WidgetHelper.showMessageError(
+                                                    context: context,
+                                                    content:
+                                                        'Cập nhật thất bại. Thử lại.');
+                                              }
                                             },
                                             titleColor: Colors.white,
                                             backgroundColor:

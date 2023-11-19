@@ -8,21 +8,13 @@ import 'package:bsoc_book/app/models/quiz/post_quiz_model.dart';
 import 'package:bsoc_book/app/models/quiz/question_result_model.dart';
 import 'package:bsoc_book/app/view/quiz/quiz_page_view.dart';
 import 'package:bsoc_book/app/view_model/quiz_view_model.dart';
-import 'package:bsoc_book/data/model/quiz/QuestionResult.dart';
-import 'package:bsoc_book/data/model/quiz/question.dart';
 import 'package:bsoc_book/app/view/quiz/practice.dart';
 import 'package:bsoc_book/app/view/quiz/result_quiz.dart';
-import 'package:bsoc_book/app/view/rewards/rewards.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-// Map<String, dynamic>? quizResult;
 
 class QuizPlayPage extends StatefulWidget {
   const QuizPlayPage({
