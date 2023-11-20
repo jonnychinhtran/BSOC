@@ -20,7 +20,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class InfoPage extends StatefulWidget {
   const InfoPage({
@@ -52,13 +51,6 @@ class _InfoPageState extends State<InfoPage> {
         .navigateTo(context, Routes.appRouteLogin, clearStack: true);
   }
 
-  late PackageInfo _packageInfo = PackageInfo(
-    appName: 'Unknown',
-    packageName: 'Unknown',
-    version: '0',
-    buildNumber: '0',
-  );
-
   @override
   void initState() {
     _homeViewModel = widget.homeViewModel;
@@ -89,7 +81,6 @@ class _InfoPageState extends State<InfoPage> {
         _isLoading = false;
       });
     }
-    _initPackageInfo();
     super.initState();
   }
 
@@ -123,14 +114,6 @@ class _InfoPageState extends State<InfoPage> {
             context: context, content: 'Cập nhật avatar thành công');
       }
     }
-  }
-
-  _initPackageInfo() {
-    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-      setState(() {
-        _packageInfo = packageInfo;
-      });
-    });
   }
 
   @override
@@ -616,7 +599,7 @@ class _InfoPageState extends State<InfoPage> {
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  "${AppStrings.APP_NAME} ${_packageInfo.version}",
+                                                  "${AppStrings.APP_NAME} 1.1.4",
                                                   style: const TextStyle(
                                                     fontSize: 12,
                                                     color: Color(0xFF8A8A8A),
@@ -735,7 +718,7 @@ class _InfoPageState extends State<InfoPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "${AppStrings.APP_NAME} ${_packageInfo.version}",
+                                      "${AppStrings.APP_NAME} 1.1.4",
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: Color(0xFF8A8A8A),
