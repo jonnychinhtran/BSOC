@@ -113,195 +113,202 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-          body: SafeArea(
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: size.height * 0.02),
-                  _renderSearchBook(),
-                  SizedBox(height: size.height * 0.02),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Flexible(
-                        child: GestureDetector(
-                          onTap: () {
+    return RefreshIndicator(
+      onRefresh: () async {
+        _homeViewModel.getListBook();
+        _homeViewModel.getListTopBook();
+      },
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+            body: SafeArea(
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: size.height * 0.02),
+                    _renderSearchBook(),
+                    SizedBox(height: size.height * 0.02),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Flexible(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const CompanyPage()));
+                            },
+                            child: Container(
+                                width: 170,
+                                child: Image.asset('assets/images/banner1.png',
+                                    fit: BoxFit.fill)),
+                          ),
+                        ),
+                        Flexible(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const JobPage()));
+                            },
+                            child: Container(
+                                width: 170,
+                                child: Image.asset('assets/images/banner3.jpg',
+                                    fit: BoxFit.fill)),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: size.height * 0.03),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 13.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Luyện thi "IELTS - TOEIC - IT - PSM1"',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.redAccent),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (AppDataGlobal().accessToken != '') {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const CompanyPage()));
-                          },
-                          child: Container(
-                              width: 170,
-                              child: Image.asset('assets/images/banner1.png',
-                                  fit: BoxFit.fill)),
+                                    builder: (context) => QuizPageView()));
+                          } else {
+                            WidgetHelper.showPopupMessage(
+                                context: context,
+                                content: const Text(
+                                    'Bạn cần đăng nhập để sử dụng chức năng này'));
+                          }
+                        },
+                        child: Image.asset('assets/images/practice2.png'),
+                      ),
+                    ),
+                    SizedBox(height: size.height * 0.04),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 13.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Vòng quay may mắn',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                      Flexible(
-                        child: GestureDetector(
-                          onTap: () {
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (AppDataGlobal().accessToken != '') {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const JobPage()));
-                          },
-                          child: Container(
-                              width: 170,
-                              child: Image.asset('assets/images/banner3.jpg',
-                                  fit: BoxFit.fill)),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: size.height * 0.03),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 13.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Luyện thi "IELTS - TOEIC - IT - PSM1"',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.redAccent),
+                                    builder: (context) => WheelPageView(
+                                          homeViewModel: widget.homeViewModel,
+                                        )));
+                          } else {
+                            WidgetHelper.showPopupMessage(
+                                context: context,
+                                content: const Text(
+                                    'Bạn cần đăng nhập để sử dụng chức năng này'));
+                          }
+                        },
+                        child: Image.asset('assets/images/banner-wheel.jpg'),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        if (AppDataGlobal().accessToken != '') {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => QuizPageView()));
-                        } else {
-                          WidgetHelper.showPopupMessage(
-                              context: context,
-                              content: const Text(
-                                  'Bạn cần đăng nhập để sử dụng chức năng này'));
-                        }
-                      },
-                      child: Image.asset('assets/images/practice2.png'),
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.04),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 13.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Vòng quay may mắn',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
+                    SizedBox(height: size.height * 0.02),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 13.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'TOP 5 SÁCH HAY',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        if (AppDataGlobal().accessToken != '') {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => WheelPageView(
-                                        homeViewModel: widget.homeViewModel,
-                                      )));
-                        } else {
-                          WidgetHelper.showPopupMessage(
-                              context: context,
-                              content: const Text(
-                                  'Bạn cần đăng nhập để sử dụng chức năng này'));
-                        }
-                      },
-                      child: Image.asset('assets/images/banner-wheel.jpg'),
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.02),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 13.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'TOP 5 SÁCH HAY',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
+                    SizedBox(height: size.height * 0.02),
+                    StreamBuilder<bool>(
+                        stream: _homeViewModel.listTopBookStream,
+                        builder: (context, snapshot) {
+                          final data = _homeViewModel.checkListTopBook;
+                          print('DU LIEU TRANG HOME 1 $data');
+                          if (data != null && data['list'] != null) {
+                            return ItemTopBook(
+                              topBookModel: data['list'],
+                              onTapNextPage: (BookModel bookModel) {
+                                _onTapNextPage(bookModel);
+                              },
+                            );
+                          }
+                          return Container();
+                        }),
+                    SizedBox(height: size.height * 0.04),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 13.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'THƯ VIỆN SÁCH',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: size.height * 0.02),
-                  StreamBuilder<bool>(
-                      stream: _homeViewModel.listTopBookStream,
-                      builder: (context, snapshot) {
-                        final data = _homeViewModel.checkListTopBook;
-                        print('DU LIEU TRANG HOME 1 $data');
-                        if (data != null && data['list'] != null) {
-                          return ItemTopBook(
-                            topBookModel: data['list'],
-                            onTapNextPage: (BookModel bookModel) {
-                              _onTapNextPage(bookModel);
-                            },
-                          );
-                        }
-                        return Container();
-                      }),
-                  SizedBox(height: size.height * 0.04),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 13.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'THƯ VIỆN SÁCH',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.02),
-                  StreamBuilder<bool>(
-                      stream: _homeViewModel.bookModelSubjectStream,
-                      builder: (context, snapshot) {
-                        final dataBook = _homeViewModel.checkListBook;
-                        print('DU LIEU TRANG HOME 2 $dataBook');
-                        if (dataBook != null && dataBook['list'] != null) {
-                          return ItemBook(
-                            bookModel: dataBook['list'],
-                            onTapNextPage: (BookModel bookModel) {
-                              _onTapNextPage(bookModel);
-                            },
-                          );
-                        }
-                        return Container();
-                      }),
-                ],
+                    SizedBox(height: size.height * 0.02),
+                    StreamBuilder<bool>(
+                        stream: _homeViewModel.bookModelSubjectStream,
+                        builder: (context, snapshot) {
+                          final dataBook = _homeViewModel.checkListBook;
+                          print('DU LIEU TRANG HOME 2 $dataBook');
+                          if (dataBook != null && dataBook['list'] != null) {
+                            return ItemBook(
+                              bookModel: dataBook['list'],
+                              onTapNextPage: (BookModel bookModel) {
+                                _onTapNextPage(bookModel);
+                              },
+                            );
+                          }
+                          return Container();
+                        }),
+                  ],
+                ),
               ),
-            ),
-            (true == _loadingIsWaiting)
-                ? Center(
-                    child: LoadingAnimationWidget.discreteCircle(
-                    color: Color.fromARGB(255, 138, 175, 52),
-                    secondRingColor: Colors.black,
-                    thirdRingColor: Colors.purple,
-                    size: 30,
-                  ))
-                : Container(),
-          ],
-        ),
-      )),
+              (true == _loadingIsWaiting)
+                  ? Center(
+                      child: LoadingAnimationWidget.discreteCircle(
+                      color: Color.fromARGB(255, 138, 175, 52),
+                      secondRingColor: Colors.black,
+                      thirdRingColor: Colors.purple,
+                      size: 30,
+                    ))
+                  : Container(),
+            ],
+          ),
+        )),
+      ),
     );
   }
 
