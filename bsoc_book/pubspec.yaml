@@ -86,7 +86,6 @@ dependencies:
   ping_discover_network_forked: ^0.0.1
   json_serializable: ^6.3.1
   flutter_launcher_icons: ^0.10.0
-  device_info_plus: ^8.2.2
 
 dev_dependencies:
   flutter_test:
