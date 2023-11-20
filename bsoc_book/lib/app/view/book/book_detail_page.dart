@@ -202,12 +202,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                             const SizedBox(
                               height: 15,
                             ),
-                            Expanded(
-                              child: _renderContent(
-                                  _homeViewModel.bookDetailModel!,
-                                  _homeViewModel,
-                                  widget.parentViewState),
-                            )
+                            _renderContent(_homeViewModel.bookDetailModel!,
+                                _homeViewModel, widget.parentViewState)
                           ],
                         ),
                       ],
@@ -336,9 +332,12 @@ class _BookDetailPageState extends State<BookDetailPage> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Text(
-              bookModel.description.toString(),
-              style: TextStyle(fontSize: 14.0),
+            child: Container(
+              color: Colors.white,
+              child: Text(
+                bookModel.description.toString(),
+                style: TextStyle(fontSize: 14.0),
+              ),
             ),
           ),
         ),

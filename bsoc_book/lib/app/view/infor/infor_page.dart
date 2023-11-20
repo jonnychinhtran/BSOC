@@ -632,21 +632,16 @@ class _InfoPageState extends State<InfoPage> {
                                 ),
                               ),
                               SizedBox(height: size.height * 0.02),
-                              ElevatedButton(
-                                onPressed: () {
-                                  goLogin();
-                                },
-                                child: Container(
-                                  width: 190,
-                                  height: 50,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50.0),
-                                  ),
-                                  child: const Text(
-                                    'Đăng nhập hoặc Đăng ký',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0),
+                                child: DefaultButton(
+                                  onPress: () {
+                                    goLogin();
+                                  },
+                                  title: 'Đăng nhập hoặc Đăng ký',
+                                  backgroundColor: AppColors.PRIMARY_COLOR,
+                                  titleColor: Colors.white,
                                 ),
                               ),
                               SizedBox(height: size.height * 0.04),

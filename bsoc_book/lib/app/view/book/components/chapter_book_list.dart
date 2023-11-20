@@ -65,204 +65,217 @@ class _ChapterBookListState extends State<ChapterBookList> {
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
             _chapterModel = snapshot.data!.chapters;
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              itemCount: _chapterModel.length,
-              itemBuilder: (context, index) {
-                bool shouldHide = false;
-                if (_chapterModel[index].chapterId == 999) {
-                  if (_bookModel.payment == false) {
-                    shouldHide = false; // show hide the container
-                  }
-                  if (_bookModel.payment == true &&
-                      _chapterModel[index].allow == true) {
+            return Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                itemCount: _chapterModel.length,
+                itemBuilder: (context, index) {
+                  bool shouldHide = false;
+                  if (_chapterModel[index].chapterId == 999) {
+                    if (_bookModel.payment == false) {
+                      shouldHide = false; // show hide the container
+                    }
+                    if (_bookModel.payment == true &&
+                        _chapterModel[index].allow == true) {
+                      shouldHide = true; // hide the container
+                    }
+                  } else if (_chapterModel[index].allow!) {
+                    shouldHide = false; // show the container
+                  } else {
                     shouldHide = true; // hide the container
                   }
-                } else if (_chapterModel[index].allow!) {
-                  shouldHide = false; // show the container
-                } else {
-                  shouldHide = true; // hide the container
-                }
-                return shouldHide
-                    ? Container()
-                    : GestureDetector(
-                        onTap: () {
-                          _homeViewModel
-                              .getChapterPdf(_chapterModel[index].id)
-                              .then((value) => {
-                                    if (value != '')
-                                      {
-                                        itemsChapter = value,
-                                        if (itemsChapter!.isNotEmpty)
-                                          {
-                                            widget.homeViewState
-                                                .jumpReadBookPage()
-                                          }
-                                      }
-                                  });
-                        },
-                        child: Card(
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                          elevation: 10,
-                          margin: const EdgeInsets.all(10),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(children: <Widget>[
-                              Row(
-                                children: [
-                                  _chapterModel[index].chapterId != 999
-                                      ? Text(
-                                          'Chương: ' +
-                                              _chapterModel[index]
-                                                  .chapterId
-                                                  .toString() +
-                                              ' ',
-                                          style: TextStyle(
-                                            color: Colors.blue.shade900,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        )
-                                      : Text(
-                                          'Thông báo',
-                                          style: TextStyle(
-                                            color: Colors.blue.shade900,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  _chapterModel[index].chapterId != 999
-                                      ? Icon(
-                                          Icons.remove_red_eye,
-                                          color: Colors.yellow.shade800,
-                                          size: 16,
-                                        )
-                                      : Container(),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  _chapterModel[index].chapterId != 999
-                                      ? Expanded(
-                                          child: Text(
-                                            _chapterModel[index].chapterTitle,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            softWrap: false,
-                                            style: TextStyle(
-                                              color: Colors.blue.shade900,
+                  return shouldHide
+                      ? Container()
+                      : GestureDetector(
+                          onTap: () {
+                            _homeViewModel
+                                .getChapterPdf(_chapterModel[index].id)
+                                .then((value) => {
+                                      if (value != '')
+                                        {
+                                          itemsChapter = value,
+                                          if (itemsChapter!.isNotEmpty)
+                                            {
+                                              widget.homeViewState
+                                                  .jumpReadBookPage()
+                                            }
+                                        }
+                                    });
+                          },
+                          child: Card(
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            elevation: 10,
+                            margin: const EdgeInsets.all(10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                color: Colors.white,
+                                child: Column(children: <Widget>[
+                                  Row(
+                                    children: [
+                                      _chapterModel[index].chapterId != 999
+                                          ? Text(
+                                              'Chương: ' +
+                                                  _chapterModel[index]
+                                                      .chapterId
+                                                      .toString() +
+                                                  ' ',
+                                              style: TextStyle(
+                                                color: Colors.blue.shade900,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            )
+                                          : Text(
+                                              'Thông báo',
+                                              style: TextStyle(
+                                                color: Colors.blue.shade900,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
                                             ),
-                                          ),
-                                        )
-                                      : Container(),
-                                  Container(
-                                    child: Row(
-                                      children: [
-                                        if (_chapterModel[index].chapterId !=
-                                            999)
-                                          IconButton(
-                                            icon: _chapterModel[index]
-                                                        .bookmark ==
-                                                    true
-                                                ? const Icon(
-                                                    Icons.bookmark_outlined,
-                                                    color: Color.fromARGB(
-                                                        255, 253, 135, 0))
-                                                : const Icon(
-                                                    Icons
-                                                        .bookmark_border_outlined,
-                                                    color: Colors.blue),
-                                            onPressed: () async {
-                                              if (AppDataGlobal().accessToken !=
-                                                  '') {
-                                                var response = await Dio().post(
-                                                    'http://103.77.166.202/api/chapter/add-bookmark?chapterId=${_chapterModel[index].id}',
-                                                    options: Options(headers: {
-                                                      'Content-Type':
-                                                          'application/json',
-                                                      'Authorization':
-                                                          'Bearer ${AppDataGlobal().accessToken}',
-                                                    }));
-                                                if (response.statusCode ==
-                                                    200) {
-                                                  setState(() {
-                                                    _homeViewModel
-                                                        .getBookDetailPage();
-                                                  });
-                                                }
-                                              } else {
-                                                WidgetHelper.showPopupMessage(
-                                                    context: context,
-                                                    content: const Text(
-                                                        'Bạn cần đăng nhập để sử dụng chức năng này'));
-                                              }
-                                            },
-                                          ),
-                                        if (_chapterModel[index].chapterId !=
-                                            999)
-                                          IconButton(
-                                            icon: _chapterModel[index]
-                                                        .downloaded ==
-                                                    true
-                                                ? const Icon(
-                                                    Icons
-                                                        .download_done_outlined,
-                                                    color: Colors.blue)
-                                                : const Icon(
-                                                    Icons.download_outlined,
-                                                    color: Colors.blue),
-                                            onPressed: () {
-                                              if (AppDataGlobal().accessToken !=
-                                                  '') {
-                                                if (_chapterModel[index]
-                                                        .downloaded ==
-                                                    true) {
-                                                  WidgetHelper.showPopupMessage(
-                                                      context: context,
-                                                      content: const Text(
-                                                          'Bạn đã tải chương này rồi'));
-                                                } else {
-                                                  showDialog(
-                                                    context: context,
-                                                    useRootNavigator: false,
-                                                    builder: (context) =>
-                                                        DownloadingDialog(
-                                                      chapterId:
-                                                          _chapterModel[index]
-                                                              .id,
-                                                      namePath:
-                                                          _chapterModel[index]
-                                                              .filePath,
-                                                      homeViewModel:
-                                                          _homeViewModel,
-                                                    ),
-                                                  );
-                                                }
-                                              } else {
-                                                WidgetHelper.showPopupMessage(
-                                                    context: context,
-                                                    content: const Text(
-                                                        'Bạn cần đăng nhập để sử dụng chức năng này'));
-                                              }
-                                            },
-                                          ),
-                                      ],
-                                    ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      _chapterModel[index].chapterId != 999
+                                          ? Icon(
+                                              Icons.remove_red_eye,
+                                              color: Colors.yellow.shade800,
+                                              size: 16,
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      _chapterModel[index].chapterId != 999
+                                          ? Expanded(
+                                              child: Text(
+                                                _chapterModel[index]
+                                                    .chapterTitle,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                                softWrap: false,
+                                                style: TextStyle(
+                                                  color: Colors.blue.shade900,
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                      Container(
+                                        child: Row(
+                                          children: [
+                                            if (_chapterModel[index]
+                                                    .chapterId !=
+                                                999)
+                                              IconButton(
+                                                icon: _chapterModel[index]
+                                                            .bookmark ==
+                                                        true
+                                                    ? const Icon(
+                                                        Icons.bookmark_outlined,
+                                                        color: Color.fromARGB(
+                                                            255, 253, 135, 0))
+                                                    : const Icon(
+                                                        Icons
+                                                            .bookmark_border_outlined,
+                                                        color: Colors.blue),
+                                                onPressed: () async {
+                                                  if (AppDataGlobal()
+                                                          .accessToken !=
+                                                      '') {
+                                                    var response = await Dio().post(
+                                                        'http://103.77.166.202/api/chapter/add-bookmark?chapterId=${_chapterModel[index].id}',
+                                                        options:
+                                                            Options(headers: {
+                                                          'Content-Type':
+                                                              'application/json',
+                                                          'Authorization':
+                                                              'Bearer ${AppDataGlobal().accessToken}',
+                                                        }));
+                                                    if (response.statusCode ==
+                                                        200) {
+                                                      setState(() {
+                                                        _homeViewModel
+                                                            .getBookDetailPage();
+                                                      });
+                                                    }
+                                                  } else {
+                                                    WidgetHelper.showPopupMessage(
+                                                        context: context,
+                                                        content: const Text(
+                                                            'Bạn cần đăng nhập để sử dụng chức năng này'));
+                                                  }
+                                                },
+                                              ),
+                                            if (_chapterModel[index]
+                                                    .chapterId !=
+                                                999)
+                                              IconButton(
+                                                icon: _chapterModel[index]
+                                                            .downloaded ==
+                                                        true
+                                                    ? const Icon(
+                                                        Icons
+                                                            .download_done_outlined,
+                                                        color: Colors.blue)
+                                                    : const Icon(
+                                                        Icons.download_outlined,
+                                                        color: Colors.blue),
+                                                onPressed: () {
+                                                  if (AppDataGlobal()
+                                                          .accessToken !=
+                                                      '') {
+                                                    if (_chapterModel[index]
+                                                            .downloaded ==
+                                                        true) {
+                                                      WidgetHelper.showPopupMessage(
+                                                          context: context,
+                                                          content: const Text(
+                                                              'Bạn đã tải chương này rồi'));
+                                                    } else {
+                                                      showDialog(
+                                                        context: context,
+                                                        useRootNavigator: false,
+                                                        builder: (context) =>
+                                                            DownloadingDialog(
+                                                          chapterId:
+                                                              _chapterModel[
+                                                                      index]
+                                                                  .id,
+                                                          namePath:
+                                                              _chapterModel[
+                                                                      index]
+                                                                  .filePath,
+                                                          homeViewModel:
+                                                              _homeViewModel,
+                                                        ),
+                                                      );
+                                                    }
+                                                  } else {
+                                                    WidgetHelper.showPopupMessage(
+                                                        context: context,
+                                                        content: const Text(
+                                                            'Bạn cần đăng nhập để sử dụng chức năng này'));
+                                                  }
+                                                },
+                                              ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
                                   )
-                                ],
-                              )
-                            ]),
+                                ]),
+                              ),
+                            ),
                           ),
-                        ),
-                      );
-              },
+                        );
+                },
+              ),
             );
           } else {
             return Container();
