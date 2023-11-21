@@ -746,6 +746,7 @@ class _InfoPageState extends State<InfoPage> {
 
   _deletePopup() {
     WidgetHelper.showPopupMessage(
+      headerColor: AppColors.PRIMARY_COLOR,
       context: context,
       content: Column(
         children: [
@@ -821,6 +822,7 @@ class _InfoPageState extends State<InfoPage> {
 
   _logoutPopup() {
     WidgetHelper.showPopupMessage(
+      headerColor: AppColors.PRIMARY_COLOR,
       context: context,
       content: Column(
         children: [

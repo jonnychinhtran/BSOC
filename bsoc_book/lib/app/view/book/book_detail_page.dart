@@ -77,9 +77,17 @@ class _BookDetailPageState extends State<BookDetailPage> {
         backgroundColor: AppColors.PRIMARY_COLOR,
         elevation: 0,
         titleSpacing: 0,
-        title: Text('Chi tiết sách'),
+        title: Text(
+          'Chi tiết sách',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
           onPressed: (() {
             widget.parentViewState.jumpPageHome();
           }),
@@ -112,12 +120,16 @@ class _BookDetailPageState extends State<BookDetailPage> {
                   );
                 } else {
                   WidgetHelper.showPopupMessage(
+                      headerColor: AppColors.PRIMARY_COLOR,
                       context: context,
                       content: const Text(
                           'Bạn cần đăng nhập để sử dụng chức năng này'));
                 }
               },
-              icon: const Icon(Icons.bookmark_sharp)),
+              icon: const Icon(
+                Icons.bookmark_sharp,
+                color: Colors.white,
+              )),
           IconButton(
               onPressed: () {
                 if (AppDataGlobal().accessToken != '') {
@@ -137,12 +149,16 @@ class _BookDetailPageState extends State<BookDetailPage> {
                   // );
                 } else {
                   WidgetHelper.showPopupMessage(
+                      headerColor: AppColors.PRIMARY_COLOR,
                       context: context,
                       content: const Text(
                           'Bạn cần đăng nhập để sử dụng chức năng này'));
                 }
               },
-              icon: const Icon(Icons.download_for_offline))
+              icon: const Icon(
+                Icons.download_for_offline,
+                color: Colors.white,
+              ))
         ],
       ),
       body: SafeArea(

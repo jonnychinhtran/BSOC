@@ -65,10 +65,10 @@ class _RewardsPageState extends State<RewardsPage> {
     return Scaffold(
         backgroundColor: Colors.grey[300],
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 138, 175, 52),
+          backgroundColor: const Color.fromARGB(255, 138, 175, 52),
           centerTitle: true,
           leading: GestureDetector(
-            child: Icon(
+            child: const Icon(
               Icons.arrow_back_ios,
               color: Colors.white,
             ),
@@ -96,6 +96,9 @@ class _RewardsPageState extends State<RewardsPage> {
                     _userModel!.pointForClaimBook == 0
                         ? '0'
                         : _userModel!.pointForClaimBook.toString(),
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],

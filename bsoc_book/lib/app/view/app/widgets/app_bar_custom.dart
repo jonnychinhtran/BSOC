@@ -6,6 +6,7 @@ import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/app/view_model/user_view_model.dart';
 import 'package:bsoc_book/config/application.dart';
 import 'package:bsoc_book/config/routes.dart';
+import 'package:bsoc_book/resource/values/app_colors.dart';
 import 'package:bsoc_book/utils/resource_values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -65,6 +66,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+        backgroundColor: AppColors.PRIMARY_COLOR,
         automaticallyImplyLeading: false,
         toolbarHeight: 80,
         elevation: ResourceValues.kElevationAppbar,

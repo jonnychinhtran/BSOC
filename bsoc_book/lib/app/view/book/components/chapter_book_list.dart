@@ -4,6 +4,7 @@ import 'package:bsoc_book/app/models/book/book_model.dart';
 import 'package:bsoc_book/app/models/book/chapters_model.dart';
 import 'package:bsoc_book/app/view/home/home_view.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
+import 'package:bsoc_book/resource/values/app_colors.dart';
 import 'package:bsoc_book/utils/widget_helper.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
 import 'package:dio/dio.dart';
@@ -107,10 +108,10 @@ class _ChapterBookListState extends State<ChapterBookList> {
                             color: const Color.fromARGB(255, 255, 255, 255),
                             elevation: 10,
                             margin: const EdgeInsets.all(10),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                color: Colors.white,
+                            child: Container(
+                              color: Colors.white,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
                                 child: Column(children: <Widget>[
                                   Row(
                                     children: [
@@ -206,6 +207,8 @@ class _ChapterBookListState extends State<ChapterBookList> {
                                                     }
                                                   } else {
                                                     WidgetHelper.showPopupMessage(
+                                                        headerColor: AppColors
+                                                            .PRIMARY_COLOR,
                                                         context: context,
                                                         content: const Text(
                                                             'Bạn cần đăng nhập để sử dụng chức năng này'));
@@ -234,6 +237,8 @@ class _ChapterBookListState extends State<ChapterBookList> {
                                                             .downloaded ==
                                                         true) {
                                                       WidgetHelper.showPopupMessage(
+                                                          headerColor: AppColors
+                                                              .PRIMARY_COLOR,
                                                           context: context,
                                                           content: const Text(
                                                               'Bạn đã tải chương này rồi'));
@@ -258,6 +263,8 @@ class _ChapterBookListState extends State<ChapterBookList> {
                                                     }
                                                   } else {
                                                     WidgetHelper.showPopupMessage(
+                                                        headerColor: AppColors
+                                                            .PRIMARY_COLOR,
                                                         context: context,
                                                         content: const Text(
                                                             'Bạn cần đăng nhập để sử dụng chức năng này'));

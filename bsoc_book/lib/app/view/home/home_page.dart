@@ -9,6 +9,7 @@ import 'package:bsoc_book/app/view/widgets/updatedialog.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/app/view/banner/company_page.dart';
 import 'package:bsoc_book/app/view/banner/job_page.dart';
+import 'package:bsoc_book/resource/values/app_colors.dart';
 import 'package:bsoc_book/utils/widget_helper.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
 import 'package:diacritic/diacritic.dart';
@@ -194,6 +195,7 @@ class _HomePageState extends State<HomePage> {
                                       builder: (context) => QuizPageView()));
                             } else {
                               WidgetHelper.showPopupMessage(
+                                  headerColor: AppColors.PRIMARY_COLOR,
                                   context: context,
                                   content: const Text(
                                       'Bạn cần đăng nhập để sử dụng chức năng này'));
@@ -229,6 +231,7 @@ class _HomePageState extends State<HomePage> {
                                           )));
                             } else {
                               WidgetHelper.showPopupMessage(
+                                  headerColor: AppColors.PRIMARY_COLOR,
                                   context: context,
                                   content: const Text(
                                       'Bạn cần đăng nhập để sử dụng chức năng này'));
@@ -321,6 +324,12 @@ class _HomePageState extends State<HomePage> {
     return Column(children: [
       Container(
           margin: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+          decoration: BoxDecoration(
+            border: Border.all(
+                width: 0.5, color: Colors.grey), // Add a 2px black border
+            borderRadius: BorderRadius.circular(
+                8.0), // Optional: Add border radius for rounded corners
+          ),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: TypeAheadField(

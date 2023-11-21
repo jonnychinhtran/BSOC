@@ -63,9 +63,17 @@ class _ReadChapterBookState extends State<ReadChapterBook>
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 138, 175, 52),
         centerTitle: true,
-        title: const Text('Đọc sách'),
+        title: const Text(
+          'Đọc sách',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
           onPressed: () {
             widget.parentViewState.jumpPageBookDetailPage();
           },
@@ -76,7 +84,10 @@ class _ReadChapterBookState extends State<ReadChapterBook>
                 onPressed: () {
                   Scaffold.of(context).openEndDrawer();
                 },
-                icon: Icon(Icons.list_sharp));
+                icon: Icon(
+                  Icons.list_sharp,
+                  color: Colors.white,
+                ));
           }),
         ],
       ),
