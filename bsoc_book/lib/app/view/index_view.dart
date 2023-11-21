@@ -78,43 +78,34 @@ class _IndexViewState extends State<IndexView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-            child: Stack(
+      body: Center(
+        child: Stack(
           children: [
             Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
               decoration: const BoxDecoration(
                 color: Colors.white,
               ),
-              child: null /* add child content here */,
             ),
             Align(
               alignment: Alignment.center,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
+              child: AnimatedBuilder(
+                animation: _iconAnimation,
+                builder: (context, child) {
+                  return SizedBox(
                     width: _iconAnimation.value * 120,
                     height: _iconAnimation.value * 120,
                     child: Image.asset(
                       "assets/images/logo-b4usolution.png",
                       fit: BoxFit.contain,
                     ),
-                  ),
-                  // const Text(
-                  //   AppStrings.APP_NAME,
-                  //   style: TextStyle(
-                  //     color: Colors.white,
-                  //     fontSize: 52,
-                  //     fontWeight: FontWeight.w800,
-                  //   ),
-                  // )
-                ],
+                  );
+                },
               ),
             )
           ],
-        )),
+        ),
       ),
     );
   }

@@ -143,8 +143,7 @@ class _HomePageState extends State<HomePage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const CompanyPage()));
+                                        builder: (context) => CompanyPage()));
                               },
                               child: Container(
                                   width: 170,
@@ -159,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const JobPage()));
+                                        builder: (context) => JobPage()));
                               },
                               child: Container(
                                   width: 170,

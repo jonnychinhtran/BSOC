@@ -5,6 +5,7 @@ import 'package:bsoc_book/app/view/login/register_page.dart';
 import 'package:bsoc_book/app/view/login/reset_pass_page.dart';
 import 'package:bsoc_book/resource/values/app_colors.dart';
 import 'package:bsoc_book/utils/widget_helper.dart';
+import 'package:bsoc_book/widgets/default_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -210,8 +211,8 @@ class _LoginPageState extends State<LoginPage> {
                             width: double.infinity,
                             padding:
                                 const EdgeInsets.only(left: 34.0, right: 34.0),
-                            child: ElevatedButton(
-                              onPressed: () => {
+                            child: DefaultButton(
+                              onPress: () => {
                                 if (_formKey.currentState!.validate())
                                   {
                                     setState(() {
@@ -241,19 +242,9 @@ class _LoginPageState extends State<LoginPage> {
                                     })
                                   }
                               },
-                              style: ElevatedButton.styleFrom(
-                                  primary: Color.fromARGB(255, 153, 195, 59),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 40, vertical: 15)),
-                              child: const Text(
-                                "Đăng nhập",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              title: "Đăng nhập",
+                              backgroundColor: AppColors.PRIMARY_COLOR,
+                              titleColor: Colors.white,
                             ),
                           ),
                           SizedBox(height: size.height * 0.02),
