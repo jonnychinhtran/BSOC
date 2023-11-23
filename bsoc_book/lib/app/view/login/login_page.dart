@@ -112,12 +112,6 @@ class _LoginPageState extends State<LoginPage> {
                           Container(
                             padding:
                                 const EdgeInsets.only(left: 34.0, right: 34.0),
-                                decoration: BoxDecoration(
-            border: Border.all(
-                width: 0.5, color: Colors.grey), // Add a 2px black border
-            borderRadius: BorderRadius.circular(
-                8.0), // Optional: Add border radius for rounded corners
-          ),
                             child: TextFormField(
                               controller: _usernameController,
                               validator: (value) {
@@ -130,6 +124,10 @@ class _LoginPageState extends State<LoginPage> {
                                   isDense: true,
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey,
+                                      width: 0.5,
+                                    ),
                                   )),
                               inputFormatters: [
                                 FilteringTextInputFormatter.allow(
@@ -156,12 +154,6 @@ class _LoginPageState extends State<LoginPage> {
                           Container(
                             padding:
                                 const EdgeInsets.only(left: 34.0, right: 34.0),
-                                decoration: BoxDecoration(
-            border: Border.all(
-                width: 0.5, color: Colors.grey), // Add a 2px black border
-            borderRadius: BorderRadius.circular(
-                8.0), // Optional: Add border radius for rounded corners
-          ),
                             child: TextFormField(
                               controller: _passwordController,
                               obscureText: !_obscureText,
@@ -179,6 +171,10 @@ class _LoginPageState extends State<LoginPage> {
                                 isDense: true,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey,
+                                    width: 0.5,
+                                  ),
                                 ),
                                 suffixIcon: IconButton(
                                   onPressed: () {

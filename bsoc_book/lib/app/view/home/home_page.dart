@@ -323,20 +323,20 @@ class _HomePageState extends State<HomePage> {
     return Column(children: [
       Container(
           margin: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-          decoration: BoxDecoration(
-            border: Border.all(
-                width: 0.5, color: Colors.grey), // Add a 2px black border
-            borderRadius: BorderRadius.circular(
-                8.0), // Optional: Add border radius for rounded corners
-          ),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: TypeAheadField(
               hideSuggestionsOnKeyboardHide: false,
-              textFieldConfiguration: const TextFieldConfiguration(
+              textFieldConfiguration: TextFieldConfiguration(
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                      width: 0.5,
+                    ),
+                  ),
                   hintText: 'Tìm kiếm sách',
                 ),
               ),
