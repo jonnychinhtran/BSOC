@@ -1,18 +1,14 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:bsoc_book/app/view/infor/infor_page_view.dart';
 import 'package:bsoc_book/app/view/login/login_page.dart';
-import 'package:bsoc_book/app/view/home/home_page.dart';
 import 'package:bsoc_book/app/view/wheel_spin/wheel_view.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
-import 'package:bsoc_book/app/view_model/user_view_model.dart';
 import 'package:bsoc_book/config/application.dart';
 import 'package:bsoc_book/config/routes.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -38,7 +34,6 @@ class _WheelPageState extends State<WheelPage> {
   bool isSpinning = false;
   final storage = GetStorage();
   bool isLoading = true;
-  String? token;
 
   void goHome() {
     Application.router.navigateTo(context, Routes.app, clearStack: true);
@@ -62,24 +57,23 @@ class _WheelPageState extends State<WheelPage> {
       setState(() {
         isLoading = true;
       });
-      token = storage.read('accessToken');
-      print(token);
 
-      if (token == null) {
+      if (AppDataGlobal().accessToken == '') {
         showDialog(
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("Phiên đã hết hạn"),
-              content: Text("Vui lòng đăng nhập lại."),
+              title: const Text("Phiên đã hết hạn"),
+              content: const Text("Vui lòng đăng nhập lại."),
               actions: [
                 TextButton(
-                  child: Text("Đồng ý"),
+                  child: const Text("Đồng ý"),
                   onPressed: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()),
                     );
                   },
                 ),
@@ -99,16 +93,11 @@ class _WheelPageState extends State<WheelPage> {
           }));
       if (response.statusCode == 200) {
         datauser = response.data;
-        // print(datauser!['spinTurn']);
         setState(() {
           isLoading = false;
         });
-      } else {
-        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
-      }
-      print("res: ${response.data}");
+      } else {}
     } catch (e) {
-      // Get.snackbar("error", e.toString());
       print(e);
     }
   }
@@ -120,22 +109,19 @@ class _WheelPageState extends State<WheelPage> {
       setState(() {
         isLoading = true;
       });
-      token = storage.read('accessToken');
-      print(token);
+
       var response = await Dio().get('http://103.77.166.202/api/spin/list',
           options: Options(headers: {
             'Authorization': 'Bearer ${AppDataGlobal().accessToken}'
           }));
       if (response.statusCode == 200) {
         items = (response.data);
-        print(items);
         setState(() {
           isLoading = false;
         });
       } else {
-        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+        // Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
       }
-      print("res: ${response.data}");
     } catch (e) {
       // Get.snackbar("error", e.toString());
       print(e);
@@ -149,7 +135,7 @@ class _WheelPageState extends State<WheelPage> {
       isSpinning = true;
       selected.add(selectedIndex);
 
-      Future.delayed(Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 5), () {
         setState(() {
           isSpinning = false;
         });
@@ -162,46 +148,6 @@ class _WheelPageState extends State<WheelPage> {
     }
   }
 
-  // void showResultDialog(int selectedIndex) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return Center(
-  //         child: AlertDialog(
-  //           title: Text('Thông báo'),
-  //           content: Text(items[selectedIndex]['name'].toString()),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () async {
-  // storage.write('idSpin', items[selectedIndex]['id']);
-
-  // String? token;
-  // int? idSpin;
-  // final box = GetStorage();
-  // token = box.read('accessToken');
-  // idSpin = box.read('idSpin');
-
-  // final dio = Dio(); // Create Dio instance
-  // final response = await dio.post(
-  //   'http://103.77.166.202/api/spin/turn/$idSpin',
-  //   options: Options(
-  //       contentType: 'application/json',
-  //       headers: {'Authorization': 'Bearer $token'}),
-  // );
-  // print(response);
-  // Navigator.of(context).pop();
-  // Navigator.push(context,
-  //     MaterialPageRoute(builder: (context) => WheelPage()));
-  //               },
-  //               child: Text('Thu thập ngay'),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
   void showResultDialog(int selectedIndex) {
     showDialog(
       context: context,
@@ -213,19 +159,19 @@ class _WheelPageState extends State<WheelPage> {
           elevation: 0.0,
           backgroundColor: Colors.transparent,
           child: Container(
-            margin: EdgeInsets.only(left: 0.0, right: 0.0),
+            margin: const EdgeInsets.only(left: 0.0, right: 0.0),
             child: Stack(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     top: 18.0,
                   ),
-                  margin: EdgeInsets.only(top: 3.0, right: 8.0),
+                  margin: const EdgeInsets.only(top: 3.0, right: 8.0),
                   decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(16.0),
-                      boxShadow: <BoxShadow>[
+                      boxShadow: const <BoxShadow>[
                         BoxShadow(
                           color: Colors.black26,
                           blurRadius: 0.0,
@@ -239,9 +185,9 @@ class _WheelPageState extends State<WheelPage> {
                       Center(
                           child: Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: new Text(items[selectedIndex]['name'].toString(),
-                            style:
-                                TextStyle(fontSize: 14.0, color: Colors.black)),
+                        child: Text(items[selectedIndex]['name'].toString(),
+                            style: const TextStyle(
+                                fontSize: 14.0, color: Colors.black)),
                       ) //
                           ),
                     ],
@@ -253,10 +199,8 @@ class _WheelPageState extends State<WheelPage> {
                     onTap: () async {
                       storage.write('idSpin', items[selectedIndex]['id']);
 
-                      String? token;
                       int? idSpin;
                       final box = GetStorage();
-                      token = box.read('accessToken');
                       idSpin = box.read('idSpin');
 
                       final dio = Dio(); // Create Dio instance
@@ -269,7 +213,6 @@ class _WheelPageState extends State<WheelPage> {
                                   'Bearer ${AppDataGlobal().accessToken}'
                             }),
                       );
-                      print(response);
                       Navigator.of(context).pop();
                       // Navigator.pushReplacement(
                       //   context,
@@ -281,7 +224,7 @@ class _WheelPageState extends State<WheelPage> {
                       //   ),
                       // );
                     },
-                    child: Align(
+                    child: const Align(
                       alignment: Alignment.topRight,
                       child: CircleAvatar(
                         radius: 14.0,
@@ -296,7 +239,7 @@ class _WheelPageState extends State<WheelPage> {
           ),
         );
       },
-    ).timeout(Duration(seconds: 30), onTimeout: () async {
+    ).timeout(const Duration(seconds: 30), onTimeout: () async {
       storage.write('idSpin', items[selectedIndex]['id']);
 
       String? token;
@@ -312,15 +255,7 @@ class _WheelPageState extends State<WheelPage> {
           'Authorization': 'Bearer ${AppDataGlobal().accessToken}'
         }),
       );
-      print(response);
       Navigator.of(context).pop();
-      // Navigator.pushReplacement(
-      //   context,
-      //   PageRouteBuilder(
-      //     transitionDuration: Duration.zero,
-      //     pageBuilder: (context, animation, secondaryAnimation) => WheelPage(),
-      //   ),
-      // );
     });
   }
 
@@ -387,7 +322,7 @@ class _WheelPageState extends State<WheelPage> {
                 Container(
                     width: double.infinity,
                     height: double.infinity,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('assets/images/bgspin.jpg'),
                         fit: BoxFit.cover,
@@ -405,7 +340,7 @@ class _WheelPageState extends State<WheelPage> {
                                 : 'Bạn còn ' +
                                     datauser!['spinTurn'].toString() +
                                     ' lượt quay',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18.0),
                           ),
                         ),
@@ -418,14 +353,15 @@ class _WheelPageState extends State<WheelPage> {
                                   builder: (BuildContext context) {
                                     return Center(
                                       child: AlertDialog(
-                                        title: Text('Thông báo'),
-                                        content: Text('Bạn đã hết lượt quay'),
+                                        title: const Text('Thông báo'),
+                                        content:
+                                            const Text('Bạn đã hết lượt quay'),
                                         actions: [
                                           TextButton(
                                             onPressed: () async {
                                               Navigator.of(context).pop();
                                             },
-                                            child: Text('Thoát'),
+                                            child: const Text('Thoát'),
                                           ),
                                         ],
                                       ),
@@ -446,8 +382,8 @@ class _WheelPageState extends State<WheelPage> {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         border: Border.all(
-                                          color:
-                                              Color.fromARGB(255, 255, 225, 65),
+                                          color: const Color.fromARGB(
+                                              255, 255, 225, 65),
                                           width: 20.0,
                                         ),
                                       ),
@@ -458,7 +394,7 @@ class _WheelPageState extends State<WheelPage> {
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           border: Border.all(
-                                            color: Color.fromARGB(
+                                            color: const Color.fromARGB(
                                                 232, 232, 173, 11),
                                             width: 10.0,
                                           ),
@@ -471,12 +407,12 @@ class _WheelPageState extends State<WheelPage> {
                                               FortuneItem(
                                                 child: Text(
                                                   item['name'].toString(),
-                                                  style:
-                                                      TextStyle(fontSize: 6.7),
+                                                  style: const TextStyle(
+                                                      fontSize: 6.7),
                                                 ),
                                               ),
                                           ],
-                                          indicators: [
+                                          indicators: const [
                                             FortuneIndicator(
                                               alignment: Alignment.topCenter,
                                               child: TriangleIndicator(
@@ -490,7 +426,7 @@ class _WheelPageState extends State<WheelPage> {
                                     Container(
                                       width: 40.0,
                                       height: 40.0,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         color:
                                             Color.fromARGB(232, 232, 173, 11),
@@ -499,7 +435,7 @@ class _WheelPageState extends State<WheelPage> {
                                     Container(
                                       width: 30.0,
                                       height: 30.0,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         color:
                                             Color.fromARGB(232, 232, 173, 11),
@@ -508,7 +444,7 @@ class _WheelPageState extends State<WheelPage> {
                                     Container(
                                       width: 20.0,
                                       height: 20.0,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: Color.fromARGB(155, 155, 0, 0),
                                       ),
@@ -523,7 +459,7 @@ class _WheelPageState extends State<WheelPage> {
                                     MaterialStateProperty.all<Color>(
                                         Colors.transparent),
                                 textStyle: MaterialStateProperty.all<TextStyle>(
-                                  TextStyle(fontSize: 18),
+                                  const TextStyle(fontSize: 18),
                                 ),
                               ),
                               onPressed: () {
@@ -531,10 +467,11 @@ class _WheelPageState extends State<WheelPage> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Cách thức nhận thưởng'),
+                                      title:
+                                          const Text('Cách thức nhận thưởng'),
                                       content: SingleChildScrollView(
                                         child: ListBody(
-                                          children: <Widget>[
+                                          children: const <Widget>[
                                             Text(
                                                 '1. Nếu bạn quay trúng vào ô nhận được 1 quyển sách sẽ được cộng điểm để quy đổi sách, số điểm sẽ được hiển thị trong danh sách Voucher nằm ở vị trí góc trên bên phải sau đó vào phần cài đặt tài khoản để đổi sách.'),
                                             SizedBox(
@@ -557,7 +494,7 @@ class _WheelPageState extends State<WheelPage> {
                                       ),
                                       actions: <Widget>[
                                         ElevatedButton(
-                                          child: Text('Thoát'),
+                                          child: const Text('Thoát'),
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },
@@ -567,7 +504,7 @@ class _WheelPageState extends State<WheelPage> {
                                   },
                                 );
                               },
-                              child: Text('Cách thức nhận thưởng'),
+                              child: const Text('Cách thức nhận thưởng'),
                             ),
                           ],
                         ),
@@ -576,7 +513,7 @@ class _WheelPageState extends State<WheelPage> {
                   ),
                 ),
               ])
-            : Center(
+            : const Center(
                 child: CircularProgressIndicator(),
               ));
   }
@@ -608,12 +545,11 @@ class _VoucherListPageState extends State<VoucherListPage> {
       if (response.statusCode == 200) {
         itemVoucher = response.data['pointForClaimBook'];
         voucherList = response.data['listVoucher'];
-        print(voucherList);
         setState(() {
           isLoading = false;
         });
       } else {
-        Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
+        // Get.snackbar("lỗi", "Dữ liệu lỗi. Thử lại.");
       }
       print("res: ${response.data}");
     } catch (e) {
