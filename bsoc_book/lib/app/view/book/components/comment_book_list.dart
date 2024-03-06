@@ -8,6 +8,7 @@ import 'package:bsoc_book/app/view_model/user_view_model.dart';
 import 'package:bsoc_book/resource/values/app_colors.dart';
 import 'package:bsoc_book/utils/widget_helper.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
+import 'package:bsoc_book/widgets/color_loader.dart';
 import 'package:bsoc_book/widgets/default_button.dart';
 import 'package:bsoc_book/widgets/rating_bar.dart';
 import 'package:dio/dio.dart';
@@ -145,11 +146,9 @@ class _CommentBookListState extends State<CommentBookList> {
                       ),
                       (_isLoading == false)
                           ? Center(
-                              child: LoadingAnimationWidget.discreteCircle(
-                              color: AppColors.PRIMARY_COLOR,
-                              secondRingColor: Colors.black,
-                              thirdRingColor: Colors.purple,
-                              size: 30,
+                              child: Container(
+                              color: Colors.white70,
+                              child: const ColorLoader(),
                             ))
                           : Container(),
                     ],

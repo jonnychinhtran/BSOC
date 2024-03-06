@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:bsoc_book/widgets/color_loader.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -102,11 +103,9 @@ class _DownloadPageState extends State<DownloadPage> {
         ),
         body: callback == 0
             ? Center(
-                child: LoadingAnimationWidget.discreteCircle(
-                color: Color.fromARGB(255, 138, 175, 52),
-                secondRingColor: Colors.black,
-                thirdRingColor: Colors.purple,
-                size: 30,
+                child: Container(
+                color: Colors.white70,
+                child: const ColorLoader(),
               ))
             : ListView.builder(
                 itemCount: listReponse == null ? 0 : listReponse!.length,

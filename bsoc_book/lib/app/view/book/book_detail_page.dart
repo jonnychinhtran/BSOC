@@ -8,6 +8,7 @@ import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/resource/values/app_colors.dart';
 import 'package:bsoc_book/utils/widget_helper.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
+import 'package:bsoc_book/widgets/color_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:share_plus/share_plus.dart';
@@ -204,6 +205,17 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                         SizedBox(
                                           height: 5.0,
                                         ),
+                                        Text(
+                                          'Mã sách: ' +
+                                              _bookModel.id.toString(),
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: AppColors.PRIMARY_COLOR,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(
+                                          height: 5.0,
+                                        ),
                                         Text(_bookModel.author.toString()),
                                       ],
                                     ),
@@ -225,11 +237,9 @@ class _BookDetailPageState extends State<BookDetailPage> {
                       ],
                     )
                   : Center(
-                      child: LoadingAnimationWidget.discreteCircle(
-                      color: Color.fromARGB(255, 138, 175, 52),
-                      secondRingColor: Colors.black,
-                      thirdRingColor: Colors.purple,
-                      size: 30,
+                      child: Container(
+                      color: Colors.white70,
+                      child: const ColorLoader(),
                     ));
             }),
       ),

@@ -5,6 +5,7 @@ import 'package:bsoc_book/app/view/login/register_page.dart';
 import 'package:bsoc_book/app/view/login/reset_pass_page.dart';
 import 'package:bsoc_book/resource/values/app_colors.dart';
 import 'package:bsoc_book/utils/widget_helper.dart';
+import 'package:bsoc_book/widgets/color_loader.dart';
 import 'package:bsoc_book/widgets/default_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -281,11 +282,9 @@ class _LoginPageState extends State<LoginPage> {
                     )),
                 (true == _isLoading)
                     ? Center(
-                        child: LoadingAnimationWidget.discreteCircle(
-                        color: AppColors.PRIMARY_COLOR,
-                        secondRingColor: Colors.black,
-                        thirdRingColor: Colors.purple,
-                        size: 30,
+                        child: Container(
+                        color: Colors.white70,
+                        child: const ColorLoader(),
                       ))
                     : const SizedBox(),
               ],

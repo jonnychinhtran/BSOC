@@ -1,6 +1,7 @@
 import 'package:bsoc_book/app/view/home/home_view.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
+import 'package:bsoc_book/widgets/color_loader.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -153,11 +154,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Center(
-                          child: LoadingAnimationWidget.discreteCircle(
-                        color: Color.fromARGB(255, 138, 175, 52),
-                        secondRingColor: Colors.black,
-                        thirdRingColor: Colors.purple,
-                        size: 30,
+                          child: Container(
+                        color: Colors.white70,
+                        child: const ColorLoader(),
                       )),
                       Text('Đang tải dữ liệu...',
                           style: TextStyle(fontSize: 20)),

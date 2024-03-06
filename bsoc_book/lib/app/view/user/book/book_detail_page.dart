@@ -6,6 +6,7 @@ import 'package:bsoc_book/app/view/login/login_page.dart';
 import 'package:bsoc_book/app/view/home/home_page.dart';
 import 'package:bsoc_book/app/view/widgets/alert_dailog.dart';
 import 'package:bsoc_book/app/view/widgets/charge_book.dart';
+import 'package:bsoc_book/widgets/color_loader.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -205,11 +206,9 @@ class _DetailBookPageState extends State<DetailBookPage>
           ),
           body: isLoading && dataBook == null
               ? Center(
-                  child: LoadingAnimationWidget.discreteCircle(
-                  color: Color.fromARGB(255, 138, 175, 52),
-                  secondRingColor: Colors.black,
-                  thirdRingColor: Colors.purple,
-                  size: 30,
+                  child: Container(
+                  color: Colors.white70,
+                  child: const ColorLoader(),
                 ))
               : RefreshIndicator(
                   onRefresh: () async {
@@ -258,12 +257,7 @@ class _DetailBookPageState extends State<DetailBookPage>
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Text(
-                                      dataBook?['id'] == null
-                                          ? ""
-                                          : '(Mã sách: ' +
-                                              dataBook!['id'].toString() +
-                                              ')',
+                                  Text('(Mã sách: ' + dataBook?['id'] + ')',
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                           fontSize: 16,

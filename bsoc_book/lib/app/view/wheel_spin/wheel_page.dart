@@ -6,6 +6,7 @@ import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/config/application.dart';
 import 'package:bsoc_book/config/routes.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
+import 'package:bsoc_book/widgets/color_loader.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
@@ -44,12 +45,6 @@ class _WheelPageState extends State<WheelPage> {
     super.initState();
     getUserDetail();
     getlistSpin();
-  }
-
-  @override
-  void dispose() {
-    selected.close();
-    super.dispose();
   }
 
   Future<void> getUserDetail() async {
@@ -115,8 +110,8 @@ class _WheelPageState extends State<WheelPage> {
             'Authorization': 'Bearer ${AppDataGlobal().accessToken}'
           }));
       if (response.statusCode == 200) {
-        items = (response.data);
         setState(() {
+          items = (response.data);
           isLoading = false;
         });
       } else {
@@ -198,31 +193,31 @@ class _WheelPageState extends State<WheelPage> {
                   child: GestureDetector(
                     onTap: () async {
                       storage.write('idSpin', items[selectedIndex]['id']);
-
-                      int? idSpin;
-                      final box = GetStorage();
-                      idSpin = box.read('idSpin');
-
                       final dio = Dio(); // Create Dio instance
-                      final response = await dio.post(
-                        'http://103.77.166.202/api/spin/turn/$idSpin',
-                        options: Options(
-                            contentType: 'application/json',
-                            headers: {
-                              'Authorization':
-                                  'Bearer ${AppDataGlobal().accessToken}'
-                            }),
-                      );
-                      Navigator.of(context).pop();
-                      // Navigator.pushReplacement(
-                      //   context,
-                      //   PageRouteBuilder(
-                      //     transitionDuration: Duration.zero,
-                      //     pageBuilder:
-                      //         (context, animation, secondaryAnimation) =>
-                      //             WheelPage(),
-                      //   ),
-                      // );
+                      try {
+                        await dio.post(
+                          'http://103.77.166.202/api/spin/turn/${items[selectedIndex]['id']}',
+                          options: Options(
+                              contentType: 'application/json',
+                              headers: {
+                                'Authorization':
+                                    'Bearer ${AppDataGlobal().accessToken}'
+                              }),
+                        );
+
+                        await getlistSpin();
+                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => WheelPage(
+                                      homeViewModel: HomeViewModel(),
+                                      parentViewState: WheelPageViewState(),
+                                    )));
+                        setState(() {});
+                      } catch (e) {
+                        print("Error posting spin result: $e");
+                      }
                     },
                     child: const Align(
                       alignment: Alignment.topRight,
@@ -241,22 +236,34 @@ class _WheelPageState extends State<WheelPage> {
       },
     ).timeout(const Duration(seconds: 30), onTimeout: () async {
       storage.write('idSpin', items[selectedIndex]['id']);
-
-      String? token;
-      int? idSpin;
-      final box = GetStorage();
-      token = box.read('accessToken');
-      idSpin = box.read('idSpin');
-
       final dio = Dio(); // Create Dio instance
-      final response = await dio.post(
-        'http://103.77.166.202/api/spin/turn/$idSpin',
-        options: Options(contentType: 'application/json', headers: {
-          'Authorization': 'Bearer ${AppDataGlobal().accessToken}'
-        }),
-      );
-      Navigator.of(context).pop();
+      try {
+        await dio.post(
+          'http://103.77.166.202/api/spin/turn/${items[selectedIndex]['id']}',
+          options: Options(contentType: 'application/json', headers: {
+            'Authorization': 'Bearer ${AppDataGlobal().accessToken}'
+          }),
+        );
+        await getlistSpin();
+        Navigator.of(context).pop();
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => WheelPage(
+                      homeViewModel: HomeViewModel(),
+                      parentViewState: WheelPageViewState(),
+                    )));
+        setState(() {});
+      } catch (e) {
+        print("Error posting spin result: $e");
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    selected.close();
+    super.dispose();
   }
 
   @override
@@ -317,7 +324,7 @@ class _WheelPageState extends State<WheelPage> {
                 }),
           ],
         ),
-        body: items.length > 1
+        body: items.length > 1 && isLoading == false
             ? Stack(children: [
                 Container(
                     width: double.infinity,
@@ -513,9 +520,11 @@ class _WheelPageState extends State<WheelPage> {
                   ),
                 ),
               ])
-            : const Center(
-                child: CircularProgressIndicator(),
-              ));
+            : Center(
+                child: Container(
+                color: Colors.white70,
+                child: const ColorLoader(),
+              )));
   }
 }
 
@@ -528,6 +537,13 @@ class _VoucherListPageState extends State<VoucherListPage> {
   bool isLoading = true;
   List? voucherList;
   int? itemVoucher;
+
+  @override
+  void initState() {
+    super.initState();
+    getVoucherList();
+  }
+
   Future<void> getVoucherList() async {
     try {
       final box = GetStorage();
@@ -559,12 +575,6 @@ class _VoucherListPageState extends State<VoucherListPage> {
   }
 
   @override
-  void initState() {
-    getVoucherList();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -590,11 +600,9 @@ class _VoucherListPageState extends State<VoucherListPage> {
       ),
       body: getVoucherList == ''
           ? Center(
-              child: LoadingAnimationWidget.discreteCircle(
-              color: Color.fromARGB(255, 138, 175, 52),
-              secondRingColor: Colors.black,
-              thirdRingColor: Colors.purple,
-              size: 30,
+              child: Container(
+              color: Colors.white70,
+              child: const ColorLoader(),
             ))
           : ListView.builder(
               itemCount: voucherList != null ? voucherList!.length : null,

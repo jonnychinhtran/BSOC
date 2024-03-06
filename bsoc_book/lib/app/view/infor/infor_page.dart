@@ -14,6 +14,7 @@ import 'package:bsoc_book/utils/resource_values.dart';
 import 'package:bsoc_book/utils/widget_helper.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
 import 'package:bsoc_book/widgets/app_preferences.dart';
+import 'package:bsoc_book/widgets/color_loader.dart';
 import 'package:bsoc_book/widgets/default_button.dart';
 import 'package:dio/dio.dart';
 import 'dart:io';
@@ -286,9 +287,9 @@ class _InfoPageState extends State<InfoPage> {
                                                             FontWeight.w500),
                                                   ),
                                                   trailing: Text(_userItem!
-                                                          .phone!
+                                                          .phone
                                                           .toString() ??
-                                                      'N/A'),
+                                                      'Vui lòng cập nhật'),
                                                 ),
                                               ],
                                             ),
@@ -594,19 +595,13 @@ class _InfoPageState extends State<InfoPage> {
                                           ),
                                           Align(
                                             alignment: Alignment.bottomCenter,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "${AppStrings.APP_NAME} 1.1.4",
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color: Color(0xFF8A8A8A),
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ],
+                                            child: Text(
+                                              "${AppStrings.APP_NAME} 1.1.5",
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Color(0xFF8A8A8A),
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           )
                                         ],
@@ -731,11 +726,9 @@ class _InfoPageState extends State<InfoPage> {
             ),
             (true == _isLoading)
                 ? Center(
-                    child: LoadingAnimationWidget.discreteCircle(
-                    color: AppColors.PRIMARY_COLOR,
-                    secondRingColor: Colors.black,
-                    thirdRingColor: Colors.purple,
-                    size: 30,
+                    child: Container(
+                    color: Colors.white70,
+                    child: const ColorLoader(),
                   ))
                 : Container(),
           ],

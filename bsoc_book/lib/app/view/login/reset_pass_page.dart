@@ -176,7 +176,8 @@ class _ResetPassPageState extends State<ResetPassPage> {
                               child: ElevatedButton(
                                 onPressed: () => {goHome()},
                                 style: ElevatedButton.styleFrom(
-                                    primary: Color.fromARGB(255, 59, 118, 195),
+                                    backgroundColor:
+                                        Color.fromARGB(255, 59, 118, 195),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10)),

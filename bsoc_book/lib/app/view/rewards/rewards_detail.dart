@@ -163,9 +163,11 @@ class _RewardsDetailState extends State<RewardsDetail> {
                       print("res: ${response.data}");
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
-                      onPrimary: Colors.white,
-                      onSurface: Colors.amber, // Disable color
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue,
+                      disabledForegroundColor: Colors.amber.withOpacity(0.38),
+                      disabledBackgroundColor:
+                          Colors.amber.withOpacity(0.12), // Disable color
                     ),
                     child: const Text(
                       'Đổi thưởng',
@@ -181,10 +183,12 @@ class _RewardsDetailState extends State<RewardsDetail> {
                   child: ElevatedButton(
                     onPressed: null,
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
-                      onPrimary: Color.fromARGB(255, 255, 255, 255),
-                      onSurface:
-                          Color.fromARGB(255, 145, 109, 0), // Disable color
+                      foregroundColor: Color.fromARGB(255, 255, 255, 255),
+                      backgroundColor: Colors.blue,
+                      disabledForegroundColor:
+                          Color.fromARGB(255, 145, 109, 0).withOpacity(0.38),
+                      disabledBackgroundColor: Color.fromARGB(255, 145, 109, 0)
+                          .withOpacity(0.12), // Disable color
                     ),
                     child: const Text(
                       'Đã đổi thưởng',

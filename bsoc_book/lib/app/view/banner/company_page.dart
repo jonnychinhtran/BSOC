@@ -18,7 +18,7 @@ class _CompanyPageState extends State<CompanyPage> {
     super.initState();
 
     _controller = WebViewController()
-      ..loadRequest(Uri.parse('https://jobs.b4usolution.com/'));
+      ..loadRequest(Uri.parse('https://b4usolution.com/'));
   }
 
   @override
@@ -30,10 +30,10 @@ class _CompanyPageState extends State<CompanyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 153, 195, 59),
+          backgroundColor: const Color.fromARGB(255, 153, 195, 59),
           // title: Text('Google'),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
             },

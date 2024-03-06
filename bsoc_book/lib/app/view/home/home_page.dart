@@ -12,6 +12,7 @@ import 'package:bsoc_book/app/view/banner/job_page.dart';
 import 'package:bsoc_book/resource/values/app_colors.dart';
 import 'package:bsoc_book/utils/widget_helper.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
+import 'package:bsoc_book/widgets/color_loader.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -305,11 +306,9 @@ class _HomePageState extends State<HomePage> {
               ),
               (true == _loadingIsWaiting)
                   ? Center(
-                      child: LoadingAnimationWidget.discreteCircle(
-                      color: Color.fromARGB(255, 138, 175, 52),
-                      secondRingColor: Colors.black,
-                      thirdRingColor: Colors.purple,
-                      size: 30,
+                      child: Container(
+                      color: Colors.white70,
+                      child: const ColorLoader(),
                     ))
                   : Container(),
             ],
