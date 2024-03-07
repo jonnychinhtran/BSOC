@@ -1,11 +1,11 @@
 import 'dart:convert';
+import 'package:app_version_update/app_version_update.dart';
 import 'package:bsoc_book/app/models/book/book_model.dart';
 import 'package:bsoc_book/app/view/home/components/item_book.dart';
 import 'package:bsoc_book/app/view/home/components/item_top_book.dart';
 import 'package:bsoc_book/app/view/home/home_view.dart';
 import 'package:bsoc_book/app/view/quiz/quiz_page_view.dart';
 import 'package:bsoc_book/app/view/wheel_spin/wheel_view.dart';
-import 'package:bsoc_book/app/view/widgets/updatedialog.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/app/view/banner/company_page.dart';
 import 'package:bsoc_book/app/view/banner/job_page.dart';
@@ -16,8 +16,6 @@ import 'package:bsoc_book/widgets/color_loader.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:new_version/new_version.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
@@ -43,8 +41,11 @@ class _HomePageState extends State<HomePage> {
 
   // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
+  String release = "";
+
   @override
   void initState() {
+    super.initState();
     _homeViewModel = widget.homeViewModel;
     AppDataGlobal().setHomeViewModel(homeViewModel: _homeViewModel);
     _homeViewModel.getListBook();
@@ -63,13 +64,59 @@ class _HomePageState extends State<HomePage> {
         });
       }
     });
+    _verifyVersion();
+    // final newVersion = NewVersion(
+    //   iOSId: 'com.b4usolution.app.bsoc',
+    //   androidId: 'com.b4usolution.b4u_bsoc',
+    // );
+    // checkNewVersion(newVersion);
+  }
 
-    final newVersion = NewVersion(
-      iOSId: 'com.b4usolution.app.bsoc',
-      androidId: 'com.b4usolution.b4u_bsoc',
-    );
-    checkNewVersion(newVersion);
-    super.initState();
+  void _verifyVersion() async {
+    await AppVersionUpdate.checkForUpdates(
+      appleId: 'com.b4usolution.app.bsoc',
+      playStoreId: 'com.b4usolution.b4u_bsoc',
+      country: '',
+    ).then((result) async {
+      if (result.canUpdate!) {
+        // await AppVersionUpdate.showBottomSheetUpdate(context: context, appVersionResult: appVersionResult)
+        // await AppVersionUpdate.showPageUpdate(context: context, appVersionResult: appVersionResult)
+        // or use your own widget with information received from AppVersionResult
+
+        //##############################################################################################
+        await AppVersionUpdate.showAlertUpdate(
+          appVersionResult: result,
+          context: context,
+          backgroundColor: Colors.grey[200],
+          title: 'Thông báo cập nhật',
+          titleTextStyle: const TextStyle(
+              color: Colors.black, fontWeight: FontWeight.w600, fontSize: 24.0),
+          content:
+              'Bạn có muốn cập nhật ứng dụng của mình lên phiên bản mới nhất không?',
+          contentTextStyle: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w400,
+          ),
+          updateButtonText: 'CẬP NHẬT',
+          cancelButtonText: 'KHÔNG',
+        );
+
+        //## AppVersionUpdate.showBottomSheetUpdate ##
+        // await AppVersionUpdate.showBottomSheetUpdate(
+        //   context: context,
+        //   mandatory: true,
+        //   appVersionResult: result,
+        // );
+
+        //## AppVersionUpdate.showPageUpdate ##
+
+        // await AppVersionUpdate.showPageUpdate(
+        //   context: context,
+        //   appVersionResult: result,
+        // );
+      }
+    });
+    // TODO: implement initState
   }
 
   _onTapNextPage(BookModel bookModel) async {
@@ -91,26 +138,26 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void checkNewVersion(NewVersion newVersion) async {
-    final status = await newVersion.getVersionStatus();
-    if (status != null) {
-      if (status.canUpdate) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return UpdateDialog(
-              allowDismissal: true,
-              description: status.releaseNotes!,
-              version: status.storeVersion,
-              appLink: status.appStoreLink,
-            );
-          },
-        );
-      }
-      print(status.appStoreLink);
-      print(status.storeVersion);
-    }
-  }
+  // void checkNewVersion(NewVersion newVersion) async {
+  //   final status = await newVersion.getVersionStatus();
+  //   if (status != null) {
+  //     if (status.canUpdate) {
+  //       showDialog(
+  //         context: context,
+  //         builder: (BuildContext context) {
+  //           return UpdateDialog(
+  //             allowDismissal: true,
+  //             description: status.releaseNotes!,
+  //             version: status.storeVersion,
+  //             appLink: status.appStoreLink,
+  //           );
+  //         },
+  //       );
+  //     }
+  //     print(status.appStoreLink);
+  //     print(status.storeVersion);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
