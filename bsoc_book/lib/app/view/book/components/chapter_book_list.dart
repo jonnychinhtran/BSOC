@@ -219,48 +219,66 @@ class _ChapterBookListState extends State<ChapterBookList> {
                                                     .chapterId !=
                                                 999)
                                               IconButton(
-                                                icon: _chapterModel[index]
-                                                            .downloaded ==
-                                                        true
-                                                    ? const Icon(
-                                                        Icons
-                                                            .download_done_outlined,
-                                                        color: Colors.blue)
-                                                    : const Icon(
-                                                        Icons.download_outlined,
-                                                        color: Colors.blue),
+                                                icon: const Icon(
+                                                    Icons.download_sharp,
+                                                    color: Colors.blue),
+                                                //  _chapterModel[index]
+                                                //             .downloaded ==
+                                                //         true
+                                                //     ? const Icon(
+                                                //         Icons
+                                                //             .download_done_outlined,
+                                                //         color: Colors.blue)
+                                                //     : const Icon(
+                                                //         Icons.download_outlined,
+                                                //         color: Colors.blue),
                                                 onPressed: () {
                                                   if (AppDataGlobal()
                                                           .accessToken !=
                                                       '') {
-                                                    if (_chapterModel[index]
-                                                            .downloaded ==
-                                                        true) {
-                                                      WidgetHelper.showPopupMessage(
-                                                          headerColor: AppColors
-                                                              .PRIMARY_COLOR,
-                                                          context: context,
-                                                          content: const Text(
-                                                              'Bạn đã tải chương này rồi'));
-                                                    } else {
-                                                      showDialog(
-                                                        context: context,
-                                                        useRootNavigator: false,
-                                                        builder: (context) =>
-                                                            DownloadingDialog(
-                                                          chapterId:
-                                                              _chapterModel[
-                                                                      index]
-                                                                  .id,
-                                                          namePath:
-                                                              _chapterModel[
-                                                                      index]
-                                                                  .filePath,
-                                                          homeViewModel:
-                                                              _homeViewModel,
-                                                        ),
-                                                      );
-                                                    }
+                                                    showDialog(
+                                                      context: context,
+                                                      useRootNavigator: false,
+                                                      builder: (context) =>
+                                                          DownloadingDialog(
+                                                        chapterId:
+                                                            _chapterModel[index]
+                                                                .id,
+                                                        namePath:
+                                                            _chapterModel[index]
+                                                                .filePath,
+                                                        homeViewModel:
+                                                            _homeViewModel,
+                                                      ),
+                                                    );
+                                                    // if (_chapterModel[index]
+                                                    //         .downloaded ==
+                                                    //     true) {
+                                                    //   WidgetHelper.showPopupMessage(
+                                                    //       headerColor: AppColors
+                                                    //           .PRIMARY_COLOR,
+                                                    //       context: context,
+                                                    //       content: const Text(
+                                                    //           'Bạn đã tải chương này rồi'));
+                                                    // } else {
+                                                    //   showDialog(
+                                                    //     context: context,
+                                                    //     useRootNavigator: false,
+                                                    //     builder: (context) =>
+                                                    //         DownloadingDialog(
+                                                    //       chapterId:
+                                                    //           _chapterModel[
+                                                    //                   index]
+                                                    //               .id,
+                                                    //       namePath:
+                                                    //           _chapterModel[
+                                                    //                   index]
+                                                    //               .filePath,
+                                                    //       homeViewModel:
+                                                    //           _homeViewModel,
+                                                    //     ),
+                                                    //   );
+                                                    // }
                                                   } else {
                                                     WidgetHelper.showPopupMessage(
                                                         headerColor: AppColors
