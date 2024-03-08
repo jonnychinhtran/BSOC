@@ -30,7 +30,7 @@ class WheelPage extends StatefulWidget {
 }
 
 class _WheelPageState extends State<WheelPage> {
-  final selected = StreamController<int>();
+  final selected = StreamController<int>.broadcast();
   int selectedIndex = 0;
   bool isSpinning = false;
   final storage = GetStorage();
@@ -214,7 +214,7 @@ class _WheelPageState extends State<WheelPage> {
                                       homeViewModel: HomeViewModel(),
                                       parentViewState: WheelPageViewState(),
                                     )));
-                        setState(() {});
+                        // setState(() {});
                       } catch (e) {
                         print("Error posting spin result: $e");
                       }
@@ -253,7 +253,7 @@ class _WheelPageState extends State<WheelPage> {
                       homeViewModel: HomeViewModel(),
                       parentViewState: WheelPageViewState(),
                     )));
-        setState(() {});
+        // setState(() {});
       } catch (e) {
         print("Error posting spin result: $e");
       }
