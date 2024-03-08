@@ -338,17 +338,20 @@ class _WheelPageState extends State<WheelPage> {
                 SafeArea(
                   child: Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 120.0, top: 70.0),
-                        child: SizedBox(
-                          child: Text(
-                            datauser == null
-                                ? 'Bạn còn 0 lượt quay'
-                                : 'Bạn còn ' +
-                                    datauser!['spinTurn'].toString() +
-                                    ' lượt quay',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18.0),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 85.0, vertical: 60),
+                          child: SizedBox(
+                            child: Text(
+                              datauser == null
+                                  ? 'Bạn còn 0 lượt quay'
+                                  : 'Bạn còn ' +
+                                      datauser!['spinTurn'].toString() +
+                                      ' lượt quay',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18.0),
+                            ),
                           ),
                         ),
                       ),
