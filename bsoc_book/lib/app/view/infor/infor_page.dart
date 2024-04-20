@@ -708,7 +708,7 @@ class _InfoPageState extends State<InfoPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "${AppStrings.APP_NAME} 1.1.4",
+                                      "${AppStrings.APP_NAME} 1.1.5",
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: Color(0xFF8A8A8A),

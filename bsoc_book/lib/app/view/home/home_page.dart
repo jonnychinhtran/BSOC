@@ -88,11 +88,10 @@ class _HomePageState extends State<HomePage> {
           appVersionResult: result,
           context: context,
           backgroundColor: Colors.grey[200],
-          title: 'Thông báo cập nhật',
+          title: 'Thông báo',
           titleTextStyle: const TextStyle(
               color: Colors.black, fontWeight: FontWeight.w600, fontSize: 24.0),
-          content:
-              'Bạn có muốn cập nhật ứng dụng của mình lên phiên bản mới nhất không?',
+          content: 'Vui lòng cập nhật ứng dụng để có trải nghiệm tốt hơn?',
           contentTextStyle: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w400,

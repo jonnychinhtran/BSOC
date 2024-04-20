@@ -30,7 +30,7 @@ class WheelPage extends StatefulWidget {
 }
 
 class _WheelPageState extends State<WheelPage> {
-  final selected = StreamController<int>();
+  final selected = StreamController<int>.broadcast();
   int selectedIndex = 0;
   bool isSpinning = false;
   final storage = GetStorage();
@@ -207,14 +207,14 @@ class _WheelPageState extends State<WheelPage> {
 
                         await getlistSpin();
                         Navigator.of(context).pop();
-                        Navigator.pushReplacement(
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => WheelPage(
                                       homeViewModel: HomeViewModel(),
                                       parentViewState: WheelPageViewState(),
                                     )));
-                        setState(() {});
+                        // setState(() {});
                       } catch (e) {
                         print("Error posting spin result: $e");
                       }
@@ -246,14 +246,14 @@ class _WheelPageState extends State<WheelPage> {
         );
         await getlistSpin();
         Navigator.of(context).pop();
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => WheelPage(
                       homeViewModel: HomeViewModel(),
                       parentViewState: WheelPageViewState(),
                     )));
-        setState(() {});
+        // setState(() {});
       } catch (e) {
         print("Error posting spin result: $e");
       }
@@ -339,7 +339,8 @@ class _WheelPageState extends State<WheelPage> {
                   child: Stack(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 120.0, top: 70.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 85.0, vertical: 60),
                         child: SizedBox(
                           child: Text(
                             datauser == null
