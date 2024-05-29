@@ -54,15 +54,13 @@ class _InfoPageState extends State<InfoPage> {
 
   @override
   void initState() {
+    super.initState();
     _homeViewModel = widget.homeViewModel;
     _userViewModel = widget.userViewModel;
 
-    setState(() {
-      _isLoading = true;
-    });
-
     if (AppDataGlobal().accessToken != "") {
       _userViewModel?.getInfoPage().then((value) {
+        print('User Info: ${value}');
         setState(() {
           _isLoading = false;
         });
@@ -82,7 +80,9 @@ class _InfoPageState extends State<InfoPage> {
         _isLoading = false;
       });
     }
-    super.initState();
+    if (_userItem != null) {
+      _isLoading = false;
+    }
   }
 
   File? _image;
@@ -150,7 +150,7 @@ class _InfoPageState extends State<InfoPage> {
                     horizontal: 15.0, vertical: 20.0),
                 child: Column(
                   children: [
-                    (AppDataGlobal().accessToken != '')
+                    (AppDataGlobal().accessToken != '' && _userItem != null)
                         ? Column(
                             children: [
                               const SizedBox(
@@ -369,7 +369,7 @@ class _InfoPageState extends State<InfoPage> {
                                                     child: Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                    .only(
+                                                                .only(
                                                                 left: 16.0,
                                                                 top: 20.0),
                                                         child: Column(
@@ -596,7 +596,7 @@ class _InfoPageState extends State<InfoPage> {
                                           Align(
                                             alignment: Alignment.bottomCenter,
                                             child: Text(
-                                              "${AppStrings.APP_NAME} 1.1.5",
+                                              "${AppStrings.APP_NAME} 1.1.6",
                                               style: const TextStyle(
                                                 fontSize: 12,
                                                 color: Color(0xFF8A8A8A),
@@ -708,7 +708,7 @@ class _InfoPageState extends State<InfoPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "${AppStrings.APP_NAME} 1.1.5",
+                                      "${AppStrings.APP_NAME} 1.1.6",
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: Color(0xFF8A8A8A),

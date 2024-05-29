@@ -18,57 +18,77 @@ import 'package:path_provider/path_provider.dart';
 
 class BookApiRepository extends ApiProviderRepository implements IBookRepo {
   final logger = Logger("BookApiRepository");
+  final Dio _dio = Dio();
 
   @override
-  Future<List<BookModel>> getList() => NetworkUtil2()
-          .get(url: NetworkEndpoints.GET_BOOK_STORE_API)
-          .then((dynamic response) {
-        final items = response['content'];
-        List<BookModel> list = [];
-        for (int i = 0; i < items.length; i++) {
-          BookModel bookModel = BookModel.fromJson(items[i]);
-          list.add(bookModel);
-        }
-        return list;
-      });
+  Future<List<BookModel>> getList() async {
+    try {
+      final response =
+          await _dio.get('http://103.77.166.202/api/book/all-book');
+      print('topBookModel: ${response.data}');
+      final items = response.data['content'];
+      List<BookModel> list = [];
+      for (int i = 0; i < items.length; i++) {
+        BookModel bookModel = BookModel.fromJson(items[i]);
+        list.add(bookModel);
+      }
+      return list;
+    } catch (e) {
+      logger.severe("Failed to get book list", e);
+      return [];
+    }
+  }
 
   @override
-  Future<List<BookModel>> getListTop() => NetworkUtil2()
-          .get(url: NetworkEndpoints.GET_TOP_BOOK_API)
-          .then((dynamic response) {
-        final items = response;
-        List<BookModel> list = [];
-        for (int i = 0; i < items.length; i++) {
-          BookModel topBookModel = BookModel.fromJson(items[i]);
-          list.add(topBookModel);
-        }
-
-        return list;
-      });
-
-  @override
-  Future<BookModel?> getBookDetail({required int bookId}) => NetworkUtil2()
-          .get(url: '${NetworkEndpoints.GET_BOOK_DETAIL_API}/$bookId')
-          .then((dynamic response) {
-        final data = response;
-        BookModel bookModel = BookModel.fromJson(data);
-        return bookModel;
-      });
+  Future<List<BookModel>> getListTop() async {
+    try {
+      final response =
+          await _dio.get('http://103.77.166.202/api/book/top-book');
+      print('topBookModel: ${response.data}');
+      final items = response.data;
+      List<BookModel> list = [];
+      for (int i = 0; i < items.length; i++) {
+        BookModel topBookModel = BookModel.fromJson(items[i]);
+        list.add(topBookModel);
+      }
+      return list;
+    } catch (e) {
+      logger.severe("Failed to get top book list", e);
+      return [];
+    }
+  }
 
   @override
-  Future<List<ListCommentModel>> getListComment({required int bookId}) =>
-      NetworkUtil2()
-          .get(url: '${NetworkEndpoints.GET_COMMENT_BOOK_API}/$bookId')
-          .then((dynamic response) {
-        final items = response;
-        List<ListCommentModel> list = [];
-        for (int i = 0; i < items.length; i++) {
-          ListCommentModel commentModel = ListCommentModel.fromJson(items[i]);
-          list.add(commentModel);
-        }
+  Future<BookModel?> getBookDetail({required int bookId}) async {
+    try {
+      final response =
+          await _dio.get('http://103.77.166.202/api/book/getBook/$bookId');
+      final data = response.data;
+      BookModel bookModel = BookModel.fromJson(data);
+      return bookModel;
+    } catch (e) {
+      logger.severe("Failed to get book detail", e);
+      return null;
+    }
+  }
 
-        return list;
-      });
+  @override
+  Future<List<ListCommentModel>> getListComment({required int bookId}) async {
+    try {
+      final response =
+          await _dio.get('http://103.77.166.202/api/book/list-comment/$bookId');
+      final items = response.data;
+      List<ListCommentModel> list = [];
+      for (int i = 0; i < items.length; i++) {
+        ListCommentModel commentModel = ListCommentModel.fromJson(items[i]);
+        list.add(commentModel);
+      }
+      return list;
+    } catch (e) {
+      logger.severe("Failed to get list of comments", e);
+      return [];
+    }
+  }
 
   @override
   Future<String> getFilePdf({required int chapterId}) async {

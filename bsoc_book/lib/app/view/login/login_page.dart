@@ -232,6 +232,7 @@ class _LoginPageState extends State<LoginPage> {
                                             username: _usernameController.text,
                                             password: _passwordController.text)
                                         .then((bool value) {
+                                      print("Login: $value");
                                       setState(() {
                                         _isLoading = false;
                                       });
@@ -280,13 +281,13 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     )),
-                (true == _isLoading)
-                    ? Center(
-                        child: Container(
-                        color: Colors.white70,
-                        child: const ColorLoader(),
-                      ))
-                    : const SizedBox(),
+                // (true == _isLoading)
+                //     ? Center(
+                //         child: Container(
+                //         color: Colors.white70,
+                //         child: const ColorLoader(),
+                //       ))
+                //     : const SizedBox(),
               ],
             ),
           ),

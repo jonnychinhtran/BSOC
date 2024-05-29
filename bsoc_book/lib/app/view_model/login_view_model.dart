@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bsoc_book/app/models/api/post_response_model.dart';
 import 'package:bsoc_book/app/repositories/IBookRepo.dart';
 import 'package:bsoc_book/app/repositories/IUserRepo.dart';
@@ -63,5 +65,20 @@ class LoginViewModel {
     });
 
     return Future.value(true);
+  }
+
+  Future<bool> isTokenExpired(String token) async {
+    // Giả sử token là JWT và bạn có thể kiểm tra thời gian hết hạn từ payload
+    try {
+      final payload = token.split('.')[1];
+      final decodedPayload =
+          utf8.decode(base64Url.decode(base64Url.normalize(payload)));
+      final payloadMap = json.decode(decodedPayload);
+      final exp = payloadMap['exp'];
+      final currentTime = DateTime.now().millisecondsSinceEpoch / 1000;
+      return currentTime > exp;
+    } catch (e) {
+      return true; // Nếu có lỗi, giả định token đã hết hạn
+    }
   }
 }

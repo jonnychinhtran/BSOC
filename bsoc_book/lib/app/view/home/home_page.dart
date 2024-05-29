@@ -1,17 +1,22 @@
 import 'dart:convert';
 import 'package:app_version_update/app_version_update.dart';
 import 'package:bsoc_book/app/models/book/book_model.dart';
+import 'package:bsoc_book/app/models/user_model.dart';
 import 'package:bsoc_book/app/view/home/components/item_book.dart';
 import 'package:bsoc_book/app/view/home/components/item_top_book.dart';
 import 'package:bsoc_book/app/view/home/home_view.dart';
+import 'package:bsoc_book/app/view/login/login_page.dart';
 import 'package:bsoc_book/app/view/quiz/quiz_page_view.dart';
 import 'package:bsoc_book/app/view/wheel_spin/wheel_view.dart';
 import 'package:bsoc_book/app/view_model/home_view_model.dart';
 import 'package:bsoc_book/app/view/banner/company_page.dart';
 import 'package:bsoc_book/app/view/banner/job_page.dart';
+import 'package:bsoc_book/app/view_model/login_view_model.dart';
+import 'package:bsoc_book/app/view_model/user_view_model.dart';
 import 'package:bsoc_book/resource/values/app_colors.dart';
 import 'package:bsoc_book/utils/widget_helper.dart';
 import 'package:bsoc_book/widgets/app_dataglobal.dart';
+import 'package:bsoc_book/widgets/app_preferences.dart';
 import 'package:bsoc_book/widgets/color_loader.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
@@ -33,14 +38,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late HomeViewModel _homeViewModel;
   bool _loadingIsWaiting = false;
-  // final AuthController authController = Get.find();
-
-  // final getAllBooksController = Get.put(AllBooksController());
-
-  // final getTopBookController = Get.put(TopBookController());
-
-  // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
+  final loginViewModel = LoginViewModel();
   String release = "";
 
   @override
@@ -70,6 +68,42 @@ class _HomePageState extends State<HomePage> {
     //   androidId: 'com.b4usolution.b4u_bsoc',
     // );
     // checkNewVersion(newVersion);
+    checkTokenExpired();
+  }
+
+  //checkTokenExpired show popup message
+  void checkTokenExpired() async {
+    if (AppDataGlobal().accessToken != '') {
+      bool expired =
+          await loginViewModel.isTokenExpired(AppDataGlobal().accessToken);
+      if (expired) {
+        WidgetHelper.showPopupMessage(
+          headerColor: AppColors.PRIMARY_COLOR,
+          header: 'Thông báo',
+          context: context,
+          content: Column(
+            children: [
+              const Text(
+                'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại',
+                style: TextStyle(fontSize: 16),
+              ),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    AppDataGlobal().setAccessToken(accessToken: '');
+                    AppPreferences().setLoggedIn(isLoggedIn: false);
+                    AppDataGlobal().userLogout();
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
+                  child: const Text('Đăng nhập'),
+                ),
+              )
+            ],
+          ),
+        );
+      }
+    }
   }
 
   void _verifyVersion() async {

@@ -32,6 +32,13 @@ class _IndexViewState extends State<IndexView>
         AppDataGlobal().setAccessToken(accessToken: token);
         if ("" != token) {
           print("Is Logged In auto set accesstoken $token");
+          // bool expired = await loginViewModel.isTokenExpired(token);
+          // if (expired) {
+          //   // Token đã hết hạn, điều hướng đến trang đăng nhập
+          //   Application.router
+          //       .navigateTo(context, Routes.appRouteLogin, clearStack: true);
+          //   return;
+          // }
           AppDataGlobal().setDomain(inDomain: "http://103.77.166.202");
           NetworkUtil2().addHeaderData(
               key: HttpHeaders.authorizationHeader, data: "Bearer $token");

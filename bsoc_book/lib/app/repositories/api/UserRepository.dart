@@ -14,32 +14,74 @@ import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as logg;
 import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserApiRepository extends ApiProviderRepository implements IUserRepo {
   UserApiRepository();
+  //shared preferences
+  SharedPreferences? _sharedPreferences;
 
   @override
-  Future<bool> login({required String username, required String password}) =>
-      NetworkUtil2().post(url: NetworkEndpoints.POST_LOGIN_API, data: {
-        NetworkConfig.API_KEY_USER_NAME: username,
-        NetworkConfig.API_KEY_USER_PASSWORD: password,
-      }).then((dynamic response) {
-        final responseModel = ResponseModel.fromJson(response);
+  Future<bool> login(
+      {required String username, required String password}) async {
+    final formData = {
+      NetworkConfig.API_KEY_USER_NAME: username,
+      NetworkConfig.API_KEY_USER_PASSWORD: password,
+    };
+    try {
+      Dio dio = Dio();
+      dio.options.headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      };
+
+      var response = await dio.post(
+        'http://103.77.166.202/api/auth/login',
+        data: json.encode(formData),
+      );
+
+      if (response.statusCode == 200) {
+        final responseModel = ResponseModel.fromJson(response.data);
         if (responseModel.statusCode == NetworkConfig.STATUS_OK) {
           final resultModel = responseModel.data;
+          //save token to shared preferences
           AppPreferences().setAccessToken(token: resultModel!.accessToken!);
           AppPreferences().setLoggedIn(isLoggedIn: true);
           AppDataGlobal().setAccessToken(accessToken: resultModel.accessToken);
-          NetworkUtil2().addHeaderData(
-              key: HttpHeaders.authorizationHeader,
-              data: "Bearer ${resultModel.accessToken}");
+          dio.options.headers[HttpHeaders.authorizationHeader] =
+              "Bearer ${resultModel.accessToken}";
           return true;
         }
-        return false;
-      }).catchError((error) {
-        print(error.toString());
-        return false;
-      });
+      }
+      return false;
+    } on DioError catch (e) {
+      print('Login Error: ${e.response?.data}');
+      return false;
+    }
+  }
+
+  // @override
+  // Future<bool> login({required String username, required String password}) =>
+  //     NetworkUtil2().post(url: NetworkEndpoints.POST_LOGIN_API, data: {
+  //       NetworkConfig.API_KEY_USER_NAME: username,
+  //       NetworkConfig.API_KEY_USER_PASSWORD: password,
+  //     }).then((dynamic response) {
+  //       final responseModel = ResponseModel.fromJson(response);
+  //       if (responseModel.statusCode == NetworkConfig.STATUS_OK) {
+  //         final resultModel = responseModel.data;
+  //         AppPreferences().setAccessToken(token: resultModel!.accessToken!);
+  //         AppPreferences().setLoggedIn(isLoggedIn: true);
+  //         AppDataGlobal().setAccessToken(accessToken: resultModel.accessToken);
+  //         NetworkUtil2().addHeaderData(
+  //             key: HttpHeaders.authorizationHeader,
+  //             data: "Bearer ${resultModel.accessToken}");
+  //         return true;
+  //       }
+  //       return false;
+  //     }).catchError((error) {
+  //       print(error.toString());
+  //       return false;
+  //     });
 
   // @override
   // Future<UserModel> getUser() {
