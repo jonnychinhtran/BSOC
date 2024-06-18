@@ -113,6 +113,11 @@ class TermsPage extends StatelessWidget {
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: size.height * 0.02),
             Text(
+                '-	Apple không tham gia vào bất kỳ cuộc thi hoặc rút thăm giải thưởng nào liên quan đến ứng dụng của chúng tôi (Apple is not involved in any competitions or prize drawings related to our application)',
+                textAlign: TextAlign.justify,
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            SizedBox(height: size.height * 0.02),
+            Text(
               '5. Quyền của chúng tôi trong dịch vụ',
               textAlign: TextAlign.justify,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),

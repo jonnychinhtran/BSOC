@@ -284,42 +284,42 @@ class _HomePageState extends State<HomePage> {
                           child: Image.asset('assets/images/practice2.png'),
                         ),
                       ),
-                      SizedBox(height: size.height * 0.04),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 13.0),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Vòng quay may mắn',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            if (AppDataGlobal().accessToken != '') {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => WheelPageView(
-                                            homeViewModel: widget.homeViewModel,
-                                          )));
-                            } else {
-                              WidgetHelper.showPopupMessage(
-                                  headerColor: AppColors.PRIMARY_COLOR,
-                                  context: context,
-                                  content: const Text(
-                                      'Bạn cần đăng nhập để sử dụng chức năng này'));
-                            }
-                          },
-                          child: Image.asset('assets/images/banner-wheel.jpg'),
-                        ),
-                      ),
+                      // SizedBox(height: size.height * 0.04),
+                      // const Padding(
+                      //   padding: EdgeInsets.only(left: 13.0),
+                      //   child: Align(
+                      //     alignment: Alignment.centerLeft,
+                      //     child: Text(
+                      //       'Vòng quay may mắn',
+                      //       style: TextStyle(
+                      //         fontSize: 18,
+                      //         fontWeight: FontWeight.w500,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: GestureDetector(
+                      //     onTap: () {
+                      //       if (AppDataGlobal().accessToken != '') {
+                      //         Navigator.push(
+                      //             context,
+                      //             MaterialPageRoute(
+                      //                 builder: (context) => WheelPageView(
+                      //                       homeViewModel: widget.homeViewModel,
+                      //                     )));
+                      //       } else {
+                      //         WidgetHelper.showPopupMessage(
+                      //             headerColor: AppColors.PRIMARY_COLOR,
+                      //             context: context,
+                      //             content: const Text(
+                      //                 'Bạn cần đăng nhập để sử dụng chức năng này'));
+                      //       }
+                      //     },
+                      //     child: Image.asset('assets/images/banner-wheel.jpg'),
+                      //   ),
+                      // ),
                       SizedBox(height: size.height * 0.02),
                       const Padding(
                         padding: EdgeInsets.only(left: 13.0),
