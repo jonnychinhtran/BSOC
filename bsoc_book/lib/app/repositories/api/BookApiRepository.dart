@@ -61,10 +61,12 @@ class BookApiRepository extends ApiProviderRepository implements IBookRepo {
   @override
   Future<BookModel?> getBookDetail({required int bookId}) async {
     try {
-      final response =
+      /*final response =
           await _dio.get('http://103.77.166.202/api/book/getBook/$bookId');
-      final data = response.data;
+      final data = response.data;*/
+      final data = await NetworkUtil2().get(url: 'http://103.77.166.202/api/book/getBook/$bookId');
       BookModel bookModel = BookModel.fromJson(data);
+      print("Chapters model: ${bookModel.chapters}");
       return bookModel;
     } catch (e) {
       logger.severe("Failed to get book detail", e);
