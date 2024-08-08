@@ -38,4 +38,9 @@ class ChaptersModel {
       _$ChaptersModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ChaptersModelToJson(this);
+
+  @override
+  String toString() {
+    return 'ChaptersModel{chapterTitle: $chapterTitle, allow: $allow}';
+  }
 }

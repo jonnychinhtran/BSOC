@@ -78,14 +78,14 @@ class _BookDetailPageState extends State<BookDetailPage> {
         backgroundColor: AppColors.PRIMARY_COLOR,
         elevation: 0,
         titleSpacing: 0,
-        title: Text(
+        title: const Text(
           'Chi tiết sách',
           style: TextStyle(
             color: Colors.white,
           ),
         ),
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
@@ -348,6 +348,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
   _renderContent(BookModel bookModel, HomeViewModel homeViewModel,
       HomeViewState homeViewState) {
     if (currentTab == CHAPTER) {
+      //print("chapters in book detail page: ${bookModel.chapters}");
       return ChapterBookList(
           bookModel: bookModel,
           chapterModel: bookModel.chapters,
